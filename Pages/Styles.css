@@ -6,10 +6,13 @@
 }
 
 body {
-    background: #303030;
+    background-image: url("../Assets/camobackground.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
 }
 
-/* CENTERED CONTAINER */
 .container {
     max-width: 1500px;
     margin: 0 auto;
@@ -17,28 +20,32 @@ body {
     min-height: 100vh;
 }
 
-/* NAVBAR */
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 12px 20px;
     background: #6c7a6b;
-
-
-    button {
-        background: #626d60;
-        color: #000;
-        border: none;
-        padding: 3px 7px;
-        border-radius: 2px;
-        cursor: pointer;
-    }
 }
 
-.logo a {
+.logo-container {
+    display: flex;
+    align-items: center;
     text-decoration: none;
     color: #000;
+    gap: 10px;
+}
+
+.logoimage {
+    width: 80px;
+    height: 80px;
+    background-image: url("../Assets/ArmsDealer Logo.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.logo {
     font-weight: bold;
     font-size: 30px;
 }
@@ -46,23 +53,41 @@ body {
 .nav-links {
     display: flex;
     gap: 30px;
+}
 
+.nav-links button {
+    background: #556155;
+    color: #303030;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
 }
 
 .nav-links a {
     text-decoration: none;
     color: #000;
     font-size: 14px;
-
-
 }
 
 .top-bar {
     background: #6c7a6b;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     padding: 2px 15px;
+
+    button {
+        background: #6c7a6b;
+        color: #303030;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 20px;
+        font-weight: bold;
+    }
 }
 
 .top-bar select {
@@ -76,11 +101,15 @@ body {
 
 }
 
-.right {
+.top-bar.left {
+    display: flex;
+    gap: 10px;
+}
+
+.top-bar.right {
     display: flex;
     gap: 30px;
 }
-
 
 .top-bar a {
     text-decoration: none;
