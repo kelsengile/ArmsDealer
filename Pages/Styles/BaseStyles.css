@@ -6,7 +6,7 @@
 }
 
 body {
-    background-image: url("../Assets/camobackground.png");
+    background-image: url("../../Assets/Images/camobackground.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -26,6 +26,7 @@ body {
     align-items: center;
     padding: 12px 20px;
     background: #6c7a6b;
+    flex-wrap: wrap;
 }
 
 .logo-container {
@@ -39,7 +40,7 @@ body {
 .logoimage {
     width: 80px;
     height: 80px;
-    background-image: url("../Assets/ArmsDealer Logo.png");
+    background-image: url("../../Assets/Images/ArmsDealerLogo.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -77,6 +78,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 2px 15px;
+    flex-wrap: wrap;
 
     button {
         background: #6c7a6b;
