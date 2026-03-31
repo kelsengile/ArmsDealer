@@ -4,41 +4,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArmsDealer</title>
+    <title>ArmsDealer — Home</title>
     <link rel="icon" type="image/png" href="../Assets/Images/ArmsDealerLogo.png">
-
-    <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Share+Tech+Mono&display=swap"
         rel="stylesheet">
-
-    <!-- Stylesheets -->
     <link rel="stylesheet" href="../Pages/Styles/GlobalStyles.css">
-    <link rel="stylesheet" href="../../AIGENERATED!!!/Prompts.css">
+    <link rel="stylesheet" href="../AIGENERATED!!!/Navbarstyles.css">
+    <link rel="stylesheet" href="../AIGENERATED!!!/Homepagestyles.css">
 </head>
 
-<body>
-    <div class="container">
+<!-- No data-page attribute = homepage, no nav highlight -->
 
-        <!-- ═══════════════════════════════════════════════════════════ -->
-        <!-- TOP BAR                                                      -->
-        <!-- ═══════════════════════════════════════════════════════════ -->
+<body>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- STICKY HEADER WRAPPER                                        -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <header class="site-header">
+
+        <!-- TOP BAR -->
         <div class="top-bar">
             <div class="left">
-                <button>☰</button>
+                <button aria-label="Menu">☰</button>
                 <div class="top-bar-status">
                     <div class="top-bar-status-dot"></div>
                     <span>Secure Connection</span>
                 </div>
             </div>
             <div class="right">
-                <select>
+                <select aria-label="Language">
                     <option>🌐 English</option>
                     <option>🌐 Filipino</option>
                     <option>🌐 Japanese</option>
                     <option>🌐 Spanish</option>
                 </select>
-                <select>
+                <select aria-label="Currency">
                     <option>PHP (₱)</option>
                     <option>USD ($)</option>
                     <option>EUR (€)</option>
@@ -48,33 +49,61 @@
             </div>
         </div>
 
-        <!-- ═══════════════════════════════════════════════════════════ -->
-        <!-- NAVBAR                                                       -->
-        <!-- ═══════════════════════════════════════════════════════════ -->
-        <div class="navbar">
-            <a href="Homepage.html" class="logo-container">
-                <div class="logoimage"></div>
+        <!-- NAVBAR -->
+        <nav class="navbar" aria-label="Main navigation">
+            <a href="Homepage.html" class="logo-container" aria-label="ArmsDealer Home">
+                <div class="logoimage" role="img" aria-label="ArmsDealer logo"></div>
                 <div class="logo-text-wrap">
                     <div class="logo">ArmsDealer</div>
                     <div class="logo-sub">Tactical Supply Co.</div>
                 </div>
             </a>
+
+            <!-- Desktop nav links -->
             <div class="nav-links">
                 <a href="Products.html">Products</a>
                 <a href="Services.html">Services</a>
                 <a href="Contacts.html">Contacts</a>
                 <a href="About.html">About</a>
-                <button class="nav-btn-search">Search</button>
-                <button class="nav-btn-cart">
+                <button class="nav-btn-search" aria-label="Search">Search</button>
+                <button class="nav-btn-cart" aria-label="Cart">
                     Cart
-                    <span class="cart-badge"></span>
+                    <span class="cart-badge" aria-hidden="true"></span>
                 </button>
             </div>
-            <div class="nav-coord">
+
+            <!-- Coordinate readout (decorative) -->
+            <div class="nav-coord" aria-hidden="true">
                 <div><span>LAT</span> 14.5995° N</div>
                 <div><span>LNG</span> 120.9842° E</div>
             </div>
+
+            <!-- Mobile hamburger -->
+            <button class="nav-hamburger" id="navHamburger" aria-controls="navDrawer" aria-expanded="false"
+                aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+
+        <!-- Mobile drawer -->
+        <div class="nav-drawer" id="navDrawer" role="menu">
+            <a href="Products.html" role="menuitem"><span class="nav-drawer-icon">◈</span>Products</a>
+            <a href="Services.html" role="menuitem"><span class="nav-drawer-icon">◈</span>Services</a>
+            <a href="Contacts.html" role="menuitem"><span class="nav-drawer-icon">◈</span>Contacts</a>
+            <a href="About.html" role="menuitem"><span class="nav-drawer-icon">◈</span>About</a>
+            <button class="nav-btn-search" role="menuitem"><span class="nav-drawer-icon">⌕</span>Search</button>
+            <button class="nav-btn-cart" role="menuitem">
+                <span class="nav-drawer-icon">⊡</span>Cart
+                <span class="cart-badge" aria-hidden="true"></span>
+            </button>
         </div>
+
+    </header>
+    <!-- END STICKY HEADER -->
+
+    <div class="container">
 
         <!-- ═══════════════════════════════════════════════════════════ -->
         <!-- HERO CAROUSEL                                               -->
@@ -146,7 +175,6 @@
                 </div>
             </div>
 
-            <!-- Prev / Next arrows -->
             <button class="hero-arrow hero-arrow-prev" id="heroPrev" aria-label="Previous slide">
                 <svg viewBox="0 0 24 24">
                     <polyline points="15 18 9 12 15 6" />
@@ -158,34 +186,20 @@
                 </svg>
             </button>
 
-            <!-- Dot indicators -->
             <div class="hero-dots" id="heroDots"></div>
-
-            <!-- Slide counter -->
-            <div class="hero-counter">
-                <span id="heroCurrentNum">01</span> / 05
-            </div>
-
-            <!-- Decorative corner bracket -->
-            <div class="hero-bracket"></div>
+            <div class="hero-counter"><span id="heroCurrentNum">01</span> / 05</div>
+            <div class="hero-bracket" aria-hidden="true"></div>
 
         </section>
 
-
-        <!-- END HERO CAROUSEL -->
-        <div style="display: block; height: 1500px;">
+        <div style="height: 1000px;">
 
         </div>
 
-
-
-
     </div>
 
-
-
-    <!-- JavaScript — loaded at end of body so DOM is ready -->
-    <script src="../../AIGENERATED!!!/Prompts.js"></script>
+    <script src="../AIGENERATED!!!/Navbarscript.js"></script>
+    <script src="../AIGENERATED!!!/Homepagecarousel.js"></script>
 </body>
 
 </html>

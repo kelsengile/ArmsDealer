@@ -1,0 +1,290 @@
+/* ══════════════════════════════════════════════════════════
+   HomepageStyles.css — Hero Carousel only
+   Navbar styles are in NavbarStyles.css
+══════════════════════════════════════════════════════════ */
+
+/* ── HERO CAROUSEL ─────────────────────────────────────── */
+.hero {
+    position: relative;
+    width: 100%;
+    height: 520px;
+    overflow: hidden;
+    background: #1a1f1a;
+}
+
+.hero-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(1.04);
+    transition: opacity 0.75s cubic-bezier(.4, 0, .2, 1),
+        transform 0.75s cubic-bezier(.4, 0, .2, 1);
+    pointer-events: none;
+}
+
+.hero-slide.active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+.hero-slide.enter-right {
+    opacity: 0;
+    transform: translateX(60px) scale(1.04);
+}
+
+.hero-slide.enter-right.active {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+}
+
+.hero-slide.enter-left {
+    opacity: 0;
+    transform: translateX(-60px) scale(1.04);
+}
+
+.hero-slide.enter-left.active {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+}
+
+.hero-slide-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.hero-slide-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg,
+            rgba(10, 14, 10, 0.82) 0%,
+            rgba(10, 14, 10, 0.45) 55%,
+            rgba(10, 14, 10, 0.10) 100%);
+}
+
+/* Replace with your actual hero images */
+.hero-slide:nth-child(1) .hero-slide-bg {
+    background-color: #2b3b2b;
+    background-image: url('../../Assets/Images/HomepageHeroImage/gunphoto.jpg');
+}
+
+.hero-slide:nth-child(2) .hero-slide-bg {
+    background-color: #3b2b2b;
+    background-image: url('../../Assets/Images/HomepageHeroImage/arsenal.jpg');
+}
+
+.hero-slide:nth-child(3) .hero-slide-bg {
+    background-color: #2b2b3b;
+    background-image: url('../../Assets/Images/HomepageHeroImage/samurai.jpg');
+}
+
+.hero-slide:nth-child(4) .hero-slide-bg {
+    background-color: #3b3b2b;
+    background-image: url('../../Assets/Images/HomepageHeroImage/sniper.jpg');
+}
+
+.hero-slide:nth-child(5) .hero-slide-bg {
+    background-color: #2b3b3b;
+    background-image: url('../../Assets/Images/HomepageHeroImage/soldier.jpg');
+}
+
+.hero-content {
+    position: absolute;
+    left: 64px;
+    bottom: 80px;
+    max-width: 540px;
+    z-index: 2;
+}
+
+.hero-tag {
+    display: inline-block;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #a8c49a;
+    background: rgba(168, 196, 154, 0.12);
+    border: 1px solid rgba(168, 196, 154, 0.3);
+    padding: 4px 12px;
+    margin-bottom: 16px;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s 0.2s ease, transform 0.5s 0.2s ease;
+}
+
+.hero-slide.active .hero-tag {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hero-title {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: #e8ede8;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.55s 0.35s ease, transform 0.55s 0.35s ease;
+}
+
+.hero-slide.active .hero-title {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hero-subtitle {
+    font-size: 14px;
+    color: #b0bdb0;
+    line-height: 1.65;
+    margin-bottom: 28px;
+    max-width: 420px;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.55s 0.48s ease, transform 0.55s 0.48s ease;
+}
+
+.hero-slide.active .hero-subtitle {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hero-cta {
+    display: inline-block;
+    font-size: 13px;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #1a1f1a;
+    background: #a8c49a;
+    padding: 11px 28px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s 0.6s ease, transform 0.5s 0.6s ease, background 0.2s ease;
+}
+
+.hero-cta:hover {
+    background: #c5d9be;
+}
+
+.hero-slide.active .hero-cta {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ── Carousel arrows ───────────────────────────────────── */
+.hero-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 52px;
+    height: 52px;
+    border: 1px solid rgba(168, 196, 154, 0.4);
+    background: rgba(10, 14, 10, 0.55);
+    color: #a8c49a;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    backdrop-filter: blur(4px);
+}
+
+.hero-arrow:hover {
+    background: rgba(168, 196, 154, 0.18);
+    border-color: rgba(168, 196, 154, 0.8);
+    transform: translateY(-50%) scale(1.07);
+}
+
+.hero-arrow-prev {
+    left: 24px;
+}
+
+.hero-arrow-next {
+    right: 24px;
+}
+
+.hero-arrow svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ── Dots ──────────────────────────────────────────────── */
+.hero-dots {
+    position: absolute;
+    bottom: 28px;
+    left: 64px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.hero-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 0;
+    background: rgba(168, 196, 154, 0.3);
+    border: 1px solid rgba(168, 196, 154, 0.5);
+    cursor: pointer;
+    transition: background 0.3s ease, width 0.3s ease;
+}
+
+.hero-dot.active {
+    background: #a8c49a;
+    width: 24px;
+}
+
+/* ── Counter ───────────────────────────────────────────── */
+.hero-counter {
+    position: absolute;
+    bottom: 22px;
+    right: 64px;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: rgba(168, 196, 154, 0.6);
+    z-index: 10;
+}
+
+.hero-counter span {
+    color: #a8c49a;
+}
+
+/* ── Scanline texture ──────────────────────────────────── */
+.hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg,
+            transparent, transparent 3px,
+            rgba(0, 0, 0, 0.04) 3px, rgba(0, 0, 0, 0.04) 4px);
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* ── Corner bracket ────────────────────────────────────── */
+.hero-bracket {
+    position: absolute;
+    top: 28px;
+    right: 64px;
+    width: 48px;
+    height: 48px;
+    border-top: 1px solid rgba(168, 196, 154, 0.35);
+    border-right: 1px solid rgba(168, 196, 154, 0.35);
+    z-index: 6;
+    pointer-events: none;
+}
