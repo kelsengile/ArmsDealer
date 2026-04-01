@@ -141,6 +141,7 @@
     align-items: center;
 }
 
+
 .top-bar select {
     background: transparent;
     border: none;
@@ -150,6 +151,7 @@
     letter-spacing: 0.06em;
     cursor: pointer;
     outline: none;
+    margin-right: 10px;
     -webkit-appearance: none;
     appearance: none;
     padding-right: 16px;
