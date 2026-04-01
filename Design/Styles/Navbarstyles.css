@@ -38,7 +38,7 @@
 
 /* Hidden state — slides up out of view */
 .site-header.nav-hidden {
-    transform: translateY(calc(-1 * var(--header-h)));
+    transform: translateY(-100%);
 }
 
 /* Extra shadow when page is scrolled */
@@ -60,6 +60,8 @@
     position: relative;
     font-family: var(--font-mono);
     flex-wrap: nowrap;
+    min-width: 0;
+
 }
 
 .top-bar::before {
@@ -191,10 +193,12 @@
     justify-content: space-between;
     align-items: stretch;
     padding: 0;
+    gap: 0px;
     height: var(--navbar-h);
     position: relative;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(168, 196, 122, 0.07);
     flex-wrap: nowrap;
+    min-width: 0;
 }
 
 .navbar::before {
@@ -416,18 +420,18 @@
 /* ── Mobile hamburger button ──────────────────────────────────── */
 .nav-hamburger {
     display: none;
-    /* hidden on desktop */
+
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 5px;
-    width: 48px;
+    width: 44px;
     height: 100%;
     background: transparent;
     border: none;
     border-left: 1px solid var(--mil-border);
     cursor: pointer;
-    padding: 0 14px;
+    padding: 0 10px;
     z-index: 100;
     flex-shrink: 0;
 }
@@ -545,6 +549,43 @@
 
 /* Mobile — collapse nav links into hamburger */
 @media (max-width: 680px) {
+    .top-bar {
+        padding: 0 10px;
+        gap: 6px;
+    }
+
+    .top-bar .right {
+        flex-shrink: 0;
+    }
+
+    .top-bar select {
+        font-size: 9px;
+        padding-right: 12px;
+    }
+
+    .navbar {
+        height: 56px;
+        /* smaller navbar */
+    }
+
+    .logo-container {
+        padding: 0 14px 0 12px;
+        gap: 8px;
+    }
+
+    .logo {
+        font-size: 16px;
+    }
+
+    .logo-sub {
+        font-size: 7px;
+    }
+
+    .logoimage {
+        width: 32px;
+        height: 32px;
+    }
+
     .nav-links {
         display: none;
     }

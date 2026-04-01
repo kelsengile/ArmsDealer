@@ -288,3 +288,432 @@
     z-index: 6;
     pointer-events: none;
 }
+
+/* ── Feature CAROUSEL ─────────────────────────────────────── */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.fc-root {
+    background: #1a1f1a80;
+    height: 880px;
+    padding: 48px 0 40px;
+    font-family: 'Segoe UI', sans-serif;
+    position: relative;
+    overflow: visible;
+}
+
+.fc-root::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0, 0, 0, 0.06) 3px, rgba(0, 0, 0, 0.06) 4px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.fc-header {
+    text-align: center;
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 1;
+}
+
+.fc-header-tag {
+    display: inline-block;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #a8c49a;
+    background: rgba(168, 196, 154, 0.1);
+    border: 1px solid rgba(168, 196, 154, 0.3);
+    padding: 4px 14px;
+    margin-bottom: 10px;
+}
+
+.fc-header h2 {
+    font-family: Georgia, serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #e8ede8;
+    text-shadow: #232a23 5px 5px 0;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.fc-stage {
+    position: relative;
+    z-index: 1;
+    padding: 0 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.fc-page {
+    display: none;
+}
+
+.fc-page.active {
+    display: block;
+}
+
+/* Square collage — 1:1 aspect ratio enforced via padding-bottom trick */
+.fc-collage {
+    position: relative;
+    width: 100%;
+    padding-bottom: 60%;
+}
+
+.fc-collage-inner {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    gap: 15px;
+}
+
+.fc-grid-hero {
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+.fc-grid-3col {
+    grid-template-columns: 1.4fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+.fc-grid-2col {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+.fc-grid-quad {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+.fc-grid-asym {
+    grid-template-columns: 1fr 1.5fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+/* Cards — position:relative is the popup anchor */
+.fc-card {
+    position: relative;
+    background: #232a23;
+    border: 1px solid rgba(168, 196, 154, 0.15);
+    overflow: visible;
+    /* allow popup to escape card bounds */
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+    min-height: 0;
+    z-index: 1;
+}
+
+.fc-card:hover {
+    border-color: rgba(168, 196, 154, 0.6);
+    transform: translateY(-2px);
+    z-index: 100;
+    /* lift above siblings so popup isn't clipped */
+}
+
+/* Clip only the background image, not the popup */
+.fc-card-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.fc-card.span2r {
+    grid-row: span 2;
+}
+
+.fc-card.span2c {
+    grid-column: span 2;
+}
+
+.fc-img-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    opacity: 0.18;
+}
+
+.fc-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10, 24, 10, 0.88) 0%, rgba(10, 49, 10, 0.3) 50%, rgba(10, 14, 10, 0.15) 100%);
+}
+
+.fc-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px 12px;
+    z-index: 2;
+}
+
+.fc-name {
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #cfcfcf;
+    background: rgba(10, 14, 10, 0.6);
+    display: inline-block;
+    padding: 3px 8px;
+    border-left: 2px solid #a8c49a;
+    align-self: flex-start;
+}
+
+.fc-name.large {
+    font-size: 18px;
+    padding: 4px 10px;
+}
+
+.fc-pricing {
+    background: rgba(10, 14, 10, 0.82);
+    border: 1px solid rgba(168, 196, 154, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    gap: 8px;
+}
+
+.fc-discount {
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    font-weight: bold;
+    color: #e8644a;
+    background: rgba(232, 100, 74, 0.15);
+    border: 1px solid rgba(232, 100, 74, 0.4);
+    padding: 2px 6px;
+    flex-shrink: 0;
+}
+
+.fc-prices {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.fc-old {
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    color: rgba(168, 196, 154, 0.45);
+    text-decoration: line-through;
+}
+
+.fc-new {
+    font-family: 'Courier New', monospace;
+    font-size: 17px;
+    font-weight: bold;
+    color: #a8c49a;
+}
+
+.fc-new.large {
+    font-size: 20px;
+}
+
+/* ── POPUP ──
+       Anchored to .fc-card via position:absolute.
+       Default: appears to the RIGHT, top-aligned.
+       .pop-left class flips it to the LEFT.
+       .pop-up   class flips it to bottom-aligned.
+    */
+.fc-popup {
+    display: none;
+    position: absolute;
+    z-index: 200;
+    top: 0;
+    left: 100%;
+    margin-left: 10px;
+    width: 220px;
+    background: #1a1f1a;
+    border: 1px solid rgba(168, 196, 154, 0.5);
+    padding: 14px 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+    pointer-events: auto;
+}
+
+.fc-card.pop-left .fc-popup {
+    left: auto;
+    right: 100%;
+    margin-left: 0;
+    margin-right: 10px;
+}
+
+.fc-card.pop-up .fc-popup {
+    top: auto;
+    bottom: 0;
+}
+
+.fc-popup-name {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #a8c49a;
+    margin-bottom: 6px;
+    border-bottom: 1px solid rgba(168, 196, 154, 0.2);
+    padding-bottom: 6px;
+}
+
+.fc-popup-desc {
+    font-size: 12px;
+    color: rgba(232, 237, 232, 0.75);
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.fc-popup-tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.fc-popup-tag {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #a8c49a;
+    border: 1px solid rgba(168, 196, 154, 0.35);
+    padding: 2px 6px;
+}
+
+.fc-popup-btns {
+    display: flex;
+    gap: 6px;
+}
+
+.fc-popup-btn {
+    flex: 1;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid rgba(168, 196, 154, 0.4);
+    background: transparent;
+    color: #a8c49a;
+    padding: 6px 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.fc-popup-btn:hover {
+    background: rgba(168, 196, 154, 0.15);
+}
+
+.fc-popup-btn.primary {
+    background: rgba(168, 196, 154, 0.18);
+    border-color: #a8c49a;
+}
+
+.fc-popup-btn.primary:hover {
+    background: rgba(168, 196, 154, 0.32);
+}
+
+/* ── NAV ── */
+.fc-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 28px;
+    position: relative;
+    z-index: 1;
+}
+
+.fc-nav-arrow {
+    background: transparent;
+    border: 1px solid rgba(168, 196, 154, 0.3);
+    color: #a8c49a;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.fc-nav-arrow:hover {
+    background: rgba(168, 196, 154, 0.15);
+    border-color: #a8c49a;
+}
+
+.fc-dots-wrap {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.fc-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(168, 196, 154, 0.5);
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.25s, border-color 0.25s, transform 0.2s;
+    position: relative;
+}
+
+.fc-dot.active {
+    background: #a8c49a;
+    border-color: #a8c49a;
+    transform: scale(1.25);
+}
+
+.fc-dot-label {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a1f1a;
+    border: 1px solid rgba(168, 196, 154, 0.35);
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #a8c49a;
+    padding: 3px 7px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.fc-dot:hover .fc-dot-label {
+    opacity: 1;
+}
+
+.fc-page-label {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: rgba(168, 196, 154, 0.5);
+    margin-top: 10px;
+    text-align: center;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+}
