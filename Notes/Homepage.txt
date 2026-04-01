@@ -1,0 +1,60 @@
+[ NAVIGATION BAR ]
+- Logo (ArmsDealer)
+- Menu: Home | Products | Services | Categories | About | Contact
+- CTA Button: "Browse Products" or "Get Started"
+
+↓
+
+[ HERO SECTION – IMAGE CAROUSEL ]
+- Large rotating banners (new updates, promos, announcements)
+- Headline + short value proposition
+- Primary CTA: "Shop Now"
+- Secondary CTA: "Learn More"
+
+↓
+
+[ FEATURED PRODUCTS & SERVICES ]
+- Highlight top-selling or newly added items
+- Grid layout (cards with image, name, price/short info)
+- Optional: quick action buttons (View / Inquire)
+
+↓
+
+[ PRODUCT & SERVICE CATEGORIES ]
+- Icons or cards for categories (e.g., Firearms, Accessories, Training, etc.)
+- Helps users navigate quickly
+
+↓
+
+[ WHY CHOOSE ARMSDEALER ]
+- 3–5 key selling points:
+  - Reliability
+  - Licensed & Secure Transactions
+  - Wide Selection
+  - Expert Support
+- Use icons + short descriptions
+
+↓
+
+[ PURCHASE PROCESS ]
+- Step-by-step guide:
+  1. Browse Products
+  2. Submit Inquiry / Order
+  3. Verification & Compliance
+  4. Payment
+  5. Delivery / Pickup
+- Make this very clear (important for trust)
+
+↓
+
+[ CALL TO ACTION SECTION ]
+- Example: “Ready to get started?”
+- Button: “Browse Products” or “Contact Us”
+
+↓
+
+[ FOOTER ]
+- Quick links
+- Contact info
+- Social media
+- Legal (terms, privacy, compliance info)
