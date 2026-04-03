@@ -7,55 +7,55 @@
  */
 
 (function () {
-    'use strict';
+    // 'use strict';
 
-    /* ── 1. SCROLL-HIDE BEHAVIOUR ───────────────────────────────────
-       - Hides header when scrolling DOWN past 80px
-       - Reveals header when scrolling UP by any amount
-    ─────────────────────────────────────────────────────────────── */
-    const header = document.querySelector('.site-header');
-    if (header) {
-        let lastScrollY = window.scrollY;
-        let ticking = false;
-        const SCROLL_THRESHOLD = 80; // px before hide kicks in
+    // /* ── 1. SCROLL-HIDE BEHAVIOUR ───────────────────────────────────
+    //    - Hides header when scrolling DOWN past 80px
+    //    - Reveals header when scrolling UP by any amount
+    // ─────────────────────────────────────────────────────────────── */
+    // const header = document.querySelector('.site-header');
+    // if (header) {
+    //     let lastScrollY = window.scrollY;
+    //     let ticking = false;
+    //     const SCROLL_THRESHOLD = 80; // px before hide kicks in
 
-        function handleScroll() {
-            const currentY = window.scrollY;
-            const delta = currentY - lastScrollY;
+    //     function handleScroll() {
+    //         const currentY = window.scrollY;
+    //         const delta = currentY - lastScrollY;
 
-            // Add scrolled shadow class
-            if (currentY > 10) {
-                header.classList.add('nav-scrolled');
-            } else {
-                header.classList.remove('nav-scrolled');
-            }
+    //         // Add scrolled shadow class
+    //         if (currentY > 10) {
+    //             header.classList.add('nav-scrolled');
+    //         } else {
+    //             header.classList.remove('nav-scrolled');
+    //         }
 
-            // Only hide after threshold
-            if (currentY > SCROLL_THRESHOLD) {
-                if (delta > 0) {
-                    // Scrolling DOWN — hide
-                    header.classList.add('nav-hidden');
-                    closeDrawer(); // also close mobile menu if open
-                } else if (delta < -4) {
-                    // Scrolling UP (at least 4px) — reveal
-                    header.classList.remove('nav-hidden');
-                }
-            } else {
-                // Near top — always visible
-                header.classList.remove('nav-hidden');
-            }
+    //         // Only hide after threshold
+    //         if (currentY > SCROLL_THRESHOLD) {
+    //             if (delta > 0) {
+    //                 // Scrolling DOWN — hide
+    //                 header.classList.add('nav-hidden');
+    //                 closeDrawer(); // also close mobile menu if open
+    //             } else if (delta < -4) {
+    //                 // Scrolling UP (at least 4px) — reveal
+    //                 header.classList.remove('nav-hidden');
+    //             }
+    //         } else {
+    //             // Near top — always visible
+    //             header.classList.remove('nav-hidden');
+    //         }
 
-            lastScrollY = currentY;
-            ticking = false;
-        }
+    //         lastScrollY = currentY;
+    //         ticking = false;
+    //     }
 
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                requestAnimationFrame(handleScroll);
-                ticking = true;
-            }
-        }, { passive: true });
-    }
+    //     window.addEventListener('scroll', () => {
+    //         if (!ticking) {
+    //             requestAnimationFrame(handleScroll);
+    //             ticking = true;
+    //         }
+    //     }, { passive: true });
+    // }
 
     /* ── 2. ACTIVE PAGE HIGHLIGHT ───────────────────────────────────
        Reads body[data-page] and adds .nav-active to the matching
