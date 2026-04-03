@@ -356,7 +356,7 @@
     color: var(--mil-text);
     border: none;
     border-left: 1px solid var(--mil-border);
-    padding: 0 20px;
+    padding: 0 22px;
     height: 100%;
     cursor: pointer;
     position: relative;
@@ -380,7 +380,13 @@
 
 .nav-btn-cart::before {
     content: '⊡';
-    font-size: 13px;
+    font-size: 11px;
+    opacity: 0.75;
+}
+
+.nav-btn-account::before {
+    content: '⍝';
+    font-size: 11px;
     opacity: 0.75;
 }
 
@@ -388,7 +394,7 @@
     border-right: 1px solid var(--mil-border);
 }
 
-.cart-badge {
+/* .cart-badge {
     position: absolute;
     top: 16px;
     right: 16px;
@@ -397,7 +403,7 @@
     border-radius: 50%;
     background: var(--mil-redbright);
     box-shadow: 0 0 5px var(--mil-redbright);
-}
+} */
 
 /* Coordinate readout */
 .nav-coord {

@@ -759,6 +759,7 @@
     position: relative;
     overflow: hidden;
     border-radius: 8px;
+    margin-bottom: 30px;
 }
 
 .ad-content {
@@ -887,7 +888,7 @@
     margin-bottom: 0rem;
     margin-left: auto;
     margin-right: auto;
-    color: #e8ede8;
+    color: #d1d8c8;
     background-color: #232a2398;
     text-transform: uppercase;
 }
