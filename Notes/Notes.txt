@@ -21,6 +21,7 @@ HOME PAGE
 - Highlight top-selling or newly added items
 - Grid layout (cards with image, name, price/short info)
 - Optional: quick action buttons (View / Inquire)
+- needs date expire
 
 ↓
 
@@ -74,6 +75,20 @@ HOME PAGE
   - Wide Selection
   - Expert Support
 - make a middle section title and make the 3 points in each columns with icons + short descriptions
+
+↓
+
+[ Promotions & Deals ]
+- Seasonal Products
+- Sales
+- Limited Stock
+- Bundles
+- (Billboard Style)
+
+↓
+
+[ Best Sellers ]
+- Item | Graphs | time | High Rating
 
 ↓
 

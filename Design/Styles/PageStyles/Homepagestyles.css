@@ -8,7 +8,7 @@
     margin: 0 auto;
     background: rgba(62, 74, 63, 0.92);
     width: 100%;
-    max-width: 1500px;
+    max-width: 1300px;
     min-height: 100%;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     flex-wrap: wrap;
@@ -310,8 +310,7 @@
 .fc-root {
     background: #1a1f1a5d;
     height: 100%;
-    max-height: 880px;
-    padding: 48px 0 40px;
+    max-height: 1000px;
     font-family: 'Segoe UI', sans-serif;
     position: relative;
     overflow: visible;
@@ -363,6 +362,7 @@
     width: 100%;
     max-width: 1000px;
     margin: 0 auto;
+    margin-bottom: 20px;
 }
 
 .fc-page {
@@ -745,6 +745,20 @@
     z-index: 1;
 }
 
+.fc-timer {
+    padding: 10px 14px;
+    background-color: rgb(78, 32, 32);
+    font-family: 'Courier New', monospace;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: rgb(255, 255, 255);
+    font-size: 15px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
 /* ========================================================================================================================================================
    ADVERTISEMENT SPACE
    ======================================================================================================================================================== */
@@ -866,10 +880,9 @@
 .pands-categories {
     width: 100%;
     padding: 1rem 0;
-    background: transparent;
+    background: #1a1f1a5d;
     font-family: 'Segoe UI', sans-serif;
     max-height: 880px;
-    background: linear-gradient(135deg, #232922d2 0%, #1a1f18d2 100%);
     margin: 0 auto;
 }
 
@@ -879,16 +892,16 @@
 }
 
 .category-title {
-    font-size: clamp(7px, 2vw, 20px);
-    font-family: 'Oswald', 'Impact', sans-serif;
+    font-size: clamp(7px, 2vw, 17px);
+    font-family: 'times new roman', sans-serif;
     font-weight: 700;
     letter-spacing: 1px;
-    text-align: left;
+    text-align: center;
     padding: 10px 40px 10px 40px;
     margin-bottom: 0rem;
     margin-left: auto;
     margin-right: auto;
-    color: #d1d8c8;
+    color: #ececec;
     text-transform: uppercase;
 }
 
@@ -911,8 +924,8 @@
 .category-btn {
     padding: 15px 10px;
     width: clamp(80px, 20vw, 150px);
-    background-color: #263b2a;
-    color: #b9b8b8;
+    background-color: #b5c7ae;
+    color: #1b1b1b;
     border: 2px solid #3e3f36;
     cursor: pointer;
     font-size: clamp(4px, 2.5vw, 14px);
@@ -929,10 +942,10 @@
 }
 
 .category-btn.active {
-    background-color: #283f2d;
+    background-color: #8f9e8a;
     border-color: #152017;
-    color: #c7c7c7;
-    box-shadow: 0 0 15px rgba(87, 107, 30, 0.4);
+    color: #1b1b1b;
+    box-shadow: 0 0 15px rgba(183, 209, 113, 0.4);
 }
 
 .carousel-wrapper {
@@ -992,7 +1005,7 @@
     align-items: center;
     justify-content: center;
     padding: 0.5rem;
-    font-size: clamp(8px, 2.5vw, 10px);
+    font-size: clamp(8px, 2vw, 20px);
     /* responsive text */
     font-weight: 500;
     cursor: pointer;
@@ -1085,6 +1098,411 @@
 }
 
 /* ========================================================================================================================================================
+           WHY CHOOSE ARMSDEALER - TRUST SECTION
+======================================================================================================================================================== */
+
+.why-choose {
+    width: 100%;
+    padding: 4rem 2rem;
+    background: #1a1f1a5d;
+    margin: 0 auto;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.why-choose::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0, 0, 0, 0.06) 3px, rgba(0, 0, 0, 0.06) 4px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.why-choose-content {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.section-header h2 {
+    font-family: Georgia, serif;
+    font-size: clamp(24px, 4vw, 35px);
+    font-weight: 700;
+    color: #e8ede8;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    line-height: 1.2;
+}
+
+.section-header p {
+    font-size: 14px;
+    color: #b0bdb0;
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.why-choose-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.trust-card {
+    background: rgba(35, 42, 35, 0.7);
+    border: 1px solid rgba(168, 196, 154, 0.2);
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.6s ease 0.1s backwards;
+}
+
+.trust-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.trust-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.trust-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(168, 196, 154, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.trust-card:hover {
+    border-color: rgba(168, 196, 154, 0.5);
+    background: rgba(35, 42, 35, 0.95);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+.trust-card:hover::before {
+    left: 100%;
+}
+
+.trust-card-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.trust-card:hover .trust-card-icon {
+    transform: scale(1.1);
+}
+
+.trust-card-title {
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #a8c49a;
+    margin-bottom: 0.75rem;
+}
+
+.trust-card-desc {
+    font-size: 13px;
+    color: #b0bdb0;
+    line-height: 1.7;
+    margin: 0;
+}
+
+@media (max-width: 980px) {
+    .why-choose-grid {
+        max-width: 500px;
+        align-content: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+
+
+/* ========================================================================================================================================================
+    PURCHASE PROCESS - WORKFLOW SECTION
+======================================================================================================================================================== */
+
+.purchase-process {
+    width: 100%;
+    padding: 4rem 2rem;
+    background: #1a1f1a5d;
+    margin: 0 auto;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.purchase-process::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0, 0, 0, 0.06) 3px, rgba(0, 0, 0, 0.06) 4px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.purchase-process-content {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    font-size: clamp(24px, 4vw, 35px);
+    margin: 0 auto;
+}
+
+.process-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 2rem 0;
+    padding: 0 1rem;
+}
+
+.process-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(50, 70, 55, 0.8);
+    border: 2px solid #a8c49a;
+    width: clamp(80px, 30vw, 130px);
+    height: clamp(80px, 30vw, 130px);
+    border-radius: 8px;
+    padding: 1.5rem;
+    flex: 1;
+    transition: all 0.3s ease;
+    position: relative;
+    cursor: pointer;
+    animation: slideInLeft 0.5s ease 0.1s backwards;
+}
+
+.process-step:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.process-step:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.process-step:nth-child(6) {
+    animation-delay: 0.25s;
+}
+
+.process-step:nth-child(8) {
+    animation-delay: 0.3s;
+}
+
+.process-step:nth-child(10) {
+    animation-delay: 0.35s;
+}
+
+.process-step:hover {
+    background: rgba(50, 70, 55, 1);
+    border-color: rgba(168, 196, 154, 0.8);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(168, 196, 154, 0.15);
+}
+
+.process-step-number {
+    font-size: 32px;
+    font-weight: 700;
+    color: #a8c49a;
+    margin-bottom: 0.5rem;
+    font-family: Georgia, serif;
+}
+
+.process-step-title {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #a8c49a;
+    margin-bottom: 0.25rem;
+}
+
+.process-step-label {
+    font-size: 11px;
+    color: #b0bdb0;
+    margin: 0;
+}
+
+.process-arrow {
+    color: #a8c49a;
+    font-size: 24px;
+    margin: 0 0.5rem;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.process-flow:hover .process-arrow {
+    transform: scaleX(1.2);
+}
+
+.process-info {
+    background: rgba(35, 42, 35, 0.6);
+    border-left: 4px solid #a8c49a;
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.process-info p {
+    font-size: 12px;
+    color: #b0bdb0;
+    margin: 0;
+    line-height: 1.7;
+}
+
+.process-info strong {
+    color: #a8c49a;
+    font-weight: 700;
+}
+
+
+
+
+/* ========================================================================================================================================================
+           CALL TO ACTION SECTION
+======================================================================================================================================================== */
+
+.cta-section {
+    width: 100%;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #1a1f1a 0%, rgba(62, 74, 63, 0.4) 50%, #1a1f1a 100%);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.cta-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0, 0, 0, 0.04) 3px, rgba(0, 0, 0, 0.04) 4px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.cta-bracket-tl {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    width: 40px;
+    height: 40px;
+    border-top: 2px solid rgba(168, 196, 154, 0.3);
+    border-left: 2px solid rgba(168, 196, 154, 0.3);
+    z-index: 1;
+}
+
+.cta-bracket-br {
+    position: absolute;
+    bottom: 32px;
+    right: 32px;
+    width: 40px;
+    height: 40px;
+    border-bottom: 2px solid rgba(168, 196, 154, 0.3);
+    border-right: 2px solid rgba(168, 196, 154, 0.3);
+    z-index: 1;
+}
+
+.cta-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.cta-heading {
+    font-family: Georgia, serif;
+    font-size: clamp(24px, 4vw, 35px);
+    font-weight: 700;
+    color: #e8ede8;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+}
+
+.cta-subheading {
+    font-size: 14px;
+    color: #b0bdb0;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.cta-btn {
+    display: inline-block;
+    padding: 12px 36px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    border: 2px solid transparent;
+}
+
+.cta-btn-primary {
+    background: #a8c49a;
+    color: #1a1f1a;
+    border-color: #a8c49a;
+}
+
+.cta-btn-primary:hover {
+    background: #c5d9be;
+    border-color: #c5d9be;
+    box-shadow: 0 8px 16px rgba(168, 196, 154, 0.2);
+    transform: translateY(-2px);
+}
+
+.cta-btn-secondary {
+    background: transparent;
+    color: #a8c49a;
+    border-color: #a8c49a;
+}
+
+.cta-btn-secondary:hover {
+    background: rgba(168, 196, 154, 0.15);
+    border-color: #c5d9be;
+    color: #c5d9be;
+    box-shadow: 0 8px 16px rgba(168, 196, 154, 0.15);
+    transform: translateY(-2px);
+}
+
+/* ========================================================================================================================================================
            FOOTER SECTION
 ======================================================================================================================================================== */
 
@@ -1093,7 +1511,7 @@ footer {
     border-top: 1px solid rgba(168, 196, 154, 0.15);
     padding: 3rem 2rem 2rem;
     width: 100%;
-    margin-top: 4rem;
+
     position: relative;
 }
 
