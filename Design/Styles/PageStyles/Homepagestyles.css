@@ -766,7 +766,7 @@
 .ad-space {
     width: 100%;
     aspect-ratio: 8 / 1;
-    background: linear-gradient(135deg, #232922d2 0%, #1a1f18d2 100%);
+    background: #1a1f1a5d;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1108,6 +1108,7 @@
     margin: 0 auto;
     position: relative;
     margin-bottom: 30px;
+    margin-top: 30px;
 }
 
 .why-choose::before {
