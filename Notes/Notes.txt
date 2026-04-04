@@ -69,12 +69,11 @@ HOME PAGE
 ↓
 
 [ WHY CHOOSE ARMSDEALER ]
-- 3–5 key selling points:
-  - Reliability
-  - Licensed & Secure Transactions
+- 3 key selling points:
+  - Licensed & Secure
   - Wide Selection
   - Expert Support
-- Use icons + short descriptions
+- make a middle section title and make the 3 points in each columns with icons + short descriptions
 
 ↓
 
@@ -85,13 +84,13 @@ HOME PAGE
   3. Verification & Compliance
   4. Payment
   5. Delivery / Pickup
-- Make this very clear (important for trust)
+- make this like a flow chart with arrows, use boxes and icons Make this very clear (important for trust)
 
 ↓
 
 [ CALL TO ACTION SECTION ]
 - Example: “Ready to get started?”
-- Button: “Browse Products” or “Contact Us”
+- Button: “Browse Products” or “Contact Us” (make these )
 
 ↓
 
@@ -100,3 +99,4 @@ HOME PAGE
 - Contact info
 - Social media
 - Legal (terms, privacy, compliance info)
+(make into multiple columns, have a section name and list goin down the links)
