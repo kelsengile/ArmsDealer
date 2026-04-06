@@ -241,7 +241,7 @@
 .logoimage {
     width: 40px;
     height: 40px;
-    background-image: url("../../Assets/Images/ArmsDealerLogo.png");
+    background-image: url("../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png");
     background-size: cover;
     background-position: center;
     filter: drop-shadow(0 0 8px rgba(183, 219, 146, 0.45));

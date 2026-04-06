@@ -70,29 +70,23 @@ HOME PAGE
 ↓
 
 [ Bundles Section ]
-- Make this a billboard style layout (one image that can be seen in a rectangle shape), each text is changable
-- give a title for each Bundles
-- add prices and discount for the whole bundle under the billboard ( have a discount price, total orig price crossed out, and a new total price)
-- when hovered it will expand the div downwards and shows all the arms, and equipment that are in the bundle each has a price system, also add a text for info and a add to cart button and know more button
-- add a timer to each bundle when they will expire
-- the bundles are: seasonal section(limited time), best value, starter pack, pro bundle, defense bundle, travel bundle
-- give arrows to the side to change what bundle the users see and make the bundle loop 
-- make the whole section adaptable in any size of the tab
+- structure: timelimit, section title, billboard title, billoard description, billboard (arrows on the side)(when hovered drop down more info shows), circles for navigation, time limit
+- the bundles are: seasonal section, best value, starter pack, pro bundle, defense bundle, travel bundle
+- make this a one rectangular image billboard type advertisement, with arrows on the side of it to navigate and circles on th buttom to show index
+- when the billboard is hovered over there will be a drop down consisting of the 4 main included items in the bundle and a description
+- make its design adaptable to the size of the tab
 
 
 ↓
 
-[ Best Sellers (limited Stocks left)]
-- have buttons to change from weapons, equipment and services
-- at each section each will have 3 pictures the 1st place at the top of 2nd and 3rd
-- each of the top 3 can have a hover effect showing more information like the featured section
-- each will have a badge indicating there place and a bar at the buttom showing there price and how many has been sold
-- at the bottom of the 3 is a dropdown table just showing text that can be clicked (with elements like name, placing, cost, items sold)
+[ Ranking Best Sellers ]
+- to be done
 
 
 ↓
 
 [ News & Events Section]
+- to be done
 
 ↓
 
@@ -117,6 +111,7 @@ HOME PAGE
 ↓
 
 [ Trusted Brands (in inventory)]
+- to be done
 
 ↓
 
