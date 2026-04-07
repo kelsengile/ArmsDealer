@@ -136,44 +136,44 @@
 // ===========================================
 const carouselData = {
     weapons: [
-        { name: 'Firearms', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Blades', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Blunts', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Projectile', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Explosives', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Electronic', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Chemical', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Biological', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Vehicle', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Cyber', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Security', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' }
+        { name: 'Firearms', image: '../../../design/assets/icons/categoriesicons/firearms.png' },
+        { name: 'Blades', image: '../../../design/assets/icons/categoriesicons/blade.png' },
+        { name: 'Blunts', image: '../../../design/assets/icons/categoriesicons/blunt.png' },
+        { name: 'Projectile', image: '../../../design/assets/icons/categoriesicons/projectile.png' },
+        { name: 'Explosives', image: '../../../design/assets/icons/categoriesicons/explosives.png' },
+        { name: 'Electronic', image: '../../../design/assets/icons/categoriesicons/electronic.png' },
+        { name: 'Chemical', image: '../../../design/assets/icons/categoriesicons/chemical.png' },
+        { name: 'Biological', image: '../../../design/assets/icons/categoriesicons/biological.png' },
+        { name: 'Vehicle', image: '../../../design/assets/icons/categoriesicons/vehicle.png' },
+        { name: 'Cyber', image: '../../../design/assets/icons/categoriesicons/cyber.png' },
+        { name: 'Security', image: '../../../design/assets/icons/categoriesicons/security.png' }
     ],
     equipment: [
-        { name: 'Ammunition', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Protective', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Tactical', image: '../../../Assets/Images/PageImages/ImbeddedImages/rmsDealerLogo.png' },
-        { name: 'Attachments', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Maintenance', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Storage', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Cases', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Communication', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Survival', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Training', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' }
+        { name: 'Ammunition', image: '../../../design/assets/icons/categoriesicons/ammunition.png' },
+        { name: 'Protective', image: '../../../design/assets/icons/categoriesicons/protective.png' },
+        { name: 'Tactical', image: '../../../design/assets/icons/categoriesicons/tactical.png' },
+        { name: 'Attachments', image: '../../../design/assets/icons/categoriesicons/attachments.png' },
+        { name: 'Maintenance', image: '../../../design/assets/icons/categoriesicons/maintenance.png' },
+        { name: 'Storage', image: '../../../design/assets/icons/categoriesicons/storage.png' },
+        { name: 'Cases', image: '../../../design/assets/icons/categoriesicons/cases.png' },
+        { name: 'Communication', image: '../../../design/assets/icons/categoriesicons/communication.png' },
+        { name: 'Survival', image: '../../../design/assets/icons/categoriesicons/survival.png' },
+        { name: 'Training', image: '../../../design/assets/icons/categoriesicons/training.png' }
     ],
     services: [
-        { name: 'Manufacturing', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Customization', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Maintenance', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Transport', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Storage', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Training', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Protection', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Consulting', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Research', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Testing', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Disposal', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Surveillance', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' },
-        { name: 'Contracting', image: '../../../Assets/Images/PageImages/ImbeddedImages/ArmsDealerLogo.png' }
+        { name: 'Manufacturing', image: '../../../design/assets/icons/categoriesicons/manufacturing.png' },
+        { name: 'Customization', image: '../../../design/assets/icons/categoriesicons/customization.png' },
+        { name: 'Maintenance', image: '../../../design/assets/icons/categoriesicons/maintenance.png' },
+        { name: 'Transport', image: '../../../design/assets/icons/categoriesicons/transport.png' },
+        { name: 'Storage', image: '../../../design/assets/icons/categoriesicons/storage.png' },
+        { name: 'Training', image: '../../../design/assets/icons/categoriesicons/training.png' },
+        { name: 'Protection', image: '../../../design/assets/icons/categoriesicons/protection.png' },
+        { name: 'Consulting', image: '../../../design/assets/icons/categoriesicons/consulting.png' },
+        { name: 'Research', image: '../../../design/assets/icons/categoriesicons/reasearch.png' },
+        { name: 'Testing', image: '../../../design/assets/icons/categoriesicons/testing.png' },
+        { name: 'Disposal', image: '../../../design/assets/icons/categoriesicons/disposal.png' },
+        { name: 'Surveillance', image: '../../../design/assets/icons/categoriesicons/surveilance.png' },
+        { name: 'Contracting', image: '../../../design/assets/icons/categoriesicons/contracting.png' }
     ]
 };
 
