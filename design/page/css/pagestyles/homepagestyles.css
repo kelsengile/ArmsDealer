@@ -82,27 +82,27 @@
 /* Replace with your actual hero images */
 .hero-slide:nth-child(1) .hero-slide-bg {
     background-color: #2b3b2b;
-    background-image: url('../../../Assets/Images/PageImages/HomePageImages/HomepageHeroImage/gunphoto.jpg');
+    background-image: url('../../../assets/images/pageimages/imbeddedimages/pageimbeddedimages/homepageimbeddedimages/herocarouselimages/gunphoto.jpg');
 }
 
 .hero-slide:nth-child(2) .hero-slide-bg {
     background-color: #3b2b2b;
-    background-image: url('../../../Assets/Images/PageImages/HomePageImages/HomepageHeroImage/arsenal.jpg');
+    background-image: url('../../../assets/images/pageimages/imbeddedimages/pageimbeddedimages/homepageimbeddedimages/herocarouselimages/arsenal.jpg');
 }
 
 .hero-slide:nth-child(3) .hero-slide-bg {
     background-color: #2b2b3b;
-    background-image: url('../../../Assets/Images/PageImages/HomePageImages/HomepageHeroImage/samurai.jpg');
+    background-image: url('../../../assets/images/pageimages/imbeddedimages/pageimbeddedimages/homepageimbeddedimages/herocarouselimages/samurai.jpg');
 }
 
 .hero-slide:nth-child(4) .hero-slide-bg {
     background-color: #3b3b2b;
-    background-image: url('../../../Assets/Images/PageImages/HomePageImages/HomepageHeroImage/sniper.jpg');
+    background-image: url('../../../assets/images/pageimages/imbeddedimages/pageimbeddedimages/homepageimbeddedimages/herocarouselimages/sniper.jpg');
 }
 
 .hero-slide:nth-child(5) .hero-slide-bg {
     background-color: #2b3b3b;
-    background-image: url('../../../Assets/Images/PageImages/HomePageImages/HomepageHeroImage/soldier.jpg');
+    background-image: url('../../../assets/images/pageimages/imbeddedimages/pageimbeddedimages/homepageimbeddedimages/herocarouselimages/soldier.jpg');
 }
 
 .hero-content {
