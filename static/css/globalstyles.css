@@ -98,7 +98,7 @@ body {
     font-size: var(--font-size-base);
     line-height: var(--line-height-base);
     color: var(--color-text-primary);
-    background-image: url("../../assets/images/pageimages/imbeddedimages/globalimbeddedimages/camobackground.png");
+    background-image: url("../assets/images/pageimages/imbeddedimages/globalimbeddedimages/camobackground.png");
     background-size: cover;
     background-position: center;
     background-repeat: repeat;

@@ -1,19 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
+{% block title %}<title>ArmsDealer--Homepage</title>{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pagestyles/homepagestyles.css') }}">{% endblock %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArmsDealer — Home</title>
-    <link rel="icon" type="image/png"
-        href="../../assets/images/pageimages/imbeddedimages/globalimbeddedimages/armsdealerlogo.png">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Share+Tech+Mono&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="../css/globalstyles.css">
-    <link rel="stylesheet" href="../css/navbarstyles.css">
-    <link rel="stylesheet" href="../css/pagestyles/homepagestyles.css">
-</head>
+{% block body %}
 
 <body>
 
@@ -990,5 +980,6 @@
         <script src="../js/pagefunctions/homepagefuntions.js"></script>
     </main>
 </body>
+{% endblock %}
 
 </html>
