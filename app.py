@@ -7,16 +7,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///armsdealer.db'
 db = SQLAlchemy(app)
 
 
-class Todo(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(200), nullable=False)
-    completed = db.Column(db. Integer, default=0)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
-
-    def _repr__(self):
-        return '<Task %r>' % self.id
-
-
 @app.route("/")
 def home():
     return render_template('homepage.html')
