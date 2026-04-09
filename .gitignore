@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv/
+venv/
+env/
+instance/
+database/armsdealer.db
+*.db
+*.sqlite
+.DS_Store
+Thumbs.db
