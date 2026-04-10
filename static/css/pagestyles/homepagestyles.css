@@ -82,27 +82,27 @@
 /* Replace with your actual hero images */
 .hero-slide:nth-child(1) .hero-slide-bg {
     background-color: #2b3b2b;
-    background-image: url('../../../assets/images/pageimages/imbeddedimages/pageimbeddedimages/homepageimbeddedimages/herocarouselimages/gunphoto.jpg');
+    background-image: url('../../assets/images/pageimages/imbeddedimages/pageimbeddedimages/homepageimbeddedimages/herocarouselimages/gunphoto.jpg');
 }
 
 .hero-slide:nth-child(2) .hero-slide-bg {
     background-color: #3b2b2b;
-    background-image: url('../../../assets/images/pageimages/imbeddedimages/pageimbeddedimages/homepageimbeddedimages/herocarouselimages/arsenal.jpg');
+    background-image: url('../../assets/images/pageimages/imbeddedimages/pageimbeddedimages/homepageimbeddedimages/herocarouselimages/arsenal.jpg');
 }
 
 .hero-slide:nth-child(3) .hero-slide-bg {
     background-color: #2b2b3b;
-    background-image: url('../../../assets/images/pageimages/imbeddedimages/pageimbeddedimages/homepageimbeddedimages/herocarouselimages/samurai.jpg');
+    background-image: url('../../assets/images/pageimages/imbeddedimages/pageimbeddedimages/homepageimbeddedimages/herocarouselimages/samurai.jpg');
 }
 
 .hero-slide:nth-child(4) .hero-slide-bg {
     background-color: #3b3b2b;
-    background-image: url('../../../assets/images/pageimages/imbeddedimages/pageimbeddedimages/homepageimbeddedimages/herocarouselimages/sniper.jpg');
+    background-image: url('../../assets/images/pageimages/imbeddedimages/pageimbeddedimages/homepageimbeddedimages/herocarouselimages/sniper.jpg');
 }
 
 .hero-slide:nth-child(5) .hero-slide-bg {
     background-color: #2b3b3b;
-    background-image: url('../../../assets/images/pageimages/imbeddedimages/pageimbeddedimages/homepageimbeddedimages/herocarouselimages/soldier.jpg');
+    background-image: url('../../assets/images/pageimages/imbeddedimages/pageimbeddedimages/homepageimbeddedimages/herocarouselimages/soldier.jpg');
 }
 
 .hero-content {
@@ -803,7 +803,7 @@
 .ad-img {
     width: 100%;
     height: 100%;
-    background-image: url("../../../Assets/Images/PageImages/ImbeddedImages/Ad image.jpg");
+    background-image: url("../../assets/images/pageimages/imbeddedimages/pageimbeddedimages/homepageimbeddedimages/adspaceimages/battlesarewonwithin.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
