@@ -50,7 +50,7 @@
    TOP BAR
 ══════════════════════════════════════════════════════════════════ */
 .top-bar {
-    background: var(--mil-black);
+    background: #0d0f0d;
     border-bottom: 1px solid var(--mil-border);
     display: flex;
     justify-content: space-between;

@@ -44,9 +44,9 @@
                     <option>USD ($)</option>
                     <option>EUR (€)</option>
                 </select>
-                <a href="About.html">About</a>
-                <a href="Contacts.html">Contacts</a>
-                <a href="Legal.html">Legal</a>
+                <a routerLink="{{ url_for('about') }}">About</a>
+                <a routerLink="{{ url_for('contacts') }}">Contacts</a>
+                <a routerLink="{{ url_for('legal') }}">Legal</a>
             </div>
         </div>
 
@@ -54,7 +54,7 @@
         <!-- NAV BAR                                       -->
         <!-- ═══════════════════════════════════════════════════════════ -->
         <nav class="navbar" aria-label="Main navigation">
-            <a href="Homepage.html" class="logo-container" aria-label="ArmsDealer Home">
+            <a href="{{ url_for('homepage') }}" class="logo-container" aria-label="ArmsDealer Home">
                 <div class="logoimage" role="img" aria-label="ArmsDealer logo"></div>
                 <div class="logo-text-wrap">
                     <div class="logo">ArmsDealer</div>
@@ -64,8 +64,10 @@
 
             <!-- Desktop nav links -->
             <div class="nav-links">
-                <a href="Products.html">Products</a>
-                <a href="Services.html">Services</a>
+                <a href="{{ url_for('products') }}"
+                    class="{% if request.endpoint == 'products' %}nav-active{% endif %}">Products</a>
+                <a href="{{ url_for('services') }}"
+                    class="{% if request.endpoint == 'services' %}nav-active{% endif %}">Services</a>
                 <button class="nav-btn-search" aria-label="Search"></button>
                 <button class="nav-btn-cart" aria-label="Cart">
                     <!-- <span class="cart-badge" aria-hidden="true"></span> --></button>
@@ -89,8 +91,10 @@
 
         <!-- Mobile drawer -->
         <div class="nav-drawer" id="navDrawer" role="menu">
-            <a href="Products.html" role="menuitem"><span class="nav-drawer-icon">◈</span>Products</a>
-            <a href="Services.html" role="menuitem"><span class="nav-drawer-icon">◈</span>Services</a>
+            <a href="{{ url_for('products') }}" class="{% if request.endpoint == 'products' %}nav-active{% endif %}"
+                role="menuitem"><span class="nav-drawer-icon">◈</span>Products</a>
+            <a href="{{ url_for('services') }}" class="{% if request.endpoint == 'services' %}nav-active{% endif %}"
+                role="menuitem"><span class="nav-drawer-icon">◈</span>Services</a>
             <button class="nav-btn-search" role="menuitem"><span class="nav-drawer-icon"></span>Search</button>
             <button class="nav-btn-cart" role="menuitem">
                 <span class="nav-drawer-icon"></span>Cart<span class="cart-badge" aria-hidden="true"></span></button>

@@ -592,17 +592,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
 }
 
 .category-image img {
     max-width: 100%;
     max-height: 100%;
+    opacity: 0.75;
     object-fit: contain;
 }
 
 /* Text styling - positioned at bottom center */
 .category-label {
-    font-size: 10px;
+    font-size: clamp(8px, 1vw, 15px);
     font-weight: 500;
     color: #e8ede8;
     text-align: center;
@@ -612,7 +614,6 @@
     width: 100%;
     padding: 0.25rem 0;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 15px;
 }
 
 .services-container {
