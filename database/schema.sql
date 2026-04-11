@@ -33,9 +33,9 @@ CREATE TABLE IF NOT EXISTS products (
     category_id   INTEGER NOT NULL REFERENCES categories(id),
     description   TEXT,
     price         REAL    NOT NULL,
-    sale_price    REAL,
+    discount      REAL    DEFAULT 0,
     stock         INTEGER NOT NULL DEFAULT 0,
-    image_file    TEXT,                                 -- filename inside productsimages/
+    image_path    TEXT,                                 -- filename inside productsimages/
     tags          TEXT,                                 -- JSON array string
     is_featured   INTEGER NOT NULL DEFAULT 0,           -- 0 | 1
     created_at    TEXT    NOT NULL DEFAULT (datetime('now')),

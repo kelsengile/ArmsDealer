@@ -241,7 +241,7 @@
 .logoimage {
     width: 40px;
     height: 40px;
-    background-image: url("../../static/assets/images/pageimages/imbeddedimages/globalimbeddedimages/armsdealerlogo.png");
+    background-image: url("../../static/assets/images/pageimages/globalmages/armsdealerlogo.png");
     background-size: cover;
     background-position: center;
     filter: drop-shadow(0 0 8px rgba(183, 219, 146, 0.45));

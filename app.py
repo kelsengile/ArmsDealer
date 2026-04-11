@@ -3,7 +3,8 @@ import sqlite3
 import os
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-change-in-production')
+app.secret_key = os.environ.get(
+    'SECRET_KEY', 'dev-secret-change-in-production')
 
 DATABASE = os.path.join(os.path.dirname(__file__), 'database', 'armsdealer.db')
 
