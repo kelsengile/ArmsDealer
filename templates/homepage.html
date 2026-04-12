@@ -193,28 +193,45 @@
                         </div>
                         {% endif %}
 
-                        <div class="fc-card"
-                            data-popup='{"name":"AK-103 Assault Rifle","desc":"7.62x39mm battle-proven platform. Side-folding stock, chrome-lined barrel, enhanced pistol grip. Legendary reliability in adverse conditions.","tags":["7.62x39","AK Platform","Folding Stock"],"old":"₱145,000","new":"₱115,000"}'>
-                            <div class="fc-card-bg"
-                                style="background-image: url('../../Assets/Images/PageImages/HomePageImages/HomepageFeatureimage/ak103.jpg');">
+                        {% set p = products.get(3) %}
+                        {% if p %}
+                        <div class="fc-card" data-popup='{
+                                "name":"{{ p.name }}",
+                                "desc":"{{ p.description }}",
+                                "tags": {{ p.tags or "[]" }},
+                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
+                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
+                            }'>
+
+                            <div class="fc-card-bg" style="background-image: url('{{ p.image_path }}');">
                                 <div class="fc-overlay"></div>
                             </div>
+
                             <div class="fc-content">
-                                <div class="fc-name">AK-103</div>
+                                <div class="fc-name">{{ p.name }}</div>
+
                                 <div class="fc-pricing">
-                                    <div class="fc-discount">–21%</div>
-                                    <div class="fc-prices"><span class="fc-old">₱145,000</span><span
-                                            class="fc-new">₱115,000</span></div>
+                                    <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
+                                    <div class="fc-prices">
+                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
+                                        <span class="fc-new">
+                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
+
                             <div class="fc-popup">
                                 <div class="fc-popup-name"></div>
                                 <div class="fc-popup-desc"></div>
                                 <div class="fc-popup-tags"></div>
-                                <div class="fc-popup-btns"><button class="fc-popup-btn">Know More</button><button
-                                        class="fc-popup-btn primary">+ Cart</button></div>
+                                <div class="fc-popup-btns">
+                                    <button class="fc-popup-btn">Know More</button>
+                                    <button class="fc-popup-btn primary">+ Cart</button>
+                                </div>
                             </div>
                         </div>
+                        {% endif %}
 
                     </div>
                 </div>
@@ -265,97 +282,169 @@
                         </div>
                         {% endif %}
 
-                        <div class="fc-card"
-                            data-popup='{"name":"1911 Custom Operator","desc":".45 ACP single-action platform. Match barrel bushing, extended beavertail, G10 grips. Classic reliability, modern upgrades.","tags":[".45 ACP","1911","Single-Action"],"old":"₱95,000","new":"₱76,000"}'>
-                            <div class="fc-card-bg"
-                                style="background-image: url('../../Assets/Images/PageImages/HomePageImages/HomepageFeatureimage/1911operator.jpg                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ');">
-                                <div class="fc-overlay"></div>
-                            </div>
-                            <div class="fc-content">
-                                <div class="fc-name">1911 Operator</div>
-                                <div class="fc-pricing">
-                                    <div class="fc-discount">–20%</div>
-                                    <div class="fc-prices"><span class="fc-old">₱95,000</span><span
-                                            class="fc-new">₱76,000</span></div>
-                                </div>
-                            </div>
-                            <div class="fc-popup">
-                                <div class="fc-popup-name"></div>
-                                <div class="fc-popup-desc"></div>
-                                <div class="fc-popup-tags"></div>
-                                <div class="fc-popup-btns"><button class="fc-popup-btn">Know More</button><button
-                                        class="fc-popup-btn primary">+ Cart</button></div>
-                            </div>
-                        </div>
+                        {% set p = products.get(5) %}
+                        {% if p %}
+                        <div class="fc-card" data-popup='{
+                                "name":"{{ p.name }}",
+                                "desc":"{{ p.description }}",
+                                "tags": {{ p.tags or "[]" }},
+                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
+                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
+                            }'>
 
-                        <div class="fc-card"
-                            data-popup='{"name":"SIG P320 Compact","desc":"9mm modular pistol system. Serialized fire control unit, interchangeable grip modules. US Army M17 basis.","tags":["9mm","Modular","Compact"],"old":"₱82,000","new":"₱72,000"}'>
-                            <div class="fc-card-bg"
-                                style="background-image: url('../../Assets/Images/PageImages/HomePageImages/HomepageFeatureimage/sigp320.jpg');">
+                            <div class="fc-card-bg" style="background-image: url('{{ p.image_path }}');">
                                 <div class="fc-overlay"></div>
                             </div>
-                            <div class="fc-content">
-                                <div class="fc-name">SIG P320</div>
-                                <div class="fc-pricing">
-                                    <div class="fc-discount">–12%</div>
-                                    <div class="fc-prices"><span class="fc-old">₱82,000</span><span
-                                            class="fc-new">₱72,000</span></div>
-                                </div>
-                            </div>
-                            <div class="fc-popup">
-                                <div class="fc-popup-name"></div>
-                                <div class="fc-popup-desc"></div>
-                                <div class="fc-popup-tags"></div>
-                                <div class="fc-popup-btns"><button class="fc-popup-btn">Know More</button><button
-                                        class="fc-popup-btn primary">+ Cart</button></div>
-                            </div>
-                        </div>
 
-                        <div class="fc-card"
-                            data-popup='{"name":"Beretta M9A3","desc":"9mm DA/SA pistol. Vertec grip, decocker/safety, extended tang. Time-tested military sidearm with modern enhancements.","tags":["9mm","DA/SA","Military"],"old":"₱74,500","new":"₱59,600"}'>
-                            <div class="fc-card-bg"
-                                style="background-image: url('../../Assets/Images/PageImages/HomePageImages/HomepageFeatureimage/berettam9a3.jpg');">
-                                <div class="fc-overlay"></div>
-                            </div>
                             <div class="fc-content">
-                                <div class="fc-name">Beretta M9A3</div>
-                                <div class="fc-pricing">
-                                    <div class="fc-discount">–20%</div>
-                                    <div class="fc-prices"><span class="fc-old">₱74,500</span><span
-                                            class="fc-new">₱59,600</span></div>
-                                </div>
-                            </div>
-                            <div class="fc-popup">
-                                <div class="fc-popup-name"></div>
-                                <div class="fc-popup-desc"></div>
-                                <div class="fc-popup-tags"></div>
-                                <div class="fc-popup-btns"><button class="fc-popup-btn">Know More</button><button
-                                        class="fc-popup-btn primary">+ Cart</button></div>
-                            </div>
-                        </div>
+                                <div class="fc-name">{{ p.name }}</div>
 
-                        <div class="fc-card"
-                            data-popup='{"name":"CZ P-10F Full Size","desc":"9mm striker-fired pistol. Interchangeable back straps, suppressor-ready, Omega trigger. Czech precision engineering.","tags":["9mm","Striker","Full-Size"],"old":"₱71,000","new":"₱56,800"}'>
-                            <div class="fc-card-bg"
-                                style="background-image: url('../../Assets/Images/PageImages/HomePageImages/HomepageFeatureimage/czp10f.jpg');">
-                                <div class="fc-overlay"></div>
-                            </div>
-                            <div class="fc-content">
-                                <div class="fc-name">CZ P-10F</div>
                                 <div class="fc-pricing">
-                                    <div class="fc-discount">–20%</div>
-                                    <div class="fc-prices"><span class="fc-old">₱71,000</span><span
-                                            class="fc-new">₱56,800</span></div>
+                                    <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
+                                    <div class="fc-prices">
+                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
+                                        <span class="fc-new">
+                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
+
                             <div class="fc-popup">
                                 <div class="fc-popup-name"></div>
                                 <div class="fc-popup-desc"></div>
                                 <div class="fc-popup-tags"></div>
-                                <div class="fc-popup-btns"><button class="fc-popup-btn">Know More</button><button
-                                        class="fc-popup-btn primary">+ Cart</button></div>
+                                <div class="fc-popup-btns">
+                                    <button class="fc-popup-btn">Know More</button>
+                                    <button class="fc-popup-btn primary">+ Cart</button>
+                                </div>
                             </div>
                         </div>
+                        {% endif %}
+
+
+                        {% set p = products.get(6) %}
+                        {% if p %}
+                        <div class="fc-card" data-popup='{
+                                "name":"{{ p.name }}",
+                                "desc":"{{ p.description }}",
+                                "tags": {{ p.tags or "[]" }},
+                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
+                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
+                            }'>
+
+                            <div class="fc-card-bg" style="background-image: url('{{ p.image_path }}');">
+                                <div class="fc-overlay"></div>
+                            </div>
+
+                            <div class="fc-content">
+                                <div class="fc-name">{{ p.name }}</div>
+
+                                <div class="fc-pricing">
+                                    <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
+                                    <div class="fc-prices">
+                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
+                                        <span class="fc-new">
+                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fc-popup">
+                                <div class="fc-popup-name"></div>
+                                <div class="fc-popup-desc"></div>
+                                <div class="fc-popup-tags"></div>
+                                <div class="fc-popup-btns">
+                                    <button class="fc-popup-btn">Know More</button>
+                                    <button class="fc-popup-btn primary">+ Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+
+                        {% set p = products.get(7) %}
+                        {% if p %}
+                        <div class="fc-card" data-popup='{
+                                "name":"{{ p.name }}",
+                                "desc":"{{ p.description }}",
+                                "tags": {{ p.tags or "[]" }},
+                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
+                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
+                            }'>
+
+                            <div class="fc-card-bg" style="background-image: url('{{ p.image_path }}');">
+                                <div class="fc-overlay"></div>
+                            </div>
+
+                            <div class="fc-content">
+                                <div class="fc-name">{{ p.name }}</div>
+
+                                <div class="fc-pricing">
+                                    <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
+                                    <div class="fc-prices">
+                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
+                                        <span class="fc-new">
+                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fc-popup">
+                                <div class="fc-popup-name"></div>
+                                <div class="fc-popup-desc"></div>
+                                <div class="fc-popup-tags"></div>
+                                <div class="fc-popup-btns">
+                                    <button class="fc-popup-btn">Know More</button>
+                                    <button class="fc-popup-btn primary">+ Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+
+                        {% set p = products.get(8) %}
+                        {% if p %}
+                        <div class="fc-card" data-popup='{
+                                "name":"{{ p.name }}",
+                                "desc":"{{ p.description }}",
+                                "tags": {{ p.tags or "[]" }},
+                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
+                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
+                            }'>
+
+                            <div class="fc-card-bg" style="background-image: url('{{ p.image_path }}');">
+                                <div class="fc-overlay"></div>
+                            </div>
+
+                            <div class="fc-content">
+                                <div class="fc-name">{{ p.name }}</div>
+
+                                <div class="fc-pricing">
+                                    <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
+                                    <div class="fc-prices">
+                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
+                                        <span class="fc-new">
+                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fc-popup">
+                                <div class="fc-popup-name"></div>
+                                <div class="fc-popup-desc"></div>
+                                <div class="fc-popup-tags"></div>
+                                <div class="fc-popup-btns">
+                                    <button class="fc-popup-btn">Know More</button>
+                                    <button class="fc-popup-btn primary">+ Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
 
                     </div>
                 </div>
@@ -366,77 +455,126 @@
                 <div class="fc-collage">
                     <div class="fc-collage-inner fc-grid-2col">
 
-                        <div class="fc-card span2r"
-                            data-popup='{"name":"Plate Carrier — Level IV MOLLE","desc":"Certified Level IV ballistic protection. MOLLE webbing, cummerbund, quick-release system. Accepts up to 10x12 hard plates.","tags":["Level IV","MOLLE","Quick-Release"],"old":"₱42,000","new":"₱33,600"}'>
-                            <div class="fc-card-bg"
-                                style="background-image: url('../../Assets/Images/PageImages/HomePageImages/HomepageFeatureimage/katana.jpg');">
+                        {% set p = products.get(9) %}
+                        {% if p %}
+                        <div class="fc-card span2r" data-popup='{
+                                "name":"{{ p.name }}",
+                                "desc":"{{ p.description }}",
+                                "tags": {{ p.tags or "[]" }},
+                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
+                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
+                            }'>
+
+                            <div class="fc-card-bg" style="background-image: url('{{ p.image_path }}');">
                                 <div class="fc-overlay"></div>
                             </div>
+
                             <div class="fc-content">
-                                <div class="fc-name large">Miyamoto Katana - Damascus</div>
+                                <div class="fc-name large">{{ p.name }}</div>
+
                                 <div class="fc-pricing">
-                                    <div class="fc-discount">–20%</div>
-                                    <div class="fc-prices"><span class="fc-old">₱42,000</span><span
-                                            class="fc-new large">₱33,600</span></div>
+                                    <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
+                                    <div class="fc-prices">
+                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
+                                        <span class="fc-new large">
+                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
+
                             <div class="fc-popup">
                                 <div class="fc-popup-name"></div>
                                 <div class="fc-popup-desc"></div>
                                 <div class="fc-popup-tags"></div>
-                                <div class="fc-popup-btns"><button class="fc-popup-btn">Know More</button><button
-                                        class="fc-popup-btn primary">+ Cart</button></div>
-                            </div>
-                        </div>
-
-                        <div class="fc-card"
-                            data-popup='{"name":"Tactical Helmet — MICH 2000","desc":"High-cut ballistic helmet. Dial-fit retention, NVG shroud mount, rails for accessories. NIJ Level IIIA rated.","tags":["IIIA Rated","NVG Mount","High-Cut"],"old":"₱28,000","new":"₱22,400"}'>
-                            <div class="fc-card-bg"
-                                style="background-image: url('../../Assets/Images/PageImages/HomePageImages/HomepageFeatureimage/balisong.jpg');">
-                                <div class="fc-overlay"></div>
-                            </div>
-                            <div class="fc-content">
-                                <div class="fc-name">Balisong</div>
-                                <div class="fc-pricing">
-                                    <div class="fc-discount">–20%</div>
-                                    <div class="fc-prices"><span class="fc-old">₱28,000</span><span
-                                            class="fc-new">₱22,400</span></div>
+                                <div class="fc-popup-btns">
+                                    <button class="fc-popup-btn">Know More</button>
+                                    <button class="fc-popup-btn primary">+ Cart</button>
                                 </div>
                             </div>
+                        </div>
+                        {% endif %}
+
+
+                        {% set p = products.get(10) %}
+                        {% if p %}
+                        <div class="fc-card" data-popup='{
+                                "name":"{{ p.name }}",
+                                "desc":"{{ p.description }}",
+                                "tags": {{ p.tags or "[]" }},
+                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
+                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
+                            }'>
+
+                            <div class="fc-card-bg" style="background-image: url('{{ p.image_path }}');">
+                                <div class="fc-overlay"></div>
+                            </div>
+
+                            <div class="fc-content">
+                                <div class="fc-name">{{ p.name }}</div>
+
+                                <div class="fc-pricing">
+                                    <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
+                                    <div class="fc-prices">
+                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
+                                        <span class="fc-new">
+                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="fc-popup">
                                 <div class="fc-popup-name"></div>
                                 <div class="fc-popup-desc"></div>
                                 <div class="fc-popup-tags"></div>
-                                <div class="fc-popup-btns"><button class="fc-popup-btn">Know More</button><button
-                                        class="fc-popup-btn primary">+ Cart</button></div>
-                            </div>
-                        </div>
-
-                        <div class="fc-card"
-                            data-popup='{"name":"Chest Rig — Modular 500D","desc":"500D Cordura chest rig. 6 magazine pouches, admin pouch, hydration compatible. Low-profile combat use.","tags":["500D Cordura","Low-Profile","Modular"],"old":"₱8,500","new":"₱6,800"}'>
-                            <div class="fc-card-bg"
-                                style="background-image: url('../../Assets/Images/PageImages/HomePageImages/HomepageFeatureimage/stiletto.jpg');">
-                                <div class="fc-overlay"></div>
-                            </div>
-                            <div class="fc-content">
-                                <div class="fc-name">Italian Stiletto</div>
-                                <div class="fc-pricing">
-                                    <div class="fc-discount">–20%</div>
-                                    <div class="fc-prices"><span class="fc-old">₱8,500</span><span
-                                            class="fc-new">₱6,800</span></div>
+                                <div class="fc-popup-btns">
+                                    <button class="fc-popup-btn">Know More</button>
+                                    <button class="fc-popup-btn primary">+ Cart</button>
                                 </div>
                             </div>
+                        </div>
+                        {% endif %}
+
+                        {% set p = products.get(11) %}
+                        {% if p %}
+                        <div class="fc-card" data-popup='{
+                                "name":"{{ p.name }}",
+                                "desc":"{{ p.description }}",
+                                "tags": {{ p.tags or "[]" }},
+                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
+                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
+                            }'>
+
+                            <div class="fc-card-bg" style="background-image: url('{{ p.image_path }}');">
+                                <div class="fc-overlay"></div>
+                            </div>
+
+                            <div class="fc-content">
+                                <div class="fc-name">{{ p.name }}</div>
+
+                                <div class="fc-pricing">
+                                    <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
+                                    <div class="fc-prices">
+                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
+                                        <span class="fc-new">
+                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="fc-popup">
                                 <div class="fc-popup-name"></div>
                                 <div class="fc-popup-desc"></div>
                                 <div class="fc-popup-tags"></div>
-                                <div class="fc-popup-btns"><button class="fc-popup-btn">Know More</button><button
-                                        class="fc-popup-btn primary">+ Cart</button></div>
+                                <div class="fc-popup-btns">
+                                    <button class="fc-popup-btn">Know More</button>
+                                    <button class="fc-popup-btn primary">+ Cart</button>
+                                </div>
                             </div>
                         </div>
-
-
-
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -446,123 +584,205 @@
                 <div class="fc-collage">
                     <div class="fc-collage-inner fc-grid-quad">
 
-                        <div class="fc-card span2c"
-                            data-popup='{"name":"5.56mm NATO — 1,000 Round Case","desc":"M855 62gr green-tip penetrator. Lake City production, mil-spec brass, boxer-primed. Optimized for AR-platform rifles.","tags":["M855","62gr","1000 Rounds"],"old":"₱18,500","new":"₱13,875"}'>
-                            <div class="fc-card-bg"
-                                style="background-image: url('../../Assets/Images/PageImages/HomePageImages/HomepageFeatureimage/5.56.jpg');">
+                        {% set p = products.get(12) %}
+                        {% if p %}
+                        <div class="fc-card span2r" data-popup='{
+                                "name":"{{ p.name }}",
+                                "desc":"{{ p.description }}",
+                                "tags": {{ p.tags or "[]" }},
+                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
+                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
+                            }'>
+
+                            <div class="fc-card-bg" style="background-image: url('{{ p.image_path }}');">
                                 <div class="fc-overlay"></div>
                             </div>
+
                             <div class="fc-content">
-                                <div class="fc-name large">5.56mm NATO — Case of 1,000</div>
+                                <div class="fc-name large">{{ p.name }}</div>
+
                                 <div class="fc-pricing">
-                                    <div class="fc-discount">–25%</div>
-                                    <div class="fc-prices"><span class="fc-old">₱18,500</span><span
-                                            class="fc-new large">₱13,875</span></div>
+                                    <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
+                                    <div class="fc-prices">
+                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
+                                        <span class="fc-new large">
+                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
+
                             <div class="fc-popup">
                                 <div class="fc-popup-name"></div>
                                 <div class="fc-popup-desc"></div>
                                 <div class="fc-popup-tags"></div>
-                                <div class="fc-popup-btns"><button class="fc-popup-btn">Know More</button><button
-                                        class="fc-popup-btn primary">+ Cart</button></div>
-                            </div>
-                        </div>
-
-                        <div class="fc-card"
-                            data-popup='{"name":"9mm FMJ — 500 Round Box","desc":"124gr full metal jacket 9mm. Reloadable brass, consistent velocity, clean-burning powder. Ideal for training.","tags":["124gr FMJ","9mm","Training"],"old":"₱6,200","new":"₱5,270"}'>
-                            <div class="fc-card-bg"
-                                style="background-image: url('../../Assets/Images/PageImages/HomePageImages/HomepageFeatureimage/9mmfmj.jpg');">
-                                <div class="fc-overlay"></div>
-                            </div>
-                            <div class="fc-content">
-                                <div class="fc-name">9mm FMJ ×500</div>
-                                <div class="fc-pricing">
-                                    <div class="fc-discount">–15%</div>
-                                    <div class="fc-prices"><span class="fc-old">₱6,200</span><span
-                                            class="fc-new">₱5,270</span></div>
+                                <div class="fc-popup-btns">
+                                    <button class="fc-popup-btn">Know More</button>
+                                    <button class="fc-popup-btn primary">+ Cart</button>
                                 </div>
                             </div>
+                        </div>
+                        {% endif %}
+
+                        {% set p = products.get(13) %}
+                        {% if p %}
+                        <div class="fc-card" data-popup='{
+                                "name":"{{ p.name }}",
+                                "desc":"{{ p.description }}",
+                                "tags": {{ p.tags or "[]" }},
+                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
+                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
+                            }'>
+
+                            <div class="fc-card-bg" style="background-image: url('{{ p.image_path }}');">
+                                <div class="fc-overlay"></div>
+                            </div>
+
+                            <div class="fc-content">
+                                <div class="fc-name">{{ p.name }}</div>
+
+                                <div class="fc-pricing">
+                                    <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
+                                    <div class="fc-prices">
+                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
+                                        <span class="fc-new">
+                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="fc-popup">
                                 <div class="fc-popup-name"></div>
                                 <div class="fc-popup-desc"></div>
                                 <div class="fc-popup-tags"></div>
-                                <div class="fc-popup-btns"><button class="fc-popup-btn">Know More</button><button
-                                        class="fc-popup-btn primary">+ Cart</button></div>
-                            </div>
-                        </div>
-
-                        <div class="fc-card"
-                            data-popup='{"name":"7.62x39mm — 500 Round Pack","desc":"122gr FMJ steel-core 7.62x39. Corrosion-resistant, lacquered steel case. Optimized for AK-platform rifles.","tags":["122gr","Steel Case","AK Platform"],"old":"₱9,500","new":"₱7,600"}'>
-                            <div class="fc-card-bg"
-                                style="background-image: url('../../Assets/Images/PageImages/HomePageImages/HomepageFeatureimage/7.62x39.jpg');">
-                                <div class="fc-overlay"></div>
-                            </div>
-                            <div class="fc-content">
-                                <div class="fc-name">7.62×39 ×500</div>
-                                <div class="fc-pricing">
-                                    <div class="fc-discount">–20%</div>
-                                    <div class="fc-prices"><span class="fc-old">₱9,500</span><span
-                                            class="fc-new">₱7,600</span></div>
+                                <div class="fc-popup-btns">
+                                    <button class="fc-popup-btn">Know More</button>
+                                    <button class="fc-popup-btn primary">+ Cart</button>
                                 </div>
                             </div>
+                        </div>
+                        {% endif %}
+
+                        {% set p = products.get(14) %}
+                        {% if p %}
+                        <div class="fc-card" data-popup='{
+                                "name":"{{ p.name }}",
+                                "desc":"{{ p.description }}",
+                                "tags": {{ p.tags or "[]" }},
+                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
+                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
+                            }'>
+
+                            <div class="fc-card-bg" style="background-image: url('{{ p.image_path }}');">
+                                <div class="fc-overlay"></div>
+                            </div>
+
+                            <div class="fc-content">
+                                <div class="fc-name">{{ p.name }}</div>
+
+                                <div class="fc-pricing">
+                                    <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
+                                    <div class="fc-prices">
+                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
+                                        <span class="fc-new">
+                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="fc-popup">
                                 <div class="fc-popup-name"></div>
                                 <div class="fc-popup-desc"></div>
                                 <div class="fc-popup-tags"></div>
-                                <div class="fc-popup-btns"><button class="fc-popup-btn">Know More</button><button
-                                        class="fc-popup-btn primary">+ Cart</button></div>
-                            </div>
-                        </div>
-
-                        <div class="fc-card"
-                            data-popup='{"name":".45 ACP HP — 200 Round Box","desc":"230gr jacketed hollow point. Controlled expansion, bonded core, nickel-plated brass. Duty and self-defense rated.","tags":["JHP","230gr","Duty Round"],"old":"₱7,800","new":"₱6,630"}'>
-                            <div class="fc-card-bg"
-                                style="background-image: url('../../Assets/Images/PageImages/HomePageImages/HomepageFeatureimage/45acp.jpg');">
-                                <div class="fc-overlay"></div>
-                            </div>
-                            <div class="fc-content">
-                                <div class="fc-name">.45 ACP HP ×200</div>
-                                <div class="fc-pricing">
-                                    <div class="fc-discount">–15%</div>
-                                    <div class="fc-prices"><span class="fc-old">₱7,800</span><span
-                                            class="fc-new">₱6,630</span></div>
+                                <div class="fc-popup-btns">
+                                    <button class="fc-popup-btn">Know More</button>
+                                    <button class="fc-popup-btn primary">+ Cart</button>
                                 </div>
                             </div>
+                        </div>
+                        {% endif %}
+
+                        {% set p = products.get(15) %}
+                        {% if p %}
+                        <div class="fc-card" data-popup='{
+                                "name":"{{ p.name }}",
+                                "desc":"{{ p.description }}",
+                                "tags": {{ p.tags or "[]" }},
+                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
+                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
+                            }'>
+
+                            <div class="fc-card-bg" style="background-image: url('{{ p.image_path }}');">
+                                <div class="fc-overlay"></div>
+                            </div>
+
+                            <div class="fc-content">
+                                <div class="fc-name">{{ p.name }}</div>
+
+                                <div class="fc-pricing">
+                                    <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
+                                    <div class="fc-prices">
+                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
+                                        <span class="fc-new">
+                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="fc-popup">
                                 <div class="fc-popup-name"></div>
                                 <div class="fc-popup-desc"></div>
                                 <div class="fc-popup-tags"></div>
-                                <div class="fc-popup-btns"><button class="fc-popup-btn">Know More</button><button
-                                        class="fc-popup-btn primary">+ Cart</button></div>
-                            </div>
-                        </div>
-
-                        <div class="fc-card"
-                            data-popup='{"name":".308 Win Match — 100 Round Box","desc":"168gr BTHP match grade .308 Winchester. Sierra MatchKing projectile, consistent OAL, sub-MOA accuracy guaranteed.","tags":["168gr BTHP","Match Grade","Sub-MOA"],"old":"₱8,900","new":"₱7,120"}'>
-                            <div class="fc-card-bg"
-                                style="background-image: url('../../Assets/Images/PageImages/HomePageImages/HomepageFeatureimage/308winmatch.jpg');">
-                                <div class="fc-overlay"></div>
-                            </div>
-                            <div class="fc-content">
-                                <div class="fc-name">.308 Win Match ×100</div>
-                                <div class="fc-pricing">
-                                    <div class="fc-discount">–20%</div>
-                                    <div class="fc-prices"><span class="fc-old">₱8,900</span><span
-                                            class="fc-new">₱7,120</span></div>
+                                <div class="fc-popup-btns">
+                                    <button class="fc-popup-btn">Know More</button>
+                                    <button class="fc-popup-btn primary">+ Cart</button>
                                 </div>
                             </div>
+                        </div>
+                        {% endif %}
+
+                        {% set p = products.get(16) %}
+                        {% if p %}
+                        <div class="fc-card" data-popup='{
+                                "name":"{{ p.name }}",
+                                "desc":"{{ p.description }}",
+                                "tags": {{ p.tags or "[]" }},
+                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
+                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
+                            }'>
+
+                            <div class="fc-card-bg" style="background-image: url('{{ p.image_path }}');">
+                                <div class="fc-overlay"></div>
+                            </div>
+
+                            <div class="fc-content">
+                                <div class="fc-name">{{ p.name }}</div>
+
+                                <div class="fc-pricing">
+                                    <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
+                                    <div class="fc-prices">
+                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
+                                        <span class="fc-new">
+                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="fc-popup">
                                 <div class="fc-popup-name"></div>
                                 <div class="fc-popup-desc"></div>
                                 <div class="fc-popup-tags"></div>
-                                <div class="fc-popup-btns"><button class="fc-popup-btn">Know More</button><button
-                                        class="fc-popup-btn primary">+ Cart</button></div>
+                                <div class="fc-popup-btns">
+                                    <button class="fc-popup-btn">Know More</button>
+                                    <button class="fc-popup-btn primary">+ Cart</button>
+                                </div>
                             </div>
                         </div>
-
-
-
+                        {% endif %}
                     </div>
                 </div>
             </div>
