@@ -113,18 +113,17 @@
                 <div class="fc-collage">
                     <div class="fc-collage-inner fc-grid-hero">
 
-                        <!-- 🔹 PRODUCT ID = 1 -->
                         {% set p = products.get(1) %}
                         {% if p %}
                         <div class="fc-card span2r" data-popup='{
                                 "name":"{{ p.name }}",
                                 "desc":"{{ p.description }}",
                                 "tags": {{ p.tags or "[]" }},
-                                "old":"₱{{ "%.0f"|format(p.price) }}",
-                                "new":"₱{{ "%.0f"|format(p.price - (p.price * (p.discount / 100))) }}"
+                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
+                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
                             }'>
 
-                            <div class="fc-card-bg" style="background-image: url(p.image_path);">
+                            <div class="fc-card-bg" style="background-image: url('{{ p.image_path }}');">
                                 <div class="fc-overlay"></div>
                             </div>
 
@@ -132,11 +131,11 @@
                                 <div class="fc-name large">{{ p.name }}</div>
 
                                 <div class="fc-pricing">
-                                    <div class="fc-discount">–{{ p.discount }}%</div>
+                                    <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "%.0f"|format(p.price) }}</span>
+                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
                                         <span class="fc-new large">
-                                            ₱{{ "%.0f"|format(p.price - (p.price * (p.discount / 100))) }}
+                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
                                         </span>
                                     </div>
                                 </div>
@@ -154,28 +153,45 @@
                         </div>
                         {% endif %}
 
-                        <div class="fc-card"
-                            data-popup='{"name":"SR-25 Precision Rifle","desc":"7.62mm semi-auto marksman rifle. Match-grade stainless barrel, adjustable stock, Picatinny rail system. Effective range: 800m.","tags":["7.62mm","DMR","Precision"],"old":"₱230,000","new":"₱195,500"}'>
-                            <div class="fc-card-bg"
-                                style="background-image: url('../../Assets/Images/PageImages/HomePageImages/HomepageFeatureimage/sr25marksman.jpg');">
+                        {% set p = products.get(2) %}
+                        {% if p %}
+                        <div class="fc-card" data-popup='{
+                                "name":"{{ p.name }}",
+                                "desc":"{{ p.description }}",
+                                "tags": {{ p.tags or "[]" }},
+                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
+                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
+                            }'>
+
+                            <div class="fc-card-bg" style="background-image: url('{{ p.image_path }}');">
                                 <div class="fc-overlay"></div>
                             </div>
+
                             <div class="fc-content">
-                                <div class="fc-name">SR-25 Marksman</div>
+                                <div class="fc-name">{{ p.name }}</div>
+
                                 <div class="fc-pricing">
-                                    <div class="fc-discount">–15%</div>
-                                    <div class="fc-prices"><span class="fc-old">₱230,000</span><span
-                                            class="fc-new">₱195,500</span></div>
+                                    <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
+                                    <div class="fc-prices">
+                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
+                                        <span class="fc-new">
+                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
+
                             <div class="fc-popup">
                                 <div class="fc-popup-name"></div>
                                 <div class="fc-popup-desc"></div>
                                 <div class="fc-popup-tags"></div>
-                                <div class="fc-popup-btns"><button class="fc-popup-btn">Know More</button><button
-                                        class="fc-popup-btn primary">+ Cart</button></div>
+                                <div class="fc-popup-btns">
+                                    <button class="fc-popup-btn">Know More</button>
+                                    <button class="fc-popup-btn primary">+ Cart</button>
+                                </div>
                             </div>
                         </div>
+                        {% endif %}
 
                         <div class="fc-card"
                             data-popup='{"name":"AK-103 Assault Rifle","desc":"7.62x39mm battle-proven platform. Side-folding stock, chrome-lined barrel, enhanced pistol grip. Legendary reliability in adverse conditions.","tags":["7.62x39","AK Platform","Folding Stock"],"old":"₱145,000","new":"₱115,000"}'>
@@ -209,28 +225,45 @@
                 <div class="fc-collage">
                     <div class="fc-collage-inner fc-grid-3col">
 
-                        <div class="fc-card span2r"
-                            data-popup='{"name":"Glock 17 Gen5 — Service Pistol","desc":"9mm striker-fired duty pistol. Marksman barrel, flared mag well, ambidextrous slide stop. Standard issue across 50+ law enforcement agencies.","tags":["9mm","Gen5","LE Standard"],"old":"₱68,000","new":"₱54,400"}'>
-                            <div class="fc-card-bg"
-                                style="background-image: url('../../Assets/Images/PageImages/HomePageImages/HomepageFeatureimage/glock17gen5.jpg');">
+                        {% set p = products.get(4) %}
+                        {% if p %}
+                        <div class="fc-card span2r" data-popup='{
+                                "name":"{{ p.name }}",
+                                "desc":"{{ p.description }}",
+                                "tags": {{ p.tags or "[]" }},
+                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
+                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
+                            }'>
+
+                            <div class="fc-card-bg" style="background-image: url('{{ p.image_path }}');">
                                 <div class="fc-overlay"></div>
                             </div>
+
                             <div class="fc-content">
-                                <div class="fc-name large">Glock 17 Gen5</div>
+                                <div class="fc-name large">{{ p.name }}</div>
+
                                 <div class="fc-pricing">
-                                    <div class="fc-discount">–20%</div>
-                                    <div class="fc-prices"><span class="fc-old">₱68,000</span><span
-                                            class="fc-new large">₱54,400</span></div>
+                                    <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
+                                    <div class="fc-prices">
+                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
+                                        <span class="fc-new large">
+                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
+
                             <div class="fc-popup">
                                 <div class="fc-popup-name"></div>
                                 <div class="fc-popup-desc"></div>
                                 <div class="fc-popup-tags"></div>
-                                <div class="fc-popup-btns"><button class="fc-popup-btn">Know More</button><button
-                                        class="fc-popup-btn primary">+ Cart</button></div>
+                                <div class="fc-popup-btns">
+                                    <button class="fc-popup-btn">Know More</button>
+                                    <button class="fc-popup-btn primary">+ Cart</button>
+                                </div>
                             </div>
                         </div>
+                        {% endif %}
 
                         <div class="fc-card"
                             data-popup='{"name":"1911 Custom Operator","desc":".45 ACP single-action platform. Match barrel bushing, extended beavertail, G10 grips. Classic reliability, modern upgrades.","tags":[".45 ACP","1911","Single-Action"],"old":"₱95,000","new":"₱76,000"}'>

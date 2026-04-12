@@ -39,7 +39,7 @@ def homepage():
     db = get_db()
 
     rows = db.execute(
-        "SELECT * FROM products WHERE id IN (1,2,3)"
+        "SELECT * FROM products WHERE id IN (1,2,3,4) ORDER BY id"
     ).fetchall()
 
     products = {row["id"]: row for row in rows}
