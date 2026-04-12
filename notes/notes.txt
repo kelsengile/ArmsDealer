@@ -1,0 +1,51 @@
+Project Structure:
+
+[ ]Global:
+    [ ]TopBar:
+        [ ]Blinker: SecureConnection
+        [ ]LanguageChange:
+        [ ]CurencyChange:
+        [ ]About:
+        [ ]Contacts:
+        [ ]Legal:
+    [ ]NavBar:
+        [ ]Homepage | Logo&Title:
+        [ ]Products:
+        [ ]Services: 
+        [ ]PopUps:
+            [ ]LeftSideBurger:
+            [ ]SearchBar:
+            [ ]Cart:
+            [ ]Account:
+        [ ]Coordinates:
+
+
+[ ]Pages:
+
+    [ ]HomePage:
+        [ ]HeroCarousel:
+        [ ]FeaturedSelection:
+        [ ]AdvertisementsSpace:
+        [ ]Categories:
+        [ ]Bundles:
+        [ ]BestSeller:
+        [ ]News&Updates:
+        [ ]TrustedBrandsinStock:
+        [ ]WhyChooseUs?:
+        [ ]PurchaseProcess:
+        [ ]Calltoaction:
+        [ ]Footer:
+
+    [ ]ProductsPage:
+        [ ]SpecificProductsPage:
+    [ ]ServicePage:
+        [ ]SpecificProductPage:
+    [ ]AccountsPages:
+        [ ]AdminDashBoard:
+        [ ]UserDashboard:
+        [ ]CartPage:
+    [ ]About:
+    [ ]Contacts:
+    [ ]Legal:
+
+
