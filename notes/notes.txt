@@ -1,117 +1,49 @@
-[CORE LAYOUT]
+Project Structure:
 
-[ ] AppShell (Global Wrapper)
-    [ ] TopBar
-        [ ] SecureIndicator
-        [ ] LanguageSwitcher (optional MVP)
-        [ ] CurrencySwitcher (optional MVP)
-        [ ] QuickLinks
-            - About
-            - Contact
-            - Legal
-
-    [ ] Navbar
-        [ ] Logo / Home
-        [ ] NavigationLinks
-            - Products
-            - Services
-        [ ] Actions
-            [ ] SearchToggle
-            [ ] CartButton
-            [ ] AccountMenu
-            [ ] MobileMenu (Burger)
-
-    [ ] GlobalComponents
-        [ ] SearchModal
-        [ ] CartDrawer
-        [ ] AccountDropdown
-        [ ] Notifications / Toasts
-
-    [ ] Footer
-        [ ] Links (About, Contact, Legal)
-        [ ] Socials
-        [ ] Copyright
+[ ]Global:
+    [ ]TopBar:
+        [/]Blinker: SecureConnection
+        [ ]LanguageChange:
+        [ ]CurencyChange:
+        [ ]About:
+        [ ]Contacts:
+        [ ]Legal:
+    [ ]NavBar:
+        [/]Homepage | Logo&Title:
+        [/]Products:
+        [/]Services: 
+        [ ]PopUps:
+            [ ]LeftSideBurger:
+            [ ]SearchBar:
+            [ ]Cart:
+            [ ]Account:
+        [/]Coordinates:
 
 
---------------------------------------------------
+[ ]Pages:
 
-[FEATURE MODULES]  ← (important for scaling)
+    [ ]HomePage:
+        [/]HeroCarousel:
+        [/]FeaturedSelection:
+        [/]AdvertisementsSpace:
+        [/]Categories:
+        [ ]Bundles:
+        [ ]BestSeller:
+        [ ]News&Updates:
+        [ ]TrustedBrandsinStock:
+        [/]WhyChooseUs?:
+        [/]PurchaseProcess:
+        [/]Calltoaction:
+        [ ]Footer:
 
-[ ] Products
-    [ ] ProductCard
-    [ ] ProductGrid
-    [ ] ProductFilters (basic MVP)
-    [ ] ProductDetails
-
-[ ] Services
-    [ ] ServiceCard
-    [ ] ServiceDetails
-
-[ ] Cart
-    [ ] CartLogic
-    [ ] CartUI
-
-[ ] Account
-    [ ] Auth (Login/Register)
-    [ ] Profile
-    [ ] Orders (optional MVP)
-
---------------------------------------------------
-
-[PAGES]
-
-[ ] HomePage
-    [ ] HeroSection
-    [ ] FeaturedProducts
-    [ ] CategoriesPreview
-    [ ] BestSellers (optional MVP)
-    [ ] PromoBanner
-    [ ] WhyChooseUs
-    [ ] CTASection
-
-[ ] ProductsPage
-    [ ] ProductGrid
-    [ ] Filters (simple only for MVP)
-
-[ ] ProductDetailsPage
-
-[ ] ServicesPage
-    [ ] ServiceList
-
-[ ] ServiceDetailsPage
-
-[ ] CartPage
-
-[ ] AccountPages
-    [ ] Login / Register
-    [ ] UserDashboard (basic only)
-    [ ] AdminDashboard (can be deferred)
-
-[ ] StaticPages
-    [ ] AboutPage
-    [ ] ContactPage
-    [ ] LegalPages
-
---------------------------------------------------
-
-[BACKEND / DATA ]
-
-[ ] Routes
-    [ ] /
-    [ ] /products
-    [ ] /product/<id>
-    [ ] /services
-    [ ] /cart
-    [ ] /account
-
-[ ] Templates
-    [ ] base.html (AppShell)
-    [ ] partials/
-        - navbar.html
-        - footer.html
-        - modals.html
-
-[ ] Static
-    [ ] css/
-    [ ] js/
-    [ ] images/
+    [ ]ProductsPage:
+        [ ]SpecificProductsPage:
+    [ ]ServicePage:
+        [ ]SpecificServicePage:
+    [ ]AccountsPages:
+        [ ]AdminDashBoard:
+        [ ]UserDashboard:
+        [ ]CartPage:
+    [ ]About:
+    [ ]Contacts:
+    [ ]Legal:
