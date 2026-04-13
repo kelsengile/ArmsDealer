@@ -109,9 +109,12 @@
                     <option>USD ($)</option>
                     <option>EUR (€)</option>
                 </select>
-                <a routerLink="{{ url_for('about') }}">About</a>
-                <a routerLink="{{ url_for('contacts') }}">Contacts</a>
-                <a routerLink="{{ url_for('legal') }}">Legal</a>
+                <a href="{{ url_for('about') }}"
+                    class="{% if request.endpoint == 'about' %}nav-active{% endif %}">About</a>
+                <a href="{{ url_for('contacts') }}"
+                    class="{% if request.endpoint == 'contacts' %}nav-active{% endif %}">Contacts</a>
+                <a href="{{ url_for('legal') }}"
+                    class="{% if request.endpoint == 'legal' %}nav-active{% endif %}">Legal</a>
             </div>
         </div>
 

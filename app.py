@@ -76,6 +76,11 @@ def legal():
     return render_template('legal.html')
 
 
+@app.route('/settings')
+def settings():
+    return render_template('settings.html')
+
+
 # ─────────────────────────────────────────
 # AUTH ROUTES
 # ─────────────────────────────────────────
