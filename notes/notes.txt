@@ -14,9 +14,9 @@ Project Structure:
         [/]Blinker: SecureConnection
         [ ]LanguageChange:
         [ ]CurencyChange:
-        [ ]About:
-        [ ]Contacts:
-        [ ]Legal:
+        [/]About:
+        [/]Contacts:
+        [/]Legal:
     [ ]NavBar:
         [/]Homepage | Logo&Title:
         [/]Products:
