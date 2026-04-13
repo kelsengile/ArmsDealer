@@ -2,14 +2,14 @@ Project Structure:
 
 [ ]Global:
     [ ]TopBar:
-        [ ]Settings:
-            [ ]Account:
-            [ ]Appearance:
-            [ ]Notifications:
-            [ ]Privacy & Security:
-            [ ]Language & Region:
-            [ ]Help & Support:
-            [ ]System Actions:
+        [/]Settings:
+            [/]Account:
+            [/]Appearance:
+            [/]Notifications:
+            [/]Privacy & Security:
+            [/]Language & Region:
+            [/]Help & Support:
+            [/]System Actions:
         
         [/]Blinker: SecureConnection
         [ ]LanguageChange:
