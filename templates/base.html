@@ -30,60 +30,60 @@
         </div>
 
         <nav class="set-nav">
-            <div class="set-section-label">Preferences</div>
+            <div class="set-section-label" data-translate="preferences"></div>
 
             <a href="{{ url_for('settings') }}"
                 class="set-item active {% if request.endpoint == 'settings' %}nav-active{% endif %}">
                 <span class="set-icon">◉</span>
-                Account
+                <span data-translate="account"></span>
                 <span class="set-arrow">▶</span>
             </a>
 
             <a href="{{ url_for('settings') }}"
                 class="set-item active {% if request.endpoint == 'settings' %}nav-active{% endif %}">
                 <span class="set-icon">◉</span>
-                Appearance
+                <span data-translate="appearance"></span>
                 <span class="set-arrow">▶</span>
             </a>
 
             <a href="{{ url_for('settings') }}"
                 class="set-item active {% if request.endpoint == 'settings' %}nav-active{% endif %}">
                 <span class="set-icon">◉</span>
-                Notifications
+                <span data-translate="appearance"></span>
                 <span class="set-arrow">▶</span>
             </a>
 
             <a href="{{ url_for('settings') }}"
                 class="set-item active {% if request.endpoint == 'settings' %}nav-active{% endif %}">
                 <span class="set-icon">◉</span>
-                Privacy &amp; Security
-                <span class="set-arrow">▶</span>
-            </a>
-
-            <div class="set-divider"></div>
-            <div class="set-section-label">General</div>
-
-            <a href="{{ url_for('settings') }}"
-                class="set-item active {% if request.endpoint == 'settings' %}nav-active{% endif %}">
-                <span class="set-icon">◉</span>
-                Language &amp; Region
-                <span class="set-arrow">▶</span>
-            </a>
-
-            <a href="{{ url_for('settings') }}"
-                class="set-item active {% if request.endpoint == 'settings' %}nav-active{% endif %}">
-                <span class="set-icon">◉</span>
-                Help &amp; Support
+                <span data-translate="privacy_security"></span>
                 <span class="set-arrow">▶</span>
             </a>
 
             <div class="set-divider"></div>
-            <div class="set-section-label">Advanced</div>
+            <div class="set-section-label" data-translate="general"></div>
 
             <a href="{{ url_for('settings') }}"
                 class="set-item active {% if request.endpoint == 'settings' %}nav-active{% endif %}">
                 <span class="set-icon">◉</span>
-                System Actions
+                <span data-translate="language_region"></span>
+                <span class="set-arrow">▶</span>
+            </a>
+
+            <a href="{{ url_for('settings') }}"
+                class="set-item active {% if request.endpoint == 'settings' %}nav-active{% endif %}">
+                <span class="set-icon">◉</span>
+                <span data-translate="help_support"></span>
+                <span class="set-arrow">▶</span>
+            </a>
+
+            <div class="set-divider"></div>
+            <div class="set-section-label" data-translate="advanced"></div>
+
+            <a href="{{ url_for('settings') }}"
+                class="set-item active {% if request.endpoint == 'settings' %}nav-active{% endif %}">
+                <span class="set-icon">◉</span>
+                <span data-translate="system_actions"></span>
                 <span class="set-arrow">▶</span>
             </a>
         </nav>

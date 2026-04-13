@@ -13,18 +13,72 @@
     const translations = {
         english: {
             settings: "Settings",
+            preferences: "Preferences",
+            account: "Account",
+            appearance: "Appearance",
+            notifications: "Notifications",
+            privacy_security: "Privacy & Security",
+            general: "General",
+            language_region: "Language & Region",
+            help_support: "Help & Support",
+            advanced: "Advanced",
+            system_actions: "System Actions"
         },
+
         filipino: {
             settings: "Mga Setting",
+            preferences: "Mga Kagustuhan",
+            account: "Account",
+            appearance: "Hitsura",
+            notifications: "Mga Abiso",
+            privacy_security: "Pagkapribado at Seguridad",
+            general: "Pangkalahatan",
+            language_region: "Wika at Rehiyon",
+            help_support: "Tulong at Suporta",
+            advanced: "Advanced",
+            system_actions: "Mga Aksyon ng Sistema"
         },
+
         japanese: {
-            settings: "設定"
+            settings: "設定",
+            preferences: "設定項目",
+            account: "アカウント",
+            appearance: "外観",
+            notifications: "通知",
+            privacy_security: "プライバシーとセキュリティ",
+            general: "一般",
+            language_region: "言語と地域",
+            help_support: "ヘルプとサポート",
+            advanced: "詳細設定",
+            system_actions: "システム操作"
         },
+
         spanish: {
-            settings: "Configuración"
+            settings: "Configuración",
+            preferences: "Preferencias",
+            account: "Cuenta",
+            appearance: "Apariencia",
+            notifications: "Notificaciones",
+            privacy_security: "Privacidad y Seguridad",
+            general: "General",
+            language_region: "Idioma y Región",
+            help_support: "Ayuda y Soporte",
+            advanced: "Avanzado",
+            system_actions: "Acciones del Sistema"
         },
+
         mandarin: {
-            settings: "设置"
+            settings: "设置",
+            preferences: "偏好",
+            account: "账户",
+            appearance: "外观",
+            notifications: "通知",
+            privacy_security: "隐私与安全",
+            general: "常规",
+            language_region: "语言和地区",
+            help_support: "帮助与支持",
+            advanced: "高级",
+            system_actions: "系统操作"
         }
     };
 
