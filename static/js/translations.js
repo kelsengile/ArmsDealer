@@ -137,7 +137,12 @@ const translations = {
         homepagepurchaseprocesssteplabel4: "Secure",
         homepagepurchaseprocesssteplabel5: "Secure Shipping",
         homepagepurchaseprocessprocessinfostrong: "Trust is our priority.",
-        homepagepurchaseprocessprocessinfop: "Every transaction undergoes federal compliance verification. Our streamlined five-step process ensures both legal compliance and customer satisfaction. From browsing to delivery, we maintain the highest standards of security and transparency."
+        homepagepurchaseprocessprocessinfop: "Every transaction undergoes federal compliance verification. Our streamlined five-step process ensures both legal compliance and customer satisfaction. From browsing to delivery, we maintain the highest standards of security and transparency.",
+
+        // Call to Action Section
+        homepagecalltoactionheading: "Ready to Get Started?",
+        homepagecalltoactionsubheading: "Join thousands of satisfied customers. Browse our comprehensive selection or speak with a specialist today.",
+        homepagecalltoactionbutton: "Shop Now",
 
     },
 
@@ -277,6 +282,10 @@ const translations = {
         homepagepurchaseprocessprocessinfostrong: "Ang tiwala ang aming prayoridad.",
         homepagepurchaseprocessprocessinfop: "Ang bawat transaksyon ay dumadaan sa beripikasyon ng pederal na pagsunod. Ang aming pinasimpleng limang-hakbang na proseso ay tinitiyak ang legal na pagsunod at kasiyahan ng customer. Mula sa pag-browse hanggang delivery, pinananatili namin ang pinakamataas na antas ng seguridad at transparency.",
 
+        // Call to Action Section
+        homepagecalltoactionheading: "Handa ka na bang magsimula?",
+        homepagecalltoactionsubheading: "Sumali sa libo-libong nasisiyahang customer. Tuklasin ang aming malawak na pagpipilian o makipag-usap sa isang espesyalista ngayon.",
+        homepagecalltoactionbutton: "Mamili Ngayon",
     },
 
     japanese: {
@@ -414,6 +423,11 @@ const translations = {
         homepagepurchaseprocesssteplabel5: "安全な配送",
         homepagepurchaseprocessprocessinfostrong: "信頼が最優先です。",
         homepagepurchaseprocessprocessinfop: "すべての取引は連邦規制の確認を受けます。当社のシンプルな5ステップのプロセスは、法令遵守と顧客満足の両方を保証します。閲覧から配送まで、最高水準のセキュリティと透明性を維持します。",
+
+        // Call to Action Section
+        homepagecalltoactionheading: "始める準備はできましたか？",
+        homepagecalltoactionsubheading: "何千もの満足した顧客に加わりましょう。幅広い商品ラインナップをご覧いただくか、今すぐ専門スタッフにご相談ください。",
+        homepagecalltoactionbutton: "今すぐ購入",
 
     },
 
@@ -553,6 +567,10 @@ const translations = {
         homepagepurchaseprocessprocessinfostrong: "La confianza es nuestra prioridad.",
         homepagepurchaseprocessprocessinfop: "Cada transacción pasa por una verificación de cumplimiento federal. Nuestro proceso simplificado de cinco pasos garantiza tanto el cumplimiento legal como la satisfacción del cliente. Desde la exploración hasta la entrega, mantenemos los más altos estándares de seguridad y transparencia.",
 
+        // Call to Action Section
+        homepagecalltoactionheading: "¿Listo para comenzar?",
+        homepagecalltoactionsubheading: "Únase a miles de clientes satisfechos. Explore nuestra amplia selección o hable con un especialista hoy mismo.",
+        homepagecalltoactionbutton: "Comprar Ahora",
     },
 
     mandarin: {
@@ -689,7 +707,12 @@ const translations = {
         homepagepurchaseprocesssteplabel4: "安全",
         homepagepurchaseprocesssteplabel5: "安全运输",
         homepagepurchaseprocessprocessinfostrong: "信任是我们的首要任务。",
-        homepagepurchaseprocessprocessinfop: "每笔交易都经过联邦合规验证。我们简化的五步流程确保法律合规和客户满意。从浏览到交付，我们始终保持最高水平的安全性和透明度。"
+        homepagepurchaseprocessprocessinfop: "每笔交易都经过联邦合规验证。我们简化的五步流程确保法律合规和客户满意。从浏览到交付，我们始终保持最高水平的安全性和透明度。",
+
+        // Call to Action Section
+        homepagecalltoactionheading: "准备开始了吗？",
+        homepagecalltoactionsubheading: "加入成千上万满意的客户。浏览我们丰富的产品选择，或立即与专家联系。",
+        homepagecalltoactionbutton: "立即购买",
     }
 };
 
