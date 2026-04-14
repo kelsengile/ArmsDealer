@@ -62,8 +62,49 @@ const translations = {
         homepagefeaturepage3: "Blades",
         homepagefeaturepage4: "Ammo",
         homepagefeaturepage5: "Services",
+        homepagecategorytitle: "Explore Our Categories:",
 
-        homepagecategorytitle: "Explore Our Categories:"
+        // Category Buttons
+        categoryBtnWeapons: "Weapons",
+        categoryBtnEquipment: "Equipment",
+        categoryBtnServices: "Services",
+
+        // Weapons Category Items
+        categoryFirearms: "Firearms",
+        categoryBlades: "Blades",
+        categoryBlunts: "Blunts",
+        categoryProjectile: "Projectile",
+        categoryExplosives: "Explosives",
+        categoryElectronic: "Electronic",
+        categoryChemical: "Chemical",
+        categoryBiological: "Biological",
+        categoryVehicle: "Vehicle",
+        categoryCyber: "Cyber",
+        categorySecurity: "Security",
+
+        // Equipment Category Items
+        categoryAmmunition: "Ammunition",
+        categoryProtective: "Protective",
+        categoryTactical: "Tactical",
+        categoryAttachments: "Attachments",
+        categoryMaintenance: "Maintenance",
+        categoryStorage: "Storage",
+        categoryCases: "Cases",
+        categoryCommunication: "Communication",
+        categorySurvival: "Survival",
+        categoryTraining: "Training",
+
+        // Services Category Items
+        categoryManufacturing: "Manufacturing",
+        categoryCustomization: "Customization",
+        categoryTransport: "Transport",
+        categoryProtection: "Protection",
+        categoryConsulting: "Consulting",
+        categoryResearch: "Research",
+        categoryTesting: "Testing",
+        categoryDisposal: "Disposal",
+        categorySurveillance: "Surveillance",
+        categoryContracting: "Contracting",
     },
 
     filipino: {
@@ -117,7 +158,6 @@ const translations = {
         homepageslide5heropagetitlebr: "para sa Iyong Armas.",
         homepageslide5heropageherosubtitle: "Maintenance, customization, at consultation — pinapanatili ng aming certified gunsmiths ang iyong armas sa pinakamahusay na kondisyon.",
         homepageslide5heropageherocta: "Aming Serbisyo",
-
         homepagefeaturetimer: "May bisa hanggang: Hulyo 29, 2026",
         homepagefeatureheadertag: "Mga Produkto at Serbisyo",
         homepagefeatureheadertwo: "Tampok na Seleksyon",
@@ -126,8 +166,49 @@ const translations = {
         homepagefeaturepage3: "Blades",
         homepagefeaturepage4: "Ammunisyon",
         homepagefeaturepage5: "Mga Serbisyo",
+        homepagecategorytitle: "Tuklasin ang Aming Mga Kategorya:",
 
-        homepagecategorytitle: "Tuklasin ang Aming Mga Kategorya:"
+        // Category Buttons
+        categoryBtnWeapons: "Mga Sandata",
+        categoryBtnEquipment: "Kagamitan",
+        categoryBtnServices: "Mga Serbisyo",
+
+        // Weapons Category Items
+        categoryFirearms: "Mga Baril",
+        categoryBlades: "Mga Talim",
+        categoryBlunts: "Mga Pamalo",
+        categoryProjectile: "Proyektil",
+        categoryExplosives: "Mga Pampasabog",
+        categoryElectronic: "Elektroniko",
+        categoryChemical: "Kemikal",
+        categoryBiological: "Biyolohikal",
+        categoryVehicle: "Sasakyan",
+        categoryCyber: "Cyber",
+        categorySecurity: "Seguridad",
+
+        // Equipment Category Items
+        categoryAmmunition: "Ammunisyon",
+        categoryProtective: "Pang-protekta",
+        categoryTactical: "Taktikal",
+        categoryAttachments: "Mga Kabit",
+        categoryMaintenance: "Pagpapanatili",
+        categoryStorage: "Imbakan",
+        categoryCases: "Mga Kahon",
+        categoryCommunication: "Komunikasyon",
+        categorySurvival: "Kaligtasan",
+        categoryTraining: "Pagsasanay",
+
+        // Services Category Items
+        categoryManufacturing: "Pagmamanupaktura",
+        categoryCustomization: "Pagpapasadya",
+        categoryTransport: "Transportasyon",
+        categoryProtection: "Proteksyon",
+        categoryConsulting: "Pagpapayo",
+        categoryResearch: "Pananaliksik",
+        categoryTesting: "Pagsubok",
+        categoryDisposal: "Pagtatapon",
+        categorySurveillance: "Pagmamatyag",
+        categoryContracting: "Kontrata",
     },
 
     japanese: {
@@ -181,7 +262,6 @@ const translations = {
         homepageslide5heropagetitlebr: "あなたの武器に。",
         homepageslide5heropageherosubtitle: "メンテナンス、カスタマイズ、相談サービス。認定ガンスミスが最高の状態を維持します。",
         homepageslide5heropageherocta: "サービスを見る",
-
         homepagefeaturetimer: "有効期限: 2026年7月29日",
         homepagefeatureheadertag: "製品とサービス",
         homepagefeatureheadertwo: "注目セレクション",
@@ -190,8 +270,49 @@ const translations = {
         homepagefeaturepage3: "ブレード",
         homepagefeaturepage4: "弾薬",
         homepagefeaturepage5: "サービス",
+        homepagecategorytitle: "カテゴリーを探る：",
 
-        homepagecategorytitle: "カテゴリーを探る："
+        // Category Buttons
+        categoryBtnWeapons: "武器",
+        categoryBtnEquipment: "装備",
+        categoryBtnServices: "サービス",
+
+        // Weapons Category Items
+        categoryFirearms: "銃器",
+        categoryBlades: "刃物",
+        categoryBlunts: "鈍器",
+        categoryProjectile: "飛射体",
+        categoryExplosives: "爆発物",
+        categoryElectronic: "電子機器",
+        categoryChemical: "化学兵器",
+        categoryBiological: "生物兵器",
+        categoryVehicle: "車両",
+        categoryCyber: "サイバー",
+        categorySecurity: "セキュリティ",
+
+        // Equipment Category Items
+        categoryAmmunition: "弾薬",
+        categoryProtective: "防護具",
+        categoryTactical: "戦術装備",
+        categoryAttachments: "アタッチメント",
+        categoryMaintenance: "メンテナンス",
+        categoryStorage: "保管",
+        categoryCases: "ケース",
+        categoryCommunication: "通信機器",
+        categorySurvival: "サバイバル",
+        categoryTraining: "訓練",
+
+        // Services Category Items
+        categoryManufacturing: "製造",
+        categoryCustomization: "カスタマイズ",
+        categoryTransport: "輸送",
+        categoryProtection: "保護",
+        categoryConsulting: "コンサルティング",
+        categoryResearch: "研究",
+        categoryTesting: "テスト",
+        categoryDisposal: "廃棄",
+        categorySurveillance: "監視",
+        categoryContracting: "請負",
     },
 
     spanish: {
@@ -245,7 +366,6 @@ const translations = {
         homepageslide5heropagetitlebr: "para tus armas.",
         homepageslide5heropageherosubtitle: "Mantenimiento, personalización y asesoría — nuestros armeros certificados mantienen tus armas en óptimas condiciones.",
         homepageslide5heropageherocta: "Nuestros servicios",
-
         homepagefeaturetimer: "Válido hasta: 29 de julio de 2026",
         homepagefeatureheadertag: "Productos y Servicios",
         homepagefeatureheadertwo: "Selección destacada",
@@ -254,9 +374,49 @@ const translations = {
         homepagefeaturepage3: "Cuchillas",
         homepagefeaturepage4: "Munición",
         homepagefeaturepage5: "Servicios",
-
         homepagecategorytitle: "Explora nuestras categorías:",
-        homepagecategoriesfirearms: "Armas de fuego",
+
+        // Category Buttons
+        categoryBtnWeapons: "Armas",
+        categoryBtnEquipment: "Equipamiento",
+        categoryBtnServices: "Servicios",
+
+        // Weapons Category Items
+        categoryFirearms: "Armas de fuego",
+        categoryBlades: "Cuchillas",
+        categoryBlunts: "Contundentes",
+        categoryProjectile: "Proyectil",
+        categoryExplosives: "Explosivos",
+        categoryElectronic: "Electrónico",
+        categoryChemical: "Químico",
+        categoryBiological: "Biológico",
+        categoryVehicle: "Vehículo",
+        categoryCyber: "Cibernético",
+        categorySecurity: "Seguridad",
+
+        // Equipment Category Items
+        categoryAmmunition: "Munición",
+        categoryProtective: "Protección",
+        categoryTactical: "Táctico",
+        categoryAttachments: "Accesorios",
+        categoryMaintenance: "Mantenimiento",
+        categoryStorage: "Almacenamiento",
+        categoryCases: "Estuches",
+        categoryCommunication: "Comunicación",
+        categorySurvival: "Supervivencia",
+        categoryTraining: "Entrenamiento",
+
+        // Services Category Items
+        categoryManufacturing: "Fabricación",
+        categoryCustomization: "Personalización",
+        categoryTransport: "Transporte",
+        categoryProtection: "Protección",
+        categoryConsulting: "Consultoría",
+        categoryResearch: "Investigación",
+        categoryTesting: "Pruebas",
+        categoryDisposal: "Eliminación",
+        categorySurveillance: "Vigilancia",
+        categoryContracting: "Contratación",
     },
 
     mandarin: {
@@ -310,7 +470,6 @@ const translations = {
         homepageslide5heropagetitlebr: "守护你的武器。",
         homepageslide5heropageherosubtitle: "维护、定制与咨询服务——认证枪械师确保您的装备始终处于最佳状态。",
         homepageslide5heropageherocta: "查看服务",
-
         homepagefeaturetimer: "有效期至：2026年7月29日",
         homepagefeatureheadertag: "产品与服务",
         homepagefeatureheadertwo: "精选系列",
@@ -319,10 +478,49 @@ const translations = {
         homepagefeaturepage3: "刀具",
         homepagefeaturepage4: "弹药",
         homepagefeaturepage5: "服务",
+        homepagecategorytitle: "探索我们的类别：",
 
-        homepagecategorytitle: "探索我们的类别："
+        // Category Buttons
+        categoryBtnWeapons: "武器",
+        categoryBtnEquipment: "装备",
+        categoryBtnServices: "服务",
 
+        // Weapons Category Items
+        categoryFirearms: "枪支",
+        categoryBlades: "刀刃",
+        categoryBlunts: "钝器",
+        categoryProjectile: "弹射物",
+        categoryExplosives: "爆炸物",
+        categoryElectronic: "电子武器",
+        categoryChemical: "化学武器",
+        categoryBiological: "生物武器",
+        categoryVehicle: "车辆",
+        categoryCyber: "网络战",
+        categorySecurity: "安全",
 
+        // Equipment Category Items
+        categoryAmmunition: "弹药",
+        categoryProtective: "防护装备",
+        categoryTactical: "战术装备",
+        categoryAttachments: "配件",
+        categoryMaintenance: "维护",
+        categoryStorage: "储存",
+        categoryCases: "箱包",
+        categoryCommunication: "通信设备",
+        categorySurvival: "生存装备",
+        categoryTraining: "训练",
+
+        // Services Category Items
+        categoryManufacturing: "制造",
+        categoryCustomization: "定制",
+        categoryTransport: "运输",
+        categoryProtection: "保护",
+        categoryConsulting: "咨询",
+        categoryResearch: "研究",
+        categoryTesting: "测试",
+        categoryDisposal: "处置",
+        categorySurveillance: "监控",
+        categoryContracting: "承包",
     }
 };
 
@@ -361,5 +559,3 @@ document.addEventListener("DOMContentLoaded", () => {
     const select = document.getElementById("languageSelect");
     if (select) select.value = savedLang;
 });
-
-

@@ -136,44 +136,44 @@
 // ===========================================
 const carouselData = {
     weapons: [
-        { name: 'Firearms', image: '../../../static/assets/icons/categoriesicons/firearms.png' },
-        { name: 'Blades', image: '../../../static/assets/icons/categoriesicons/blade.png' },
-        { name: 'Blunts', image: '../../../static/assets/icons/categoriesicons/blunt.png' },
-        { name: 'Projectile', image: '../../../static/assets/icons/categoriesicons/projectile.png' },
-        { name: 'Explosives', image: '../../../static/assets/icons/categoriesicons/explosives.png' },
-        { name: 'Electronic', image: '../../../static/assets/icons/categoriesicons/electronic.png' },
-        { name: 'Chemical', image: '../../../static/assets/icons/categoriesicons/chemical.png' },
-        { name: 'Biological', image: '../../../static/assets/icons/categoriesicons/biological.png' },
-        { name: 'Vehicle', image: '../../../static/assets/icons/categoriesicons/vehicle.png' },
-        { name: 'Cyber', image: '../../../static/assets/icons/categoriesicons/cyber.png' },
-        { name: 'Security', image: '../../../static/assets/icons/categoriesicons/security.png' }
+        { name: 'Firearms', translationKey: 'categoryFirearms', image: '../../../static/assets/icons/categoriesicons/firearms.png' },
+        { name: 'Blades', translationKey: 'categoryBlades', image: '../../../static/assets/icons/categoriesicons/blade.png' },
+        { name: 'Blunts', translationKey: 'categoryBlunts', image: '../../../static/assets/icons/categoriesicons/blunt.png' },
+        { name: 'Projectile', translationKey: 'categoryProjectile', image: '../../../static/assets/icons/categoriesicons/projectile.png' },
+        { name: 'Explosives', translationKey: 'categoryExplosives', image: '../../../static/assets/icons/categoriesicons/explosives.png' },
+        { name: 'Electronic', translationKey: 'categoryElectronic', image: '../../../static/assets/icons/categoriesicons/electronic.png' },
+        { name: 'Chemical', translationKey: 'categoryChemical', image: '../../../static/assets/icons/categoriesicons/chemical.png' },
+        { name: 'Biological', translationKey: 'categoryBiological', image: '../../../static/assets/icons/categoriesicons/biological.png' },
+        { name: 'Vehicle', translationKey: 'categoryVehicle', image: '../../../static/assets/icons/categoriesicons/vehicle.png' },
+        { name: 'Cyber', translationKey: 'categoryCyber', image: '../../../static/assets/icons/categoriesicons/cyber.png' },
+        { name: 'Security', translationKey: 'categorySecurity', image: '../../../static/assets/icons/categoriesicons/security.png' }
     ],
     equipment: [
-        { name: 'Ammunition', image: '../../../static/assets/icons/categoriesicons/ammunition.png' },
-        { name: 'Protective', image: '../../../static/assets/icons/categoriesicons/protective.png' },
-        { name: 'Tactical', image: '../../../static/assets/icons/categoriesicons/tactical.png' },
-        { name: 'Attachments', image: '../../../static/assets/icons/categoriesicons/attachments.png' },
-        { name: 'Maintenance', image: '../../../static/assets/icons/categoriesicons/maintenance.png' },
-        { name: 'Storage', image: '../../../static/assets/icons/categoriesicons/storage.png' },
-        { name: 'Cases', image: '../../../static/assets/icons/categoriesicons/cases.png' },
-        { name: 'Communication', image: '../../../static/assets/icons/categoriesicons/communication.png' },
-        { name: 'Survival', image: '../../../static/assets/icons/categoriesicons/survival.png' },
-        { name: 'Training', image: '../../../static/assets/icons/categoriesicons/training.png' }
+        { name: 'Ammunition', translationKey: 'categoryAmmunition', image: '../../../static/assets/icons/categoriesicons/ammunition.png' },
+        { name: 'Protective', translationKey: 'categoryProtective', image: '../../../static/assets/icons/categoriesicons/protective.png' },
+        { name: 'Tactical', translationKey: 'categoryTactical', image: '../../../static/assets/icons/categoriesicons/tactical.png' },
+        { name: 'Attachments', translationKey: 'categoryAttachments', image: '../../../static/assets/icons/categoriesicons/attachments.png' },
+        { name: 'Maintenance', translationKey: 'categoryMaintenance', image: '../../../static/assets/icons/categoriesicons/maintenance.png' },
+        { name: 'Storage', translationKey: 'categoryStorage', image: '../../../static/assets/icons/categoriesicons/storage.png' },
+        { name: 'Cases', translationKey: 'categoryCases', image: '../../../static/assets/icons/categoriesicons/cases.png' },
+        { name: 'Communication', translationKey: 'categoryCommunication', image: '../../../static/assets/icons/categoriesicons/communication.png' },
+        { name: 'Survival', translationKey: 'categorySurvival', image: '../../../static/assets/icons/categoriesicons/survival.png' },
+        { name: 'Training', translationKey: 'categoryTraining', image: '../../../static/assets/icons/categoriesicons/training.png' }
     ],
     services: [
-        { name: 'Manufacturing', image: '../../../static/assets/icons/categoriesicons/manufacturing.png' },
-        { name: 'Customization', image: '../../../static/assets/icons/categoriesicons/customization.png' },
-        { name: 'Maintenance', image: '../../../static/assets/icons/categoriesicons/maintenance.png' },
-        { name: 'Transport', image: '../../../static/assets/icons/categoriesicons/transport.png' },
-        { name: 'Storage', image: '../../../static/assets/icons/categoriesicons/storage.png' },
-        { name: 'Training', image: '../../../static/assets/icons/categoriesicons/training.png' },
-        { name: 'Protection', image: '../../../static/assets/icons/categoriesicons/protection.png' },
-        { name: 'Consulting', image: '../../../static/assets/icons/categoriesicons/consulting.png' },
-        { name: 'Research', image: '../../../static/assets/icons/categoriesicons/reasearch.png' },
-        { name: 'Testing', image: '../../../static/assets/icons/categoriesicons/testing.png' },
-        { name: 'Disposal', image: '../../../static/assets/icons/categoriesicons/disposal.png' },
-        { name: 'Surveillance', image: '../../../static/assets/icons/categoriesicons/surveilance.png' },
-        { name: 'Contracting', image: '../../../static/assets/icons/categoriesicons/contracting.png' }
+        { name: 'Manufacturing', translationKey: 'categoryManufacturing', image: '../../../static/assets/icons/categoriesicons/manufacturing.png' },
+        { name: 'Customization', translationKey: 'categoryCustomization', image: '../../../static/assets/icons/categoriesicons/customization.png' },
+        { name: 'Maintenance', translationKey: 'categoryMaintenance', image: '../../../static/assets/icons/categoriesicons/maintenance.png' },
+        { name: 'Transport', translationKey: 'categoryTransport', image: '../../../static/assets/icons/categoriesicons/transport.png' },
+        { name: 'Storage', translationKey: 'categoryStorage', image: '../../../static/assets/icons/categoriesicons/storage.png' },
+        { name: 'Training', translationKey: 'categoryTraining', image: '../../../static/assets/icons/categoriesicons/training.png' },
+        { name: 'Protection', translationKey: 'categoryProtection', image: '../../../static/assets/icons/categoriesicons/protection.png' },
+        { name: 'Consulting', translationKey: 'categoryConsulting', image: '../../../static/assets/icons/categoriesicons/consulting.png' },
+        { name: 'Research', translationKey: 'categoryResearch', image: '../../../static/assets/icons/categoriesicons/reasearch.png' },
+        { name: 'Testing', translationKey: 'categoryTesting', image: '../../../static/assets/icons/categoriesicons/testing.png' },
+        { name: 'Disposal', translationKey: 'categoryDisposal', image: '../../../static/assets/icons/categoriesicons/disposal.png' },
+        { name: 'Surveillance', translationKey: 'categorySurveillance', image: '../../../static/assets/icons/categoriesicons/surveilance.png' },
+        { name: 'Contracting', translationKey: 'categoryContracting', image: '../../../static/assets/icons/categoriesicons/contracting.png' }
     ]
 };
 
@@ -181,7 +181,7 @@ const carouselData = {
 
 const categoryPageMap = {
     // WEAPONS CATEGORIES
-    firearms: '/pages/products/firearms.html',
+    'Firearms': '/pages/products/firearms.html',
     'Blades': '/pages/products/blades.html',
     'Blunts': '/pages/products/blunts.html',
     'Projectile': '/pages/products/projectile.html',
@@ -222,10 +222,28 @@ const categoryPageMap = {
 };
 
 
+// ===========================================
+// SECTION 2.5: TRANSLATION HELPER
+// ===========================================
+
+/**
+ * Gets a translated string for the current language.
+ * Falls back to English, then to the raw key if not found.
+ * @param {string} key - The translation key
+ * @returns {string} - The translated string
+ */
+function getTranslatedString(key) {
+    const lang = localStorage.getItem("lang") || "english";
+    return (
+        translations?.[lang]?.[key] ||
+        translations?.["english"]?.[key] ||
+        key
+    );
+}
 
 
 // ===========================================
-// SECTION 3: CATEGORY CAROUSEL FUNCTIONS
+// SECTION 2.6: CATEGORY CAROUSEL FUNCTIONS
 // ===========================================
 let currentCategory = 'weapons';
 let autoScrollId = null;
@@ -290,7 +308,7 @@ function renderCategory(categoryName) {
         const card = document.createElement('div');
         card.className = 'category-rect';
         card.dataset.index = index;
-        card.dataset.name = item.name;
+        card.dataset.name = item.name; // keep English name for routing
 
         const imageDiv = document.createElement('div');
         imageDiv.className = 'category-image';
@@ -302,16 +320,17 @@ function renderCategory(categoryName) {
 
         const label = document.createElement('div');
         label.className = 'category-label';
-        label.textContent = item.name;
+        // Use translated string for display; store the key for live re-renders
+        label.dataset.translate = item.translationKey;
+        label.textContent = getTranslatedString(item.translationKey);
 
         card.appendChild(imageDiv);
         card.appendChild(label);
         trackEl.appendChild(card);
 
-        // Add click handler
-        card.addEventListener('click', (e) => {
-            const categoryName = card.dataset.name;
-            const targetPage = categoryPageMap[categoryName];
+        // Add click handler — always route using the English name key
+        card.addEventListener('click', () => {
+            const targetPage = categoryPageMap[item.name];
 
             trackEl.querySelectorAll('.category-rect').forEach(c => c.classList.remove('active'));
             card.classList.add('active');
@@ -319,7 +338,7 @@ function renderCategory(categoryName) {
             if (targetPage) {
                 window.location.href = targetPage;
             } else {
-                console.warn(`No page mapping found for: ${categoryName}`);
+                console.warn(`No page mapping found for: ${item.name}`);
             }
         });
     });
@@ -337,26 +356,30 @@ function setupCategoryButtons() {
     const buttonContainer = document.querySelector('.category-buttons');
     if (!buttonContainer) return;
 
-    ['Weapons', 'Equipment', 'Services'].forEach((label) => {
+    // Each entry: { label shown in English, translationKey, data-category value }
+    const buttonDefs = [
+        { englishLabel: 'Weapons', translationKey: 'categoryBtnWeapons', category: 'weapons' },
+        { englishLabel: 'Equipment', translationKey: 'categoryBtnEquipment', category: 'equipment' },
+        { englishLabel: 'Services', translationKey: 'categoryBtnServices', category: 'services' }
+    ];
+
+    buttonDefs.forEach(({ translationKey, category }) => {
         const button = document.createElement('button');
         button.className = 'category-btn';
-        button.textContent = label;
-        button.dataset.category = label.toLowerCase();
+        button.dataset.category = category;
+        button.dataset.translate = translationKey;  // for setLanguage() to pick up
+        button.textContent = getTranslatedString(translationKey);
 
-        if (label.toLowerCase() === currentCategory) {
+        if (category === currentCategory) {
             button.classList.add('active');
         }
 
         button.addEventListener('click', () => {
-            const categoryName = button.dataset.category;
-
-            // Update active button
             document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
 
-            // Update category and render
-            currentCategory = categoryName;
-            renderCategory(categoryName);
+            currentCategory = category;
+            renderCategory(category);
         });
 
         buttonContainer.appendChild(button);
@@ -365,14 +388,13 @@ function setupCategoryButtons() {
 
 function setupScrollListeners() {
     const wrapperEl = getWrapperEl();
-    const trackEl = getTrackEl();
 
     wrapperEl.addEventListener('mousedown', () => {
         isScrolling = true;
         stopAutoScroll();
     });
 
-    wrapperEl.addEventListener('wheel', (e) => {
+    wrapperEl.addEventListener('wheel', () => {
         isScrolling = true;
         stopAutoScroll();
     }, { passive: true });
