@@ -61,3 +61,14 @@ Project Structure:
     [ ]About:
     [ ]Contacts:
     [ ]Legal:
+    [ ]Settings:
+        [ ]Account:
+        [ ]Appearance:
+        [ ]Notifications:
+        [ ]Privacy & Security:
+        [ ]Language & Region:
+        [ ]Help & Support:
+        [ ]System Actions:
+    [ ]Account:
+        [ ]User:
+        [ ]Admin:
