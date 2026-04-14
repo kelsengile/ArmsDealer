@@ -72,6 +72,7 @@ const translations = {
         homepagefeaturepage5: "Services",
         homepagecategorytitle: "Explore Our Categories:",
 
+
         // Category Section
         homepagecategoryBtnWeapons: "Weapons",
         homepagecategoryBtnEquipment: "Equipment",
@@ -918,16 +919,20 @@ window.setLanguage = setLanguage;
 const currencyRates = {
     PHP: { symbol: "₱", rate: 1.0 },
     USD: { symbol: "$", rate: 0.0175 },
-    EUR: { symbol: "€", rate: 0.0162 }
+    EUR: { symbol: "€", rate: 0.0162 },
+    JPY: { symbol: "JP¥", rate: 2.627 },
+    CNY: { symbol: "CN¥", rate: 0.127 }
 };
 
 function formatPrice(phpAmount, currency) {
     const converted = phpAmount * currencyRates[currency].rate;
     const symbol = currencyRates[currency].symbol;
-    // Fewer decimals for PHP, 2 for foreign currencies
-    const formatted = currency === "PHP"
+
+    const noDecimals = ["PHP", "JPY"];
+    const formatted = noDecimals.includes(currency)
         ? converted.toLocaleString("en-US", { maximumFractionDigits: 0 })
         : converted.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
     return symbol + formatted;
 }
 

@@ -192,11 +192,13 @@
                         {% if p %}
                         <div class="fc-card" data-popup='{
                                 "name":"{{ p.name }}",
-                                "desc":"{{ p.description }}",
-                                "tags": {{ p.tags or "[]" }},
-                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
-                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
-                            }'>
+    "desc":"{{ p.description }}",
+    "tags": {{ p.tags or "[]" }},
+    "php_price": {{ p.price }},
+    "php_discount": {{ p.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount / 100))) * currency.rate_to_php) }}"
+}'>
 
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/productsimages/' ~ p.image_file) }}&quot;);">
@@ -209,9 +211,13 @@
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
-                                        <span class="fc-new">
-                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        <span class="fc-old" data-php-price="{{ p.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}
+                                        </span>
+                                        <span class="fc-new large"
+                                            data-php-price="{{ p.price - (p.price * (p.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
@@ -233,11 +239,13 @@
                         {% if p %}
                         <div class="fc-card" data-popup='{
                                 "name":"{{ p.name }}",
-                                "desc":"{{ p.description }}",
-                                "tags": {{ p.tags or "[]" }},
-                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
-                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
-                            }'>
+    "desc":"{{ p.description }}",
+    "tags": {{ p.tags or "[]" }},
+    "php_price": {{ p.price }},
+    "php_discount": {{ p.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount / 100))) * currency.rate_to_php) }}"
+}'>
 
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/productsimages/' ~ p.image_file) }}&quot;);">
@@ -250,9 +258,13 @@
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
-                                        <span class="fc-new">
-                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        <span class="fc-old" data-php-price="{{ p.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}
+                                        </span>
+                                        <span class="fc-new large"
+                                            data-php-price="{{ p.price - (p.price * (p.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
@@ -283,11 +295,13 @@
                         {% if p %}
                         <div class="fc-card span2r" data-popup='{
                                 "name":"{{ p.name }}",
-                                "desc":"{{ p.description }}",
-                                "tags": {{ p.tags or "[]" }},
-                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
-                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
-                            }'>
+    "desc":"{{ p.description }}",
+    "tags": {{ p.tags or "[]" }},
+    "php_price": {{ p.price }},
+    "php_discount": {{ p.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount / 100))) * currency.rate_to_php) }}"
+}'>
 
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/productsimages/' ~ p.image_file) }}&quot;);">
@@ -300,9 +314,13 @@
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
-                                        <span class="fc-new large">
-                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        <span class="fc-old" data-php-price="{{ p.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}
+                                        </span>
+                                        <span class="fc-new large"
+                                            data-php-price="{{ p.price - (p.price * (p.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
@@ -324,11 +342,13 @@
                         {% if p %}
                         <div class="fc-card" data-popup='{
                                 "name":"{{ p.name }}",
-                                "desc":"{{ p.description }}",
-                                "tags": {{ p.tags or "[]" }},
-                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
-                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
-                            }'>
+    "desc":"{{ p.description }}",
+    "tags": {{ p.tags or "[]" }},
+    "php_price": {{ p.price }},
+    "php_discount": {{ p.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount / 100))) * currency.rate_to_php) }}"
+}'>
 
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/productsimages/' ~ p.image_file) }}&quot;);">
@@ -341,9 +361,13 @@
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
-                                        <span class="fc-new">
-                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        <span class="fc-old" data-php-price="{{ p.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}
+                                        </span>
+                                        <span class="fc-new large"
+                                            data-php-price="{{ p.price - (p.price * (p.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
@@ -366,11 +390,13 @@
                         {% if p %}
                         <div class="fc-card" data-popup='{
                                 "name":"{{ p.name }}",
-                                "desc":"{{ p.description }}",
-                                "tags": {{ p.tags or "[]" }},
-                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
-                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
-                            }'>
+    "desc":"{{ p.description }}",
+    "tags": {{ p.tags or "[]" }},
+    "php_price": {{ p.price }},
+    "php_discount": {{ p.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount / 100))) * currency.rate_to_php) }}"
+}'>
 
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/productsimages/' ~ p.image_file) }}&quot;);">
@@ -383,9 +409,13 @@
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
-                                        <span class="fc-new">
-                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        <span class="fc-old" data-php-price="{{ p.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}
+                                        </span>
+                                        <span class="fc-new large"
+                                            data-php-price="{{ p.price - (p.price * (p.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
@@ -408,11 +438,13 @@
                         {% if p %}
                         <div class="fc-card" data-popup='{
                                 "name":"{{ p.name }}",
-                                "desc":"{{ p.description }}",
-                                "tags": {{ p.tags or "[]" }},
-                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
-                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
-                            }'>
+    "desc":"{{ p.description }}",
+    "tags": {{ p.tags or "[]" }},
+    "php_price": {{ p.price }},
+    "php_discount": {{ p.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount / 100))) * currency.rate_to_php) }}"
+}'>
 
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/productsimages/' ~ p.image_file) }}&quot;);">
@@ -425,9 +457,13 @@
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
-                                        <span class="fc-new">
-                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        <span class="fc-old" data-php-price="{{ p.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}
+                                        </span>
+                                        <span class="fc-new large"
+                                            data-php-price="{{ p.price - (p.price * (p.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
@@ -450,11 +486,13 @@
                         {% if p %}
                         <div class="fc-card" data-popup='{
                                 "name":"{{ p.name }}",
-                                "desc":"{{ p.description }}",
-                                "tags": {{ p.tags or "[]" }},
-                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
-                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
-                            }'>
+    "desc":"{{ p.description }}",
+    "tags": {{ p.tags or "[]" }},
+    "php_price": {{ p.price }},
+    "php_discount": {{ p.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount / 100))) * currency.rate_to_php) }}"
+}'>
 
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/productsimages/' ~ p.image_file) }}&quot;);">
@@ -467,9 +505,13 @@
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
-                                        <span class="fc-new">
-                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        <span class="fc-old" data-php-price="{{ p.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}
+                                        </span>
+                                        <span class="fc-new large"
+                                            data-php-price="{{ p.price - (p.price * (p.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
@@ -501,11 +543,13 @@
                         {% if p %}
                         <div class="fc-card span2r" data-popup='{
                                 "name":"{{ p.name }}",
-                                "desc":"{{ p.description }}",
-                                "tags": {{ p.tags or "[]" }},
-                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
-                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
-                            }'>
+    "desc":"{{ p.description }}",
+    "tags": {{ p.tags or "[]" }},
+    "php_price": {{ p.price }},
+    "php_discount": {{ p.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount / 100))) * currency.rate_to_php) }}"
+}'>
 
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/productsimages/' ~ p.image_file) }}&quot;);">
@@ -518,9 +562,13 @@
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
-                                        <span class="fc-new large">
-                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        <span class="fc-old" data-php-price="{{ p.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}
+                                        </span>
+                                        <span class="fc-new large"
+                                            data-php-price="{{ p.price - (p.price * (p.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
@@ -543,11 +591,13 @@
                         {% if p %}
                         <div class="fc-card" data-popup='{
                                 "name":"{{ p.name }}",
-                                "desc":"{{ p.description }}",
-                                "tags": {{ p.tags or "[]" }},
-                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
-                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
-                            }'>
+    "desc":"{{ p.description }}",
+    "tags": {{ p.tags or "[]" }},
+    "php_price": {{ p.price }},
+    "php_discount": {{ p.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount / 100))) * currency.rate_to_php) }}"
+}'>
 
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/productsimages/' ~ p.image_file) }}&quot;);">
@@ -560,9 +610,13 @@
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
-                                        <span class="fc-new">
-                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        <span class="fc-old" data-php-price="{{ p.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}
+                                        </span>
+                                        <span class="fc-new large"
+                                            data-php-price="{{ p.price - (p.price * (p.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
@@ -584,11 +638,13 @@
                         {% if p %}
                         <div class="fc-card" data-popup='{
                                 "name":"{{ p.name }}",
-                                "desc":"{{ p.description }}",
-                                "tags": {{ p.tags or "[]" }},
-                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
-                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
-                            }'>
+    "desc":"{{ p.description }}",
+    "tags": {{ p.tags or "[]" }},
+    "php_price": {{ p.price }},
+    "php_discount": {{ p.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount / 100))) * currency.rate_to_php) }}"
+}'>
 
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/productsimages/' ~ p.image_file) }}&quot;);">
@@ -601,9 +657,13 @@
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
-                                        <span class="fc-new">
-                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        <span class="fc-old" data-php-price="{{ p.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}
+                                        </span>
+                                        <span class="fc-new large"
+                                            data-php-price="{{ p.price - (p.price * (p.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
@@ -633,11 +693,13 @@
                         {% if p %}
                         <div class="fc-card span2r" data-popup='{
                                 "name":"{{ p.name }}",
-                                "desc":"{{ p.description }}",
-                                "tags": {{ p.tags or "[]" }},
-                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
-                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
-                            }'>
+    "desc":"{{ p.description }}",
+    "tags": {{ p.tags or "[]" }},
+    "php_price": {{ p.price }},
+    "php_discount": {{ p.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount / 100))) * currency.rate_to_php) }}"
+}'>
 
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/productsimages/' ~ p.image_file) }}&quot;);">
@@ -650,9 +712,13 @@
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
-                                        <span class="fc-new large">
-                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        <span class="fc-old" data-php-price="{{ p.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}
+                                        </span>
+                                        <span class="fc-new large"
+                                            data-php-price="{{ p.price - (p.price * (p.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
@@ -674,12 +740,13 @@
                         {% if p %}
                         <div class="fc-card" data-popup='{
                                 "name":"{{ p.name }}",
-                                "desc":"{{ p.description }}",
-                                "tags": {{ p.tags or "[]" }},
-                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
-                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
-                            }'>
-
+    "desc":"{{ p.description }}",
+    "tags": {{ p.tags or "[]" }},
+    "php_price": {{ p.price }},
+    "php_discount": {{ p.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount / 100))) * currency.rate_to_php) }}"
+}'>
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/productsimages/' ~ p.image_file) }}&quot;);">
                                 <div class="fc-overlay"></div>
@@ -691,9 +758,13 @@
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
-                                        <span class="fc-new">
-                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        <span class="fc-old" data-php-price="{{ p.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}
+                                        </span>
+                                        <span class="fc-new large"
+                                            data-php-price="{{ p.price - (p.price * (p.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
@@ -715,11 +786,13 @@
                         {% if p %}
                         <div class="fc-card" data-popup='{
                                 "name":"{{ p.name }}",
-                                "desc":"{{ p.description }}",
-                                "tags": {{ p.tags or "[]" }},
-                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
-                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
-                            }'>
+    "desc":"{{ p.description }}",
+    "tags": {{ p.tags or "[]" }},
+    "php_price": {{ p.price }},
+    "php_discount": {{ p.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount / 100))) * currency.rate_to_php) }}"
+}'>
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/productsimages/' ~ p.image_file) }}&quot;);">
                                 <div class="fc-overlay"></div>
@@ -731,9 +804,13 @@
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
-                                        <span class="fc-new">
-                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        <span class="fc-old" data-php-price="{{ p.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}
+                                        </span>
+                                        <span class="fc-new large"
+                                            data-php-price="{{ p.price - (p.price * (p.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
@@ -755,12 +832,13 @@
                         {% if p %}
                         <div class="fc-card" data-popup='{
                                 "name":"{{ p.name }}",
-                                "desc":"{{ p.description }}",
-                                "tags": {{ p.tags or "[]" }},
-                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
-                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
-                            }'>
-
+    "desc":"{{ p.description }}",
+    "tags": {{ p.tags or "[]" }},
+    "php_price": {{ p.price }},
+    "php_discount": {{ p.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount / 100))) * currency.rate_to_php) }}"
+}'>
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/productsimages/' ~ p.image_file) }}&quot;);">
                                 <div class="fc-overlay"></div>
@@ -772,9 +850,13 @@
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
-                                        <span class="fc-new">
-                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        <span class="fc-old" data-php-price="{{ p.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}
+                                        </span>
+                                        <span class="fc-new large"
+                                            data-php-price="{{ p.price - (p.price * (p.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
@@ -796,11 +878,13 @@
                         {% if p %}
                         <div class="fc-card" data-popup='{
                                 "name":"{{ p.name }}",
-                                "desc":"{{ p.description }}",
-                                "tags": {{ p.tags or "[]" }},
-                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
-                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
-                            }'>
+    "desc":"{{ p.description }}",
+    "tags": {{ p.tags or "[]" }},
+    "php_price": {{ p.price }},
+    "php_discount": {{ p.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount / 100))) * currency.rate_to_php) }}"
+}'>
 
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/productsimages/' ~ p.image_file) }}&quot;);">
@@ -813,9 +897,13 @@
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
-                                        <span class="fc-new">
-                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        <span class="fc-old" data-php-price="{{ p.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}
+                                        </span>
+                                        <span class="fc-new large"
+                                            data-php-price="{{ p.price - (p.price * (p.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
@@ -849,11 +937,13 @@
 
                         <div class="fc-card span2r" data-popup='{
                             "name":"{{ s.name }}",
-                            "desc":"{{ s.description }}",
-                            "tags": {{ s.tags or "[]" }},
-                            "old":"₱{{ "{:,.0f}".format(s.price) }}",
-                            "new":"₱{{ "{:,.0f}".format(s.price - (s.price * (s.discount / 100))) }}"
-                        }'>
+    "desc":"{{ s.description }}",
+    "tags": {{ s.tags or "[]" }},
+    "php_price": {{ s.price }},
+    "php_discount": {{ s.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(s.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((s.price - (s.price * (s.discount / 100))) * currency.rate_to_php) }}"
+}'>
 
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/serviceimages/' ~ s.image_file) }}&quot;);">
@@ -865,14 +955,14 @@
 
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(s.discount) }}%</div>
-
                                     <div class="fc-prices">
-                                        <span class="fc-old">
-                                            ₱{{ "{:,.0f}".format(s.price) }}
+                                        <span class="fc-old" data-php-price="{{ s.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(s.price * currency.rate_to_php) }}
                                         </span>
-
-                                        <span class="fc-new large">
-                                            ₱{{ "{:,.0f}".format(s.price - (s.price * (s.discount / 100))) }}
+                                        <span class="fc-new large"
+                                            data-php-price="{{ s.price - (s.price * (s.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((s.price - (s.price * (s.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
@@ -897,11 +987,14 @@
                         {% if s %}
                         <div class="fc-card" data-popup='{
                             "name":"{{ s.name }}",
-                            "desc":"{{ s.description }}",
-                            "tags": {{ s.tags or "[]" }},
-                            "old":"₱{{ "{:,.0f}".format(s.price) }}",
-                            "new":"₱{{ "{:,.0f}".format(s.price - (s.price * (s.discount / 100))) }}"
-                        }'>
+    "desc":"{{ s.description }}",
+    "tags": {{ s.tags or "[]" }},
+    "php_price": {{ s.price }},
+    "php_discount": {{ s.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(s.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((s.price - (s.price * (s.discount / 100))) * currency.rate_to_php) }}"
+}'>
+
 
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/serviceimages/' ~ s.image_file) }}&quot;);">
@@ -914,9 +1007,13 @@
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(s.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "{:,.0f}".format(s.price) }}</span>
-                                        <span class="fc-new">
-                                            ₱{{ "{:,.0f}".format(s.price - (s.price * (s.discount / 100))) }}
+                                        <span class="fc-old" data-php-price="{{ s.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(s.price * currency.rate_to_php) }}
+                                        </span>
+                                        <span class="fc-new large"
+                                            data-php-price="{{ s.price - (s.price * (s.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((s.price - (s.price * (s.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
@@ -938,11 +1035,14 @@
                         {% if s %}
                         <div class="fc-card" data-popup='{
                             "name":"{{ s.name }}",
-                            "desc":"{{ s.description }}",
-                            "tags": {{ s.tags or "[]" }},
-                            "old":"₱{{ "{:,.0f}".format(s.price) }}",
-                            "new":"₱{{ "{:,.0f}".format(s.price - (s.price * (s.discount / 100))) }}"
-                        }'>
+    "desc":"{{ s.description }}",
+    "tags": {{ s.tags or "[]" }},
+    "php_price": {{ s.price }},
+    "php_discount": {{ s.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(s.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((s.price - (s.price * (s.discount / 100))) * currency.rate_to_php) }}"
+}'>
+
 
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/serviceimages/' ~ s.image_file) }}&quot;);">
@@ -955,9 +1055,13 @@
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(s.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "{:,.0f}".format(s.price) }}</span>
-                                        <span class="fc-new">
-                                            ₱{{ "{:,.0f}".format(s.price - (s.price * (s.discount / 100))) }}
+                                        <span class="fc-old" data-php-price="{{ s.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(s.price * currency.rate_to_php) }}
+                                        </span>
+                                        <span class="fc-new large"
+                                            data-php-price="{{ s.price - (s.price * (s.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((s.price - (s.price * (s.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
