@@ -112,10 +112,11 @@
                     <option value="spanish">🌐 Spanish</option>
                     <option value="mandarin">🌐 Mandarin</option>
                 </select>
-                <select aria-label="Currency">
-                    <option>PHP (₱)</option>
-                    <option>USD ($)</option>
-                    <option>EUR (€)</option>
+
+                <select id="currencySelect" onchange="setCurrency(this.value)">
+                    <option value="PHP">PHP (₱)</option>
+                    <option value="USD">USD ($)</option>
+                    <option value="EUR">EUR (€)</option>
                 </select>
                 <a href="{{ url_for('about') }}" class="{% if request.endpoint == 'about' %}nav-active{% endif %}"
                     data-translate="navbarabout"></a>

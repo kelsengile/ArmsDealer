@@ -8,7 +8,7 @@ import sqlite3
 import os
 
 DATABASE = os.path.join(os.path.dirname(__file__), 'database', 'armsdealer.db')
-SCHEMA   = os.path.join(os.path.dirname(__file__), 'database', 'schema.sql')
+SCHEMA = os.path.join(os.path.dirname(__file__), 'database', 'schema.sql')
 
 
 def init_db():

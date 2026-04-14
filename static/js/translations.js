@@ -881,38 +881,94 @@ const translations = {
     }
 };
 
+// ─── LANGUAGE ─────────────────────────────────────────────────────
 function setLanguage(lang) {
+    // UI strings update instantly (navbar, homepage copy, etc.)
     const elements = document.querySelectorAll("[data-translate]");
-
     elements.forEach(el => {
         const key = el.getAttribute("data-translate");
-
         const value =
             translations[lang]?.[key] ||
             translations["english"][key] ||
             key;
 
-        // Only set textContent if the element has NO children (is a text-only element)
         if (el.children.length === 0) {
             el.textContent = value;
         }
-
-        // Always sync data-label if it exists
         if (el.hasAttribute("data-label")) {
             el.setAttribute("data-label", value);
         }
     });
 
     localStorage.setItem("lang", lang);
+
+    // Reload so Flask re-queries the DB with the new lang_code
+    // Only reload if the language actually changed
+    const prev = document.cookie.match(/lang=([^;]+)/)?.[1];
+    document.cookie = `lang=${lang}; path=/`;
+    if (prev !== lang) {
+        location.reload();
+    }
 }
 
 window.setLanguage = setLanguage;
 
+
+// ─── CURRENCY ─────────────────────────────────────────────────────
+const currencyRates = {
+    PHP: { symbol: "₱", rate: 1.0 },
+    USD: { symbol: "$", rate: 0.0175 },
+    EUR: { symbol: "€", rate: 0.0162 }
+};
+
+function formatPrice(phpAmount, currency) {
+    const converted = phpAmount * currencyRates[currency].rate;
+    const symbol = currencyRates[currency].symbol;
+    // Fewer decimals for PHP, 2 for foreign currencies
+    const formatted = currency === "PHP"
+        ? converted.toLocaleString("en-US", { maximumFractionDigits: 0 })
+        : converted.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return symbol + formatted;
+}
+
+function setCurrency(currency) {
+    localStorage.setItem("currency", currency);
+    document.cookie = `currency=${currency}; path=/`;
+
+    // Update every price element that has a data-php-price attribute
+    document.querySelectorAll("[data-php-price]").forEach(el => {
+        const php = parseFloat(el.getAttribute("data-php-price"));
+        el.textContent = formatPrice(php, currency);
+    });
+
+    // Also update data-popup prices on fc-cards
+    document.querySelectorAll("[data-popup]").forEach(card => {
+        try {
+            const popup = JSON.parse(card.getAttribute("data-popup"));
+            if (popup.php_price !== undefined) {
+                const discounted = popup.php_price - (popup.php_price * (popup.php_discount / 100));
+                popup.old = formatPrice(popup.php_price, currency);
+                popup.new = formatPrice(discounted, currency);
+                card.setAttribute("data-popup", JSON.stringify(popup));
+            }
+        } catch (e) { }
+    });
+}
+
+window.setCurrency = setCurrency;
+
+
+// ─── INIT ──────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
     const savedLang = localStorage.getItem("lang") || "english";
-
     setLanguage(savedLang);
 
-    const select = document.getElementById("languageSelect");
-    if (select) select.value = savedLang;
+    const langSelect = document.getElementById("languageSelect");
+    if (langSelect) langSelect.value = savedLang;
+
+    const savedCurrency = localStorage.getItem("currency") || "PHP";
+    setCurrency(savedCurrency);
+
+    const currSelect = document.getElementById("currencySelect");
+    if (currSelect) currSelect.value = savedCurrency;
 });

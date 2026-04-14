@@ -9,6 +9,7 @@
     <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- HERO CAROUSEL                                               -->
     <!-- ═══════════════════════════════════════════════════════════ -->
+
     <section class="hero" id="heroCarousel">
 
         <!-- Slide 1 -->
@@ -143,12 +144,14 @@
                         {% set p = products.get(1) %}
                         {% if p %}
                         <div class="fc-card span2r" data-popup='{
-                                "name":"{{ p.name }}",
-                                "desc":"{{ p.description }}",
-                                "tags": {{ p.tags or "[]" }},
-                                "old":"₱{{ "{:,.0f}".format(p.price) }}",
-                                "new":"₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}"
-                            }'>
+    "name":"{{ p.name }}",
+    "desc":"{{ p.description }}",
+    "tags": {{ p.tags or "[]" }},
+    "php_price": {{ p.price }},
+    "php_discount": {{ p.discount }},
+    "old":"{{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}",
+    "new":"{{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount / 100))) * currency.rate_to_php) }}"
+}'>
 
                             <div class="fc-card-bg"
                                 style="background-image: url(&quot;{{ url_for('static', filename='assets/images/productsimages/' ~ p.image_file) }}&quot;);">
@@ -161,9 +164,13 @@
                                 <div class="fc-pricing">
                                     <div class="fc-discount">–{{ "%.0f"|format(p.discount) }}%</div>
                                     <div class="fc-prices">
-                                        <span class="fc-old">₱{{ "{:,.0f}".format(p.price) }}</span>
-                                        <span class="fc-new large">
-                                            ₱{{ "{:,.0f}".format(p.price - (p.price * (p.discount / 100))) }}
+                                        <span class="fc-old" data-php-price="{{ p.price }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format(p.price * currency.rate_to_php) }}
+                                        </span>
+                                        <span class="fc-new large"
+                                            data-php-price="{{ p.price - (p.price * (p.discount / 100)) }}">
+                                            {{ currency.symbol }}{{ "{:,.0f}".format((p.price - (p.price * (p.discount /
+                                            100))) * currency.rate_to_php) }}
                                         </span>
                                     </div>
                                 </div>
@@ -1020,23 +1027,17 @@
         </div>
     </section>
 
-
     <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- BUNDLES                                                     -->
     <!-- ═══════════════════════════════════════════════════════════ -->
-
 
     <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- BEST SELLERS SECTION                                        -->
     <!-- ═══════════════════════════════════════════════════════════ -->
 
-
-
     <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- NEWS & UPDATES                                              -->
     <!-- ═══════════════════════════════════════════════════════════ -->
-
-
 
     <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- WHY CHOOSE US                                               -->

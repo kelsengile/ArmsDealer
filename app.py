@@ -29,6 +29,20 @@ def close_db(error):
         db.close()
 
 
+def get_locale():
+    return request.cookies.get('lang', 'english')
+
+
+def get_currency(db):
+    code = request.cookies.get('currency', 'PHP')
+    currency = db.execute(
+        "SELECT * FROM currencies WHERE code = ?", (code,)
+    ).fetchone()
+    return currency or db.execute(
+        "SELECT * FROM currencies WHERE code = 'PHP'"
+    ).fetchone()
+
+
 # ─────────────────────────────────────────
 # MAIN ROUTES
 # ─────────────────────────────────────────
@@ -37,18 +51,35 @@ def close_db(error):
 @app.route('/home')
 def homepage():
     db = get_db()
+    lang = get_locale()
+    currency = get_currency(db)
 
-    product_rows = db.execute(
-        "SELECT * FROM products WHERE id IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16) ORDER BY id"
-    ).fetchall()
+    product_rows = db.execute("""
+    SELECT p.id, p.price, p.discount, p.image_file, p.tags,
+           COALESCE(pt.name, p.name)               AS name,
+           COALESCE(pt.description, p.description) AS description
+    FROM products p
+    LEFT JOIN product_translations pt
+           ON pt.product_id = p.id AND pt.lang_code = ?
+    WHERE p.id IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
+    ORDER BY p.id
+""", (lang,)).fetchall()
+
     products = {row["id"]: row for row in product_rows}
 
-    service_rows = db.execute(
-        "SELECT * FROM services WHERE id IN (1,2,3) ORDER BY id"
-    ).fetchall()
+    service_rows = db.execute("""
+    SELECT s.id, s.price, s.discount, s.image_file, s.tags,
+           COALESCE(st.name, s.name)               AS name,
+           COALESCE(st.description, s.description) AS description
+    FROM services s
+    LEFT JOIN service_translations st
+           ON st.service_id = s.id AND st.lang_code = ?
+    WHERE s.id IN (1,2,3)
+    ORDER BY s.id
+""", (lang,)).fetchall()
     services = {row["id"]: row for row in service_rows}
 
-    return render_template('homepage.html', products=products, services=services)
+    return render_template('homepage.html', products=products, services=services, currency=currency)
 
 
 @app.route('/products')
