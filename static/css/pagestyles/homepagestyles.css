@@ -515,7 +515,7 @@
 /* Discount badge */
 .fc-discount {
     font-family: 'Courier New', monospace;
-    font-size: clamp(10px, 1.4vw, 16px);
+    font-size: clamp(8px, 1.4vw, 14px);
     font-weight: bold;
     color: #e8644a;
     background: rgba(232, 100, 74, 0.15);
@@ -537,7 +537,7 @@
 /* Old price */
 .fc-old {
     font-family: 'Courier New', monospace;
-    font-size: clamp(10px, 1.4vw, 14px);
+    font-size: clamp(8px, 1.4vw, 12px);
     color: rgba(168, 196, 154, 0.45);
     text-decoration: line-through;
     min-width: 0;
@@ -553,7 +553,8 @@
 }
 
 .fc-new.large {
-    font-size: clamp(16px, 2.2vw, 26px);
+    font-size: clamp(14px, 2.2vw, 24px);
+
 
 }
 
