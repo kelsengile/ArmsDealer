@@ -42,10 +42,10 @@ def get_currency(db):
         "SELECT * FROM currencies WHERE code = 'PHP'"
     ).fetchone()
 
-
 # ─────────────────────────────────────────
 # MAIN ROUTES
 # ─────────────────────────────────────────
+
 
 @app.route('/')
 @app.route('/home')

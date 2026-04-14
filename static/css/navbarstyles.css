@@ -639,7 +639,7 @@
 .settings-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.55);
+    background: rgba(0, 0, 0, 0.300);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.28s ease;
@@ -657,6 +657,7 @@
     top: 120px;
     left: 0;
     bottom: 0;
+    height: 500px;
     width: var(--set-width);
     background: var(--set-panel);
     border-right: 1px solid var(--set-border);

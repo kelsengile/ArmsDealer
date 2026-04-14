@@ -125,7 +125,8 @@ class Order:
     def get_by_user(user_id: int):
         db = get_db()
         return db.execute(
-            'SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC', (user_id,)
+            'SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC', (
+                user_id,)
         ).fetchall()
 
     @staticmethod
