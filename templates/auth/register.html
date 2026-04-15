@@ -4,7 +4,7 @@
 {% block main %}
 <main class="container">
     <div class="auth-form">
-        <h2>Register</h2>
+        <h2 data-translate="authregister">Register</h2>
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         <ul class="flashes">
@@ -17,38 +17,40 @@
         <form method="POST">
             {% if otp_sent %}
             <div class="auth-info">
-                <p>An OTP was sent to <strong>{{ pending_email }}</strong>.</p>
-                <p>Enter the 6-digit verification code below to complete registration.</p>
+                <p data-translate="authotpsent">An OTP was sent to <strong>{{ pending_email }}</strong>.</p>
+                <p data-translate="authenterotp">Enter the 6-digit verification code below to complete registration.</p>
             </div>
             <div>
-                <label for="otp_code">OTP Code:</label>
+                <label for="otp_code" data-translate="authotpcode">OTP Code:</label>
                 <input type="text" id="otp_code" name="otp_code" pattern="\d{6}" maxlength="6" required>
             </div>
             <div class="auth-buttons">
-                <button type="submit">Verify OTP</button>
-                <button type="submit" name="resend_otp" value="1" class="secondary">Resend OTP</button>
+                <button type="submit" data-translate="authverifyotpbutton">Verify OTP</button>
+                <button type="submit" name="resend_otp" value="1" class="secondary"
+                    data-translate="authresendotpbutton">Resend OTP</button>
             </div>
             {% else %}
             <div>
-                <label for="username">Username:</label>
+                <label for="username" data-translate="authusername">Username:</label>
                 <input type="text" id="username" name="username" required>
             </div>
             <div>
-                <label for="email">Email:</label>
+                <label for="email" data-translate="authuseremail">Email:</label>
                 <input type="email" id="email" name="email" required>
             </div>
             <div>
-                <label for="password">Password:</label>
+                <label for="password" data-translate="authpassword">Password:</label>
                 <input type="password" id="password" name="password" required>
             </div>
             <div>
-                <label for="confirm_password">Confirm Password:</label>
+                <label for="confirm_password" data-translate="authconfirmpassword">Confirm Password:</label>
                 <input type="password" id="confirm_password" name="confirm_password" required>
             </div>
-            <button type="submit">Send OTP</button>
+            <button type="submit" data-translate="authregisterbutton">Send OTP</button>
             {% endif %}
         </form>
-        <p>Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a></p>
+        <p data-translate="authhaveaccount">Already have an account? <a href="{{ url_for('auth.login') }}"
+                data-translate="authloginhere">Login here</a></p>
     </div>
 </main>
 {% endblock %}
