@@ -7,7 +7,7 @@
 .account-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(0, 0, 0, 0.300);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.28s ease;
