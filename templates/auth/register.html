@@ -1,8 +1,12 @@
 {% extends 'partials/base.html' %}
 {% block title %}<title>Register - ArmsDealer</title>{% endblock %}
 
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
 {% block main %}
-<main class="container">
+<main class="authcontainer">
     <div class="auth-form">
         <h2 data-translate="authregister">Register</h2>
         {% with messages = get_flashed_messages(with_categories=true) %}
