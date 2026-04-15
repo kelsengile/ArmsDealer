@@ -5,6 +5,11 @@ Populates session with all fields the account panel needs.
 """
 
 import sqlite3
+import os
+import secrets
+import datetime
+import smtplib
+from email.message import EmailMessage
 from functools import wraps
 from flask import (
     Blueprint, render_template, request,
@@ -14,7 +19,48 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 auth_bp = Blueprint('auth', __name__)
 
-DATABASE = 'armsdealerdb.sqlite'   # adjust path to match your app
+DATABASE = os.path.join(os.path.dirname(__file__), 'database', 'armsdealer.db')
+
+
+def _send_otp_email(email, code, purpose='registration'):
+    smtp_host = os.environ.get('SMTP_HOST')
+    if not smtp_host:
+        return False
+
+    smtp_port = int(os.environ.get('SMTP_PORT', 587))
+    smtp_user = os.environ.get('SMTP_USER')
+    smtp_pass = os.environ.get('SMTP_PASS')
+    smtp_from = os.environ.get('MAIL_FROM', 'no-reply@armsdealer.com')
+
+    subject = 'Your ArmsDealer verification code'
+    body = (
+        f'Your ArmsDealer registration OTP is {code}.\n\n'
+        'Enter this code on the registration page to complete your account setup.'
+    )
+
+    if purpose == 'reset':
+        subject = 'Your ArmsDealer password reset code'
+        body = (
+            f'Your ArmsDealer password reset code is {code}.\n\n'
+            'Enter this code on the reset page to update your password.'
+        )
+
+    msg = EmailMessage()
+    msg['Subject'] = subject
+    msg['From'] = smtp_from
+    msg['To'] = email
+    msg.set_content(body)
+
+    try:
+        with smtplib.SMTP(smtp_host, smtp_port, timeout=10) as smtp:
+            if os.environ.get('SMTP_USE_TLS', 'true').lower() != 'false':
+                smtp.starttls()
+            if smtp_user and smtp_pass:
+                smtp.login(smtp_user, smtp_pass)
+            smtp.send_message(msg)
+        return True
+    except Exception:
+        return False
 
 
 def get_db():
@@ -95,10 +141,158 @@ def login():
     return render_template('auth/login.html')
 
 
+# ─── FORGOT PASSWORD ──────────────────────────────────────────────
+@auth_bp.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if session.get('user_id'):
+        return redirect(url_for('homepage'))
+
+    pending = session.get('password_reset_pending')
+
+    if request.method == 'POST' and pending:
+        if request.form.get('resend_otp'):
+            otp = f'{secrets.randbelow(1000000):06d}'
+            pending['otp'] = otp
+            pending['otp_sent_at'] = datetime.datetime.utcnow().isoformat()
+            session['password_reset_pending'] = pending
+
+            if _send_otp_email(pending['email'], otp, purpose='reset'):
+                flash('A new reset code was sent to your email.', 'info')
+            else:
+                flash(f'Password reset code (development): {otp}', 'warning')
+
+            return render_template('auth/forgot_password.html', otp_sent=True, pending_email=pending['email'])
+
+        reset_code = request.form.get('reset_code', '').strip()
+        new_password = request.form.get('new_password', '')
+        confirm_password = request.form.get('confirm_password', '')
+
+        errors = []
+        if not reset_code or not new_password or not confirm_password:
+            errors.append('All fields are required.')
+        if new_password != confirm_password:
+            errors.append('Passwords do not match.')
+        if len(new_password) < 8:
+            errors.append('Password must be at least 8 characters.')
+
+        try:
+            sent_at = datetime.datetime.fromisoformat(pending['otp_sent_at'])
+        except Exception:
+            sent_at = datetime.datetime.utcnow()
+
+        if datetime.datetime.utcnow() > sent_at + datetime.timedelta(minutes=10):
+            session.pop('password_reset_pending', None)
+            flash('Reset code expired. Submit your email again.', 'danger')
+            return render_template('auth/forgot_password.html')
+
+        if reset_code != pending['otp']:
+            errors.append('Invalid reset code.')
+
+        if errors:
+            for e in errors:
+                flash(e, 'danger')
+            return render_template('auth/forgot_password.html', otp_sent=True, pending_email=pending['email'])
+
+        db = get_db()
+        db.execute(
+            'UPDATE users SET password_hash = ? WHERE email = ?',
+            (generate_password_hash(new_password), pending['email'])
+        )
+        db.commit()
+
+        session.pop('password_reset_pending', None)
+        flash('Password updated successfully. Please log in.', 'success')
+        return redirect(url_for('auth.login'))
+
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip().lower()
+        if not email:
+            flash('Please enter your email address.', 'danger')
+            return render_template('auth/forgot_password.html')
+
+        db = get_db()
+        user = db.execute(
+            'SELECT * FROM users WHERE email = ?', (email,)).fetchone()
+        if user is None:
+            flash('No account found for that email.', 'danger')
+            return render_template('auth/forgot_password.html')
+
+        otp = f'{secrets.randbelow(1000000):06d}'
+        session['password_reset_pending'] = {
+            'email': email,
+            'otp': otp,
+            'otp_sent_at': datetime.datetime.utcnow().isoformat()
+        }
+
+        if _send_otp_email(email, otp, purpose='reset'):
+            flash(
+                'A reset code was sent to your email. Enter it below to reset your password.', 'info')
+        else:
+            flash(f'Password reset code (development): {otp}', 'warning')
+
+        return render_template('auth/forgot_password.html', otp_sent=True, pending_email=email)
+
+    if pending:
+        return render_template('auth/forgot_password.html', otp_sent=True, pending_email=pending['email'])
+
+    return render_template('auth/forgot_password.html')
+
+
 # ─── REGISTER ─────────────────────────────────────────────────────
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if session.get('user_id'):
+        return redirect(url_for('homepage'))
+
+    pending = session.get('register_pending')
+    if request.method == 'POST' and pending:
+        if request.form.get('resend_otp'):
+            otp = f'{secrets.randbelow(1000000):06d}'
+            pending['otp'] = otp
+            pending['otp_sent_at'] = datetime.datetime.utcnow().isoformat()
+            session['register_pending'] = pending
+
+            if _send_otp_email(pending['email'], otp):
+                flash('A new verification code was sent to your email.', 'info')
+            else:
+                flash(f'OTP code (development): {otp}', 'warning')
+
+            return render_template('auth/register.html', otp_sent=True, pending_email=pending['email'])
+
+        otp_code = request.form.get('otp_code', '').strip()
+        if not otp_code:
+            flash('Please enter the OTP sent to your email.', 'danger')
+            return render_template('auth/register.html', otp_sent=True, pending_email=pending['email'])
+
+        try:
+            sent_at = datetime.datetime.fromisoformat(pending['otp_sent_at'])
+        except Exception:
+            sent_at = datetime.datetime.utcnow()
+
+        if datetime.datetime.utcnow() > sent_at + datetime.timedelta(minutes=10):
+            session.pop('register_pending', None)
+            flash('OTP expired. Please start registration again.', 'danger')
+            return render_template('auth/register.html')
+
+        if otp_code != pending['otp']:
+            flash('Invalid OTP. Please try again.', 'danger')
+            return render_template('auth/register.html', otp_sent=True, pending_email=pending['email'])
+
+        db = get_db()
+        db.execute(
+            'INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)',
+            (pending['username'], pending['email'],
+             pending['password_hash'], 'customer')
+        )
+        db.commit()
+
+        user = db.execute(
+            'SELECT * FROM users WHERE username = ?', (pending['username'],)
+        ).fetchone()
+
+        session.pop('register_pending', None)
+        _populate_session(user)
+        flash(f'Account created. Welcome, {user["username"]}!', 'success')
         return redirect(url_for('homepage'))
 
     if request.method == 'POST':
@@ -107,7 +301,6 @@ def register():
         password = request.form.get('password', '')
         confirm = request.form.get('confirm_password', '')
 
-        # Basic validation
         errors = []
         if not username or not email or not password:
             errors.append('All fields are required.')
@@ -122,8 +315,6 @@ def register():
             return render_template('auth/register.html')
 
         db = get_db()
-
-        # Check uniqueness
         existing = db.execute(
             'SELECT id FROM users WHERE username = ? OR email = ?',
             (username, email)
@@ -134,19 +325,25 @@ def register():
             return render_template('auth/register.html')
 
         pw_hash = generate_password_hash(password)
-        db.execute(
-            'INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)',
-            (username, email, pw_hash, 'customer')
-        )
-        db.commit()
+        otp = f'{secrets.randbelow(1000000):06d}'
+        session['register_pending'] = {
+            'username': username,
+            'email': email,
+            'password_hash': pw_hash,
+            'otp': otp,
+            'otp_sent_at': datetime.datetime.utcnow().isoformat()
+        }
 
-        user = db.execute(
-            'SELECT * FROM users WHERE username = ?', (username,)
-        ).fetchone()
+        if _send_otp_email(email, otp):
+            flash(
+                'A verification code was sent to your email. Enter it below to complete registration.', 'info')
+        else:
+            flash(f'OTP code (development): {otp}', 'warning')
 
-        _populate_session(user)
-        flash(f'Account created. Welcome, {username}!', 'success')
-        return redirect(url_for('homepage'))
+        return render_template('auth/register.html', otp_sent=True, pending_email=email)
+
+    if pending:
+        return render_template('auth/register.html', otp_sent=True, pending_email=pending['email'])
 
     return render_template('auth/register.html')
 

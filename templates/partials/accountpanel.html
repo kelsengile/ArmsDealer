@@ -54,7 +54,7 @@
         <div class="acct-divider"></div>
         <div class="acct-section-label">Orders & Cart</div>
 
-        <a href="{{ url_for('cart') if 'cart' in dir() else '#' }}" class="acct-cart-row">
+        <a href="{{ url_for('cart') }}" class="acct-cart-row">
             <div class="acct-cart-left">
                 <span class="acct-cart-icon">⊡</span> Cart
             </div>
@@ -104,7 +104,7 @@
 
         <div class="acct-divider"></div>
 
-        <a href="{{ url_for('logout') }}" class="acct-action-btn danger">
+        <a href="{{ url_for('auth.logout') }}" class="acct-action-btn danger">
             <span class="acct-btn-icon">⊗</span> Logout
         </a>
 
@@ -117,7 +117,7 @@
                 Authenticate to proceed.
             </div>
 
-            <a href="{{ url_for('login') }}" class="acct-login-btn">
+            <a href="{{ url_for('auth.login') }}" class="acct-login-btn">
                 ◉ &nbsp;Login
             </a>
 
@@ -125,7 +125,7 @@
                 <span class="acct-auth-sep-text">or</span>
             </div>
 
-            <a href="{{ url_for('register') }}" class="acct-register-btn">
+            <a href="{{ url_for('auth.register') }}" class="acct-register-btn">
                 ◈ &nbsp;Register
             </a>
         </div>

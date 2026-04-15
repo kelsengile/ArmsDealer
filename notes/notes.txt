@@ -72,3 +72,19 @@ Project Structure:
     [ ]Account:
         [ ]User:
         [ ]Admin:
+
+
+
+users:
+{
+        'username': 'spongebob',
+        'email':    'spongebob@bikini.bottom',
+        'password': 'Krabby1234!',
+        'role':     'customer',
+    },
+    {
+        'username': 'mrcrabs',
+        'email':    'eugene.crabs@thekrustykrab.com',
+        'password': 'MoneyM0ney!',
+        'role':     'admin',
+    },

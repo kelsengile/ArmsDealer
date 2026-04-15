@@ -116,32 +116,6 @@ def settings():
 
 
 # ─────────────────────────────────────────
-# AUTH ROUTES
-# ─────────────────────────────────────────
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        # TODO: implement login logic
-        pass
-    return render_template('auth/login.html')
-
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        # TODO: implement registration logic
-        pass
-    return render_template('auth/register.html')
-
-
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect(url_for('homepage'))
-
-
-# ─────────────────────────────────────────
 # CART & CHECKOUT ROUTES
 # ─────────────────────────────────────────
 
