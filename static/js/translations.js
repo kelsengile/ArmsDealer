@@ -20,6 +20,7 @@ const translations = {
         cart: "ArmsDealer--Cart",
         login: "ArmsDealer--LogIn",
         register: "ArmsDealer--Register",
+        password: "ArmsDealer--Password",
 
 
         // ──────────────────────────────────── //
@@ -284,6 +285,7 @@ const translations = {
         cart: "ArmsDealer--Cart",
         login: "ArmsDealer--Mag-login",
         register: "ArmsDealer--Magrehistro",
+        password: "ArmsDealer--Password",
 
         // ──────────────────────────────────── //
         //     NAVBAR TRANSLATIONS
@@ -546,6 +548,7 @@ const translations = {
         cart: "ArmsDealer--カート",
         login: "ArmsDealer--ログイン",
         register: "ArmsDealer--登録",
+        password: "ArmsDealer--Password",
 
         // ──────────────────────────────────── //
         //     NAVBAR TRANSLATIONS
@@ -808,6 +811,7 @@ const translations = {
         cart: "ArmsDealer--Carrito",
         login: "ArmsDealer--Iniciar sesión",
         register: "ArmsDealer--Registrarse",
+        password: "ArmsDealer--Contraseña",
 
 
         // ──────────────────────────────────── //
@@ -1070,6 +1074,8 @@ const translations = {
         cart: "ArmsDealer--购物车",
         login: "ArmsDealer--登录",
         register: "ArmsDealer--注册",
+        password: "ArmsDealer--密码",
+
 
         // ──────────────────────────────────── //
         //     NAVBAR TRANSLATIONS
