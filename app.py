@@ -124,12 +124,12 @@ def settings():
 
 @app.route('/cart')
 def cart():
-    return render_template('cart.html')
+    return render_template('user/cart.html')
 
 
 @app.route('/checkout')
 def checkout():
-    return render_template('checkout.html')
+    return render_template('user/checkout.html')
 
 
 # ─────────────────────────────────────────
