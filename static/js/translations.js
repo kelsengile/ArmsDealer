@@ -270,6 +270,22 @@ const translations = {
     filipino: {
 
         // ──────────────────────────────────── //
+        //     PAGE TITLE TRANSLATIONS
+        // ──────────────────────────────────── //
+
+        homepage: "ArmsDealer--Tahanan",
+        products: "ArmsDealer--Mga Produkto",
+        services: "ArmsDealer--Mga Serbisyo",
+        about: "ArmsDealer--Tungkol",
+        contacts: "ArmsDealer--Mga Kontak",
+        legal: "ArmsDealer--Legal",
+        settings: "ArmsDealer--Mga Setting",
+        checkout: "ArmsDealer--Pag-checkout",
+        cart: "ArmsDealer--Cart",
+        login: "ArmsDealer--Mag-login",
+        register: "ArmsDealer--Magrehistro",
+
+        // ──────────────────────────────────── //
         //     NAVBAR TRANSLATIONS
         // ──────────────────────────────────── //
         navbarsettings: "Mga Setting",
@@ -516,6 +532,22 @@ const translations = {
     japanese: {
 
         // ──────────────────────────────────── //
+        //     PAGE TITLE TRANSLATIONS
+        // ──────────────────────────────────── //
+
+        homepage: "ArmsDealer--ホーム",
+        products: "ArmsDealer--商品",
+        services: "ArmsDealer--サービス",
+        about: "ArmsDealer--会社情報",
+        contacts: "ArmsDealer--連絡先",
+        legal: "ArmsDealer--法的情報",
+        settings: "ArmsDealer--設定",
+        checkout: "ArmsDealer--チェックアウト",
+        cart: "ArmsDealer--カート",
+        login: "ArmsDealer--ログイン",
+        register: "ArmsDealer--登録",
+
+        // ──────────────────────────────────── //
         //     NAVBAR TRANSLATIONS
         // ──────────────────────────────────── //
         navbarsettings: "設定",
@@ -759,6 +791,24 @@ const translations = {
     },
 
     spanish: {
+
+
+        // ──────────────────────────────────── //
+        //     PAGE TITLE TRANSLATIONS
+        // ──────────────────────────────────── //
+
+        homepage: "ArmsDealer--Inicio",
+        products: "ArmsDealer--Productos",
+        services: "ArmsDealer--Servicios",
+        about: "ArmsDealer--Acerca de",
+        contacts: "ArmsDealer--Contactos",
+        legal: "ArmsDealer--Legal",
+        settings: "ArmsDealer--Configuración",
+        checkout: "ArmsDealer--Pagar",
+        cart: "ArmsDealer--Carrito",
+        login: "ArmsDealer--Iniciar sesión",
+        register: "ArmsDealer--Registrarse",
+
 
         // ──────────────────────────────────── //
         //     NAVBAR TRANSLATIONS
@@ -1004,6 +1054,22 @@ const translations = {
     },
 
     mandarin: {
+
+        // ──────────────────────────────────── //
+        //     PAGE TITLE TRANSLATIONS
+        // ──────────────────────────────────── //
+
+        homepage: "ArmsDealer--首页",
+        products: "ArmsDealer--产品",
+        services: "ArmsDealer--服务",
+        about: "ArmsDealer--关于我们",
+        contacts: "ArmsDealer--联系方式",
+        legal: "ArmsDealer--法律信息",
+        settings: "ArmsDealer--设置",
+        checkout: "ArmsDealer--结账",
+        cart: "ArmsDealer--购物车",
+        login: "ArmsDealer--登录",
+        register: "ArmsDealer--注册",
 
         // ──────────────────────────────────── //
         //     NAVBAR TRANSLATIONS
