@@ -142,7 +142,7 @@ main.products-page::before {
 
 .hero-sign-top {
     font-family: var(--font-mono, 'Share Tech Mono', monospace);
-    font-size: 9px;
+    font-size: 14px;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--mil-muted, #4a5e4a);
@@ -169,8 +169,8 @@ main.products-page::before {
 
 .toggle-btn {
     font-family: var(--font-mono, 'Share Tech Mono', monospace);
-    font-size: 9px;
-    letter-spacing: 0.2em;
+    font-size: 12px;
+    letter-spacing: 0.01em;
     text-transform: uppercase;
     background: transparent;
     color: var(--mil-muted, #4a5e4a);
@@ -216,7 +216,7 @@ main.products-page::before {
 ══════════════════════════════════════════════════════════════════ */
 
 .products-sidebar {
-    width: 220px;
+    width: 250px;
     flex-shrink: 0;
     border-right: 1px solid var(--mil-border, #2e3a2e);
     background: var(--mil-dark, #131713);
@@ -265,7 +265,7 @@ main.products-page::before {
 /* ── Filter Buttons ───────────────────────────────────────────── */
 .filter-btn {
     font-family: var(--font-stencil, 'Oswald', sans-serif);
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 500;
     letter-spacing: 0.18em;
     text-transform: uppercase;
