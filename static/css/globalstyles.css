@@ -130,7 +130,7 @@ body {
     font-size: 10px;
     line-height: var(--line-height-base);
     color: var(--mil-muted);
-    background-image: url("../assets/images/pageimages/globalmages/camobackground.png");
+    background: linear-gradient(rgba(0, 0, 0, 0.38), rgba(2, 15, 4, 0.516)), url("../assets/images/pageimages/globalmages/camobackground.png");
     background-size: cover;
     background-position: center;
     background-repeat: repeat;

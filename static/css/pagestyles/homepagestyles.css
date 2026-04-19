@@ -6,7 +6,7 @@
 .container {
     max-width: var(--container-max-width);
     margin: 0 auto;
-    background: rgba(62, 74, 63, 0.92);
+    background: var(--color-primary-dark);
     width: 100%;
     max-width: 1300px;
     min-height: 100%;
