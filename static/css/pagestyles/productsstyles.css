@@ -144,7 +144,7 @@ main.products-page::before {
 
 .hero-sign-title {
     font-family: var(--font-stencil, 'Oswald', sans-serif);
-    font-size: 48px;
+    font-size: 40px;
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -451,7 +451,7 @@ main.products-page::before {
 @media (max-width: 1100px) {
     .products-hero {
         flex-direction: column;
-        min-height: auto;
+        min-height: 250px;
         margin: 16px 16px 0;
     }
 
@@ -477,7 +477,7 @@ main.products-page::before {
     }
 
     .hero-sign-title {
-        font-size: 32px;
+        font-size: 25px;
     }
 
     .products-layout {
@@ -546,7 +546,7 @@ main.products-page::before {
     }
 
     .hero-sign-title {
-        font-size: 24px;
+        font-size: 17px;
     }
 
     .content-header {
