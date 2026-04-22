@@ -104,45 +104,52 @@ GLOBAL
 
   WEAPONS
   -------
-    Firearms ......... Handguns, Rifles, Shotguns, Submachine Guns, Machine Guns
-    Blades ........... Knives, Swords, Daggers, Machetes, Bayonets
-    Blunts ........... Batons, Clubs, Maces, Hammers
-    Projectiles ...... Bows, Crossbows, Slingshots, Spear Launchers
-    Explosive ........ Grenades, Bombs, Mines, Demolition Charges
-    Electronic ....... Tasers, EMP Devices, Jamming Devices
-    Chemical ......... Tear Gas, Smoke Agents, Incendiary Compounds
-    Biological ....... Delivery Systems, Containment Units
-    Vehicle .......... Armed Vehicles, Drones, Naval Weapon Systems  [* see note]
-    Cyber ............ Malware Tools, Exploit Kits, Hacking Devices
-    Security ......... Access Control Weapons, Crowd Control Devices, Non-lethal Weapons
+    Firearms ......... Handguns, Rifles, Shotguns, Submachine Guns, Machine Guns, Sniper Rifles, Carbines, Personal Defense Weapons
+    Blades ........... Knives, Swords, Daggers, Machetes, Bayonets, Axes, Hatchets, Combat Spears, Polearms, Throwing Knives
+    Blunts ........... Batons, Clubs, Maces, Hammers, Flails, Nunchaku, Staves, Saps, Blackjacks
+    Projectiles ...... Bows, Crossbows, Slingshots, Spear Launchers, Blowguns, Javelin Systems, Pneumatic Launchers
+    Explosive ........ Grenades, Bombs, Mines, Demolition Charges, Rocket Launchers, Mortars, Artillery Shells, Breaching Charges, Flash-Bangs
+    Electronic ....... Tasers, Stun Guns, EMP Devices, Jamming Devices, Directed Energy Weapons, Sonic Devices, Laser Dazzlers
+    Chemical ......... Tear Gas, Smoke Agents, Incendiary Compounds, Pepper Sprays, Aerosol Dispersants, Riot Control Agents
+    Biological ....... Delivery Systems, Containment Units, Detection Equipment, Neutralization Agents
+    Radiological ..... Shielded Devices, Dispersal Systems, Detection Countermeasures
+    Vehicle .......... Armed Vehicles, Drones, Naval Weapon Systems, Aerial Weapon Systems, Anti-vehicle Weapons
+    Cyber ............ Malware Tools, Exploit Kits, Hacking Devices, Intrusion Systems, Data Exfiltration Tools, Ransomware Platforms
+    Security ......... Access Control Weapons, Crowd Control Devices, Non-lethal Weapons, Deterrent Systems, Restraint Devices
 
   EQUIPMENT
   ---------
-    Ammunition ....... Bullets, Shells, Cartridges, Energy Cells
-    Protective ....... Helmets, Body Armor, Shields, Protective Suits
-    Tactical ......... Load-bearing Gear, Holsters, Utility Belts, Field Kits
-    Attachments ...... Scopes, Suppressors, Grips, Laser Sights
-    Maintenance ...... Cleaning Kits, Repair Tools, Lubricants
-    Storage .......... Safes, Cases, Lockers
-    Communication .... Radios, Signal Devices, Encryption Units
-    Survival ......... First Aid Kits, Rations, Water Purification, Navigation Tools
-    Training ......... Simulators, Dummy Equipment, Targets, Training Manuals
+    Ammunition ....... Bullets, Shells, Cartridges, Energy Cells, Primers, Propellants, Specialty Rounds, Caseless Ammunition
+    Protective ....... Helmets, Body Armor, Shields, Protective Suits, Ballistic Glasses, Hearing Protection, Gas Masks, Blast-resistant Gear
+    Tactical ......... Load-bearing Gear, Holsters, Utility Belts, Field Kits, Chest Rigs, Plate Carriers, Drop Leg Platforms, Modular Pouches
+    Optics ........... Scopes, Red Dot Sights, Night Vision Devices, Thermal Imagers, Rangefinders, Binoculars, Spotting Scopes
+    Attachments ...... Suppressors, Grips, Laser Sights, Foregrips, Bipods, Muzzle Brakes, Flashlights, Bayonet Mounts
+    Maintenance ...... Cleaning Kits, Repair Tools, Lubricants, Bore Snakes, Armorer Tools, Parts Kits, Solvent Traps
+    Storage .......... Safes, Cases, Lockers, Ammunition Cans, Weapon Racks, Concealment Furniture, Transport Containers
+    Communication .... Radios, Signal Devices, Encryption Units, Earpieces, Tactical Headsets, Satellite Communicators, Covert Devices
+    Detection ........ Metal Detectors, Explosive Sniffers, Radiation Sensors, Chemical Detectors, Surveillance Cameras, Motion Sensors
+    Mobility ......... Tactical Vehicles, All-terrain Gear, Rappelling Equipment, Fast Rope Systems, Breaching Tools
+    Power ............ Batteries, Portable Generators, Solar Charging Units, Power Banks, Field Cables
+    Survival ......... First Aid Kits, Rations, Water Purification, Navigation Tools, Emergency Shelters, Fire Starters, Multi-tools, Tourniquets
+    Training ......... Simulators, Dummy Equipment, Targets, Training Manuals, Blue Guns, Force-on-Force Gear, Recoil Trainers
 
   SERVICES
   --------
-    Manufacturing .... Mass Production, Custom Fabrication, Prototyping
-    Customization .... Weapon Modding, Gear Personalization, Engraving  [* see note]
-    Maintenance ...... Repair Services, Inspection, Refurbishment
-    Transport ........ Secure Logistics, International Shipping, Escort Services
-    Storage .......... Secure Warehousing, Vault Services, Inventory Management
-    Training ......... Tactical Training, Safety Training, Technical Training
-    Protection ....... Personal Security, Facility Security, Escort Protection
-    Consulting ....... Risk Assessment, Security Planning, Compliance Advisory
-    Research ......... Product Development, Field Research, Technology Innovation
-    Testing .......... Performance Testing, Safety Testing, Certification
-    Disposal ......... Decommissioning, Hazardous Disposal, Recycling
-    Surveillance ..... Monitoring Services, Reconnaissance, Intelligence Gathering
-    Contracting ...... Private Contracts, Government Contracts, Defense Contracts
+    Manufacturing .... Mass Production, Custom Fabrication, Prototyping, OEM Production, Contract Manufacturing, Component Supply
+    Customization .... Weapon Modding, Gear Personalization, Engraving, Cerakoting, Stock Fitting, Trigger Jobs
+    Maintenance ...... Repair Services, Inspection, Refurbishment, Preventive Maintenance, Depot-level Overhaul, Parts Replacement
+    Transport ........ Secure Logistics, International Shipping, Escort Services, Armored Courier, Cold Chain Transport, Cross-border Brokerage
+    Storage .......... Secure Warehousing, Vault Services, Inventory Management, Climate-controlled Storage, Evidence Storage, Bonded Warehousing
+    Training ......... Tactical Training, Safety Training, Technical Training, Marksmanship Courses, Force-on-Force Exercises, Simulator Programs
+    Protection ....... Personal Security, Facility Security, Escort Protection, Executive Protection, Maritime Security, Event Security
+    Consulting ....... Risk Assessment, Security Planning, Compliance Advisory, Threat Analysis, Regulatory Consulting, Vulnerability Audits
+    Research ......... Product Development, Field Research, Technology Innovation, Ballistics Research, Materials Science, Weapons Systems R&D
+    Testing .......... Performance Testing, Safety Testing, Certification, Ballistic Testing, Environmental Testing, Proof Testing
+    Disposal ......... Decommissioning, Hazardous Disposal, Recycling, Demilitarization, Ammunition Destruction, EOD Services
+    Surveillance ..... Monitoring Services, Reconnaissance, Intelligence Gathering, Aerial Surveillance, Counter-surveillance, SIGINT Services
+    Licensing ........ Import/Export Licensing, Dealer Licensing, Compliance Filing, End-user Certification, Brokering Permits
+    Contracting ...... Private Contracts, Government Contracts, Defense Contracts, Subcontracting, Joint Venture Agreements, Grant Procurement
+    Legal ............ Regulatory Affairs, Litigation Support, Compliance Auditing, Intellectual Property, Contract Review, Export Control Law
 
 
 ================================================================================
