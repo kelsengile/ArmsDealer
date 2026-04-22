@@ -1,239 +1,179 @@
-Project Structure:
-
-[ ]Global:
-    [ ]TopBar:
-        [/]Settings:
-            [/]Account:
-            [/]Appearance:
-            [/]Notifications:
-            [/]Privacy & Security:
-            [/]Language & Region:
-            [/]Help & Support:
-            [/]System Actions:
-        
-        [/]Blinker: SecureConnection
-        [/]LanguageChange:
-        [/]CurencyChange:
-        [/]About:
-        [/]Contacts:
-        [/]Legal:
-    [ ]NavBar:
-        [/]Homepage | Logo&Title:
-        [/]Products:
-        [/]Services: 
-        [ ]PopUps:
-            [ ]SearchBar:
-            [ ]Cart:
-            [/]Account:
-        [/]Coordinates:
+================================================================================
+  PROJECT NOTES -- Defense & Security E-Commerce Platform
+  Last updated: 2026-04-22
+  Status: In Progress
+================================================================================
 
 
-[ ]Pages:
+================================================================================
+  PROJECT STRUCTURE
+================================================================================
 
-    [ ]HomePage:
-        [/]HeroCarousel:
-        [/]FeaturedSelection:
-        [/]AdvertisementsSpace:
-        [/]Categories:
-        [ ]Bundles:
-        [ ]BestSeller:
-        [ ]News&Updates:
-        [ ]TrustedBrandsinStock:
-        [/]WhyChooseUs?:
-        [/]PurchaseProcess:
-        [/]Calltoaction:
-        [ ]Footer:
+(Empty for now)
 
-    [ ]ProductsPage:
-        [ ]SpecificProductsPage:
-    [ ]ServicePage:
-        [ ]SpecificServicePage:
-    [ ]AccountsPages:
-        [ ]AdminDashBoard:
-        [ ]UserDashboard:
-        [ ]CartPage:
-    [ ]About:
-    [ ]Contacts:
-    [ ]Legal:
-    [ ]Settings:
-        [ ]Account:
-        [ ]Appearance:
-        [ ]Notifications:
-        [ ]Privacy & Security:
-        [ ]Language & Region:
-        [ ]Help & Support:
-        [ ]System Actions:
-    [ ]Account:
-        [ ]User:
-        [ ]Admin:
+================================================================================
+  PAGES
+================================================================================
 
+GLOBAL
+------
 
-Database Categories:
+  TopBar
+    [/] Settings
+          [/] Account
+          [/] Appearance
+          [/] Notifications
+          [/] Privacy & Security
+          [/] Language & Region
+          [/] Help & Support
+          [/] System Actions
+    [/] Blinker -- Secure Connection Indicator
+    [/] Language Change
+    [/] Currency Change
+    [/] About
+    [/] Contacts
+    [/] Legal
 
-    Products Categories:
-        
-        Weapons Categories: 
-            - Firearms:
-                - Handguns
-                - Rifles
-                - Shotguns
-                - Submachine Guns
-                - Machine Guns
-            - Blades: 
-                - Knives
-                - Swords
-                - Daggers
-                - Machetes
-                - Bayonets
-            - Blunts:
-                - Batons
-                - Clubs
-                - Maces
-                - Hammers
-            - Projectiles:
-                - Bows
-                - Crossbows
-                - Slingshots
-                - Spear Launchers
-            - Explosive:
-                - Grenades
-                - Bombs
-                - Mines
-                - Demolition Charges
-            - Electronic:
-                - Tasers
-                - EMP Devices
-                - Jamming Devices
-            - Chemical:
-                - Tear Gas
-                - Smoke Agents
-                - Incendiary Compounds
-            - Biological:
-                - Delivery Systems
-                - Containment Units
-            - Behicle:
-                - Armed Vehicles
-                - Drones
-                - Naval Weapon Systems
-            - Cyber:
-                - Malware Tools
-                - Exploit Kits
-                - Hacking Devices
-            - Security:
-                - Access Control Weapons
-                - Crowd Control Devices
-                - Non-lethal Weapons
-
-        Equipment Categories:
-            - Ammunition:
-                - Bullets
-                - Shells
-                - Cartridges
-                - Energy Cells
-            - Protective: 
-                - Helmets
-                - Body Armor
-                - Shields
-                - Protective Suits
-            - Tactical:
-                - Load-bearing Gear
-                - Holsters
-                - Utility Belts
-                - Field Kits
-            - Attachments:
-                - Scopes
-                - Suppressors
-                - Grips
-                - Laser Sights
-            - Maintenance:
-                - Cleaning Kits
-                - Repair Tools
-                - Lubricants
-            - Storage:
-                - Safes
-                - Cases
-                - Lockers
-            - Communication:
-                - Radios
-                - Signal Devices
-                - Encryption Units
-            - Survival:
-                - First Aid Kits
-                - Rations
-                - Water Purification
-                - Navigation Tools
-            - Training:
-                - Simulators
-                - Dummy Equipment
-                - Targets
-                - Training Manuals
-
-    Services Categories:
-        - Manufacturing:
-            - Mass Production
-            - Custom Fabrication
-            - Prototyping
-        - Cuztomization:
-            - Weapon Modding
-            - Gear Personalization
-            - Engraving
-        - Maintenance: 
-            - Repair Services
-            - Inspection
-            - Refurbishment
-        - Transport:
-            - Secure Logistics
-            - International Shipping
-            - Escort Services
-        - Storage:
-            - Secure Warehousing
-            - Vault Services
-            - Inventory Management
-        - Training:
-            - Tactical Training
-            - Safety Training
-            - Technical Training
-        - Protection:
-            - Personal Security
-            - Facility Security
-            - Escort Protection
-        - Consulting:
-            - Risk Assessment
-            - Security Planning
-            - Compliance Advisory
-        - Research:
-            - Product Development
-            - Field Research
-            - Technology Innovation
-        - Testing:
-            - Performance Testing
-            - Safety Testing
-            - Certification
-        - Disposal:
-            - Decommissioning
-            - Hazardous Disposal
-            - Recycling
-        - Surveillance:
-            - Monitoring Services
-            - Reconnaissance
-            - Intelligence Gathering
-        - Contracting: 
-            - Private Contracts
-            - Government Contracts
-            - Defense Contracts
+  NavBar
+    [/] Homepage -- Logo & Title
+    [/] Products
+    [/] Services
+    [ ] PopUps
+          [ ] Search Bar
+          [ ] Cart
+          [/] Account
+    [/] Coordinates
 
 
+  HOME PAGE
+  ---------
+    [/] Hero Carousel
+    [/] Featured Selection
+    [/] Advertisements Space
+    [/] Categories
+    [ ] Bundles
+    [ ] Best Sellers
+    [ ] News & Updates
+    [ ] Trusted Brands in Stock
+    [/] Why Choose Us?
+    [/] Purchase Process
+    [/] Call to Action
+    [ ] Footer
 
-Sample User Account:
-{
-        'username': 'spongebob',
-        'email':    'spongebob@bikini.bottom',
-        'password': 'Krabby1234!',
-        'role':     'customer',
-    },
-    {
-        'username': 'mrcrabs',
-        'email':    'eugene.crabs@thekrustykrab.com',
-        'password': 'MoneyM0ney!',
-        'role':     'admin',
-    },
+  PRODUCTS PAGE
+  -------------
+    [ ] Products Page (listing)
+        [ ] Specific Product Page
+
+  SERVICES PAGE
+  -------------
+    [ ] Services Page (listing)
+        [ ] Specific Service Page
+
+  ACCOUNT PAGES
+  -------------
+    [ ] Admin Dashboard
+    [ ] User Dashboard
+    [ ] Cart Page
+
+  STATIC PAGES
+  ------------
+    [ ] About
+    [ ] Contacts
+    [ ] Legal
+
+  SETTINGS PAGES
+  --------------
+    [ ] Account
+    [ ] Appearance
+    [ ] Notifications
+    [ ] Privacy & Security
+    [ ] Language & Region
+    [ ] Help & Support
+    [ ] System Actions
+
+  AUTH / ACCOUNT
+  --------------
+    [ ] User Account
+    [ ] Admin Account
+
+
+================================================================================
+  DATABASE SCHEMA -- CATEGORIES
+================================================================================
+
+  WEAPONS
+  -------
+    Firearms ......... Handguns, Rifles, Shotguns, Submachine Guns, Machine Guns
+    Blades ........... Knives, Swords, Daggers, Machetes, Bayonets
+    Blunts ........... Batons, Clubs, Maces, Hammers
+    Projectiles ...... Bows, Crossbows, Slingshots, Spear Launchers
+    Explosive ........ Grenades, Bombs, Mines, Demolition Charges
+    Electronic ....... Tasers, EMP Devices, Jamming Devices
+    Chemical ......... Tear Gas, Smoke Agents, Incendiary Compounds
+    Biological ....... Delivery Systems, Containment Units
+    Vehicle .......... Armed Vehicles, Drones, Naval Weapon Systems  [* see note]
+    Cyber ............ Malware Tools, Exploit Kits, Hacking Devices
+    Security ......... Access Control Weapons, Crowd Control Devices, Non-lethal Weapons
+
+    * "Behicle" in source -- assumed typo, corrected to "Vehicle"
+
+  EQUIPMENT
+  ---------
+    Ammunition ....... Bullets, Shells, Cartridges, Energy Cells
+    Protective ....... Helmets, Body Armor, Shields, Protective Suits
+    Tactical ......... Load-bearing Gear, Holsters, Utility Belts, Field Kits
+    Attachments ...... Scopes, Suppressors, Grips, Laser Sights
+    Maintenance ...... Cleaning Kits, Repair Tools, Lubricants
+    Storage .......... Safes, Cases, Lockers
+    Communication .... Radios, Signal Devices, Encryption Units
+    Survival ......... First Aid Kits, Rations, Water Purification, Navigation Tools
+    Training ......... Simulators, Dummy Equipment, Targets, Training Manuals
+
+  SERVICES
+  --------
+    Manufacturing .... Mass Production, Custom Fabrication, Prototyping
+    Customization .... Weapon Modding, Gear Personalization, Engraving  [* see note]
+    Maintenance ...... Repair Services, Inspection, Refurbishment
+    Transport ........ Secure Logistics, International Shipping, Escort Services
+    Storage .......... Secure Warehousing, Vault Services, Inventory Management
+    Training ......... Tactical Training, Safety Training, Technical Training
+    Protection ....... Personal Security, Facility Security, Escort Protection
+    Consulting ....... Risk Assessment, Security Planning, Compliance Advisory
+    Research ......... Product Development, Field Research, Technology Innovation
+    Testing .......... Performance Testing, Safety Testing, Certification
+    Disposal ......... Decommissioning, Hazardous Disposal, Recycling
+    Surveillance ..... Monitoring Services, Reconnaissance, Intelligence Gathering
+    Contracting ...... Private Contracts, Government Contracts, Defense Contracts
+
+    * "Cuztomization" in source -- assumed typo, corrected to "Customization"
+
+
+================================================================================
+  SAMPLE ACCOUNTS
+================================================================================
+
+  Customer:
+    username : spongebob
+    email    : spongebob@bikini.bottom
+    password : Krabby1234!
+    role     : customer
+
+  Admin:
+    username : mrcrabs
+    email    : eugene.crabs@thekrustykrab.com
+    password : MoneyM0ney!
+    role     : admin
+
+
+================================================================================
+  REMINDERS & OPEN ITEMS
+================================================================================
+
+    [ ]
+    [ ]
+    [ ]
+    [ ]
+    [ ]
+
+================================================================================
