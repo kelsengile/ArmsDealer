@@ -173,10 +173,8 @@ GLOBAL
   REMINDERS & OPEN ITEMS
 ================================================================================
 
-    [ ]
-    [ ]
-    [ ]
-    [ ]
-    [ ]
+    [ ] Products page design, filters
+    [ ] database sub categories, tags implementation
+    [ ] product item function
 
 ================================================================================
