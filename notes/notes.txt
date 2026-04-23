@@ -173,9 +173,6 @@ GLOBAL
   REMINDERS & OPEN ITEMS
 ================================================================================
 
-    [ ] Products page design, filters
-    [ ] database sub categories, tags implementation
-    [ ] product item function
-    [ ] specs for products
+  [ ] Create Mind Map For the project
 
 ================================================================================
