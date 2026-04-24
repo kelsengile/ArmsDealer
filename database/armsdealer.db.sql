@@ -1,6 +1,5 @@
 BEGIN TRANSACTION;
-DROP TABLE IF EXISTS "brands";
-CREATE TABLE brands (
+CREATE TABLE IF NOT EXISTS brands (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     name        TEXT    NOT NULL UNIQUE,
     slug        TEXT    NOT NULL UNIQUE,
@@ -10,8 +9,7 @@ CREATE TABLE brands (
     created_at  TEXT    NOT NULL DEFAULT (datetime('now')),
     updated_at  TEXT    NOT NULL DEFAULT (datetime('now'))
 );
-DROP TABLE IF EXISTS "brands_translations";
-CREATE TABLE "brands_translations" (
+CREATE TABLE IF NOT EXISTS "brands_translations" (
 	"id"	INTEGER,
 	"brand_id"	INTEGER NOT NULL,
 	"lang_code"	TEXT NOT NULL,
@@ -22,8 +20,7 @@ CREATE TABLE "brands_translations" (
 	FOREIGN KEY("brand_id") REFERENCES "brands"("id") ON DELETE CASCADE,
 	FOREIGN KEY("lang_code") REFERENCES "languages"("code")
 );
-DROP TABLE IF EXISTS "cart_items";
-CREATE TABLE cart_items (
+CREATE TABLE IF NOT EXISTS cart_items (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id     INTEGER NOT NULL REFERENCES users(id),
     item_type   TEXT    NOT NULL DEFAULT 'product',
@@ -32,8 +29,7 @@ CREATE TABLE cart_items (
     added_at    TEXT    NOT NULL DEFAULT (datetime('now')),
     UNIQUE(user_id, item_type, item_id)
 );
-DROP TABLE IF EXISTS "categories";
-CREATE TABLE categories (
+CREATE TABLE IF NOT EXISTS categories (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     name        TEXT    NOT NULL UNIQUE,
     slug        TEXT    NOT NULL UNIQUE,
@@ -41,8 +37,7 @@ CREATE TABLE categories (
     icon_file   TEXT,
     description TEXT
 );
-DROP TABLE IF EXISTS "category_translations";
-CREATE TABLE category_translations (
+CREATE TABLE IF NOT EXISTS category_translations (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     category_id INTEGER NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
     lang_code   TEXT    NOT NULL REFERENCES languages(code),
@@ -50,8 +45,7 @@ CREATE TABLE category_translations (
     description TEXT,
     UNIQUE (category_id, lang_code)
 );
-DROP TABLE IF EXISTS "currencies";
-CREATE TABLE currencies (
+CREATE TABLE IF NOT EXISTS currencies (
     code        TEXT    PRIMARY KEY,
     symbol      TEXT    NOT NULL,
     label       TEXT    NOT NULL,
@@ -59,8 +53,7 @@ CREATE TABLE currencies (
     is_active   INTEGER NOT NULL DEFAULT 1,
     updated_at  TEXT    NOT NULL DEFAULT (datetime('now'))
 );
-DROP TABLE IF EXISTS "inquiries";
-CREATE TABLE inquiries (
+CREATE TABLE IF NOT EXISTS inquiries (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     name        TEXT NOT NULL,
     email       TEXT NOT NULL,
@@ -69,16 +62,14 @@ CREATE TABLE inquiries (
     status      TEXT NOT NULL DEFAULT 'new',
     created_at  TEXT NOT NULL DEFAULT (datetime('now'))
 );
-DROP TABLE IF EXISTS "languages";
-CREATE TABLE languages (
+CREATE TABLE IF NOT EXISTS languages (
     code        TEXT    PRIMARY KEY,
     label       TEXT    NOT NULL,
     locale      TEXT    NOT NULL,
     is_active   INTEGER NOT NULL DEFAULT 1,
     sort_order  INTEGER NOT NULL DEFAULT 0
 );
-DROP TABLE IF EXISTS "order_items";
-CREATE TABLE order_items (
+CREATE TABLE IF NOT EXISTS order_items (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     order_id    INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
     item_type   TEXT    NOT NULL DEFAULT 'product'     -- 'product' | 'service'
@@ -87,8 +78,7 @@ CREATE TABLE order_items (
     quantity    INTEGER NOT NULL DEFAULT 1,
     unit_price  REAL    NOT NULL
 );
-DROP TABLE IF EXISTS "orders";
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id     INTEGER NOT NULL REFERENCES users(id),
     status      TEXT    NOT NULL DEFAULT 'pending',     -- 'pending' | 'verified' | 'paid' | 'shipped' | 'completed' | 'cancelled'
@@ -97,8 +87,7 @@ CREATE TABLE orders (
     created_at  TEXT    NOT NULL DEFAULT (datetime('now')),
     updated_at  TEXT    NOT NULL DEFAULT (datetime('now'))
 );
-DROP TABLE IF EXISTS "products";
-CREATE TABLE products (
+CREATE TABLE IF NOT EXISTS products (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
     name            TEXT    NOT NULL,
     slug            TEXT    NOT NULL UNIQUE,
@@ -117,8 +106,7 @@ CREATE TABLE products (
     created_at      TEXT    NOT NULL DEFAULT (datetime('now')),
     updated_at      TEXT    NOT NULL DEFAULT (datetime('now'))
 );
-DROP TABLE IF EXISTS "products_translations";
-CREATE TABLE products_translations (
+CREATE TABLE IF NOT EXISTS products_translations (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     product_id  INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
     lang_code   TEXT    NOT NULL REFERENCES languages(code),
@@ -127,8 +115,7 @@ CREATE TABLE products_translations (
     tags        TEXT,
     UNIQUE (product_id, lang_code)
 );
-DROP TABLE IF EXISTS "services";
-CREATE TABLE services (
+CREATE TABLE IF NOT EXISTS services (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
     name            TEXT    NOT NULL,
     slug            TEXT    NOT NULL UNIQUE,
@@ -146,8 +133,7 @@ CREATE TABLE services (
     created_at      TEXT    NOT NULL DEFAULT (datetime('now')),
     updated_at      TEXT    NOT NULL DEFAULT (datetime('now'))
 );
-DROP TABLE IF EXISTS "services_translations";
-CREATE TABLE services_translations (
+CREATE TABLE IF NOT EXISTS services_translations (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     service_id  INTEGER NOT NULL REFERENCES services(id) ON DELETE CASCADE,
     lang_code   TEXT    NOT NULL REFERENCES languages(code),
@@ -156,8 +142,7 @@ CREATE TABLE services_translations (
     tags        TEXT,
     UNIQUE (service_id, lang_code)
 );
-DROP TABLE IF EXISTS "subcategories";
-CREATE TABLE subcategories (
+CREATE TABLE IF NOT EXISTS subcategories (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     category_id INTEGER NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
     name        TEXT    NOT NULL,
@@ -166,8 +151,7 @@ CREATE TABLE subcategories (
     description TEXT,
     UNIQUE(category_id, name)
 );
-DROP TABLE IF EXISTS "subcategory_translations";
-CREATE TABLE subcategory_translations (
+CREATE TABLE IF NOT EXISTS subcategory_translations (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
     subcategory_id  INTEGER NOT NULL REFERENCES subcategories(id) ON DELETE CASCADE,
     lang_code       TEXT    NOT NULL REFERENCES languages(code),
@@ -175,16 +159,14 @@ CREATE TABLE subcategory_translations (
     description     TEXT,
     UNIQUE (subcategory_id, lang_code)
 );
-DROP TABLE IF EXISTS "ui_strings";
-CREATE TABLE ui_strings (
+CREATE TABLE IF NOT EXISTS ui_strings (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     lang_code   TEXT    NOT NULL REFERENCES languages(code),
     key         TEXT    NOT NULL,
     value       TEXT    NOT NULL,
     UNIQUE (lang_code, key)
 );
-DROP TABLE IF EXISTS "users";
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     username      TEXT    NOT NULL UNIQUE,
     email         TEXT    NOT NULL UNIQUE,
@@ -960,37 +942,21 @@ INSERT INTO "subcategory_translations" ("id","subcategory_id","lang_code","name"
 INSERT INTO "users" ("id","username","email","password_hash","role","created_at","updated_at") VALUES (1,'spongebob','spongebob@bikini.bottom','scrypt:32768:8:1$SbTwSrAmCehypPz8$1fd49b243228a73c60f77f4fd51cf7f46d77f044b2576a24fe7de1800ca3dabe891e693f64f2276ef392437527659822711cb089f651944ef50073f5188a0c42','customer','2026-04-15 05:03:32','2026-04-15 05:03:32'),
  (2,'mrcrabs','eugene.crabs@thekrustykrab.com','scrypt:32768:8:1$83oDsOSmvXx89UZx$c0e15772d19273f1df094dffa5fb9846afa2be3bfa47bb50a89d3ec80c57032db06799f09fb4b4d51be28dfb33de4148c29c7b97396f1dbbaba90920d6b78dc3','admin','2026-04-15 05:03:32','2026-04-15 05:03:32'),
  (5,'KelsenGile','kelsengilesarmientoconel@gmail.com','scrypt:32768:8:1$XrzCLf0eixrrKiHF$94eee8816393d6c3fde4901ccd40f36f33d5fed9031cf15212b3a3acc91d25a7b11b7f9295ade278f201088b7c0e87f1242b859b5fc2008aaba577a9d9babdd2','customer','2026-04-15 07:00:44','2026-04-15 07:00:44');
-DROP INDEX IF EXISTS "idx_brand_trans_brand";
 CREATE INDEX idx_brand_trans_brand   ON brands_translations (brand_id);
-DROP INDEX IF EXISTS "idx_brands_slug";
 CREATE INDEX idx_brands_slug         ON brands        (slug);
-DROP INDEX IF EXISTS "idx_order_items_order";
 CREATE INDEX idx_order_items_order  ON order_items (order_id);
-DROP INDEX IF EXISTS "idx_orders_status";
 CREATE INDEX idx_orders_status      ON orders (status);
-DROP INDEX IF EXISTS "idx_orders_user";
 CREATE INDEX idx_orders_user        ON orders (user_id);
-DROP INDEX IF EXISTS "idx_products_brand";
 CREATE INDEX idx_products_brand     ON products (brand_id);
-DROP INDEX IF EXISTS "idx_products_category";
 CREATE INDEX idx_products_category  ON products (category_id);
-DROP INDEX IF EXISTS "idx_products_subcat";
 CREATE INDEX idx_products_subcat    ON products (subcategory_id);
-DROP INDEX IF EXISTS "idx_services_brand";
 CREATE INDEX idx_services_brand     ON services (brand_id);
-DROP INDEX IF EXISTS "idx_services_category";
 CREATE INDEX idx_services_category  ON services (category_id);
-DROP INDEX IF EXISTS "idx_services_subcat";
 CREATE INDEX idx_services_subcat    ON services (subcategory_id);
-DROP INDEX IF EXISTS "idx_subcat_trans_sub";
 CREATE INDEX idx_subcat_trans_sub    ON subcategory_translations (subcategory_id);
-DROP INDEX IF EXISTS "idx_subcats_category";
 CREATE INDEX idx_subcats_category   ON subcategories (category_id);
-DROP INDEX IF EXISTS "idx_subcats_slug";
 CREATE INDEX idx_subcats_slug        ON subcategories (slug);
-DROP INDEX IF EXISTS "idx_ui_strings_lang";
 CREATE INDEX idx_ui_strings_lang ON ui_strings (lang_code);
-DROP TRIGGER IF EXISTS "trg_order_completed";
 CREATE TRIGGER trg_order_completed
 AFTER UPDATE OF status ON orders
 WHEN NEW.status = 'completed' AND OLD.status != 'completed'
@@ -1021,7 +987,6 @@ BEGIN
         WHERE order_id = NEW.id AND item_type = 'service'
     );
 END;
-DROP TRIGGER IF EXISTS "trg_order_uncompleted";
 CREATE TRIGGER trg_order_uncompleted
 AFTER UPDATE OF status ON orders
 WHEN OLD.status = 'completed' AND NEW.status != 'completed'
