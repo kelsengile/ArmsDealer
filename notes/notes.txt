@@ -1,8 +1,10 @@
-================================================================================
-  PROJECT NOTES -- Defense & Security E-Commerce Platform
-  Last updated: 2026-04-22
-  Status: In Progress
-================================================================================
+================================================================================================================================================================
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  ARMSDEALER NOTES
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+================================================================================================================================================================
 
 
 ================================================================================
@@ -35,7 +37,7 @@ GLOBAL
     [/] Legal
 
   NavBar
-    [/] Homepage -- Logo & Title
+    [/] Logo | Title
     [/] Products
     [/] Services
     [ ] PopUps
@@ -62,12 +64,12 @@ GLOBAL
 
   PRODUCTS PAGE
   -------------
-    [ ] Products Page (listing)
+    [ ] Products Page 
         [ ] Specific Product Page
 
   SERVICES PAGE
   -------------
-    [ ] Services Page (listing)
+    [ ] Services Page 
         [ ] Specific Service Page
 
   ACCOUNT PAGES
@@ -92,46 +94,44 @@ GLOBAL
     [ ] Help & Support
     [ ] System Actions
 
-  AUTH / ACCOUNT
-  --------------
-    [ ] User Account
-    [ ] Admin Account
-
 
 ================================================================================
   DATABASE SCHEMA -- CATEGORIES
 ================================================================================
 
-  WEAPONS
+  PRODUCTS
   -------
-    Firearms ......... Handguns, Rifles, Shotguns, Submachine Guns, Machine Guns, Sniper Rifles, Carbines, Personal Defense Weapons
-    Blades ........... Knives, Swords, Daggers, Machetes, Bayonets, Axes, Hatchets, Combat Spears, Polearms, Throwing Knives
-    Blunts ........... Batons, Clubs, Maces, Hammers, Flails, Nunchaku, Staves, Saps, Blackjacks
-    Projectiles ...... Bows, Crossbows, Slingshots, Spear Launchers, Blowguns, Javelin Systems, Pneumatic Launchers
-    Explosive ........ Grenades, Bombs, Mines, Demolition Charges, Rocket Launchers, Mortars, Artillery Shells, Breaching Charges, Flash-Bangs
-    Electronic ....... Tasers, Stun Guns, EMP Devices, Jamming Devices, Directed Energy Weapons, Sonic Devices, Laser Dazzlers
-    Chemical ......... Tear Gas, Smoke Agents, Incendiary Compounds, Pepper Sprays, Aerosol Dispersants, Riot Control Agents
-    Biological ....... Delivery Systems, Containment Units, Detection Equipment, Neutralization Agents
-    Radiological ..... Shielded Devices, Dispersal Systems, Detection Countermeasures
-    Vehicle .......... Armed Vehicles, Drones, Naval Weapon Systems, Aerial Weapon Systems, Anti-vehicle Weapons
-    Cyber ............ Malware Tools, Exploit Kits, Hacking Devices, Intrusion Systems, Data Exfiltration Tools, Ransomware Platforms
-    Security ......... Access Control Weapons, Crowd Control Devices, Non-lethal Weapons, Deterrent Systems, Restraint Devices
+ 
+      WEAPONS
+      -------
+        Firearms ......... Handguns, Rifles, Shotguns, Submachine Guns, Machine Guns, Sniper Rifles, Carbines, Personal Defense Weapons
+        Blades ........... Knives, Swords, Daggers, Machetes, Bayonets, Axes, Hatchets, Combat Spears, Polearms, Throwing Knives
+        Blunts ........... Batons, Clubs, Maces, Hammers, Flails, Nunchaku, Staves, Saps, Blackjacks
+        Projectiles ...... Bows, Crossbows, Slingshots, Spear Launchers, Blowguns, Javelin Systems, Pneumatic Launchers
+        Explosive ........ Grenades, Bombs, Mines, Demolition Charges, Rocket Launchers, Mortars, Artillery Shells, Breaching Charges, Flash-Bangs
+        Electronic ....... Tasers, Stun Guns, EMP Devices, Jamming Devices, Directed Energy Weapons, Sonic Devices, Laser Dazzlers
+        Chemical ......... Tear Gas, Smoke Agents, Incendiary Compounds, Pepper Sprays, Aerosol Dispersants, Riot Control Agents
+        Biological ....... Delivery Systems, Containment Units, Detection Equipment, Neutralization Agents
+        Radiological ..... Shielded Devices, Dispersal Systems, Detection Countermeasures
+        Vehicle .......... Armed Vehicles, Drones, Naval Weapon Systems, Aerial Weapon Systems, Anti-vehicle Weapons
+        Cyber ............ Malware Tools, Exploit Kits, Hacking Devices, Intrusion Systems, Data Exfiltration Tools, Ransomware Platforms
+        Security ......... Access Control Weapons, Crowd Control Devices, Non-lethal Weapons, Deterrent Systems, Restraint Devices
 
-  EQUIPMENT
-  ---------
-    Ammunition ....... Bullets, Shells, Cartridges, Energy Cells, Primers, Propellants, Specialty Rounds, Caseless Ammunition
-    Protective ....... Helmets, Body Armor, Shields, Protective Suits, Ballistic Glasses, Hearing Protection, Gas Masks, Blast-resistant Gear
-    Tactical ......... Load-bearing Gear, Holsters, Utility Belts, Field Kits, Chest Rigs, Plate Carriers, Drop Leg Platforms, Modular Pouches
-    Optics ........... Scopes, Red Dot Sights, Night Vision Devices, Thermal Imagers, Rangefinders, Binoculars, Spotting Scopes
-    Attachments ...... Suppressors, Grips, Laser Sights, Foregrips, Bipods, Muzzle Brakes, Flashlights, Bayonet Mounts
-    Maintenance ...... Cleaning Kits, Repair Tools, Lubricants, Bore Snakes, Armorer Tools, Parts Kits, Solvent Traps
-    Storage .......... Safes, Cases, Lockers, Ammunition Cans, Weapon Racks, Concealment Furniture, Transport Containers
-    Communication .... Radios, Signal Devices, Encryption Units, Earpieces, Tactical Headsets, Satellite Communicators, Covert Devices
-    Detection ........ Metal Detectors, Explosive Sniffers, Radiation Sensors, Chemical Detectors, Surveillance Cameras, Motion Sensors
-    Mobility ......... Tactical Vehicles, All-terrain Gear, Rappelling Equipment, Fast Rope Systems, Breaching Tools
-    Power ............ Batteries, Portable Generators, Solar Charging Units, Power Banks, Field Cables
-    Survival ......... First Aid Kits, Rations, Water Purification, Navigation Tools, Emergency Shelters, Fire Starters, Multi-tools, Tourniquets
-    Training ......... Simulators, Dummy Equipment, Targets, Training Manuals, Blue Guns, Force-on-Force Gear, Recoil Trainers
+      EQUIPMENT
+      ---------
+        Ammunition ....... Bullets, Shells, Cartridges, Energy Cells, Primers, Propellants, Specialty Rounds, Caseless Ammunition
+        Protective ....... Helmets, Body Armor, Shields, Protective Suits, Ballistic Glasses, Hearing Protection, Gas Masks, Blast-resistant Gear
+        Tactical ......... Load-bearing Gear, Holsters, Utility Belts, Field Kits, Chest Rigs, Plate Carriers, Drop Leg Platforms, Modular Pouches
+        Optics ........... Scopes, Red Dot Sights, Night Vision Devices, Thermal Imagers, Rangefinders, Binoculars, Spotting Scopes
+        Attachments ...... Suppressors, Grips, Laser Sights, Foregrips, Bipods, Muzzle Brakes, Flashlights, Bayonet Mounts
+        Maintenance ...... Cleaning Kits, Repair Tools, Lubricants, Bore Snakes, Armorer Tools, Parts Kits, Solvent Traps
+        Storage .......... Safes, Cases, Lockers, Ammunition Cans, Weapon Racks, Concealment Furniture, Transport Containers
+        Communication .... Radios, Signal Devices, Encryption Units, Earpieces, Tactical Headsets, Satellite Communicators, Covert Devices
+        Detection ........ Metal Detectors, Explosive Sniffers, Radiation Sensors, Chemical Detectors, Surveillance Cameras, Motion Sensors
+        Mobility ......... Tactical Vehicles, All-terrain Gear, Rappelling Equipment, Fast Rope Systems, Breaching Tools
+        Power ............ Batteries, Portable Generators, Solar Charging Units, Power Banks, Field Cables
+        Survival ......... First Aid Kits, Rations, Water Purification, Navigation Tools, Emergency Shelters, Fire Starters, Multi-tools, Tourniquets
+        Training ......... Simulators, Dummy Equipment, Targets, Training Manuals, Blue Guns, Force-on-Force Gear, Recoil Trainers
 
   SERVICES
   --------
@@ -149,12 +149,16 @@ GLOBAL
     Surveillance ..... Monitoring Services, Reconnaissance, Intelligence Gathering, Aerial Surveillance, Counter-surveillance, SIGINT Services
     Licensing ........ Import/Export Licensing, Dealer Licensing, Compliance Filing, End-user Certification, Brokering Permits
     Contracting ...... Private Contracts, Government Contracts, Defense Contracts, Subcontracting, Joint Venture Agreements, Grant Procurement
-    Legal ............ Regulatory Affairs, Litigation Support, Compliance Auditing, Intellectual Property, Contract Review, Export Control Law
 
 
 ================================================================================
-  SAMPLE ACCOUNTS
+  ACCOUNTS
 ================================================================================
+
+  AUTH / ACCOUNT
+  --------------
+    [ ] Customer Account
+    [ ] Admin Account
 
   Customer:
     username : spongebob
