@@ -170,6 +170,7 @@ BRANDS
   Hikvision ............. Video surveillance systems 
   SGS ................... Inspection, verification, and certification services
   KBR ................... Defense and government contracting
+  Anonymous ............. Seller identity not disclosed or verified.
 
 CATEGORIES
 ----------

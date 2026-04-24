@@ -259,7 +259,8 @@ INSERT INTO "brands" ("id","name","slug","logo_file","description","is_active","
  (65,'Veolia','veolia',NULL,'Hazardous waste and disposal services.',1,'2026-04-24 09:14:11','2026-04-24 09:14:11'),
  (66,'Hikvision','hikvision',NULL,'Video surveillance systems.',1,'2026-04-24 09:14:11','2026-04-24 09:14:11'),
  (67,'SGS','sgs',NULL,'Inspection, verification, and certification services.',1,'2026-04-24 09:14:11','2026-04-24 09:14:11'),
- (68,'KBR','kbr',NULL,'Defense and government contracting.',1,'2026-04-24 09:14:11','2026-04-24 09:14:11');
+ (68,'KBR','kbr',NULL,'Defense and government contracting.',1,'2026-04-24 09:14:11','2026-04-24 09:14:11'),
+ (69,'Anonymous','anonymous',NULL,'Seller identity not disclosed or verified.',1,'2026-04-24 10:23:23','2026-04-24 10:23:23');
 INSERT INTO "brands_translations" ("id","brand_id","lang_code","name","description") VALUES (1,1,'filipino','Glock','Isang Austrian na tagagawa ng mga polymer-framed na pistola'),
  (2,2,'filipino','Colt','Makabagong Amerikanong tagagawa ng baril na may mahabang kasaysayan'),
  (3,3,'filipino','Heckler & Koch','Aleman na tagagawa ng sandata at depensa'),
@@ -531,7 +532,11 @@ INSERT INTO "brands_translations" ("id","brand_id","lang_code","name","descripti
  (269,65,'mandarin','Veolia','废物处理与环境服务公司'),
  (270,66,'mandarin','Hikvision','视频监控系统公司'),
  (271,67,'mandarin','SGS','检验、验证与认证公司'),
- (272,68,'mandarin','KBR','防务与政府合同公司');
+ (272,68,'mandarin','KBR','防务与政府合同公司'),
+ (273,69,'filipino','Anonymous','Hindi isiniwalat o napatunayang pagkakakilanlan ng nagbebenta.'),
+ (274,69,'japanese','匿名','販売者の身元が公開または確認されていません。'),
+ (275,69,'spanish','Anónimo','La identidad del vendedor no ha sido revelada ni verificada.'),
+ (276,69,'mandarin','匿名','卖家的身份未被披露或验证。');
 INSERT INTO "categories" ("id","name","slug","type","icon_file","description") VALUES (1,'Firearms','firearms','product',NULL,'Guns and ranged weapons'),
  (2,'Blades','blades','product',NULL,'Knives, swords, and edged weapons'),
  (3,'Blunts','blunts','product',NULL,'Impact weapons like bats and clubs'),
