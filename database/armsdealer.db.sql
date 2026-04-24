@@ -351,7 +351,7 @@ INSERT INTO "languages" ("code","label","locale","is_active","sort_order") VALUE
  ('mandarin','Mandarin','zh',1,5);
 INSERT INTO "users" ("id","username","email","password_hash","role","created_at","updated_at") VALUES (1,'spongebob','spongebob@bikini.bottom','scrypt:32768:8:1$SbTwSrAmCehypPz8$1fd49b243228a73c60f77f4fd51cf7f46d77f044b2576a24fe7de1800ca3dabe891e693f64f2276ef392437527659822711cb089f651944ef50073f5188a0c42','customer','2026-04-15 05:03:32','2026-04-15 05:03:32'),
  (2,'mrcrabs','eugene.crabs@thekrustykrab.com','scrypt:32768:8:1$83oDsOSmvXx89UZx$c0e15772d19273f1df094dffa5fb9846afa2be3bfa47bb50a89d3ec80c57032db06799f09fb4b4d51be28dfb33de4148c29c7b97396f1dbbaba90920d6b78dc3','admin','2026-04-15 05:03:32','2026-04-15 05:03:32'),
- (5,'KelsenGile','kelsengilesarmientoconel@gmail.com','scrypt:32768:8:1$XrzCLf0eixrrKiHF$94eee8816393d6c3fde4901ccd40f36f33d5fed9031cf15212b3a3acc91d25a7b11b7f9295ade278f201088b7c0e87f1242b859b5fc2008aaba577a9d9babdd2','customer','2026-04-15 07:00:44','2026-04-15 07:00:44');
+ (3,'KelsenGile','kelsengilesarmientoconel@gmail.com','scrypt:32768:8:1$XrzCLf0eixrrKiHF$94eee8816393d6c3fde4901ccd40f36f33d5fed9031cf15212b3a3acc91d25a7b11b7f9295ade278f201088b7c0e87f1242b859b5fc2008aaba577a9d9babdd2','customer','2026-04-15 07:00:44','2026-04-15 07:00:44');
 CREATE INDEX idx_order_items_order  ON order_items   (order_id);
 CREATE INDEX idx_orders_status      ON orders        (status);
 CREATE INDEX idx_orders_user        ON orders        (user_id);
