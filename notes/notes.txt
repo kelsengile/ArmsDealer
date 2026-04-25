@@ -119,7 +119,7 @@ BRANDS
   Axon .................. Tasers and law enforcement tech
   Combined Systems ...... Riot control and chemical defense systems
   Defense Technology .... Less-lethal munitions and chemical agents
-  Thermo Fisher Scientific ... Biological detection and lab systems
+  Thermo Fisher Scientific.... Biological detection and lab systems
   Mirion Technologies ....... Radiation detection and measurement systems
   Oshkosh Defense ....... Military vehicles and mobility platforms
   General Dynamics ...... Armored vehicles and defense systems
@@ -145,7 +145,7 @@ BRANDS
   Motorola Solutions .... Public safety communication systems
   Garmin ................ Navigation and communication devices
   FLIR Systems .......... Thermal imaging and sensors
-  Garrett Metal Detectors ... Metal detection equipment
+  Garrett Metal Detectors.... Metal detection equipment
   Polaris Defense ....... All-terrain military vehicles
   Duracell .............. Battery and power systems
   Goal Zero ............. Portable solar power systems
@@ -171,6 +171,18 @@ BRANDS
   SGS ................... Inspection, verification, and certification services
   KBR ................... Defense and government contracting
   Anonymous ............. Seller identity not disclosed or verified.
+  Winchester............. American firearms manufacturer
+  Walther................ German precision firearms maker
+  Mauser................. Historic German arms manufacturer
+  Kalashnikov Concern.... Russian arms manufacturer (AK series)
+  Remington Arms......... American firearms manufacturer
+  Smith & Wesson......... American firearms and revolvers
+  Beretta................ Italian firearms manufacturer
+  Springfield Armory..... US firearms manufacturer
+  Steyr Mannlicher....... Austrian firearms manufacturer
+  IMI Systems............ Israeli weapons manufacturer
+  Accuracy International.... British precision rifle maker
+  L3 Technologies........ Defense and optics systems
 
 CATEGORIES
 ----------
