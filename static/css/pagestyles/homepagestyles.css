@@ -1,7 +1,6 @@
 /* ========================================================================================================================================================
    CONTAINER
    ======================================================================================================================================================== */
-
 .container {
   max-width: var(--container-max-width);
   margin: 0 auto;
@@ -13,7 +12,6 @@
   flex-wrap: wrap;
   justify-content: center;
 }
-
 /* ========================================================================================================================================================
    HERO CAROUSEL
    ======================================================================================================================================================== */
@@ -24,7 +22,6 @@
   overflow: hidden;
   background: #1a1f1a;
 }
-
 .hero-slide {
   position: absolute;
   inset: 0;
@@ -35,33 +32,27 @@
     transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
 }
-
 .hero-slide.active {
   opacity: 1;
   transform: scale(1);
   pointer-events: auto;
 }
-
 .hero-slide.enter-right {
   opacity: 0;
   transform: translateX(60px) scale(1.04);
 }
-
 .hero-slide.enter-right.active {
   opacity: 1;
   transform: translateX(0) scale(1);
 }
-
 .hero-slide.enter-left {
   opacity: 0;
   transform: translateX(-60px) scale(1.04);
 }
-
 .hero-slide.enter-left.active {
   opacity: 1;
   transform: translateX(0) scale(1);
 }
-
 .hero-slide-bg {
   position: absolute;
   inset: 0;
@@ -69,7 +60,6 @@
   background-position: center;
   background-repeat: no-repeat;
 }
-
 .hero-slide-overlay {
   position: absolute;
   inset: 0;
@@ -78,33 +68,27 @@
       rgba(10, 14, 10, 0.45) 55%,
       rgba(10, 14, 10, 0.1) 100%);
 }
-
 /* Replace with your actual hero images */
 .hero-slide:nth-child(1) .hero-slide-bg {
   background-color: #2b3b2b;
   background-image: url("../../assets/images/pageimages/homepageimages/herocarouselimages/gunphoto.jpg");
 }
-
 .hero-slide:nth-child(2) .hero-slide-bg {
   background-color: #3b2b2b;
   background-image: url("../../assets/images/pageimages/homepageimages/herocarouselimages/arsenal.jpg");
 }
-
 .hero-slide:nth-child(3) .hero-slide-bg {
   background-color: #2b2b3b;
   background-image: url("../../assets/images/pageimages/homepageimages/herocarouselimages/samurai.jpg");
 }
-
 .hero-slide:nth-child(4) .hero-slide-bg {
   background-color: #3b3b2b;
   background-image: url("../../assets/images/pageimages/homepageimages/herocarouselimages/sniper.jpg");
 }
-
 .hero-slide:nth-child(5) .hero-slide-bg {
   background-color: #2b3b3b;
   background-image: url("../../assets/images/pageimages/homepageimages/herocarouselimages/soldier.jpg");
 }
-
 .hero-content {
   position: absolute;
   left: 64px;
@@ -112,7 +96,6 @@
   max-width: 540px;
   z-index: 2;
 }
-
 .hero-tag {
   display: inline-block;
   font-family: "Courier New", monospace;
@@ -130,12 +113,10 @@
     opacity 0.5s 0.2s ease,
     transform 0.5s 0.2s ease;
 }
-
 .hero-slide.active .hero-tag {
   opacity: 1;
   transform: translateY(0);
 }
-
 .hero-title {
   font-family: "Georgia", "Times New Roman", serif;
   font-size: clamp(28px, 4vw, 60px);
@@ -150,12 +131,10 @@
     opacity 0.55s 0.35s ease,
     transform 0.55s 0.35s ease;
 }
-
 .hero-slide.active .hero-title {
   opacity: 1;
   transform: translateY(0);
 }
-
 .hero-subtitle {
   font-size: 14px;
   color: #b0bdb0;
@@ -168,12 +147,10 @@
     opacity 0.55s 0.48s ease,
     transform 0.55s 0.48s ease;
 }
-
 .hero-slide.active .hero-subtitle {
   opacity: 1;
   transform: translateY(0);
 }
-
 .hero-cta {
   display: inline-block;
   font-size: 13px;
@@ -193,16 +170,13 @@
     transform 0.5s 0.6s ease,
     background 0.2s ease;
 }
-
 .hero-cta:hover {
   background: #c5d9be;
 }
-
 .hero-slide.active .hero-cta {
   opacity: 1;
   transform: translateY(0);
 }
-
 /* ── Carousel arrows ───────────────────────────────────── */
 .hero-arrow {
   position: absolute;
@@ -224,21 +198,17 @@
     transform 0.2s ease;
   backdrop-filter: blur(4px);
 }
-
 .hero-arrow:hover {
   background: rgba(168, 196, 154, 0.18);
   border-color: rgba(168, 196, 154, 0.8);
   transform: translateY(-50%) scale(1.07);
 }
-
 .hero-arrow-prev {
   left: 5px;
 }
-
 .hero-arrow-next {
   right: 5px;
 }
-
 .hero-arrow svg {
   width: 20px;
   height: 20px;
@@ -248,7 +218,6 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-
 /* ── Dots ──────────────────────────────────────────────── */
 .hero-dots {
   position: absolute;
@@ -258,7 +227,6 @@
   gap: 8px;
   z-index: 10;
 }
-
 .hero-dot {
   width: 6px;
   height: 6px;
@@ -270,12 +238,10 @@
     background 0.3s ease,
     width 0.3s ease;
 }
-
 .hero-dot.active {
   background: #a8c49a;
   width: 24px;
 }
-
 /* ── Counter ───────────────────────────────────────────── */
 .hero-counter {
   position: absolute;
@@ -287,11 +253,9 @@
   color: rgba(168, 196, 154, 0.6);
   z-index: 10;
 }
-
 .hero-counter span {
   color: #a8c49a;
 }
-
 /* ── Scanline texture ──────────────────────────────────── */
 .hero::after {
   content: "";
@@ -305,7 +269,6 @@
   pointer-events: none;
   z-index: 5;
 }
-
 /* ── Corner bracket ────────────────────────────────────── */
 .hero-bracket {
   position: absolute;
@@ -318,11 +281,9 @@
   z-index: 6;
   pointer-events: none;
 }
-
 /* ========================================================================================================================================================
    FEATURE CAROUSEL
    ======================================================================================================================================================== */
-
 .fc-root {
   background: #1a1f1a5d;
   height: 100%;
@@ -331,7 +292,6 @@
   position: relative;
   overflow: visible;
 }
-
 .fc-root::before {
   content: "";
   position: absolute;
@@ -344,14 +304,12 @@
   pointer-events: none;
   z-index: 0;
 }
-
 .fc-header {
   text-align: center;
   margin-bottom: 32px;
   position: relative;
   z-index: 1;
 }
-
 .fc-header-tag {
   display: inline-block;
   font-family: "Courier New", monospace;
@@ -364,7 +322,6 @@
   padding: 4px 14px;
   margin-bottom: 10px;
 }
-
 .fc-header h2 {
   font-family: Georgia, serif;
   font-size: clamp(24px, 4vw, 35px);
@@ -374,7 +331,6 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
-
 .fc-stage {
   position: relative;
   z-index: 1;
@@ -384,54 +340,44 @@
   margin: 0 auto;
   margin-bottom: 20px;
 }
-
 .fc-page {
   display: none;
 }
-
 .fc-page.active {
   display: block;
 }
-
 /* Square collage — 1:1 aspect ratio enforced via padding-bottom trick */
 .fc-collage {
   position: relative;
   width: 100%;
   padding-bottom: 60%;
 }
-
 .fc-collage-inner {
   position: absolute;
   inset: 0;
   display: grid;
   gap: 15px;
 }
-
 .fc-grid-hero {
   grid-template-columns: 2fr 1fr;
   grid-template-rows: 1fr 1fr;
 }
-
 .fc-grid-3col {
   grid-template-columns: 1.4fr 1fr 1fr;
   grid-template-rows: 1fr 1fr;
 }
-
 .fc-grid-2col {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
 }
-
 .fc-grid-quad {
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr;
 }
-
 .fc-grid-asym {
   grid-template-columns: 1fr 1.5fr;
   grid-template-rows: 1fr 1fr;
 }
-
 /* Cards — position:relative is the popup anchor */
 .fc-card {
   position: relative;
@@ -446,14 +392,12 @@
   min-height: 0;
   z-index: 1;
 }
-
 .fc-card:hover {
   border-color: rgba(168, 196, 154, 0.6);
   transform: translateY(-2px);
   z-index: 100;
   /* lift above siblings so popup isn't clipped */
 }
-
 /* Clip only the background image, not the popup */
 .fc-card-bg {
   position: absolute;
@@ -464,15 +408,12 @@
   background-position: center;
   background-repeat: no-repeat;
 }
-
 .fc-card.span2r {
   grid-row: span 2;
 }
-
 .fc-card.span2c {
   grid-column: span 2;
 }
-
 .fc-img-placeholder {
   position: absolute;
   inset: 0;
@@ -482,7 +423,6 @@
   font-size: 48px;
   opacity: 0.18;
 }
-
 .fc-overlay {
   position: absolute;
   inset: 0;
@@ -491,7 +431,6 @@
       rgba(10, 49, 10, 0.3) 50%,
       rgba(10, 14, 10, 0.15) 100%);
 }
-
 .fc-content {
   position: absolute;
   inset: 0;
@@ -501,7 +440,6 @@
   padding: 10px 12px;
   z-index: 2;
 }
-
 /* Name */
 .fc-name {
   font-family: "Courier New", monospace;
@@ -514,17 +452,14 @@
   padding: 3px 8px;
   border-left: 2px solid #a8c49a;
   align-self: flex-start;
-
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .fc-name.large {
   font-size: clamp(10px, 1.8vw, 22px);
   padding: 4px 10px;
 }
-
 /* Pricing container */
 .fc-pricing {
   background: rgba(10, 14, 10, 0.82);
@@ -536,7 +471,6 @@
   gap: 8px;
   flex-wrap: wrap;
 }
-
 /* Discount badge */
 .fc-discount {
   font-family: "Courier New", monospace;
@@ -548,7 +482,6 @@
   padding: 2px 6px;
   flex-shrink: 0;
 }
-
 /* Prices container */
 .fc-prices {
   display: flex;
@@ -558,7 +491,6 @@
   justify-content: flex-end;
   min-width: 0;
 }
-
 /* Old price */
 .fc-old {
   font-family: "Courier New", monospace;
@@ -567,7 +499,6 @@
   text-decoration: line-through;
   min-width: 0;
 }
-
 /* New price */
 .fc-new {
   font-family: "Courier New", monospace;
@@ -576,11 +507,9 @@
   color: #a8c49a;
   min-width: 0;
 }
-
 .fc-new.large {
   font-size: clamp(14px, 2.2vw, 24px);
 }
-
 /* ── NAV ── */
 .fc-nav {
   display: flex;
@@ -591,7 +520,6 @@
   position: relative;
   z-index: 1;
 }
-
 .fc-nav-arrow {
   background: transparent;
   border: 1px solid rgba(168, 196, 154, 0.3);
@@ -607,18 +535,15 @@
     background 0.2s,
     border-color 0.2s;
 }
-
 .fc-nav-arrow:hover {
   background: rgba(168, 196, 154, 0.15);
   border-color: #a8c49a;
 }
-
 .fc-dots-wrap {
   display: flex;
   gap: 10px;
   align-items: center;
 }
-
 .fc-dot {
   width: 10px;
   height: 10px;
@@ -632,13 +557,11 @@
     transform 0.2s;
   position: relative;
 }
-
 .fc-dot.active {
   background: #a8c49a;
   border-color: #a8c49a;
   transform: scale(1.25);
 }
-
 .fc-dot-label {
   position: absolute;
   bottom: calc(100% + 6px);
@@ -657,11 +580,9 @@
   pointer-events: none;
   transition: opacity 0.2s;
 }
-
 .fc-dot:hover .fc-dot-label {
   opacity: 1;
 }
-
 .fc-page-label {
   font-family: "Courier New", monospace;
   font-size: 10px;
@@ -673,7 +594,6 @@
   position: relative;
   z-index: 1;
 }
-
 .fc-timer {
   padding: 10px 14px;
   background-color: rgb(78, 32, 32);
@@ -688,11 +608,9 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
 }
-
 /* ========================================================================================================================================================
    ADVERTISEMENT SPACE
    ======================================================================================================================================================== */
-
 .ad-space {
   width: 100%;
   aspect-ratio: 8 / 1;
@@ -705,7 +623,6 @@
   border-radius: 8px;
   margin-bottom: 30px;
 }
-
 .ad-content {
   border: 3px solid rgba(111, 131, 102, 0.466);
   max-width: 85%;
@@ -721,14 +638,12 @@
   cursor: pointer;
   border-radius: 4px;
 }
-
 .ad-content:hover {
   box-shadow:
     0 8px 25px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
 }
-
 .ad-img {
   width: 100%;
   height: 100%;
@@ -744,12 +659,10 @@
   overflow: hidden;
   animation: adZoomIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
-
 .ad-content:hover .ad-img {
   filter: brightness(1.05) contrast(1.05);
   transform: scale(1.02);
 }
-
 /* Gradient overlay for depth */
 .ad-img::before {
   content: "";
@@ -764,7 +677,6 @@
   pointer-events: none;
   z-index: 1;
 }
-
 /* Fade-in overlay at bottom */
 .ad-img::after {
   content: "";
@@ -777,34 +689,28 @@
   pointer-events: none;
   z-index: 1;
 }
-
 /* Animation keyframes */
 @keyframes adZoomIn {
   from {
     transform: scale(0.95);
     opacity: 0;
   }
-
   to {
     transform: scale(1);
     opacity: 1;
   }
 }
-
 @media (max-width: 480px) {
   .ad-space {
     aspect-ratio: 8 / 1;
   }
-
   .ad-content {
     border: 2px solid rgba(111, 131, 102, 0.466);
   }
 }
-
 /* ========================================================================================================================================================
    PRODUCT & SERVICES CATEGORIES
 ======================================================================================================================================================== */
-
 .pands-categories {
   width: 100%;
   padding: 1rem 0;
@@ -813,11 +719,9 @@
   max-height: 880px;
   margin: 0 auto;
 }
-
 .section-group {
   margin-bottom: 0rem;
 }
-
 .category-title {
   font-size: clamp(7px, 2vw, 17px);
   font-family: "times new roman", sans-serif;
@@ -831,7 +735,6 @@
   color: #ececec;
   text-transform: uppercase;
 }
-
 .pands-carousel {
   padding: 10px 40px 10px 40px;
   margin-bottom: 0rem;
@@ -839,7 +742,6 @@
   margin-left: auto;
   margin-right: auto;
 }
-
 /* Category Buttons */
 .category-buttons {
   display: flex;
@@ -847,7 +749,6 @@
   gap: 15px;
   margin-bottom: 30px;
 }
-
 .category-btn {
   padding: 15px 10px;
   width: clamp(80px, 20vw, 150px);
@@ -862,19 +763,16 @@
   transition: all 0.3s ease;
   font-weight: bold;
 }
-
 .category-btn:hover {
   background-color: #415245;
   border-color: #627c68;
 }
-
 .category-btn.active {
   background-color: #8f9e8a;
   border-color: #152017;
   color: #1b1b1b;
   box-shadow: 0 0 15px rgba(183, 209, 113, 0.4);
 }
-
 .carousel-wrapper {
   position: relative;
   overflow-x: auto;
@@ -883,26 +781,21 @@
   scroll-behavior: auto;
   justify-content: center;
 }
-
 .carousel-wrapper::-webkit-scrollbar {
   height: 8px;
 }
-
 .carousel-wrapper::-webkit-scrollbar-track {
   background: rgba(168, 196, 154, 0.1);
   border-radius: 4px;
 }
-
 .carousel-wrapper::-webkit-scrollbar-thumb {
   background: rgba(168, 196, 154, 0.151);
   border-radius: 4px;
   border: 2px solid rgba(62, 74, 63, 0.92);
 }
-
 .carousel-wrapper::-webkit-scrollbar-thumb:hover {
   background: rgba(168, 196, 154, 0.205);
 }
-
 .carousel-track {
   display: flex;
   gap: 12px;
@@ -911,11 +804,9 @@
   user-select: none;
   width: max-content;
 }
-
 .carousel-track:active {
   cursor: grabbing;
 }
-
 .category-rect {
   flex-shrink: 1;
   /* allow shrinking on smaller screens */
@@ -940,25 +831,21 @@
   position: relative;
   overflow: hidden;
 }
-
 .category-rect:hover {
   background: linear-gradient(135deg, #4a5a50 0%, #3a4139 100%);
   border-color: rgba(168, 196, 154, 0.7);
   transform: translateY(-4px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
-
 .category-rect.active {
   background: linear-gradient(135deg, #6c7a6b 0%, #4a5a50 100%);
   border-color: #a8c49a;
   color: #a8c49a;
   box-shadow: 0 0 0 2px rgba(168, 196, 154, 0.4);
 }
-
 .category-rect.active .category-label {
   color: #a8c49a;
 }
-
 /* Image styling */
 .category-image {
   width: 70%;
@@ -969,14 +856,12 @@
   align-items: center;
   justify-content: center;
 }
-
 .category-image img {
   max-width: 100%;
   max-height: 100%;
   opacity: 0.75;
   object-fit: contain;
 }
-
 /* Text styling - positioned at bottom center */
 .category-label {
   font-size: clamp(8px, 1vw, 15px);
@@ -990,7 +875,6 @@
   padding: 0.25rem 0;
   font-family: "Courier New", Courier, monospace;
 }
-
 .services-container {
   padding: 0 3rem;
   width: 100%;
@@ -998,20 +882,17 @@
   margin-left: auto;
   margin-right: auto;
 }
-
 @media (max-width: 768px) {
   .category-rect {
     width: 90px;
     height: 130px;
     font-size: 9px;
   }
-
   .main-title {
     font-size: 20px;
     margin-bottom: 2rem;
   }
 }
-
 /* Phones */
 @media (max-width: 480px) {
   .category-rect {
@@ -1021,23 +902,18 @@
     padding: 0.4rem;
   }
 }
-
 /* ========================================================================================================================================================
            BUNDLES SECTION
 ======================================================================================================================================================== */
-
 /* ========================================================================================================================================================
            BEST SELLERS
 ======================================================================================================================================================== */
-
 /* ========================================================================================================================================================
            NEWS & UPDATES
 ======================================================================================================================================================== */
-
 /* ========================================================================================================================================================
            WHY CHOOSE ARMSDEALER - TRUST SECTION
 ======================================================================================================================================================== */
-
 .why-choose {
   width: 100%;
   padding: 4rem 2rem;
@@ -1047,7 +923,6 @@
   margin-bottom: 30px;
   margin-top: 30px;
 }
-
 .why-choose::before {
   content: "";
   position: absolute;
@@ -1060,19 +935,16 @@
   pointer-events: none;
   z-index: 0;
 }
-
 .why-choose-content {
   position: relative;
   z-index: 1;
   max-width: 1200px;
   margin: 0 auto;
 }
-
 .section-header {
   text-align: center;
   margin-bottom: 2.5rem;
 }
-
 .section-header h2 {
   font-family: Georgia, serif;
   font-size: clamp(24px, 4vw, 35px);
@@ -1083,7 +955,6 @@
   text-transform: uppercase;
   line-height: 1.2;
 }
-
 .section-header p {
   font-size: 14px;
   color: #b0bdb0;
@@ -1091,13 +962,11 @@
   max-width: 700px;
   margin: 0 auto;
 }
-
 .why-choose-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
 }
-
 .trust-card {
   background: rgba(35, 42, 35, 0.7);
   border: 1px solid rgba(168, 196, 154, 0.2);
@@ -1109,15 +978,12 @@
   overflow: hidden;
   animation: fadeInUp 0.6s ease 0.1s backwards;
 }
-
 .trust-card:nth-child(2) {
   animation-delay: 0.2s;
 }
-
 .trust-card:nth-child(3) {
   animation-delay: 0.3s;
 }
-
 .trust-card::before {
   content: "";
   position: absolute;
@@ -1131,29 +997,24 @@
       transparent);
   transition: left 0.6s ease;
 }
-
 .trust-card:hover {
   border-color: rgba(168, 196, 154, 0.5);
   background: rgba(35, 42, 35, 0.95);
   transform: translateY(-6px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
 }
-
 .trust-card:hover::before {
   left: 100%;
 }
-
 .trust-card-icon {
   font-size: 3rem;
   margin-bottom: 1rem;
   display: inline-block;
   transition: transform 0.3s ease;
 }
-
 .trust-card:hover .trust-card-icon {
   transform: scale(1.1);
 }
-
 .trust-card-title {
   font-family: "Courier New", monospace;
   font-size: 14px;
@@ -1163,14 +1024,12 @@
   color: #a8c49a;
   margin-bottom: 0.75rem;
 }
-
 .trust-card-desc {
   font-size: 13px;
   color: #b0bdb0;
   line-height: 1.7;
   margin: 0;
 }
-
 @media (max-width: 980px) {
   .why-choose-grid {
     max-width: 500px;
@@ -1179,11 +1038,9 @@
     margin-right: auto;
   }
 }
-
 /* ========================================================================================================================================================
     PURCHASE PROCESS - WORKFLOW SECTION
 ======================================================================================================================================================== */
-
 .purchase-process {
   width: 100%;
   padding: 4rem 2rem;
@@ -1192,7 +1049,6 @@
   position: relative;
   margin-bottom: 30px;
 }
-
 .purchase-process::before {
   content: "";
   position: absolute;
@@ -1205,7 +1061,6 @@
   pointer-events: none;
   z-index: 0;
 }
-
 .purchase-process-content {
   position: relative;
   z-index: 1;
@@ -1213,7 +1068,6 @@
   font-size: clamp(24px, 4vw, 35px);
   margin: 0 auto;
 }
-
 .process-flow {
   display: flex;
   align-items: center;
@@ -1223,7 +1077,6 @@
   margin: 2rem 0;
   padding: 0 1rem;
 }
-
 .process-step {
   display: flex;
   flex-direction: column;
@@ -1241,34 +1094,27 @@
   cursor: pointer;
   animation: slideInLeft 0.5s ease 0.1s backwards;
 }
-
 .process-step:nth-child(2) {
   animation-delay: 0.15s;
 }
-
 .process-step:nth-child(4) {
   animation-delay: 0.2s;
 }
-
 .process-step:nth-child(6) {
   animation-delay: 0.25s;
 }
-
 .process-step:nth-child(8) {
   animation-delay: 0.3s;
 }
-
 .process-step:nth-child(10) {
   animation-delay: 0.35s;
 }
-
 .process-step:hover {
   background: rgba(50, 70, 55, 1);
   border-color: rgba(168, 196, 154, 0.8);
   transform: translateY(-4px);
   box-shadow: 0 8px 16px rgba(168, 196, 154, 0.15);
 }
-
 .process-step-number {
   font-size: 32px;
   font-weight: 700;
@@ -1276,7 +1122,6 @@
   margin-bottom: 0.5rem;
   font-family: Georgia, serif;
 }
-
 .process-step-title {
   font-family: "Courier New", monospace;
   font-size: 11px;
@@ -1286,13 +1131,11 @@
   color: #a8c49a;
   margin-bottom: 0.25rem;
 }
-
 .process-step-label {
   font-size: 11px;
   color: #b0bdb0;
   margin: 0;
 }
-
 .process-arrow {
   color: #a8c49a;
   font-size: 24px;
@@ -1300,11 +1143,9 @@
   flex-shrink: 0;
   transition: transform 0.3s ease;
 }
-
 .process-flow:hover .process-arrow {
   transform: scaleX(1.2);
 }
-
 .process-info {
   background: rgba(35, 42, 35, 0.6);
   border-left: 4px solid #a8c49a;
@@ -1315,23 +1156,19 @@
   margin-left: auto;
   margin-right: auto;
 }
-
 .process-info p {
   font-size: 12px;
   color: #b0bdb0;
   margin: 0;
   line-height: 1.7;
 }
-
 .process-info strong {
   color: #a8c49a;
   font-weight: 700;
 }
-
 /* ========================================================================================================================================================
            CALL TO ACTION SECTION
 ======================================================================================================================================================== */
-
 .cta-section {
   width: 100%;
   padding: 4rem 2rem;
@@ -1344,7 +1181,6 @@
   overflow: hidden;
   margin: 0 auto;
 }
-
 .cta-section::before {
   content: "";
   position: absolute;
@@ -1357,7 +1193,6 @@
   pointer-events: none;
   z-index: 0;
 }
-
 .cta-bracket-tl {
   position: absolute;
   top: 32px;
@@ -1368,7 +1203,6 @@
   border-left: 2px solid rgba(168, 196, 154, 0.3);
   z-index: 1;
 }
-
 .cta-bracket-br {
   position: absolute;
   bottom: 32px;
@@ -1379,14 +1213,12 @@
   border-right: 2px solid rgba(168, 196, 154, 0.3);
   z-index: 1;
 }
-
 .cta-content {
   position: relative;
   z-index: 1;
   max-width: 800px;
   margin: 0 auto;
 }
-
 .cta-heading {
   font-family: Georgia, serif;
   font-size: clamp(24px, 4vw, 35px);
@@ -1396,21 +1228,18 @@
   margin-bottom: 0.75rem;
   text-transform: uppercase;
 }
-
 .cta-subheading {
   font-size: 14px;
   color: #b0bdb0;
   line-height: 1.6;
   margin-bottom: 2rem;
 }
-
 .cta-buttons {
   display: flex;
   gap: 1.5rem;
   justify-content: center;
   flex-wrap: wrap;
 }
-
 .cta-btn {
   display: inline-block;
   padding: 12px 36px;
@@ -1425,26 +1254,22 @@
   text-decoration: none;
   border: 2px solid transparent;
 }
-
 .cta-btn-primary {
   background: #a8c49a;
   color: #1a1f1a;
   border-color: #a8c49a;
 }
-
 .cta-btn-primary:hover {
   background: #c5d9be;
   border-color: #c5d9be;
   box-shadow: 0 8px 16px rgba(168, 196, 154, 0.2);
   transform: translateY(-2px);
 }
-
 .cta-btn-secondary {
   background: transparent;
   color: #a8c49a;
   border-color: #a8c49a;
 }
-
 .cta-btn-secondary:hover {
   background: rgba(168, 196, 154, 0.15);
   border-color: #c5d9be;
@@ -1452,15 +1277,12 @@
   box-shadow: 0 8px 16px rgba(168, 196, 154, 0.15);
   transform: translateY(-2px);
 }
-
 /* ========================================================================================================================================================
             TRUSTED BRANDS IN STOCK
 ======================================================================================================================================================== */
-
 /* ========================================================================================================================================================
            FOOTER SECTION
 ======================================================================================================================================================== */
-
 footer {
   background: linear-gradient(135deg,
       rgba(26, 31, 26, 0.95) 0%,
@@ -1468,10 +1290,8 @@ footer {
   border-top: 1px solid rgba(168, 196, 154, 0.15);
   padding: 3rem 2rem 2rem;
   width: 100%;
-
   position: relative;
 }
-
 footer::before {
   content: "";
   position: absolute;
@@ -1484,27 +1304,23 @@ footer::before {
   pointer-events: none;
   z-index: 0;
 }
-
 .footer-content {
   position: relative;
   z-index: 1;
   max-width: 1200px;
   margin: 0 auto;
 }
-
 .footer-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 2rem;
   margin-bottom: 2rem;
 }
-
 .footer-column {
   display: flex;
   flex-direction: column;
   font-size: clamp(8px, 1vw, 14px);
 }
-
 .footer-title {
   font-family: "Courier New", monospace;
   font-size: 10px;
@@ -1516,7 +1332,6 @@ footer::before {
   padding-bottom: 0.75rem;
   border-bottom: 1px solid rgba(168, 196, 154, 0.15);
 }
-
 .footer-links {
   list-style: none;
   padding: 0;
@@ -1525,11 +1340,9 @@ footer::before {
   flex-direction: column;
   gap: 0.75rem;
 }
-
 .footer-links li {
   margin: 0;
 }
-
 .footer-links a {
   font-size: 12px;
   color: #b0bdb0;
@@ -1537,11 +1350,9 @@ footer::before {
   transition: color 0.3s ease;
   position: relative;
 }
-
 .footer-links a:hover {
   color: #a8c49a;
 }
-
 .footer-links a::after {
   content: "";
   position: absolute;
@@ -1552,17 +1363,14 @@ footer::before {
   background: #a8c49a;
   transition: width 0.3s ease;
 }
-
 .footer-links a:hover::after {
   width: 100%;
 }
-
 .footer-contact {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
-
 .footer-contact-item {
   font-size: 12px;
   color: #b0bdb0;
@@ -1570,13 +1378,11 @@ footer::before {
   align-items: flex-start;
   gap: 0.5rem;
 }
-
 .footer-socials {
   display: flex;
   gap: 1rem;
   margin-top: 1rem;
 }
-
 .footer-social-link {
   display: inline-flex;
   align-items: center;
@@ -1591,96 +1397,77 @@ footer::before {
   font-weight: 700;
   transition: all 0.3s ease;
 }
-
 .footer-social-link:hover {
   background: rgba(168, 196, 154, 0.15);
   border-color: #a8c49a;
 }
-
 .footer-divider {
   border-top: 1px solid rgba(168, 196, 154, 0.15);
   padding-top: 1.5rem;
   margin-top: 2rem;
   text-align: center;
 }
-
 .footer-copyright {
   font-size: 11px;
   color: rgba(168, 196, 154, 0.6);
   margin: 0;
   line-height: 1.6;
 }
-
 /* ========================================================================================================================================================
            ANIMATIONS & KEYFRAMES
 ======================================================================================================================================================== */
-
 @keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(20px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
-
 @keyframes slideInLeft {
   from {
     opacity: 0;
     transform: translateX(-30px);
   }
-
   to {
     opacity: 1;
     transform: translateX(0);
   }
 }
-
 /* ========================================================================================================================================================
            RESPONSIVE DESIGN - TABLET
 ======================================================================================================================================================== */
-
 @media (max-width: 768px) {
-
   .why-choose,
   .purchase-process,
   .cta-section {
     padding: 2.5rem 1.5rem;
   }
-
   .section-header h2 {
     font-size: 28px;
   }
-
   .why-choose-grid {
     gap: 1.5rem;
   }
-
   .trust-card {
     padding: 1.5rem;
   }
-
   .trust-card-icon {
     font-size: 2.5rem;
   }
-
   .cta-buttons {
     flex-direction: column;
     gap: 1rem;
   }
-
   .cta-btn {
     width: 100%;
   }
-
   .footer-grid {
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
   }
-
   .cta-bracket-tl,
   .cta-bracket-br {
     width: 28px;
@@ -1690,133 +1477,104 @@ footer::before {
     bottom: auto;
     right: auto;
   }
-
   .cta-bracket-br {
     display: none;
   }
-
   .process-flow {
     flex-direction: column;
     gap: 0;
   }
-
   .process-step {
     width: 100%;
     max-width: 100%;
     border-right: none;
     border-bottom: 2px solid #a8c49a;
   }
-
   .process-arrow {
     transform: rotate(90deg);
     margin: 0.5rem 0;
   }
 }
-
 /* ========================================================================================================================================================
     RESPONSIVE DESIGN - MOBILE
 ======================================================================================================================================================== */
-
 @media (max-width: 480px) {
-
   .why-choose,
   .purchase-process,
   .cta-section {
     padding: 2rem 1rem;
   }
-
   .section-header h2 {
     font-size: 22px;
   }
-
   .section-header p {
     font-size: 12px;
   }
-
   .trust-card {
     padding: 1.25rem;
   }
-
   .trust-card-icon {
     font-size: 2rem;
   }
-
   .trust-card-title {
     font-size: 12px;
   }
-
   .trust-card-desc {
     font-size: 11px;
   }
-
   .process-flow {
     gap: 0.5rem;
     padding: 0;
   }
-
   .process-step {
     min-width: 100%;
     max-width: 100%;
     padding: 1rem;
   }
-
   .process-step-number {
     font-size: 24px;
   }
-
   .process-step-title {
     font-size: 10px;
   }
-
   .process-step-label {
     font-size: 10px;
   }
-
   .process-arrow {
     font-size: 20px;
   }
-
   .cta-heading {
     font-size: 20px;
   }
-
   .cta-subheading {
     font-size: 12px;
   }
-
   .cta-btn {
     padding: 10px 24px;
     font-size: 11px;
   }
-
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-
   .footer-title {
     font-size: 9px;
     margin-bottom: 0.75rem;
   }
-
   .footer-links a {
     font-size: 11px;
   }
-
   .footer-contact-item {
     font-size: 11px;
   }
-
   .footer-social-link {
     width: 28px;
     height: 28px;
     font-size: 11px;
   }
-
   .footer-copyright {
     font-size: 10px;
   }
-
   .cta-bracket-tl {
     width: 20px;
     height: 20px;
