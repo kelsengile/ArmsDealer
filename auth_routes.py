@@ -1,8 +1,6 @@
-"""
-auth_routes.py — ArmsDealer
-Login, register, and logout routes.
-Populates session with all fields the account panel needs.
-"""
+# ──────────────────────────────────────────────────────────────────────────────────
+# AUTHENTICATION ROUTES
+# ──────────────────────────────────────────────────────────────────────────────────
 import sqlite3
 import os
 import secrets

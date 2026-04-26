@@ -1,8 +1,6 @@
-"""
-init_db.py
-Run this once to initialize the ArmsDealer database.
-Usage: python init_db.py
-"""
+# ──────────────────────────────────────────────────────────────────────────────────
+# DATABASE INITIALIZATION
+# ──────────────────────────────────────────────────────────────────────────────────
 import sqlite3
 import os
 DATABASE = os.path.join(os.path.dirname(__file__), 'database', 'armsdealer.db')

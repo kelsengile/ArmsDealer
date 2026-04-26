@@ -1,8 +1,6 @@
-"""
-models.py
-Data-access helpers for ArmsDealer.
-Each class wraps the raw sqlite3 calls so routes stay clean.
-"""
+# ──────────────────────────────────────────────────────────────────────────────────
+# MODELS
+# ──────────────────────────────────────────────────────────────────────────────────
 import sqlite3
 import os
 from app import get_db
