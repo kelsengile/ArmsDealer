@@ -40,6 +40,7 @@ GLOBAL
     [/] Logo | Title
     [/] Products
     [/] Services
+    [ ] Tools
     [ ] PopUps
           [ ] Search Bar
           [ ] Cart
@@ -69,10 +70,7 @@ GLOBAL
           [ ] Promotions
             [ ] Bundles ................. Grouped products sold together at a discounted price
             [ ] Rankings ................ Highlighting top-selling or most popular items
-            [ ] Flash Sales ............. Limited-time discounts to create urgency
             [ ] Seasonal Sales .......... Promotions tied to holidays or events
-            [ ] Limited Stock Alerts .... Shows scarcity to encourage quick buying
-            [ ] Countdown Timers ........ Visible timers for ongoing deals
             [ ] Exclusive Drops ......... Limited-edition or rare releases
             [ ] Event-Based Sales ....... Live or special event promotions
             [ ] Vouchers ............... Discount codes or credits used to reduce purchase cost
