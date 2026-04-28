@@ -6,10 +6,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const STORAGE_KEY = "productsPageState";
 
     // ─────────────────────────────────────────────
-    // STATE (default = AUTHORIZED WEAPONS)
+    // STATE (UPDATED: no more category)
     // ─────────────────────────────────────────────
     let state = loadState() || {
-        category: "weapons",
         access: "authorized",
         filter: "promotions"
     };
@@ -27,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectionTitle = document.getElementById("selection-title");
     const heroTypeDisplay = document.getElementById("hero-type-display");
 
-    const categoryBtns = document.querySelectorAll(".toggle-category");
     const accessBtns = document.querySelectorAll(".toggle-access");
     const filterBtns = document.querySelectorAll(".filter-btn");
     const tocLinks = document.querySelectorAll(".toc-link");
@@ -39,8 +37,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const promoSubmenu = document.getElementById("promotions-toc");
 
     // ─────────────────────────────────────────────
+    // LOAD PANEL (UPDATED TEMPLATE FORMAT)
+    // ─────────────────────────────────────────────
     function loadPanel() {
-        const templateId = `panel-${state.category}-${state.access}-${state.filter}`;
+        const templateId = `panel-${state.access}-${state.filter}`;
         const template = document.getElementById(templateId);
 
         if (!template) {
@@ -57,26 +57,26 @@ document.addEventListener("DOMContentLoaded", () => {
         saveState();
     }
 
+    // ─────────────────────────────────────────────
+    // UPDATE TITLES (REMOVED CATEGORY)
+    // ─────────────────────────────────────────────
     function updateHeaderTitle() {
         const cap = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
         const accessText = cap(state.access);
-        const categoryText = cap(state.category);
         const filterText = cap(state.filter);
 
-        // Content header (unchanged)
         selectionTitle.textContent =
-            `${accessText} · ${categoryText} · ${filterText}`;
+            `${accessText} · ${filterText}`;
 
-        // ✅ HERO TITLE (UPDATED HERE)
-        heroTypeDisplay.textContent = `${accessText} ${categoryText}`;
+        heroTypeDisplay.textContent =
+            `${accessText}`;
     }
 
+    // ─────────────────────────────────────────────
+    // ACTIVE STATES
+    // ─────────────────────────────────────────────
     function syncActiveStates() {
-        categoryBtns.forEach(btn => {
-            btn.classList.toggle("active", btn.dataset.category === state.category);
-        });
-
         accessBtns.forEach(btn => {
             btn.classList.toggle("active", btn.dataset.access === state.access);
         });
@@ -86,6 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // ─────────────────────────────────────────────
+    // SCROLL SPACING
+    // ─────────────────────────────────────────────
     function addScrollSpacing() {
         const sections = selectionContent.querySelectorAll(".promo-section");
         sections.forEach(sec => sec.style.minHeight = "260px");
@@ -94,13 +97,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // ─────────────────────────────────────────────
     // EVENTS
     // ─────────────────────────────────────────────
-    categoryBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            state.category = btn.dataset.category;
-            loadPanel();
-        });
-    });
 
+    // ACCESS TOGGLE
     accessBtns.forEach(btn => {
         btn.addEventListener("click", () => {
             state.access = btn.dataset.access;
@@ -108,6 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // FILTER BUTTONS
     filterBtns.forEach(btn => {
         btn.addEventListener("click", () => {
             const filter = btn.dataset.filter;
@@ -122,6 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // TOC SCROLL
     tocLinks.forEach(link => {
         link.addEventListener("click", () => {
             const target = document.getElementById(link.dataset.target);
@@ -135,6 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // HEADER FILTER UI
     hfSelects.forEach(select => {
         select.addEventListener("change", () => {
             select.style.borderColor = "#a8c47a";

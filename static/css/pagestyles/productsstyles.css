@@ -126,7 +126,7 @@ main.products-page::before {
 }
 .hero-sign-title {
   font-family: var(--font-stencil, "Oswald", sans-serif);
-  font-size: 36px;
+  font-size: 35px;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -141,16 +141,7 @@ main.products-page::before {
   align-items: center;
   gap: 10px;
 }
-.hero-toggle-label {
-  font-family: var(--font-mono, "Share Tech Mono", monospace);
-  font-size: 8px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--mil-muted, #4a5e4a);
-  white-space: nowrap;
-  min-width: 60px;
-  text-align: right;
-}
+
 .hero-sign-toggle {
   display: flex;
   border: 1px solid var(--mil-border, #2e3a2e);
@@ -178,6 +169,21 @@ main.products-page::before {
   background: var(--mil-olive, #6b7c4e);
   color: var(--mil-black, #0d0f0d);
 }
+
+/* Restricted only: red glow on hover */
+.toggle-btn[data-access="restricted"]:hover {
+  background: rgba(255, 0, 0, 0.1);
+  color: #ff4d4d;
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
+}
+
+/* Restricted only: red when active */
+.toggle-btn[data-access="restricted"].active {
+  background: rgba(255, 0, 0, 0.2);
+  color: #ff4d4d;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+}
+
 /* ============================================================================
    LAYOUT
    ============================================================================ */
@@ -435,8 +441,9 @@ main.products-page::before {
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--mil-light, #e2ead4);
+  color: var(--mil-bright, #a8c47a);
   white-space: nowrap;
+  opacity: 75%;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -455,7 +462,8 @@ main.products-page::before {
 }
 .header-filter-label {
   font-family: var(--font-mono, "Share Tech Mono", monospace);
-  font-size: 8px;
+  font-size: 10px;
+  font-weight: bold;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--mil-muted, #4a5e4a);
@@ -577,7 +585,7 @@ main.products-page::before {
 }
 .promo-section-title {
   font-family: var(--font-stencil, "Oswald", sans-serif);
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -590,7 +598,7 @@ main.products-page::before {
   gap: 10px;
   position: sticky;
   top: 0;
-  background: rgba(13,15,13,0.92);
+  background: var(--mil-dark);
   z-index: 2;
   backdrop-filter: blur(4px);
 }
@@ -633,7 +641,7 @@ main.products-page::before {
     width: 100%;
     gap: 10px;
   }
-  .hero-sign-title { font-size: 22px; }
+  .hero-sign-title { font-size: 30px; }
   .hero-toggle-row { flex-wrap: wrap; }
   .products-layout {
     flex-direction: column;
@@ -691,7 +699,7 @@ main.products-page::before {
   }
   .hero-label { font-size: 26px; }
   .hero-subtitle { font-size: 10px; }
-  .hero-sign-title { font-size: 16px; }
+  .hero-sign-title { font-size: 25px; }
   .content-title { font-size: 13px; }
   .selection-content { padding: 20px 16px; }
   .header-filter-label { display: none; }

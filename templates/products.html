@@ -11,20 +11,9 @@
         </div>
         <div class="hero-sign">
             <div class="hero-sign-top">CURRENT</div>
-            <div class="hero-sign-title" id="hero-type-display">AUTHORIZED WEAPONS</div>
-
-            <!-- Row 1: Category -->
+            <div class="hero-sign-title" id="hero-type-display">AUTHORIZED</div>
+            <!-- Row 1: Access Level -->
             <div class="hero-toggle-row">
-                <span class="hero-toggle-label">CATEGORY</span>
-                <div class="hero-sign-toggle">
-                    <button class="toggle-btn toggle-category" data-category="weapons">WEAPONS</button>
-                    <button class="toggle-btn toggle-category" data-category="equipment">EQUIPMENT</button>
-                </div>
-            </div>
-
-            <!-- Row 2: Access Level -->
-            <div class="hero-toggle-row">
-                <span class="hero-toggle-label">ACCESS</span>
                 <div class="hero-sign-toggle">
                     <button class="toggle-btn toggle-access" data-access="authorized">AUTHORIZED</button>
                     <button class="toggle-btn toggle-access" data-access="restricted">RESTRICTED</button>
@@ -106,13 +95,12 @@
     <!-- ═══════════════════════════════════════════════════════════
          PANEL CONTENT TEMPLATES
          Naming: panel-{category}-{access}-{filter}
-         Categories: weapons | equipment
          Access:     authorized | restricted
          Filter:     promotions | categories | brands
     ════════════════════════════════════════════════════════════════ -->
 
-    <!-- ── WEAPONS · AUTHORIZED ───────────────────────────────── -->
-    <template id="panel-weapons-authorized-promotions">
+    <!-- ── AUTHORIZED ───────────────────────────────── -->
+    <template id="panel-authorized-promotions">
         <div class="promo-sections">
             <section class="promo-section" id="promo-bundles">
                 <h3 class="promo-section-title">Bundles</h3>
@@ -153,7 +141,7 @@
         </div>
     </template>
 
-    <template id="panel-weapons-authorized-categories">
+    <template id="panel-authorized-categories">
         <div class="category-list">
             <div class="category-row">
                 <span class="category-icon">🔫</span>
@@ -178,7 +166,7 @@
         </div>
     </template>
 
-    <template id="panel-weapons-authorized-brands">
+    <template id="panel-authorized-brands">
         <div class="brand-grid">
             <div class="brand-card"><div class="brand-logo">GLOCK</div><p>Industry-standard polymer-frame pistols. Trusted by militaries worldwide.</p><span class="brand-item-count">23 products</span></div>
             <div class="brand-card"><div class="brand-logo">FN</div><p>Belgian-engineered precision. SCAR series and beyond.</p><span class="brand-item-count">17 products</span></div>
@@ -187,13 +175,13 @@
         </div>
     </template>
 
-    <!-- ── WEAPONS · RESTRICTED ────────────────────────────────── -->
-    <template id="panel-weapons-restricted-promotions">
+    <!-- ── RESTRICTED ────────────────────────────────── -->
+    <template id="panel-restricted-promotions">
         <div class="promo-sections">
             <section class="promo-section" id="promo-bundles">
                 <h3 class="promo-section-title">Bundles</h3>
                 <div class="promo-section-body empty-section">
-                    <p class="selection-status">No bundles listed yet.</p>
+                    <p class="selection-status">No restricted bundles listed yet.</p>
                 </div>
             </section>
             <section class="promo-section" id="promo-rankings">
@@ -229,7 +217,7 @@
         </div>
     </template>
 
-    <template id="panel-weapons-restricted-categories">
+    <template id="panel-restricted-categories">
         <div class="category-list">
             <div class="category-row">
                 <span class="category-icon">🚫</span>
@@ -249,160 +237,13 @@
         </div>
     </template>
 
-    <template id="panel-weapons-restricted-brands">
+    <template id="panel-restricted-brands">
         <div class="brand-grid">
             <div class="brand-card"><div class="brand-logo">H&amp;K</div><p>Full-auto and select-fire platforms. Law enforcement and military supply.</p><span class="brand-item-count">Restricted</span></div>
             <div class="brand-card"><div class="brand-logo">BARRETT</div><p>Anti-materiel rifles and .50 BMG platforms. Export-controlled.</p><span class="brand-item-count">Restricted</span></div>
             <div class="brand-card"><div class="brand-logo">KNIGHTS</div><p>KAC suppressed weapon systems. Government and LE contracts only.</p><span class="brand-item-count">Restricted</span></div>
         </div>
     </template>
-
-    <!-- ── EQUIPMENT · AUTHORIZED ──────────────────────────────── -->
-    <template id="panel-equipment-authorized-promotions">
-        <div class="promo-sections">
-            <section class="promo-section" id="promo-bundles">
-                <h3 class="promo-section-title">Bundles</h3>
-                <div class="promo-section-body empty-section">
-                    <p class="selection-status">No bundles listed yet.</p>
-                </div>
-            </section>
-            <section class="promo-section" id="promo-rankings">
-                <h3 class="promo-section-title">Rankings</h3>
-                <div class="promo-section-body empty-section">
-                    <p class="selection-status">No rankings listed yet.</p>
-                </div>
-            </section>
-            <section class="promo-section" id="promo-seasonal">
-                <h3 class="promo-section-title">Seasonal Sales</h3>
-                <div class="promo-section-body empty-section">
-                    <p class="selection-status">No seasonal sales listed yet.</p>
-                </div>
-            </section>
-            <section class="promo-section" id="promo-exclusive">
-                <h3 class="promo-section-title">Exclusive Drops</h3>
-                <div class="promo-section-body empty-section">
-                    <p class="selection-status">No exclusive drops listed yet.</p>
-                </div>
-            </section>
-            <section class="promo-section" id="promo-event">
-                <h3 class="promo-section-title">Event-Based Sales</h3>
-                <div class="promo-section-body empty-section">
-                    <p class="selection-status">No event sales listed yet.</p>
-                </div>
-            </section>
-            <section class="promo-section" id="promo-vouchers">
-                <h3 class="promo-section-title">Vouchers</h3>
-                <div class="promo-section-body empty-section">
-                    <p class="selection-status">No vouchers listed yet.</p>
-                </div>
-            </section>
-        </div>
-    </template>
-
-    <template id="panel-equipment-authorized-categories">
-        <div class="category-list">
-            <div class="category-row">
-                <span class="category-icon">🪖</span>
-                <div class="category-info"><strong>Protective Gear</strong><span>Helmets, plate carriers, and body armor</span></div>
-                <span class="category-count">35 items</span>
-            </div>
-            <div class="category-row">
-                <span class="category-icon">🔭</span>
-                <div class="category-info"><strong>Optics &amp; Sights</strong><span>Red dots, scopes, LPVOs, and NV-compatible</span></div>
-                <span class="category-count">54 items</span>
-            </div>
-            <div class="category-row">
-                <span class="category-icon">🎒</span>
-                <div class="category-info"><strong>Loadout &amp; Carry</strong><span>Molle packs, pouches, and holster systems</span></div>
-                <span class="category-count">78 items</span>
-            </div>
-            <div class="category-row">
-                <span class="category-icon">📡</span>
-                <div class="category-info"><strong>Communications</strong><span>Radios, headsets, and PTT devices</span></div>
-                <span class="category-count">22 items</span>
-            </div>
-        </div>
-    </template>
-
-    <template id="panel-equipment-authorized-brands">
-        <div class="brand-grid">
-            <div class="brand-card"><div class="brand-logo">EOTECH</div><p>Holographic weapon sights trusted in the harshest conditions.</p><span class="brand-item-count">12 products</span></div>
-            <div class="brand-card"><div class="brand-logo">CRYE</div><p>Precision-engineered plate carriers and combat uniforms.</p><span class="brand-item-count">28 products</span></div>
-            <div class="brand-card"><div class="brand-logo">PELTOR</div><p>Advanced hearing protection and tactical communication systems.</p><span class="brand-item-count">9 products</span></div>
-            <div class="brand-card"><div class="brand-logo">MYSTERY RANCH</div><p>Purpose-built load carriage systems for extended operations.</p><span class="brand-item-count">16 products</span></div>
-        </div>
-    </template>
-
-    <!-- ── EQUIPMENT · RESTRICTED ──────────────────────────────── -->
-    <template id="panel-equipment-restricted-promotions">
-        <div class="promo-sections">
-            <section class="promo-section" id="promo-bundles">
-                <h3 class="promo-section-title">Bundles</h3>
-                <div class="promo-section-body empty-section">
-                    <p class="selection-status">No bundles listed yet.</p>
-                </div>
-            </section>
-            <section class="promo-section" id="promo-rankings">
-                <h3 class="promo-section-title">Rankings</h3>
-                <div class="promo-section-body empty-section">
-                    <p class="selection-status">No rankings listed yet.</p>
-                </div>
-            </section>
-            <section class="promo-section" id="promo-seasonal">
-                <h3 class="promo-section-title">Seasonal Sales</h3>
-                <div class="promo-section-body empty-section">
-                    <p class="selection-status">No seasonal sales listed yet.</p>
-                </div>
-            </section>
-            <section class="promo-section" id="promo-exclusive">
-                <h3 class="promo-section-title">Exclusive Drops</h3>
-                <div class="promo-section-body empty-section">
-                    <p class="selection-status">No exclusive drops listed yet.</p>
-                </div>
-            </section>
-            <section class="promo-section" id="promo-event">
-                <h3 class="promo-section-title">Event-Based Sales</h3>
-                <div class="promo-section-body empty-section">
-                    <p class="selection-status">No event sales listed yet.</p>
-                </div>
-            </section>
-            <section class="promo-section" id="promo-vouchers">
-                <h3 class="promo-section-title">Vouchers</h3>
-                <div class="promo-section-body empty-section">
-                    <p class="selection-status">No vouchers listed yet.</p>
-                </div>
-            </section>
-        </div>
-    </template>
-
-    <template id="panel-equipment-restricted-categories">
-        <div class="category-list">
-            <div class="category-row">
-                <span class="category-icon">🚫</span>
-                <div class="category-info"><strong>Classified Optics</strong><span>Night vision and thermal imaging — export-controlled</span></div>
-                <span class="category-count">Verified access only</span>
-            </div>
-            <div class="category-row">
-                <span class="category-icon">⚠️</span>
-                <div class="category-info"><strong>Mil-Spec Armor</strong><span>Level IV and SAPI plates — government procurement</span></div>
-                <span class="category-count">Verified access only</span>
-            </div>
-            <div class="category-row">
-                <span class="category-icon">🔒</span>
-                <div class="category-info"><strong>Encrypted Comms</strong><span>ITAR-controlled radio and encryption hardware</span></div>
-                <span class="category-count">Verified access only</span>
-            </div>
-        </div>
-    </template>
-
-    <template id="panel-equipment-restricted-brands">
-        <div class="brand-grid">
-            <div class="brand-card"><div class="brand-logo">FLIR</div><p>Thermal and night-vision systems. Export-controlled optics.</p><span class="brand-item-count">Restricted</span></div>
-            <div class="brand-card"><div class="brand-logo">HARRIS RF</div><p>Military-grade encrypted communications hardware.</p><span class="brand-item-count">Restricted</span></div>
-            <div class="brand-card"><div class="brand-logo">CERADYNE</div><p>Advanced ceramic armor solutions for LE and military.</p><span class="brand-item-count">Restricted</span></div>
-        </div>
-    </template>
-
 </main>
 <script src="{{ url_for('static', filename='js/pagefunctions/productsfunctions.js') }}"></script>
 {% endblock %}
