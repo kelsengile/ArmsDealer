@@ -41,6 +41,8 @@ GLOBAL
     [/] Products
     [/] Services
     [ ] Tools
+    [ ] Community
+    [ ] Updates
     [ ] PopUps
           [ ] Search Bar
           [ ] Cart
