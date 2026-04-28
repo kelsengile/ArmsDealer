@@ -113,7 +113,7 @@ CREATE TABLE products (
     sales_count    INTEGER NOT NULL DEFAULT 0,
     image_file     TEXT,
     tags           TEXT,                                -- JSON array string
-    is_featured    INTEGER NOT NULL DEFAULT 0,
+    is_authorized    INTEGER NOT NULL DEFAULT 0,
     created_at     TEXT    NOT NULL DEFAULT (datetime('now')),
     updated_at     TEXT    NOT NULL DEFAULT (datetime('now'))
 );
@@ -142,7 +142,7 @@ CREATE TABLE services (
     sales_count    INTEGER NOT NULL DEFAULT 0,
     image_file     TEXT,
     tags           TEXT,
-    is_featured    INTEGER NOT NULL DEFAULT 0,
+    is_authorized    INTEGER NOT NULL DEFAULT 0,
     created_at     TEXT    NOT NULL DEFAULT (datetime('now')),
     updated_at     TEXT    NOT NULL DEFAULT (datetime('now'))
 );
@@ -773,7 +773,7 @@ INSERT INTO "languages" ("code","label","locale","is_active","sort_order") VALUE
  ('japanese','Japanese','ja',1,3),
  ('spanish','Spanish','es',1,4),
  ('mandarin','Mandarin','zh',1,5);
-INSERT INTO "products" ("id","name","slug","category_id","subcategory_id","brand_id","description","price","discount","stock","rating","sales_count","image_file","tags","is_featured","created_at","updated_at") VALUES (1,'Glock 17 Gen5','glock-17-gen5',1,1,1,'Full-size 9mm service pistol. 17-round magazine, nDLC finish, Marksman barrel.',29990.0,0.0,45,4.8,312,'glock 17 gen5.png','["9mm","pistol","full-size","police"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
+INSERT INTO "products" ("id","name","slug","category_id","subcategory_id","brand_id","description","price","discount","stock","rating","sales_count","image_file","tags","is_authorized","created_at","updated_at") VALUES (1,'Glock 17 Gen5','glock-17-gen5',1,1,1,'Full-size 9mm service pistol. 17-round magazine, nDLC finish, Marksman barrel.',29990.0,0.0,45,4.8,312,'glock 17 gen5.png','["9mm","pistol","full-size","police"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (2,'Glock 19 Gen5','glock-19-gen5',1,1,1,'Compact 9mm pistol. 15-round magazine, front serrations, ambidextrous slide stop.',27990.0,5.0,60,4.9,487,'glock 19 gen5.png','["9mm","compact","concealed-carry"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (3,'Glock 43X','glock-43x',1,1,1,'Slimline 9mm subcompact. 10-round magazine, extended grip frame.',24990.0,0.0,38,4.7,203,'glock 43x.png','["9mm","subcompact","slim","concealed-carry"]',0,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (4,'Glock 21 Gen4','glock-21-gen4',1,1,1,'.45 ACP full-size pistol. 13-round magazine, dual recoil spring assembly.',31990.0,0.0,22,4.6,98,'glock 21 gen4.png','[".45acp","full-size","pistol"]',0,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
@@ -1116,7 +1116,7 @@ INSERT INTO "products" ("id","name","slug","category_id","subcategory_id","brand
  (341,'ALICE Pack Large LC-2 External Frame','alice-pack-large-lc2-external-frame',14,96,30,'All-purpose Lightweight Individual Carrying Equipment large rucksack. 2,650 cubic inches, external frame, OD green nylon. US military standard Vietnam through Gulf War. Iconic in every Vietnam and Cold War era game.',9990.0,0.0,45,4.6,234,'alice_pack_large_lc2_external_frame.png','["alice","lc2","rucksack","military","vietnam","gulf-war","iconic","external-frame","oda"]',0,'2026-04-25 12:10:27','2026-04-25 12:10:27'),
  (342,'M1943 Folding Entrenching Tool','m1943-folding-entrenching-tool',19,136,69,'Folding tri-fold entrenching tool. Alloy steel blade, hardwood handle, OD nylon carrier. US standard WWII through Gulf War. The iconic "e-tool" — dig, pry, improvised weapon. Every military survival game includes one.',2990.0,0.0,80,4.5,312,'m1943_folding_entrenching_tool.png','["e-tool","entrenching","wwii","vietnam","military","iconic","folding","survival","gaming"]',0,'2026-04-25 12:10:27','2026-04-25 12:10:27'),
  (343,'USGI 1qt Canteen with M1910 Cover','usgi-1qt-canteen-m1910-cover',19,133,69,'1-quart USGI aluminum canteen with M1910 OD cotton canvas cover and M1910 steel cup. Standard US military canteen from WWI through Vietnam. Iconic in every war game and essential militaria collectible.',1990.0,0.0,100,4.6,456,'usgi_1qt_canteen_m1910_cover.png','["canteen","usgi","m1910","wwii","vietnam","military","iconic","1qt","survival","collectible"]',0,'2026-04-25 12:10:27','2026-04-25 12:10:27');
-INSERT INTO "services" ("id","name","slug","category_id","subcategory_id","brand_id","description","price","discount","rating","sales_count","image_file","tags","is_featured","created_at","updated_at") VALUES (1,'Military Small Arms Mass Production','mfg-small-arms-mass',21,145,52,'High-volume standardized production of military small arms. Includes QC, mil-spec compliance, 10,000+ unit runs.',4999990.0,0.0,4.7,8,'military small arms mass production.png','["mass-production","small-arms","military","qc","high-volume"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
+INSERT INTO "services" ("id","name","slug","category_id","subcategory_id","brand_id","description","price","discount","rating","sales_count","image_file","tags","is_authorized","created_at","updated_at") VALUES (1,'Military Small Arms Mass Production','mfg-small-arms-mass',21,145,52,'High-volume standardized production of military small arms. Includes QC, mil-spec compliance, 10,000+ unit runs.',4999990.0,0.0,4.7,8,'military small arms mass production.png','["mass-production","small-arms","military","qc","high-volume"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (2,'Ammunition Mass Production Line','mfg-ammo-mass',21,145,52,'Automated ammunition manufacturing. 5.56/7.62/9mm calibers, 500K+ rounds/month, STANAG compliant.',9999990.0,0.0,4.8,5,'ammunition mass production line.png','["ammunition","mass-production","automated","stanag"]',0,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (3,'Custom Titanium Component Fabrication','mfg-titanium-custom',21,146,52,'CNC-machined titanium components for weapons systems. Any tolerance, CAD-to-part, small batch.',299990.0,0.0,4.9,14,'custom titanium component fabrication.png','["custom","titanium","cnc","components","small-batch"]',0,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (4,'Bespoke Rifle Barrel Fabrication','mfg-rifle-barrel-custom',21,146,52,'Custom rifle barrel manufacture. Button/hammer-forged, any caliber, twist rate to spec, chrome-lined option.',49990.0,0.0,4.8,23,'bespoke rifle barrel fabrication.png','["barrel","custom","hammer-forged","chrome-lined","any-caliber"]',0,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
