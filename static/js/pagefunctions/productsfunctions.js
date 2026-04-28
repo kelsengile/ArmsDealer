@@ -6,11 +6,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const STORAGE_KEY = "productsPageState";
 
     // ─────────────────────────────────────────────
-    // STATE (with restore)
+    // STATE (default = AUTHORIZED WEAPONS)
     // ─────────────────────────────────────────────
     let state = loadState() || {
         category: "weapons",
-        access: "restricted",
+        access: "authorized",
         filter: "promotions"
     };
 
@@ -39,8 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const promoSubmenu = document.getElementById("promotions-toc");
 
     // ─────────────────────────────────────────────
-    // LOAD PANEL
-    // ─────────────────────────────────────────────
     function loadPanel() {
         const templateId = `panel-${state.category}-${state.access}-${state.filter}`;
         const template = document.getElementById(templateId);
@@ -56,12 +54,9 @@ document.addEventListener("DOMContentLoaded", () => {
         updateHeaderTitle();
         addScrollSpacing();
         syncActiveStates();
-        saveState(); // persist every render
+        saveState();
     }
 
-    // ─────────────────────────────────────────────
-    // HEADER TITLE
-    // ─────────────────────────────────────────────
     function updateHeaderTitle() {
         const cap = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -69,13 +64,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const categoryText = cap(state.category);
         const filterText = cap(state.filter);
 
-        selectionTitle.textContent = `${accessText} · ${categoryText} · ${filterText}`;
-        heroTypeDisplay.textContent = categoryText.toUpperCase();
+        // Content header (unchanged)
+        selectionTitle.textContent =
+            `${accessText} · ${categoryText} · ${filterText}`;
+
+        // ✅ HERO TITLE (UPDATED HERE)
+        heroTypeDisplay.textContent = `${accessText} ${categoryText}`;
     }
 
-    // ─────────────────────────────────────────────
-    // SYNC ACTIVE BUTTONS (IMPORTANT FOR RESTORE)
-    // ─────────────────────────────────────────────
     function syncActiveStates() {
         categoryBtns.forEach(btn => {
             btn.classList.toggle("active", btn.dataset.category === state.category);
@@ -90,18 +86,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ─────────────────────────────────────────────
-    // ADD SCROLL SPACE
-    // ─────────────────────────────────────────────
     function addScrollSpacing() {
         const sections = selectionContent.querySelectorAll(".promo-section");
-        sections.forEach(sec => {
-            sec.style.minHeight = "260px";
-        });
+        sections.forEach(sec => sec.style.minHeight = "260px");
     }
 
     // ─────────────────────────────────────────────
-    // CATEGORY TOGGLE
+    // EVENTS
     // ─────────────────────────────────────────────
     categoryBtns.forEach(btn => {
         btn.addEventListener("click", () => {
@@ -110,9 +101,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // ─────────────────────────────────────────────
-    // ACCESS TOGGLE
-    // ─────────────────────────────────────────────
     accessBtns.forEach(btn => {
         btn.addEventListener("click", () => {
             state.access = btn.dataset.access;
@@ -120,9 +108,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // ─────────────────────────────────────────────
-    // SIDEBAR FILTERS
-    // ─────────────────────────────────────────────
     filterBtns.forEach(btn => {
         btn.addEventListener("click", () => {
             const filter = btn.dataset.filter;
@@ -137,19 +122,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // ─────────────────────────────────────────────
-    // PROMO TOC SCROLL
-    // ─────────────────────────────────────────────
     tocLinks.forEach(link => {
         link.addEventListener("click", () => {
-            const targetId = link.dataset.target;
-            const target = document.getElementById(targetId);
+            const target = document.getElementById(link.dataset.target);
 
             if (target) {
-                target.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
+                target.scrollIntoView({ behavior: "smooth", block: "start" });
             }
 
             tocLinks.forEach(l => l.classList.remove("toc-active"));
@@ -157,18 +135,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // ─────────────────────────────────────────────
-    // HEADER SELECT FILTERS
-    // ─────────────────────────────────────────────
     hfSelects.forEach(select => {
         select.addEventListener("change", () => {
             select.style.borderColor = "#a8c47a";
         });
     });
 
-    // ─────────────────────────────────────────────
-    // CLEAR FILTERS BUTTON
-    // ─────────────────────────────────────────────
     clearBtn.addEventListener("click", () => {
         hfSelects.forEach(select => {
             select.value = "";
@@ -177,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ─────────────────────────────────────────────
-    // INITIAL LOAD (RESTORED STATE)
+    // INITIAL LOAD
     // ─────────────────────────────────────────────
     loadPanel();
 
