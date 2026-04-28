@@ -43,6 +43,7 @@
                 </div>
 
                 <button class="filter-btn" data-filter="categories">Categories</button>
+                <button class="filter-btn" data-filter="tags">Tags</button>
                 <button class="filter-btn" data-filter="brands">Brands</button>
             </div>
         </aside>
@@ -166,6 +167,16 @@
         </div>
     </template>
 
+    <template id="panel-authorized-tags">
+    <div class="tag-list">
+        <div class="tag-chip">🔥 Trending</div>
+        <div class="tag-chip">💸 Budget</div>
+        <div class="tag-chip">🎯 Precision</div>
+        <div class="tag-chip">⚡ High Performance</div>
+        <div class="tag-chip">🛡 Tactical</div>
+    </div>
+    </template>
+
     <template id="panel-authorized-brands">
         <div class="brand-grid">
             <div class="brand-card"><div class="brand-logo">GLOCK</div><p>Industry-standard polymer-frame pistols. Trusted by militaries worldwide.</p><span class="brand-item-count">23 products</span></div>
@@ -235,6 +246,15 @@
                 <span class="category-count">Verified access only</span>
             </div>
         </div>
+    </template>
+
+    <template id="panel-restricted-tags">
+    <div class="tag-list">
+        <div class="tag-chip">🔒 Classified</div>
+        <div class="tag-chip">⚠ High Risk</div>
+        <div class="tag-chip">🧪 Experimental</div>
+        <div class="tag-chip">🚫 Limited Access</div>
+    </div>
     </template>
 
     <template id="panel-restricted-brands">
