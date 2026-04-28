@@ -598,7 +598,7 @@ main.products-page::before {
   gap: 10px;
   position: sticky;
   top: 0;
-  background: var(--mil-dark);
+  background: transparent;
   z-index: 2;
   backdrop-filter: blur(4px);
 }
