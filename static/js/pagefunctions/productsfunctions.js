@@ -272,12 +272,28 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             if (filter === "categories") {
-                // Toggle categories submenu; close promo submenu
-                toggleSubmenu(categoriesToggleBtn, categoriesSubmenu);
+                const isOpen = categoriesSubmenu.classList.contains("open");
                 closeSubmenu(promoToggleBtn, promoSubmenu);
                 closeSubmenu(brandsToggleBtn, brandsSubmenuAuthorized);
                 closeSubmenu(brandsToggleBtn, brandsSubmenuRestricted);
-                // Clicking "Categories" root always shows the main index panel
+
+                // If submenu is open AND we're viewing a specific category,
+                // go back to the main categories index instead of closing the submenu
+                if (isOpen && state.category) {
+                    state.filter = "categories";
+                    state.category = null;
+                    loadPanel();
+                    return;
+                }
+
+                // If submenu is open and no specific category is selected, just close it
+                if (isOpen) {
+                    closeSubmenu(categoriesToggleBtn, categoriesSubmenu);
+                    return;
+                }
+
+                // Submenu was closed — open it and load the categories index
+                openSubmenu(categoriesToggleBtn, categoriesSubmenu);
                 state.filter = "categories";
                 state.category = null;
                 loadPanel();
@@ -285,13 +301,30 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             if (filter === "brands") {
-                // Toggle the submenu that matches the current access
                 const active = activeBrandsSubmenu();
                 const inactive = inactiveBrandsSubmenu();
-                toggleSubmenu(brandsToggleBtn, active);
-                closeSubmenu(brandsToggleBtn, inactive);
+                const isOpen = active.classList.contains("open");
                 closeSubmenu(promoToggleBtn, promoSubmenu);
                 closeSubmenu(categoriesToggleBtn, categoriesSubmenu);
+                closeSubmenu(brandsToggleBtn, inactive);
+
+                // If submenu is open AND we're viewing a specific brand,
+                // go back to the main brands index instead of closing the submenu
+                if (isOpen && state.brand) {
+                    state.filter = "brands";
+                    state.brand = null;
+                    loadPanel();
+                    return;
+                }
+
+                // If submenu is open and no specific brand is selected, just close it
+                if (isOpen) {
+                    closeSubmenu(brandsToggleBtn, active);
+                    return;
+                }
+
+                // Submenu was closed — open it and load the brands index
+                openSubmenu(brandsToggleBtn, active);
                 state.filter = "brands";
                 state.brand = null;
                 loadPanel();
