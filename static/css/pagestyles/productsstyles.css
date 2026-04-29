@@ -795,10 +795,6 @@ main.products-page::before {
   background: rgba(107,124,78,0.07);
 }
 
-.cat-group-icon {
-  font-size: 18px;
-  line-height: 1;
-}
 
 .cat-group-name {
   font-family: var(--font-stencil, "Oswald", sans-serif);
