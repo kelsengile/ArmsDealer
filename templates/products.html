@@ -12,7 +12,6 @@
         <div class="hero-sign">
             <div class="hero-sign-top">CURRENT</div>
             <div class="hero-sign-title" id="hero-type-display">AUTHORIZED</div>
-            <!-- Row 1: Access Level -->
             <div class="hero-toggle-row">
                 <div class="hero-sign-toggle">
                     <button class="toggle-btn toggle-access" data-access="authorized">AUTHORIZED</button>
@@ -27,6 +26,7 @@
             <div class="sidebar-panel">
                 <p class="productsidebartitle">Products: Nav Panel</p>
 
+                <!-- Promotions -->
                 <div class="filter-group">
                     <button class="filter-btn filter-btn--has-sub" data-filter="promotions">
                         <span class="filter-btn-label">Promotions</span>
@@ -42,7 +42,45 @@
                     </div>
                 </div>
 
-                <button class="filter-btn" data-filter="categories">Categories</button>
+                <!-- Categories -->
+                <div class="filter-group">
+                    <button class="filter-btn filter-btn--has-sub" data-filter="categories">
+                        <span class="filter-btn-label">Categories</span>
+                        <span class="filter-chevron">▸</span>
+                    </button>
+                    <div class="filter-submenu" id="categories-toc">
+                        <!-- WEAPONS group -->
+                        <div class="toc-group-label">Weapons</div>
+                        <a class="toc-link toc-link--category" data-category="firearms">Firearms</a>
+                        <a class="toc-link toc-link--category" data-category="blades">Blades</a>
+                        <a class="toc-link toc-link--category" data-category="blunts">Blunts</a>
+                        <a class="toc-link toc-link--category" data-category="projectiles">Projectiles</a>
+                        <a class="toc-link toc-link--category" data-category="explosive">Explosive</a>
+                        <a class="toc-link toc-link--category" data-category="electronic">Electronic</a>
+                        <a class="toc-link toc-link--category" data-category="chemical">Chemical</a>
+                        <a class="toc-link toc-link--category" data-category="biological">Biological</a>
+                        <a class="toc-link toc-link--category" data-category="radiological">Radiological</a>
+                        <a class="toc-link toc-link--category" data-category="vehicle">Vehicle</a>
+                        <a class="toc-link toc-link--category" data-category="cyber">Cyber</a>
+                        <a class="toc-link toc-link--category" data-category="security">Security</a>
+                        <!-- EQUIPMENT group -->
+                        <div class="toc-group-label">Equipment</div>
+                        <a class="toc-link toc-link--category" data-category="ammunition">Ammunition</a>
+                        <a class="toc-link toc-link--category" data-category="protective">Protective</a>
+                        <a class="toc-link toc-link--category" data-category="tactical">Tactical</a>
+                        <a class="toc-link toc-link--category" data-category="optics">Optics</a>
+                        <a class="toc-link toc-link--category" data-category="attachments">Attachments</a>
+                        <a class="toc-link toc-link--category" data-category="maintenance">Maintenance</a>
+                        <a class="toc-link toc-link--category" data-category="storage">Storage</a>
+                        <a class="toc-link toc-link--category" data-category="communication">Communication</a>
+                        <a class="toc-link toc-link--category" data-category="detection">Detection</a>
+                        <a class="toc-link toc-link--category" data-category="mobility">Mobility</a>
+                        <a class="toc-link toc-link--category" data-category="power">Power</a>
+                        <a class="toc-link toc-link--category" data-category="survival">Survival</a>
+                        <a class="toc-link toc-link--category" data-category="training">Training</a>
+                    </div>
+                </div>
+
                 <button class="filter-btn" data-filter="brands">Brands</button>
             </div>
         </aside>
@@ -52,7 +90,7 @@
                 <div class="content-header">
                     <div class="content-header-left">
                         <div class="content-tag">SELECTION</div>
-                        <h2 class="content-title" id="selection-title">Restricted · Weapons · Promotions</h2>
+                        <h2 class="content-title" id="selection-title">Authorized · Promotions</h2>
                     </div>
                     <div class="content-header-filters">
                         <div class="header-filter-group">
@@ -94,9 +132,9 @@
 
     <!-- ═══════════════════════════════════════════════════════════
          PANEL CONTENT TEMPLATES
-         Naming: panel-{category}-{access}-{filter}
+         Naming: panel-{access}-{filter}
          Access:     authorized | restricted
-         Filter:     promotions | categories | brands
+         Filter:     promotions | categories | brands | category-{name}
     ════════════════════════════════════════════════════════════════ -->
 
     <!-- ── AUTHORIZED ───────────────────────────────── -->
@@ -141,31 +179,102 @@
         </div>
     </template>
 
+    <!-- ── AUTHORIZED CATEGORIES MAIN ───────────────── -->
     <template id="panel-authorized-categories">
-        <div class="category-list">
-            <div class="category-row">
-                <span class="category-icon">🔫</span>
-                <div class="category-info"><strong>Pistols &amp; Sidearms</strong><span>Compact, semi-auto, and revolver platforms</span></div>
-                <span class="category-count">42 items</span>
-            </div>
-            <div class="category-row">
-                <span class="category-icon">🎯</span>
-                <div class="category-info"><strong>Rifles</strong><span>Bolt-action, semi-auto, and DMR variants</span></div>
-                <span class="category-count">68 items</span>
-            </div>
-            <div class="category-row">
-                <span class="category-icon">💥</span>
-                <div class="category-info"><strong>Shotguns</strong><span>Pump-action, semi-auto, and tactical configs</span></div>
-                <span class="category-count">19 items</span>
-            </div>
-            <div class="category-row">
-                <span class="category-icon">🔧</span>
-                <div class="category-info"><strong>Parts &amp; Accessories</strong><span>Barrels, stocks, triggers, and rail systems</span></div>
-                <span class="category-count">120+ items</span>
-            </div>
+        <div class="cat-main">
+            <!-- All Categories -->
+            <section class="cat-main-section cat-all-section">
+                <h2 class="cat-main-heading cat-main-heading--center">All Categories</h2>
+                <div class="cat-all-grid">
+                    <div class="cat-group-block">
+                        <div class="cat-group-header">
+                            <span class="cat-group-icon">⚔</span>
+                            <span class="cat-group-name">Weapons</span>
+                        </div>
+                        <div class="cat-group-items">
+                            <a class="cat-all-item" data-category="firearms">Firearms</a>
+                            <a class="cat-all-item" data-category="blades">Blades</a>
+                            <a class="cat-all-item" data-category="blunts">Blunts</a>
+                            <a class="cat-all-item" data-category="projectiles">Projectiles</a>
+                            <a class="cat-all-item" data-category="explosive">Explosive</a>
+                            <a class="cat-all-item" data-category="electronic">Electronic</a>
+                            <a class="cat-all-item" data-category="chemical">Chemical</a>
+                            <a class="cat-all-item" data-category="biological">Biological</a>
+                            <a class="cat-all-item" data-category="radiological">Radiological</a>
+                            <a class="cat-all-item" data-category="vehicle">Vehicle</a>
+                            <a class="cat-all-item" data-category="cyber">Cyber</a>
+                            <a class="cat-all-item" data-category="security">Security</a>
+                        </div>
+                    </div>
+                    <div class="cat-group-block">
+                        <div class="cat-group-header">
+                            <span class="cat-group-icon">🎒</span>
+                            <span class="cat-group-name">Equipment</span>
+                        </div>
+                        <div class="cat-group-items">
+                            <a class="cat-all-item" data-category="ammunition">Ammunition</a>
+                            <a class="cat-all-item" data-category="protective">Protective</a>
+                            <a class="cat-all-item" data-category="tactical">Tactical</a>
+                            <a class="cat-all-item" data-category="optics">Optics</a>
+                            <a class="cat-all-item" data-category="attachments">Attachments</a>
+                            <a class="cat-all-item" data-category="maintenance">Maintenance</a>
+                            <a class="cat-all-item" data-category="storage">Storage</a>
+                            <a class="cat-all-item" data-category="communication">Communication</a>
+                            <a class="cat-all-item" data-category="detection">Detection</a>
+                            <a class="cat-all-item" data-category="mobility">Mobility</a>
+                            <a class="cat-all-item" data-category="power">Power</a>
+                            <a class="cat-all-item" data-category="survival">Survival</a>
+                            <a class="cat-all-item" data-category="training">Training</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Popular Categories -->
+            <section class="cat-main-section">
+                <h2 class="cat-main-heading">Popular Categories</h2>
+
+                <!-- Weapons sub-section -->
+                    <div class="specific-sub">
+                        <h3 class="specific-sub-title">Weapons</h3>
+                        <div class="specific-sub-body">
+                            <a class="cat-all-item" data-category="firearms">Firearms</a>
+                            <a class="cat-all-item" data-category="blades">Blades</a>
+                            <a class="cat-all-item" data-category="explosive">Explosives</a>
+                            <a class="cat-all-item" data-category="vehicle">Vehicle</a>
+                        </div>
+                    </div>
+
+                    <!-- Equipment sub-section -->
+                    <div class="specific-sub">
+                        <h3 class="specific-sub-title">Equipment</h3>
+                        <div class="specific-sub-body">
+                            <a class="cat-all-item" data-category="ammunition">Ammunition</a>
+                            <a class="cat-all-item" data-category="protective">Protective</a>
+                            <a class="cat-all-item" data-category="storage">Storage</a>
+                            <a class="cat-all-item" data-category="training">Training</a>
+                        </div>
+                    </div>
+            </section>
+
+            <!-- Ranking All Products -->
+            <section class="cat-main-section">
+                <h2 class="cat-main-heading">Ranking All Products</h2>
+                <div class="cat-ranking-placeholder">
+                    <p class="selection-status">No ranking data available yet.</p>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="cat-main-footer">
+                <span class="cat-footer-tag">END OF INDEX</span>
+                <span class="cat-footer-line"></span>
+                <span class="cat-footer-code">CAT-IDX-REV01</span>
+            </footer>
         </div>
     </template>
 
+    <!-- ── AUTHORIZED BRANDS ─────────────────────────── -->
     <template id="panel-authorized-brands">
         <div class="brand-grid">
             <div class="brand-card"><div class="brand-logo">GLOCK</div><p>Industry-standard polymer-frame pistols. Trusted by militaries worldwide.</p><span class="brand-item-count">23 products</span></div>
@@ -218,22 +327,91 @@
     </template>
 
     <template id="panel-restricted-categories">
-        <div class="category-list">
-            <div class="category-row">
-                <span class="category-icon">🚫</span>
-                <div class="category-info"><strong>NFA Items</strong><span>Suppressors, SBRs, and machine guns</span></div>
-                <span class="category-count">Verified access only</span>
-            </div>
-            <div class="category-row">
-                <span class="category-icon">⚠️</span>
-                <div class="category-info"><strong>Export-Controlled Weapons</strong><span>ITAR-regulated hardware and components</span></div>
-                <span class="category-count">Verified access only</span>
-            </div>
-            <div class="category-row">
-                <span class="category-icon">🔒</span>
-                <div class="category-info"><strong>Government Contract Only</strong><span>Law enforcement and military procurement</span></div>
-                <span class="category-count">Verified access only</span>
-            </div>
+        <div class="cat-main">
+            <section class="cat-main-section cat-all-section">
+                <h2 class="cat-main-heading cat-main-heading--center">All Categories</h2>
+                <div class="cat-all-grid">
+                    <div class="cat-group-block">
+                        <div class="cat-group-header">
+                            <span class="cat-group-icon">⚔</span>
+                            <span class="cat-group-name">Weapons</span>
+                        </div>
+                        <div class="cat-group-items">
+                            <a class="cat-all-item cat-all-item--restricted" data-category="firearms">Firearms</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="blades">Blades</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="blunts">Blunts</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="projectiles">Projectiles</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="explosive">Explosive</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="electronic">Electronic</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="chemical">Chemical</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="biological">Biological</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="radiological">Radiological</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="vehicle">Vehicle</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="cyber">Cyber</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="security">Security</a>
+                        </div>
+                    </div>
+                    <div class="cat-group-block">
+                        <div class="cat-group-header">
+                            <span class="cat-group-icon">🎒</span>
+                            <span class="cat-group-name">Equipment</span>
+                        </div>
+                        <div class="cat-group-items">
+                            <a class="cat-all-item cat-all-item--restricted" data-category="ammunition">Ammunition</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="protective">Protective</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="tactical">Tactical</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="optics">Optics</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="attachments">Attachments</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="maintenance">Maintenance</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="storage">Storage</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="communication">Communication</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="detection">Detection</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="mobility">Mobility</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="power">Power</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="survival">Survival</a>
+                            <a class="cat-all-item cat-all-item--restricted" data-category="training">Training</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="cat-main-section">
+                <h2 class="cat-main-heading">Popular Categories</h2>
+
+                <!-- Weapons sub-section -->
+                <div class="specific-sub">
+                    <h3 class="specific-sub-title">Weapons</h3>
+                    <div class="specific-sub-body">
+                        <a class="cat-all-item cat-all-item--restricted" data-category="firearms">Firearms</a>
+                        <a class="cat-all-item cat-all-item--restricted" data-category="blades">Blades</a>
+                        <a class="cat-all-item cat-all-item--restricted" data-category="explosive">Explosives</a>
+                        <a class="cat-all-item cat-all-item--restricted" data-category="vehicle">Vehicle</a>
+                    </div>
+                </div>
+
+                <!-- Equipment sub-section -->
+                <div class="specific-sub">
+                    <h3 class="specific-sub-title">Equipment</h3>
+                    <div class="specific-sub-body">
+                        <a class="cat-all-item cat-all-item--restricted" data-category="ammunition">Ammunition</a>
+                        <a class="cat-all-item cat-all-item--restricted" data-category="protective">Protective</a>
+                        <a class="cat-all-item cat-all-item--restricted" data-category="storage">Storage</a>
+                        <a class="cat-all-item cat-all-item--restricted" data-category="training">Training</a>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="cat-main-section">
+                <h2 class="cat-main-heading">Ranking All Products</h2>
+                <div class="cat-ranking-placeholder">
+                    <p class="selection-status">Restricted access required for ranking data.</p>
+                </div>
+            </section>
+            <footer class="cat-main-footer">
+                <span class="cat-footer-tag">END OF INDEX</span>
+                <span class="cat-footer-line"></span>
+                <span class="cat-footer-code">CAT-IDX-REV01-R</span>
+            </footer>
         </div>
     </template>
 
@@ -244,6 +422,409 @@
             <div class="brand-card"><div class="brand-logo">KNIGHTS</div><p>KAC suppressed weapon systems. Government and LE contracts only.</p><span class="brand-item-count">Restricted</span></div>
         </div>
     </template>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SPECIFIC CATEGORY TEMPLATES
+         Naming: panel-category-{name}
+         (access-agnostic — same structure for both)
+    ════════════════════════════════════════════════════════════════ -->
+
+    <template id="panel-category-firearms">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Firearms</h2>
+                <span class="specific-cat-badge">Weapons</span>
+            </div>
+            <section class="specific-sub" id="sub-handguns"><h3 class="specific-sub-title">Handguns</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-rifles"><h3 class="specific-sub-title">Rifles</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-shotguns"><h3 class="specific-sub-title">Shotguns</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-smg"><h3 class="specific-sub-title">Submachine Guns</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-mg"><h3 class="specific-sub-title">Machine Guns</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-sniper"><h3 class="specific-sub-title">Sniper Rifles</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-carbines"><h3 class="specific-sub-title">Carbines</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-pdw"><h3 class="specific-sub-title">Personal Defense Weapons</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-blades">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Blades</h2>
+                <span class="specific-cat-badge">Weapons</span>
+            </div>
+            <section class="specific-sub" id="sub-knives"><h3 class="specific-sub-title">Knives</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-swords"><h3 class="specific-sub-title">Swords</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-daggers"><h3 class="specific-sub-title">Daggers</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-machetes"><h3 class="specific-sub-title">Machetes</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-bayonets"><h3 class="specific-sub-title">Bayonets</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-axes"><h3 class="specific-sub-title">Axes</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-hatchets"><h3 class="specific-sub-title">Hatchets</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-spears"><h3 class="specific-sub-title">Combat Spears</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-polearms"><h3 class="specific-sub-title">Polearms</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-throwing"><h3 class="specific-sub-title">Throwing Knives</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-blunts">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Blunts</h2>
+                <span class="specific-cat-badge">Weapons</span>
+            </div>
+            <section class="specific-sub" id="sub-batons"><h3 class="specific-sub-title">Batons</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-clubs"><h3 class="specific-sub-title">Clubs</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-maces"><h3 class="specific-sub-title">Maces</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-hammers"><h3 class="specific-sub-title">Hammers</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-flails"><h3 class="specific-sub-title">Flails</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-nunchaku"><h3 class="specific-sub-title">Nunchaku</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-staves"><h3 class="specific-sub-title">Staves</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-saps"><h3 class="specific-sub-title">Saps</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-blackjacks"><h3 class="specific-sub-title">Blackjacks</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-projectiles">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Projectiles</h2>
+                <span class="specific-cat-badge">Weapons</span>
+            </div>
+            <section class="specific-sub" id="sub-bows"><h3 class="specific-sub-title">Bows</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-crossbows"><h3 class="specific-sub-title">Crossbows</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-slingshots"><h3 class="specific-sub-title">Slingshots</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-spearlaunchers"><h3 class="specific-sub-title">Spear Launchers</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-blowguns"><h3 class="specific-sub-title">Blowguns</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-javelin"><h3 class="specific-sub-title">Javelin Systems</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-pneumatic"><h3 class="specific-sub-title">Pneumatic Launchers</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-explosive">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Explosive</h2>
+                <span class="specific-cat-badge">Weapons</span>
+            </div>
+            <section class="specific-sub" id="sub-grenades"><h3 class="specific-sub-title">Grenades</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-bombs"><h3 class="specific-sub-title">Bombs</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-mines"><h3 class="specific-sub-title">Mines</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-demolition"><h3 class="specific-sub-title">Demolition Charges</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-rockets"><h3 class="specific-sub-title">Rocket Launchers</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-mortars"><h3 class="specific-sub-title">Mortars</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-artillery"><h3 class="specific-sub-title">Artillery Shells</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-breaching"><h3 class="specific-sub-title">Breaching Charges</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-flashbangs"><h3 class="specific-sub-title">Flash-Bangs</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-electronic">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Electronic</h2>
+                <span class="specific-cat-badge">Weapons</span>
+            </div>
+            <section class="specific-sub" id="sub-tasers"><h3 class="specific-sub-title">Tasers</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-stunguns"><h3 class="specific-sub-title">Stun Guns</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-emp"><h3 class="specific-sub-title">EMP Devices</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-jamming"><h3 class="specific-sub-title">Jamming Devices</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-dew"><h3 class="specific-sub-title">Directed Energy Weapons</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-sonic"><h3 class="specific-sub-title">Sonic Devices</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-laser"><h3 class="specific-sub-title">Laser Dazzlers</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-chemical">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Chemical</h2>
+                <span class="specific-cat-badge">Weapons</span>
+            </div>
+            <section class="specific-sub" id="sub-teargas"><h3 class="specific-sub-title">Tear Gas</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-smoke"><h3 class="specific-sub-title">Smoke Agents</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-incendiary"><h3 class="specific-sub-title">Incendiary Compounds</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-peppersprays"><h3 class="specific-sub-title">Pepper Sprays</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-aerosol"><h3 class="specific-sub-title">Aerosol Dispersants</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-rca"><h3 class="specific-sub-title">Riot Control Agents</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-biological">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Biological</h2>
+                <span class="specific-cat-badge">Weapons</span>
+            </div>
+            <section class="specific-sub" id="sub-delivery"><h3 class="specific-sub-title">Delivery Systems</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-containment"><h3 class="specific-sub-title">Containment Units</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-biodetection"><h3 class="specific-sub-title">Detection Equipment</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-neutralization"><h3 class="specific-sub-title">Neutralization Agents</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-radiological">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Radiological</h2>
+                <span class="specific-cat-badge">Weapons</span>
+            </div>
+            <section class="specific-sub" id="sub-shielded"><h3 class="specific-sub-title">Shielded Devices</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-dispersal"><h3 class="specific-sub-title">Dispersal Systems</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-radcountermeasures"><h3 class="specific-sub-title">Detection Countermeasures</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-vehicle">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Vehicle</h2>
+                <span class="specific-cat-badge">Weapons</span>
+            </div>
+            <section class="specific-sub" id="sub-armedvehicles"><h3 class="specific-sub-title">Armed Vehicles</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-drones"><h3 class="specific-sub-title">Drones</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-naval"><h3 class="specific-sub-title">Naval Weapon Systems</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-aerial"><h3 class="specific-sub-title">Aerial Weapon Systems</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-antivehicle"><h3 class="specific-sub-title">Anti-vehicle Weapons</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-cyber">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Cyber</h2>
+                <span class="specific-cat-badge">Weapons</span>
+            </div>
+            <section class="specific-sub" id="sub-malware"><h3 class="specific-sub-title">Malware Tools</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-exploits"><h3 class="specific-sub-title">Exploit Kits</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-hackingdevices"><h3 class="specific-sub-title">Hacking Devices</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-intrusion"><h3 class="specific-sub-title">Intrusion Systems</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-exfiltration"><h3 class="specific-sub-title">Data Exfiltration Tools</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-ransomware"><h3 class="specific-sub-title">Ransomware Platforms</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-security">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Security</h2>
+                <span class="specific-cat-badge">Weapons</span>
+            </div>
+            <section class="specific-sub" id="sub-accesscontrol"><h3 class="specific-sub-title">Access Control Weapons</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-crowdcontrol"><h3 class="specific-sub-title">Crowd Control Devices</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-nonlethal"><h3 class="specific-sub-title">Non-lethal Weapons</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-deterrent"><h3 class="specific-sub-title">Deterrent Systems</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-restraint"><h3 class="specific-sub-title">Restraint Devices</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <!-- EQUIPMENT CATEGORIES -->
+    <template id="panel-category-ammunition">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Ammunition</h2>
+                <span class="specific-cat-badge">Equipment</span>
+            </div>
+            <section class="specific-sub" id="sub-bullets"><h3 class="specific-sub-title">Bullets</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-shells"><h3 class="specific-sub-title">Shells</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-cartridges"><h3 class="specific-sub-title">Cartridges</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-energycells"><h3 class="specific-sub-title">Energy Cells</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-primers"><h3 class="specific-sub-title">Primers</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-propellants"><h3 class="specific-sub-title">Propellants</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-specialtyrounds"><h3 class="specific-sub-title">Specialty Rounds</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-caseless"><h3 class="specific-sub-title">Caseless Ammunition</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-protective">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Protective</h2>
+                <span class="specific-cat-badge">Equipment</span>
+            </div>
+            <section class="specific-sub" id="sub-helmets"><h3 class="specific-sub-title">Helmets</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-bodyarmor"><h3 class="specific-sub-title">Body Armor</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-shields"><h3 class="specific-sub-title">Shields</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-protectivesuits"><h3 class="specific-sub-title">Protective Suits</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-ballisticglasses"><h3 class="specific-sub-title">Ballistic Glasses</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-hearingprotection"><h3 class="specific-sub-title">Hearing Protection</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-gasmasks"><h3 class="specific-sub-title">Gas Masks</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-blastresistant"><h3 class="specific-sub-title">Blast-resistant Gear</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-tactical">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Tactical</h2>
+                <span class="specific-cat-badge">Equipment</span>
+            </div>
+            <section class="specific-sub" id="sub-lbg"><h3 class="specific-sub-title">Load-bearing Gear</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-holsters"><h3 class="specific-sub-title">Holsters</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-utilitybelts"><h3 class="specific-sub-title">Utility Belts</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-fieldkits"><h3 class="specific-sub-title">Field Kits</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-chestrigs"><h3 class="specific-sub-title">Chest Rigs</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-platecarriers"><h3 class="specific-sub-title">Plate Carriers</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-dropleg"><h3 class="specific-sub-title">Drop Leg Platforms</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-modular"><h3 class="specific-sub-title">Modular Pouches</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-optics">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Optics</h2>
+                <span class="specific-cat-badge">Equipment</span>
+            </div>
+            <section class="specific-sub" id="sub-scopes"><h3 class="specific-sub-title">Scopes</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-reddot"><h3 class="specific-sub-title">Red Dot Sights</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-nightvision"><h3 class="specific-sub-title">Night Vision Devices</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-thermal"><h3 class="specific-sub-title">Thermal Imagers</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-rangefinders"><h3 class="specific-sub-title">Rangefinders</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-binoculars"><h3 class="specific-sub-title">Binoculars</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-spotting"><h3 class="specific-sub-title">Spotting Scopes</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-attachments">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Attachments</h2>
+                <span class="specific-cat-badge">Equipment</span>
+            </div>
+            <section class="specific-sub" id="sub-suppressors"><h3 class="specific-sub-title">Suppressors</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-grips"><h3 class="specific-sub-title">Grips</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-lasersights"><h3 class="specific-sub-title">Laser Sights</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-foregrips"><h3 class="specific-sub-title">Foregrips</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-bipods"><h3 class="specific-sub-title">Bipods</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-muzzlebrakes"><h3 class="specific-sub-title">Muzzle Brakes</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-flashlights"><h3 class="specific-sub-title">Flashlights</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-bayonetmounts"><h3 class="specific-sub-title">Bayonet Mounts</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-maintenance">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Maintenance</h2>
+                <span class="specific-cat-badge">Equipment</span>
+            </div>
+            <section class="specific-sub" id="sub-cleaningkits"><h3 class="specific-sub-title">Cleaning Kits</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-repairtools"><h3 class="specific-sub-title">Repair Tools</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-lubricants"><h3 class="specific-sub-title">Lubricants</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-boresnakes"><h3 class="specific-sub-title">Bore Snakes</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-armorer"><h3 class="specific-sub-title">Armorer Tools</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-partskits"><h3 class="specific-sub-title">Parts Kits</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-solventtraps"><h3 class="specific-sub-title">Solvent Traps</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-storage">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Storage</h2>
+                <span class="specific-cat-badge">Equipment</span>
+            </div>
+            <section class="specific-sub" id="sub-safes"><h3 class="specific-sub-title">Safes</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-cases"><h3 class="specific-sub-title">Cases</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-lockers"><h3 class="specific-sub-title">Lockers</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-ammocans"><h3 class="specific-sub-title">Ammunition Cans</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-weaponracks"><h3 class="specific-sub-title">Weapon Racks</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-concealment"><h3 class="specific-sub-title">Concealment Furniture</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-transport"><h3 class="specific-sub-title">Transport Containers</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-communication">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Communication</h2>
+                <span class="specific-cat-badge">Equipment</span>
+            </div>
+            <section class="specific-sub" id="sub-radios"><h3 class="specific-sub-title">Radios</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-signaldevices"><h3 class="specific-sub-title">Signal Devices</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-encryption"><h3 class="specific-sub-title">Encryption Units</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-earpieces"><h3 class="specific-sub-title">Earpieces</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-tacticalheadsets"><h3 class="specific-sub-title">Tactical Headsets</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-satellite"><h3 class="specific-sub-title">Satellite Communicators</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-covert"><h3 class="specific-sub-title">Covert Devices</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-detection">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Detection</h2>
+                <span class="specific-cat-badge">Equipment</span>
+            </div>
+            <section class="specific-sub" id="sub-metaldetectors"><h3 class="specific-sub-title">Metal Detectors</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-explosivesniffers"><h3 class="specific-sub-title">Explosive Sniffers</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-radsensors"><h3 class="specific-sub-title">Radiation Sensors</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-chemdetectors"><h3 class="specific-sub-title">Chemical Detectors</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-surveillance"><h3 class="specific-sub-title">Surveillance Cameras</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-motionsensors"><h3 class="specific-sub-title">Motion Sensors</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-mobility">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Mobility</h2>
+                <span class="specific-cat-badge">Equipment</span>
+            </div>
+            <section class="specific-sub" id="sub-tacticalvehicles"><h3 class="specific-sub-title">Tactical Vehicles</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-atgear"><h3 class="specific-sub-title">All-terrain Gear</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-rappelling"><h3 class="specific-sub-title">Rappelling Equipment</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-fastrope"><h3 class="specific-sub-title">Fast Rope Systems</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-breachingtools"><h3 class="specific-sub-title">Breaching Tools</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-power">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Power</h2>
+                <span class="specific-cat-badge">Equipment</span>
+            </div>
+            <section class="specific-sub" id="sub-batteries"><h3 class="specific-sub-title">Batteries</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-generators"><h3 class="specific-sub-title">Portable Generators</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-solar"><h3 class="specific-sub-title">Solar Charging Units</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-powerbanks"><h3 class="specific-sub-title">Power Banks</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-fieldcables"><h3 class="specific-sub-title">Field Cables</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-survival">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Survival</h2>
+                <span class="specific-cat-badge">Equipment</span>
+            </div>
+            <section class="specific-sub" id="sub-firstaid"><h3 class="specific-sub-title">First Aid Kits</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-rations"><h3 class="specific-sub-title">Rations</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-waterpurif"><h3 class="specific-sub-title">Water Purification</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-navigation"><h3 class="specific-sub-title">Navigation Tools</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-shelters"><h3 class="specific-sub-title">Emergency Shelters</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-firestarters"><h3 class="specific-sub-title">Fire Starters</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-multitools"><h3 class="specific-sub-title">Multi-tools</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-tourniquets"><h3 class="specific-sub-title">Tourniquets</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
+    <template id="panel-category-training">
+        <div class="specific-cat">
+            <div class="specific-cat-header">
+                <h2 class="specific-cat-title">Training</h2>
+                <span class="specific-cat-badge">Equipment</span>
+            </div>
+            <section class="specific-sub" id="sub-simulators"><h3 class="specific-sub-title">Simulators</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-dummy"><h3 class="specific-sub-title">Dummy Equipment</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-targets"><h3 class="specific-sub-title">Targets</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-manuals"><h3 class="specific-sub-title">Training Manuals</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-blueguns"><h3 class="specific-sub-title">Blue Guns</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-fof"><h3 class="specific-sub-title">Force-on-Force Gear</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+            <section class="specific-sub" id="sub-recoiltrainers"><h3 class="specific-sub-title">Recoil Trainers</h3><div class="specific-sub-body empty-section"><p class="selection-status">No items listed yet.</p></div></section>
+        </div>
+    </template>
+
 </main>
 <script src="{{ url_for('static', filename='js/pagefunctions/productsfunctions.js') }}"></script>
 {% endblock %}
