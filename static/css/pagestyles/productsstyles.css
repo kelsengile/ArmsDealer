@@ -441,7 +441,7 @@ main.products-page::before {
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--mil-bright, #a8c47a);
+  color: var(--mil-light, #a8c47a);
   white-space: nowrap;
   opacity: 75%;
   overflow: hidden;
