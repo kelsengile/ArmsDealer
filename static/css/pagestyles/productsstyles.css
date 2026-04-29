@@ -1053,8 +1053,9 @@ main.products-page::before {
 /* ============================================================================
    BRANDS SUBMENU — extended scroll for long list
    ============================================================================ */
-#brands-toc.filter-submenu.open {
-  max-height: 600px;
+#brands-toc-authorized.open,
+#brands-toc-restricted.open {
+  max-height: 400px;
   overflow-y: auto;
 }
 

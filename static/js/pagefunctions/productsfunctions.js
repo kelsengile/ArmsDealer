@@ -44,7 +44,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const categoriesSubmenu = document.getElementById("categories-toc");
 
     const brandsToggleBtn = document.querySelector('[data-filter="brands"]');
-    const brandsSubmenu = document.getElementById("brands-toc");
+    const brandsSubmenuAuthorized = document.getElementById("brands-toc-authorized");
+    const brandsSubmenuRestricted = document.getElementById("brands-toc-restricted");
+
+    // Returns the correct brands submenu for the current access state
+    function activeBrandsSubmenu() {
+        return state.access === "restricted" ? brandsSubmenuRestricted : brandsSubmenuAuthorized;
+    }
+    function inactiveBrandsSubmenu() {
+        return state.access === "restricted" ? brandsSubmenuAuthorized : brandsSubmenuRestricted;
+    }
 
     // ─────────────────────────────────────────────
     // LOAD PANEL
@@ -131,7 +140,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // ─────────────────────────────────────────────
     function highlightBrandLink(brand) {
         document.querySelectorAll(".toc-link--brand").forEach(l => {
-            l.classList.toggle("toc-active", l.dataset.brand === brand);
+            // Only highlight non-cross-access links that match the brand
+            if (!l.dataset.crossAccess) {
+                l.classList.toggle("toc-active", l.dataset.brand === brand);
+            }
         });
     }
 
@@ -187,6 +199,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 l.classList.remove("toc-active")
             );
         }
+
+        // Show/hide the correct brand submenu based on current access
+        if (state.filter === "brands") {
+            openSubmenu(brandsToggleBtn, activeBrandsSubmenu());
+            closeSubmenu(brandsToggleBtn, inactiveBrandsSubmenu());
+        }
     }
 
     // ─────────────────────────────────────────────
@@ -224,6 +242,12 @@ document.addEventListener("DOMContentLoaded", () => {
     accessBtns.forEach(btn => {
         btn.addEventListener("click", () => {
             state.access = btn.dataset.access;
+            // If currently browsing brands, swap to the correct submenu
+            if (state.filter === "brands") {
+                state.brand = null;
+                openSubmenu(brandsToggleBtn, activeBrandsSubmenu());
+                closeSubmenu(brandsToggleBtn, inactiveBrandsSubmenu());
+            }
             loadPanel();
         });
     });
@@ -239,7 +263,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Toggle promo submenu; close categories submenu
                 toggleSubmenu(promoToggleBtn, promoSubmenu);
                 closeSubmenu(categoriesToggleBtn, categoriesSubmenu);
-                closeSubmenu(brandsToggleBtn, brandsSubmenu);
+                closeSubmenu(brandsToggleBtn, brandsSubmenuAuthorized);
+                closeSubmenu(brandsToggleBtn, brandsSubmenuRestricted);
                 state.filter = "promotions";
                 state.category = null;
                 loadPanel();
@@ -250,7 +275,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Toggle categories submenu; close promo submenu
                 toggleSubmenu(categoriesToggleBtn, categoriesSubmenu);
                 closeSubmenu(promoToggleBtn, promoSubmenu);
-                closeSubmenu(brandsToggleBtn, brandsSubmenu);
+                closeSubmenu(brandsToggleBtn, brandsSubmenuAuthorized);
+                closeSubmenu(brandsToggleBtn, brandsSubmenuRestricted);
                 // Clicking "Categories" root always shows the main index panel
                 state.filter = "categories";
                 state.category = null;
@@ -259,7 +285,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             if (filter === "brands") {
-                toggleSubmenu(brandsToggleBtn, brandsSubmenu);
+                // Toggle the submenu that matches the current access
+                const active = activeBrandsSubmenu();
+                const inactive = inactiveBrandsSubmenu();
+                toggleSubmenu(brandsToggleBtn, active);
+                closeSubmenu(brandsToggleBtn, inactive);
                 closeSubmenu(promoToggleBtn, promoSubmenu);
                 closeSubmenu(categoriesToggleBtn, categoriesSubmenu);
                 state.filter = "brands";
@@ -271,7 +301,8 @@ document.addEventListener("DOMContentLoaded", () => {
             // Any other flat filter
             closeSubmenu(promoToggleBtn, promoSubmenu);
             closeSubmenu(categoriesToggleBtn, categoriesSubmenu);
-            closeSubmenu(brandsToggleBtn, brandsSubmenu);
+            closeSubmenu(brandsToggleBtn, brandsSubmenuAuthorized);
+            closeSubmenu(brandsToggleBtn, brandsSubmenuRestricted);
             state.filter = filter;
             state.category = null;
             state.brand = null;
@@ -323,11 +354,32 @@ document.addEventListener("DOMContentLoaded", () => {
     // ─────────────────────────────────────────────
     // EVENTS — BRANDS SIDEBAR LINKS (specific brand)
     // ─────────────────────────────────────────────
-    document.querySelectorAll(".toc-link--brand").forEach(link => {
+    document.querySelectorAll(".toc-link--brand:not(.toc-link--cross-access)").forEach(link => {
         link.addEventListener("click", () => {
             const brand = link.dataset.brand;
             state.filter = "brands";
             state.brand = brand;
+            loadPanel();
+        });
+    });
+
+    // ─────────────────────────────────────────────
+    // EVENTS — CROSS-ACCESS BRAND LINKS
+    // Clicking these switches access (authorized ↔ restricted)
+    // and navigates to the brand panel on the other side
+    // ─────────────────────────────────────────────
+    document.querySelectorAll(".toc-link--cross-access").forEach(link => {
+        link.addEventListener("click", () => {
+            const targetAccess = link.dataset.crossAccess;
+            const targetBrand = link.dataset.brand;
+            // Switch access mode
+            state.access = targetAccess;
+            // Stay in brands filter, select the target brand
+            state.filter = "brands";
+            state.brand = targetBrand;
+            // Swap submenu visibility
+            openSubmenu(brandsToggleBtn, activeBrandsSubmenu());
+            closeSubmenu(brandsToggleBtn, inactiveBrandsSubmenu());
             loadPanel();
         });
     });
@@ -359,7 +411,8 @@ document.addEventListener("DOMContentLoaded", () => {
             openSubmenu(categoriesToggleBtn, categoriesSubmenu);
         }
         if (state.filter === "brands") {
-            openSubmenu(brandsToggleBtn, brandsSubmenu);
+            openSubmenu(brandsToggleBtn, activeBrandsSubmenu());
+            closeSubmenu(brandsToggleBtn, inactiveBrandsSubmenu());
         }
     }
 

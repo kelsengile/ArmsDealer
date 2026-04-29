@@ -82,7 +82,9 @@
                         <span class="filter-btn-label">Brands</span>
                         <span class="filter-chevron">▸</span>
                     </button>
-                    <div class="filter-submenu" id="brands-toc">
+
+                    <!-- AUTHORIZED brand list -->
+                    <div class="filter-submenu brands-submenu" id="brands-toc-authorized">
                         <a class="toc-link toc-link--brand" data-brand="glock">Glock</a>
                         <a class="toc-link toc-link--brand" data-brand="colt">Colt</a>
                         <a class="toc-link toc-link--brand" data-brand="heckler-koch">Heckler &amp; Koch</a>
@@ -151,7 +153,6 @@
                         <a class="toc-link toc-link--brand" data-brand="hikvision">Hikvision</a>
                         <a class="toc-link toc-link--brand" data-brand="sgs">SGS</a>
                         <a class="toc-link toc-link--brand" data-brand="kbr">KBR</a>
-                        <a class="toc-link toc-link--brand" data-brand="anonymous">Anonymous</a>
                         <a class="toc-link toc-link--brand" data-brand="winchester">Winchester</a>
                         <a class="toc-link toc-link--brand" data-brand="walther">Walther</a>
                         <a class="toc-link toc-link--brand" data-brand="mauser">Mauser</a>
@@ -164,6 +165,11 @@
                         <a class="toc-link toc-link--brand" data-brand="imi">IMI Systems</a>
                         <a class="toc-link toc-link--brand" data-brand="accuracy-intl">Accuracy International</a>
                         <a class="toc-link toc-link--brand" data-brand="l3">L3 Technologies</a>
+                    </div>
+
+                    <!-- RESTRICTED brand list -->
+                    <div class="filter-submenu brands-submenu" id="brands-toc-restricted">
+                        <a class="toc-link toc-link--brand" data-brand="anonymous">Anonymous</a>
                     </div>
                 </div>
             </div>
@@ -825,6 +831,7 @@
                     <div class="brand-icon-item" data-brand="bluegun"><div class="brand-icon-square"><img src="../static/assets/icons/brandslogo/bluegun.png" alt="Bluegun" class="brand-icon-img"></div><div class="brand-icon-label">Bluegun</div></div>
                     <div class="brand-icon-item" data-brand="action-target"><div class="brand-icon-square"><img src="../static/assets/icons/brandslogo/actiontarget.png" alt="Action Target" class="brand-icon-img"></div><div class="brand-icon-label">Action Target</div></div>
                     
+                </div>
             </section>
 
             <!-- Popular Brands -->
@@ -857,7 +864,8 @@
             <section class="brand-main-section">
                 <h2 class="brand-main-heading brand-main-heading--center">All Brands</h2>
                 <div class="brand-all-grid">
-                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="anonymous"><div class="brand-icon-square"></div><div class="brand-icon-label">Anonymous</div></div>
+                    <!-- Anonymous -->
+                    <div class="brand-icon-item" data-brand="anonymous"><div class="brand-icon-square"><img src="../static/assets/icons/brandslogo/anonymous.png" alt="Anonymous" class="brand-icon-img"></div><div class="brand-icon-label">Anonymous</div></div>
                 </div>
             </section>
 
