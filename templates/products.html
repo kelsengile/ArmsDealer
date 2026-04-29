@@ -363,11 +363,314 @@
 
     <!-- ── AUTHORIZED BRANDS ─────────────────────────── -->
     <template id="panel-authorized-brands">
-        <div class="brand-grid">
-            <div class="brand-card"><div class="brand-logo">GLOCK</div><p>Industry-standard polymer-frame pistols. Trusted by militaries worldwide.</p><span class="brand-item-count">23 products</span></div>
-            <div class="brand-card"><div class="brand-logo">FN</div><p>Belgian-engineered precision. SCAR series and beyond.</p><span class="brand-item-count">17 products</span></div>
-            <div class="brand-card"><div class="brand-logo">SIG</div><p>P-series and MCX platforms chosen by US Armed Forces.</p><span class="brand-item-count">31 products</span></div>
-            <div class="brand-card"><div class="brand-logo">COLT</div><p>Iconic American craftsmanship since 1836. M4 and 1911 lineage.</p><span class="brand-item-count">14 products</span></div>
+        <div class="brand-main">
+
+            <!-- All Brands -->
+            <section class="brand-main-section">
+                <h2 class="brand-main-heading brand-main-heading--center">All Brands</h2>
+                <div class="brand-all-grid">
+                    <!-- Firearms / Blades / Blunts -->
+                    <div class="brand-icon-item" data-brand="glock"><div class="brand-icon-square"></div><div class="brand-icon-label">Glock</div></div>
+                    <div class="brand-icon-item" data-brand="colt"><div class="brand-icon-square"></div><div class="brand-icon-label">Colt</div></div>
+                    <div class="brand-icon-item" data-brand="heckler-koch"><div class="brand-icon-square"></div><div class="brand-icon-label">H&amp;K</div></div>
+                    <div class="brand-icon-item" data-brand="sig-sauer"><div class="brand-icon-square"></div><div class="brand-icon-label">Sig Sauer</div></div>
+                    <div class="brand-icon-item" data-brand="fn-herstal"><div class="brand-icon-square"></div><div class="brand-icon-label">FN Herstal</div></div>
+                    <div class="brand-icon-item" data-brand="beretta"><div class="brand-icon-square"></div><div class="brand-icon-label">Beretta</div></div>
+                    <div class="brand-icon-item" data-brand="smith-wesson"><div class="brand-icon-square"></div><div class="brand-icon-label">S&amp;W</div></div>
+                    <div class="brand-icon-item" data-brand="springfield"><div class="brand-icon-square"></div><div class="brand-icon-label">Springfield</div></div>
+                    <div class="brand-icon-item" data-brand="remington"><div class="brand-icon-square"></div><div class="brand-icon-label">Remington</div></div>
+                    <div class="brand-icon-item" data-brand="winchester"><div class="brand-icon-square"></div><div class="brand-icon-label">Winchester</div></div>
+                    <div class="brand-icon-item" data-brand="walther"><div class="brand-icon-square"></div><div class="brand-icon-label">Walther</div></div>
+                    <div class="brand-icon-item" data-brand="mauser"><div class="brand-icon-square"></div><div class="brand-icon-label">Mauser</div></div>
+                    <div class="brand-icon-item" data-brand="kalashnikov"><div class="brand-icon-square"></div><div class="brand-icon-label">Kalashnikov</div></div>
+                    <div class="brand-icon-item" data-brand="steyr"><div class="brand-icon-square"></div><div class="brand-icon-label">Steyr</div></div>
+                    <div class="brand-icon-item" data-brand="imi"><div class="brand-icon-square"></div><div class="brand-icon-label">IMI</div></div>
+                    <div class="brand-icon-item" data-brand="accuracy-intl"><div class="brand-icon-square"></div><div class="brand-icon-label">Accuracy Intl</div></div>
+                    <div class="brand-icon-item" data-brand="zev"><div class="brand-icon-square"></div><div class="brand-icon-label">ZEV Tech</div></div>
+                    <div class="brand-icon-item" data-brand="agency-arms"><div class="brand-icon-square"></div><div class="brand-icon-label">Agency Arms</div></div>
+                    <div class="brand-icon-item" data-brand="benchmade"><div class="brand-icon-square"></div><div class="brand-icon-label">Benchmade</div></div>
+                    <div class="brand-icon-item" data-brand="ka-bar"><div class="brand-icon-square"></div><div class="brand-icon-label">KA-BAR</div></div>
+                    <div class="brand-icon-item" data-brand="cold-steel"><div class="brand-icon-square"></div><div class="brand-icon-label">Cold Steel</div></div>
+                    <div class="brand-icon-item" data-brand="asp"><div class="brand-icon-square"></div><div class="brand-icon-label">ASP</div></div>
+                    <div class="brand-icon-item" data-brand="barnett"><div class="brand-icon-square"></div><div class="brand-icon-label">Barnett</div></div>
+                    <div class="brand-icon-item" data-brand="bear-archery"><div class="brand-icon-square"></div><div class="brand-icon-label">Bear Archery</div></div>
+                    <!-- Explosives / Electronic / Chem / Bio / Radio -->
+                    <div class="brand-icon-item" data-brand="raytheon"><div class="brand-icon-square"></div><div class="brand-icon-label">Raytheon</div></div>
+                    <div class="brand-icon-item" data-brand="lockheed"><div class="brand-icon-square"></div><div class="brand-icon-label">Lockheed</div></div>
+                    <div class="brand-icon-item" data-brand="northrop"><div class="brand-icon-square"></div><div class="brand-icon-label">Northrop</div></div>
+                    <div class="brand-icon-item" data-brand="l3"><div class="brand-icon-square"></div><div class="brand-icon-label">L3 Tech</div></div>
+                    <div class="brand-icon-item" data-brand="axon"><div class="brand-icon-square"></div><div class="brand-icon-label">Axon</div></div>
+                    <div class="brand-icon-item" data-brand="combined-systems"><div class="brand-icon-square"></div><div class="brand-icon-label">Combined Sys</div></div>
+                    <div class="brand-icon-item" data-brand="defense-technology"><div class="brand-icon-square"></div><div class="brand-icon-label">Defense Tech</div></div>
+                    <div class="brand-icon-item" data-brand="thermo-fisher"><div class="brand-icon-square"></div><div class="brand-icon-label">Thermo Fisher</div></div>
+                    <div class="brand-icon-item" data-brand="mirion"><div class="brand-icon-square"></div><div class="brand-icon-label">Mirion</div></div>
+                    <!-- Vehicles -->
+                    <div class="brand-icon-item" data-brand="oshkosh"><div class="brand-icon-square"></div><div class="brand-icon-label">Oshkosh</div></div>
+                    <div class="brand-icon-item" data-brand="general-dynamics"><div class="brand-icon-square"></div><div class="brand-icon-label">Gen Dynamics</div></div>
+                    <div class="brand-icon-item" data-brand="polaris"><div class="brand-icon-square"></div><div class="brand-icon-label">Polaris Def</div></div>
+                    <!-- Cyber -->
+                    <div class="brand-icon-item" data-brand="crowdstrike"><div class="brand-icon-square"></div><div class="brand-icon-label">CrowdStrike</div></div>
+                    <div class="brand-icon-item" data-brand="palo-alto"><div class="brand-icon-square"></div><div class="brand-icon-label">Palo Alto</div></div>
+                    <div class="brand-icon-item" data-brand="mitre"><div class="brand-icon-square"></div><div class="brand-icon-label">MITRE</div></div>
+                    <div class="brand-icon-item" data-brand="honeywell"><div class="brand-icon-square"></div><div class="brand-icon-label">Honeywell</div></div>
+                    <div class="brand-icon-item" data-brand="hikvision"><div class="brand-icon-square"></div><div class="brand-icon-label">Hikvision</div></div>
+                    <!-- Security -->
+                    <div class="brand-icon-item" data-brand="safariland"><div class="brand-icon-square"></div><div class="brand-icon-label">Safariland</div></div>
+                    <div class="brand-icon-item" data-brand="peerless"><div class="brand-icon-square"></div><div class="brand-icon-label">Peerless</div></div>
+                    <div class="brand-icon-item" data-brand="brinks"><div class="brand-icon-square"></div><div class="brand-icon-label">Brink's</div></div>
+                    <div class="brand-icon-item" data-brand="gardaworld"><div class="brand-icon-square"></div><div class="brand-icon-label">GardaWorld</div></div>
+                    <div class="brand-icon-item" data-brand="iron-mountain"><div class="brand-icon-square"></div><div class="brand-icon-label">Iron Mtn</div></div>
+                    <div class="brand-icon-item" data-brand="academi"><div class="brand-icon-square"></div><div class="brand-icon-label">Academi</div></div>
+                    <div class="brand-icon-item" data-brand="g4s"><div class="brand-icon-square"></div><div class="brand-icon-label">G4S</div></div>
+                    <div class="brand-icon-item" data-brand="allied-universal"><div class="brand-icon-square"></div><div class="brand-icon-label">Allied Univ</div></div>
+                    <div class="brand-icon-item" data-brand="control-risks"><div class="brand-icon-square"></div><div class="brand-icon-label">Control Risks</div></div>
+                    <div class="brand-icon-item" data-brand="amentum"><div class="brand-icon-square"></div><div class="brand-icon-label">Amentum</div></div>
+                    <div class="brand-icon-item" data-brand="kbr"><div class="brand-icon-square"></div><div class="brand-icon-label">KBR</div></div>
+                    <div class="brand-icon-item" data-brand="ul-solutions"><div class="brand-icon-square"></div><div class="brand-icon-label">UL Solutions</div></div>
+                    <div class="brand-icon-item" data-brand="veolia"><div class="brand-icon-square"></div><div class="brand-icon-label">Veolia</div></div>
+                    <div class="brand-icon-item" data-brand="sgs"><div class="brand-icon-square"></div><div class="brand-icon-label">SGS</div></div>
+                    <!-- Ammunition -->
+                    <div class="brand-icon-item" data-brand="hornady"><div class="brand-icon-square"></div><div class="brand-icon-label">Hornady</div></div>
+                    <div class="brand-icon-item" data-brand="federal-premium"><div class="brand-icon-square"></div><div class="brand-icon-label">Federal</div></div>
+                    <!-- Protective -->
+                    <div class="brand-icon-item" data-brand="3m"><div class="brand-icon-square"></div><div class="brand-icon-label">3M</div></div>
+                    <div class="brand-icon-item" data-brand="armor-express"><div class="brand-icon-square"></div><div class="brand-icon-label">Armor Exp</div></div>
+                    <!-- Tactical / Apparel -->
+                    <div class="brand-icon-item" data-brand="511-tactical"><div class="brand-icon-square"></div><div class="brand-icon-label">5.11 Tactical</div></div>
+                    <div class="brand-icon-item" data-brand="crye"><div class="brand-icon-square"></div><div class="brand-icon-label">Crye</div></div>
+                    <!-- Optics -->
+                    <div class="brand-icon-item" data-brand="trijicon"><div class="brand-icon-square"></div><div class="brand-icon-label">Trijicon</div></div>
+                    <div class="brand-icon-item" data-brand="eotech"><div class="brand-icon-square"></div><div class="brand-icon-label">EOTech</div></div>
+                    <div class="brand-icon-item" data-brand="vortex"><div class="brand-icon-square"></div><div class="brand-icon-label">Vortex</div></div>
+                    <div class="brand-icon-item" data-brand="flir"><div class="brand-icon-square"></div><div class="brand-icon-label">FLIR</div></div>
+                    <!-- Attachments / Maintenance -->
+                    <div class="brand-icon-item" data-brand="magpul"><div class="brand-icon-square"></div><div class="brand-icon-label">Magpul</div></div>
+                    <div class="brand-icon-item" data-brand="surefire"><div class="brand-icon-square"></div><div class="brand-icon-label">SureFire</div></div>
+                    <div class="brand-icon-item" data-brand="otis"><div class="brand-icon-square"></div><div class="brand-icon-label">Otis Tech</div></div>
+                    <div class="brand-icon-item" data-brand="hoppes"><div class="brand-icon-square"></div><div class="brand-icon-label">Hoppe's</div></div>
+                    <!-- Storage -->
+                    <div class="brand-icon-item" data-brand="liberty-safe"><div class="brand-icon-square"></div><div class="brand-icon-label">Liberty Safe</div></div>
+                    <div class="brand-icon-item" data-brand="pelican"><div class="brand-icon-square"></div><div class="brand-icon-label">Pelican</div></div>
+                    <!-- Communication / Detection -->
+                    <div class="brand-icon-item" data-brand="motorola"><div class="brand-icon-square"></div><div class="brand-icon-label">Motorola</div></div>
+                    <div class="brand-icon-item" data-brand="garmin"><div class="brand-icon-square"></div><div class="brand-icon-label">Garmin</div></div>
+                    <div class="brand-icon-item" data-brand="garrett"><div class="brand-icon-square"></div><div class="brand-icon-label">Garrett</div></div>
+                    <!-- Power / Survival -->
+                    <div class="brand-icon-item" data-brand="duracell"><div class="brand-icon-square"></div><div class="brand-icon-label">Duracell</div></div>
+                    <div class="brand-icon-item" data-brand="goal-zero"><div class="brand-icon-square"></div><div class="brand-icon-label">Goal Zero</div></div>
+                    <div class="brand-icon-item" data-brand="lifestraw"><div class="brand-icon-square"></div><div class="brand-icon-label">LifeStraw</div></div>
+                    <div class="brand-icon-item" data-brand="leatherman"><div class="brand-icon-square"></div><div class="brand-icon-label">Leatherman</div></div>
+                    <!-- Training -->
+                    <div class="brand-icon-item" data-brand="bluegun"><div class="brand-icon-square"></div><div class="brand-icon-label">Bluegun</div></div>
+                    <div class="brand-icon-item" data-brand="action-target"><div class="brand-icon-square"></div><div class="brand-icon-label">Action Target</div></div>
+                    <!-- Anonymous -->
+                    <div class="brand-icon-item" data-brand="anonymous"><div class="brand-icon-square"></div><div class="brand-icon-label">Anonymous</div></div>
+                </div>
+            </section>
+
+            <!-- Popular Brands -->
+            <section class="brand-main-section">
+                <h2 class="brand-main-heading">Popular Brands</h2>
+                <div class="cat-popular-grid">
+                    <div class="cat-popular-group">
+                        <div class="cat-popular-group-label">Firearms</div>
+                        <a class="cat-popular-item" data-brand="glock">Glock</a>
+                        <a class="cat-popular-item" data-brand="sig-sauer">Sig Sauer</a>
+                        <a class="cat-popular-item" data-brand="fn-herstal">FN Herstal</a>
+                        <a class="cat-popular-item" data-brand="heckler-koch">H&amp;K</a>
+                        <a class="cat-popular-item" data-brand="beretta">Beretta</a>
+                        <a class="cat-popular-item" data-brand="colt">Colt</a>
+                    </div>
+                    <div class="cat-popular-group">
+                        <div class="cat-popular-group-label">Blades &amp; Blunts</div>
+                        <a class="cat-popular-item" data-brand="benchmade">Benchmade</a>
+                        <a class="cat-popular-item" data-brand="ka-bar">KA-BAR</a>
+                        <a class="cat-popular-item" data-brand="cold-steel">Cold Steel</a>
+                        <a class="cat-popular-item" data-brand="asp">ASP</a>
+                    </div>
+                    <div class="cat-popular-group">
+                        <div class="cat-popular-group-label">Optics &amp; Attachments</div>
+                        <a class="cat-popular-item" data-brand="trijicon">Trijicon</a>
+                        <a class="cat-popular-item" data-brand="eotech">EOTech</a>
+                        <a class="cat-popular-item" data-brand="vortex">Vortex Optics</a>
+                        <a class="cat-popular-item" data-brand="magpul">Magpul</a>
+                        <a class="cat-popular-item" data-brand="surefire">SureFire</a>
+                    </div>
+                    <div class="cat-popular-group">
+                        <div class="cat-popular-group-label">Tactical &amp; Protective</div>
+                        <a class="cat-popular-item" data-brand="511-tactical">5.11 Tactical</a>
+                        <a class="cat-popular-item" data-brand="crye">Crye Precision</a>
+                        <a class="cat-popular-item" data-brand="safariland">Safariland</a>
+                        <a class="cat-popular-item" data-brand="3m">3M</a>
+                        <a class="cat-popular-item" data-brand="armor-express">Armor Express</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ranking All Brands -->
+            <section class="brand-main-section">
+                <h2 class="brand-main-heading">Ranking All Brands</h2>
+                <div class="brand-ranking-placeholder">
+                    <p class="selection-status">No ranking data available yet.</p>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="brand-main-footer">
+                <span class="brand-footer-tag">END OF INDEX</span>
+                <span class="brand-footer-line"></span>
+                <span class="brand-footer-code">BRD-IDX-REV01</span>
+            </footer>
+
+        </div>
+    </template>
+
+    <!-- ── RESTRICTED BRANDS ──────────────────────────── -->
+    <template id="panel-restricted-brands">
+        <div class="brand-main">
+
+            <!-- All Brands -->
+            <section class="brand-main-section">
+                <h2 class="brand-main-heading brand-main-heading--center">All Brands</h2>
+                <div class="brand-all-grid">
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="glock"><div class="brand-icon-square"></div><div class="brand-icon-label">Glock</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="colt"><div class="brand-icon-square"></div><div class="brand-icon-label">Colt</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="heckler-koch"><div class="brand-icon-square"></div><div class="brand-icon-label">H&amp;K</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="sig-sauer"><div class="brand-icon-square"></div><div class="brand-icon-label">Sig Sauer</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="fn-herstal"><div class="brand-icon-square"></div><div class="brand-icon-label">FN Herstal</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="beretta"><div class="brand-icon-square"></div><div class="brand-icon-label">Beretta</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="smith-wesson"><div class="brand-icon-square"></div><div class="brand-icon-label">S&amp;W</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="springfield"><div class="brand-icon-square"></div><div class="brand-icon-label">Springfield</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="remington"><div class="brand-icon-square"></div><div class="brand-icon-label">Remington</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="winchester"><div class="brand-icon-square"></div><div class="brand-icon-label">Winchester</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="walther"><div class="brand-icon-square"></div><div class="brand-icon-label">Walther</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="mauser"><div class="brand-icon-square"></div><div class="brand-icon-label">Mauser</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="kalashnikov"><div class="brand-icon-square"></div><div class="brand-icon-label">Kalashnikov</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="steyr"><div class="brand-icon-square"></div><div class="brand-icon-label">Steyr</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="imi"><div class="brand-icon-square"></div><div class="brand-icon-label">IMI</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="accuracy-intl"><div class="brand-icon-square"></div><div class="brand-icon-label">Accuracy Intl</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="zev"><div class="brand-icon-square"></div><div class="brand-icon-label">ZEV Tech</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="agency-arms"><div class="brand-icon-square"></div><div class="brand-icon-label">Agency Arms</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="benchmade"><div class="brand-icon-square"></div><div class="brand-icon-label">Benchmade</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="ka-bar"><div class="brand-icon-square"></div><div class="brand-icon-label">KA-BAR</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="cold-steel"><div class="brand-icon-square"></div><div class="brand-icon-label">Cold Steel</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="asp"><div class="brand-icon-square"></div><div class="brand-icon-label">ASP</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="barnett"><div class="brand-icon-square"></div><div class="brand-icon-label">Barnett</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="bear-archery"><div class="brand-icon-square"></div><div class="brand-icon-label">Bear Archery</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="raytheon"><div class="brand-icon-square"></div><div class="brand-icon-label">Raytheon</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="lockheed"><div class="brand-icon-square"></div><div class="brand-icon-label">Lockheed</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="northrop"><div class="brand-icon-square"></div><div class="brand-icon-label">Northrop</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="l3"><div class="brand-icon-square"></div><div class="brand-icon-label">L3 Tech</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="axon"><div class="brand-icon-square"></div><div class="brand-icon-label">Axon</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="combined-systems"><div class="brand-icon-square"></div><div class="brand-icon-label">Combined Sys</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="defense-technology"><div class="brand-icon-square"></div><div class="brand-icon-label">Defense Tech</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="thermo-fisher"><div class="brand-icon-square"></div><div class="brand-icon-label">Thermo Fisher</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="mirion"><div class="brand-icon-square"></div><div class="brand-icon-label">Mirion</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="oshkosh"><div class="brand-icon-square"></div><div class="brand-icon-label">Oshkosh</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="general-dynamics"><div class="brand-icon-square"></div><div class="brand-icon-label">Gen Dynamics</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="polaris"><div class="brand-icon-square"></div><div class="brand-icon-label">Polaris Def</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="crowdstrike"><div class="brand-icon-square"></div><div class="brand-icon-label">CrowdStrike</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="palo-alto"><div class="brand-icon-square"></div><div class="brand-icon-label">Palo Alto</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="mitre"><div class="brand-icon-square"></div><div class="brand-icon-label">MITRE</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="honeywell"><div class="brand-icon-square"></div><div class="brand-icon-label">Honeywell</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="hikvision"><div class="brand-icon-square"></div><div class="brand-icon-label">Hikvision</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="safariland"><div class="brand-icon-square"></div><div class="brand-icon-label">Safariland</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="peerless"><div class="brand-icon-square"></div><div class="brand-icon-label">Peerless</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="brinks"><div class="brand-icon-square"></div><div class="brand-icon-label">Brink's</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="gardaworld"><div class="brand-icon-square"></div><div class="brand-icon-label">GardaWorld</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="iron-mountain"><div class="brand-icon-square"></div><div class="brand-icon-label">Iron Mtn</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="academi"><div class="brand-icon-square"></div><div class="brand-icon-label">Academi</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="g4s"><div class="brand-icon-square"></div><div class="brand-icon-label">G4S</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="allied-universal"><div class="brand-icon-square"></div><div class="brand-icon-label">Allied Univ</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="control-risks"><div class="brand-icon-square"></div><div class="brand-icon-label">Control Risks</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="amentum"><div class="brand-icon-square"></div><div class="brand-icon-label">Amentum</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="kbr"><div class="brand-icon-square"></div><div class="brand-icon-label">KBR</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="ul-solutions"><div class="brand-icon-square"></div><div class="brand-icon-label">UL Solutions</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="veolia"><div class="brand-icon-square"></div><div class="brand-icon-label">Veolia</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="sgs"><div class="brand-icon-square"></div><div class="brand-icon-label">SGS</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="hornady"><div class="brand-icon-square"></div><div class="brand-icon-label">Hornady</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="federal-premium"><div class="brand-icon-square"></div><div class="brand-icon-label">Federal</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="3m"><div class="brand-icon-square"></div><div class="brand-icon-label">3M</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="armor-express"><div class="brand-icon-square"></div><div class="brand-icon-label">Armor Exp</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="511-tactical"><div class="brand-icon-square"></div><div class="brand-icon-label">5.11 Tactical</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="crye"><div class="brand-icon-square"></div><div class="brand-icon-label">Crye</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="trijicon"><div class="brand-icon-square"></div><div class="brand-icon-label">Trijicon</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="eotech"><div class="brand-icon-square"></div><div class="brand-icon-label">EOTech</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="vortex"><div class="brand-icon-square"></div><div class="brand-icon-label">Vortex</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="flir"><div class="brand-icon-square"></div><div class="brand-icon-label">FLIR</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="magpul"><div class="brand-icon-square"></div><div class="brand-icon-label">Magpul</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="surefire"><div class="brand-icon-square"></div><div class="brand-icon-label">SureFire</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="otis"><div class="brand-icon-square"></div><div class="brand-icon-label">Otis Tech</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="hoppes"><div class="brand-icon-square"></div><div class="brand-icon-label">Hoppe's</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="liberty-safe"><div class="brand-icon-square"></div><div class="brand-icon-label">Liberty Safe</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="pelican"><div class="brand-icon-square"></div><div class="brand-icon-label">Pelican</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="motorola"><div class="brand-icon-square"></div><div class="brand-icon-label">Motorola</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="garmin"><div class="brand-icon-square"></div><div class="brand-icon-label">Garmin</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="garrett"><div class="brand-icon-square"></div><div class="brand-icon-label">Garrett</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="duracell"><div class="brand-icon-square"></div><div class="brand-icon-label">Duracell</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="goal-zero"><div class="brand-icon-square"></div><div class="brand-icon-label">Goal Zero</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="lifestraw"><div class="brand-icon-square"></div><div class="brand-icon-label">LifeStraw</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="leatherman"><div class="brand-icon-square"></div><div class="brand-icon-label">Leatherman</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="bluegun"><div class="brand-icon-square"></div><div class="brand-icon-label">Bluegun</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="action-target"><div class="brand-icon-square"></div><div class="brand-icon-label">Action Target</div></div>
+                    <div class="brand-icon-item brand-icon-item--restricted" data-brand="anonymous"><div class="brand-icon-square"></div><div class="brand-icon-label">Anonymous</div></div>
+                </div>
+            </section>
+
+            <!-- Popular Brands -->
+            <section class="brand-main-section">
+                <h2 class="brand-main-heading">Popular Brands</h2>
+                <div class="cat-popular-grid">
+                    <div class="cat-popular-group">
+                        <div class="cat-popular-group-label">Firearms</div>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="glock">Glock</a>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="sig-sauer">Sig Sauer</a>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="fn-herstal">FN Herstal</a>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="heckler-koch">H&amp;K</a>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="beretta">Beretta</a>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="colt">Colt</a>
+                    </div>
+                    <div class="cat-popular-group">
+                        <div class="cat-popular-group-label">Blades &amp; Blunts</div>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="benchmade">Benchmade</a>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="ka-bar">KA-BAR</a>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="cold-steel">Cold Steel</a>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="asp">ASP</a>
+                    </div>
+                    <div class="cat-popular-group">
+                        <div class="cat-popular-group-label">Optics &amp; Attachments</div>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="trijicon">Trijicon</a>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="eotech">EOTech</a>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="vortex">Vortex Optics</a>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="magpul">Magpul</a>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="surefire">SureFire</a>
+                    </div>
+                    <div class="cat-popular-group">
+                        <div class="cat-popular-group-label">Tactical &amp; Protective</div>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="511-tactical">5.11 Tactical</a>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="crye">Crye Precision</a>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="safariland">Safariland</a>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="3m">3M</a>
+                        <a class="cat-popular-item cat-popular-item--restricted" data-brand="armor-express">Armor Express</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ranking All Brands -->
+            <section class="brand-main-section">
+                <h2 class="brand-main-heading">Ranking All Brands</h2>
+                <div class="brand-ranking-placeholder">
+                    <p class="selection-status">No ranking data available yet.</p>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="brand-main-footer">
+                <span class="brand-footer-tag">END OF INDEX</span>
+                <span class="brand-footer-line"></span>
+                <span class="brand-footer-code">BRD-IDX-REV01</span>
+            </footer>
+
         </div>
     </template>
 

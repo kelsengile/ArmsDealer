@@ -239,6 +239,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Toggle promo submenu; close categories submenu
                 toggleSubmenu(promoToggleBtn, promoSubmenu);
                 closeSubmenu(categoriesToggleBtn, categoriesSubmenu);
+                closeSubmenu(brandsToggleBtn, brandsSubmenu);
                 state.filter = "promotions";
                 state.category = null;
                 loadPanel();
