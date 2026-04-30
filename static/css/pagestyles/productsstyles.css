@@ -1747,51 +1747,110 @@ main.products-page::before {
   background: rgba(10, 14, 10, 0.85);
   border: 1px solid rgba(168, 196, 154, 0.2);
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 4px;
   padding: 5px 10px;
-  gap: 8px;
-  flex-wrap: wrap;
+}
+
+/* Row 1: discount badge + price (always one line) */
+.fc-pricing-row {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.fc-pricing-row--price {
+  justify-content: flex-end; /* price always right-aligned */
+  gap: 6px;
 }
 
 .fc-discount {
   font-family: "Courier New", monospace;
-  font-size: clamp(8px, 1.4vw, 10px);
+  font-size: clamp(7px, 1.3vw, 10px);
   font-weight: bold;
   color: #e8644a;
   background: rgba(232, 100, 74, 0.15);
   border: 1px solid rgba(232, 100, 74, 0.4);
-  padding: 2px 6px;
+  padding: 1px 5px;
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .fc-prices {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  min-width: 0;
+  gap: 5px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+/* No-discount variant — sits right because row is justify-content: flex-end */
+.fc-prices--nodiscount {
+  margin-left: auto;
 }
 
 .fc-old {
   font-family: "Courier New", monospace;
-  font-size: clamp(5px, 1.4vw, 10px);
+  font-size: clamp(5px, 1.2vw, 9px);
   color: rgba(168, 196, 154, 0.45);
   text-decoration: line-through;
-  min-width: 0;
+  white-space: nowrap;
 }
 
 .fc-new {
   font-family: "Courier New", monospace;
-  font-size: clamp(5px, 1.8vw, 10px);
+  font-size: clamp(5px, 1.6vw, 10px);
   font-weight: bold;
   color: #a8c49a;
-  min-width: 0;
+  white-space: nowrap;
 }
 
 .fc-new.large {
-  font-size: clamp(7px, 2.2vw, 12px);
+  font-size: clamp(7px, 2vw, 12px);
+}
+
+/* Row 2: stars (left) + cart + sold count (right) */
+.fc-pricing-row--meta {
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.fc-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.fc-star {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.fc-sold {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.fc-cart-icon {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.fc-sold-count {
+  font-family: "Courier New", monospace;
+  font-size: clamp(5px, 1.2vw, 9px);
+  color: rgba(168, 196, 154, 0.55);
+  white-space: nowrap;
 }
 
 /* ── Responsive ────────────────────────────────────────────────────── */

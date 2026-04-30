@@ -133,11 +133,26 @@ document.addEventListener("DOMContentLoaded", () => {
         return Number(n).toLocaleString("en-US");
     }
 
+    /** Render filled + empty star SVGs for a rating (0-5, floored to int) */
+    function buildStars(rating) {
+        const full = Math.floor(rating || 0);
+        const empty = 5 - full;
+        const starFull = `<svg class="fc-star fc-star--full"  width="9" height="9" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><polygon points="6,1 7.8,4.2 11.5,4.7 8.8,7.3 9.5,11 6,9.2 2.5,11 3.2,7.3 0.5,4.7 4.2,4.2" fill="#f0c040"/></svg>`;
+        const starEmpty = `<svg class="fc-star fc-star--empty" width="9" height="9" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><polygon points="6,1 7.8,4.2 11.5,4.7 8.8,7.3 9.5,11 6,9.2 2.5,11 3.2,7.3 0.5,4.7 4.2,4.2" fill="rgba(168,196,100,0.22)"/></svg>`;
+        return starFull.repeat(full) + starEmpty.repeat(empty);
+    }
+
+    /** Cart icon SVG — shared across all cards */
+    const CART_SVG = `<svg class="fc-cart-icon" width="9" height="9" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M1 1h2l2.4 8.4a1 1 0 0 0 1 .6h5.2a1 1 0 0 0 .97-.76L14 5H4" stroke="rgba(168,196,154,0.55)" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="13" r="1" fill="rgba(168,196,154,0.55)"/><circle cx="11.5" cy="13" r="1" fill="rgba(168,196,154,0.55)"/></svg>`;
+
     /** Build a single fc-card element */
     function buildCard(p) {
         const card = document.createElement("div");
         card.className = "fc-card";
         card.dataset.slug = p.slug;
+        card.dataset.price = p.new_price;
+        card.dataset.rating = p.rating || 0;
+        card.dataset.sales = p.sales_count || 0;
         card.style.cursor = "pointer";
 
         const hasDiscount = p.discount > 0;
@@ -152,10 +167,21 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="fc-content">
                 <div class="fc-name large">${p.name}</div>
                 <div class="fc-pricing">
-                    ${hasDiscount ? `<div class="fc-discount">–${Math.round(p.discount)}%</div>` : ""}
-                    <div class="fc-prices">
-                        ${hasDiscount ? `<span class="fc-old">${p.currency_symbol}${fmt(p.old_price)}</span>` : ""}
-                        <span class="fc-new large">${p.currency_symbol}${fmt(p.new_price)}</span>
+                    <div class="fc-pricing-row fc-pricing-row--price">
+                        ${hasDiscount
+                ? `<span class="fc-discount">&#8211;${Math.round(p.discount)}%</span>
+                               <span class="fc-prices">
+                                   <span class="fc-old">${p.currency_symbol}${fmt(p.old_price)}</span>
+                                   <span class="fc-new large">${p.currency_symbol}${fmt(p.new_price)}</span>
+                               </span>`
+                : `<span class="fc-prices fc-prices--nodiscount">
+                                   <span class="fc-new large">${p.currency_symbol}${fmt(p.new_price)}</span>
+                               </span>`
+            }
+                    </div>
+                    <div class="fc-pricing-row fc-pricing-row--meta">
+                        <span class="fc-stars">${buildStars(p.rating)}</span>
+                        <span class="fc-sold">${CART_SVG}<span class="fc-sold-count">${fmt(p.sales_count || 0)}</span></span>
                     </div>
                 </div>
             </div>`;
@@ -385,6 +411,9 @@ document.addEventListener("DOMContentLoaded", () => {
             matched.forEach(p => grid.appendChild(buildCard(p)));
             body.appendChild(grid);
         });
+
+        // Re-apply any active sort after grids are populated
+        applySort();
     }
 
     // ─────────────────────────────────────────────
@@ -720,11 +749,50 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ─────────────────────────────────────────────
-    // EVENTS — HEADER FILTER UI
+    // EVENTS — HEADER FILTER UI  (sort by sales / price / rating)
     // ─────────────────────────────────────────────
+
+    /**
+     * Sort all .fc-grid elements currently in selectionContent.
+     * Only one sort axis is active at a time; activating a new one
+     * clears the others.
+     */
+    function applySort() {
+        const salesVal = document.getElementById("hf-sales") ? document.getElementById("hf-sales").value : "";
+        const priceVal = document.getElementById("hf-price") ? document.getElementById("hf-price").value : "";
+        const ratingVal = document.getElementById("hf-rating") ? document.getElementById("hf-rating").value : "";
+
+        // Determine active sort axis (last changed wins via the change handler)
+        let key = null, dir = 1;
+        if (salesVal) { key = "sales"; dir = salesVal === "high-low" ? -1 : 1; }
+        if (priceVal) { key = "price"; dir = priceVal === "high-low" ? -1 : 1; }
+        if (ratingVal) { key = "rating"; dir = ratingVal === "high-low" ? -1 : 1; }
+
+        selectionContent.querySelectorAll(".fc-grid").forEach(grid => {
+            const cards = Array.from(grid.querySelectorAll(".fc-card"));
+            if (key) {
+                cards.sort((a, b) => {
+                    const va = parseFloat(a.dataset[key]) || 0;
+                    const vb = parseFloat(b.dataset[key]) || 0;
+                    return (va - vb) * dir;
+                });
+            }
+            // Re-append in sorted order (detach + append = reorder, no clone needed)
+            cards.forEach(c => grid.appendChild(c));
+        });
+    }
+
     hfSelects.forEach(select => {
         select.addEventListener("change", () => {
-            select.style.borderColor = "#a8c47a";
+            // When one select changes, clear the others so only one axis is active
+            hfSelects.forEach(s => {
+                if (s !== select) {
+                    s.value = "";
+                    s.style.borderColor = "";
+                }
+            });
+            select.style.borderColor = select.value ? "#a8c47a" : "";
+            applySort();
         });
     });
 
@@ -733,6 +801,7 @@ document.addEventListener("DOMContentLoaded", () => {
             select.value = "";
             select.style.borderColor = "";
         });
+        applySort(); // restores original insertion order (no-op sort)
     });
 
     // ─────────────────────────────────────────────
