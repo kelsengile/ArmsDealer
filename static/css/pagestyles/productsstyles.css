@@ -1295,6 +1295,12 @@ main.products-page::before {
   padding-left: 36px;
 }
 
+/* Restricted mode: red glow on sidebar brand links */
+#brands-toc-restricted .toc-link--brand:hover {
+  color: rgba(255, 100, 100, 0.95);
+  text-shadow: 0 0 8px rgba(255, 40, 40, 0.7);
+}
+
 /* ============================================================================
    MAIN BRANDS PANEL
    ============================================================================ */
@@ -1361,6 +1367,19 @@ main.products-page::before {
 .brand-icon-item:hover .brand-icon-label {
   background: var(--mil-olive, #6b7c4e);
   color: var(--mil-black, #0d0f0d);
+}
+
+/* Restricted mode: red glow on brand icon hover */
+.restricted-mode .brand-icon-item:hover .brand-icon-square {
+  border-color: rgba(255, 60, 60, 0.8);
+  background: rgba(90, 20, 20, 0.35);
+  box-shadow:
+    0 0 14px rgba(255, 40, 40, 0.55),
+    0 0 28px rgba(200, 0, 0, 0.3);
+}
+.restricted-mode .brand-icon-item:hover .brand-icon-label {
+  background: rgba(120, 20, 20, 0.85);
+  color: rgba(255, 180, 180, 0.95);
 }
 
 .brand-icon-square {
@@ -1431,6 +1450,19 @@ main.products-page::before {
   color: var(--mil-black, #0d0f0d);
 }
 
+/* Restricted mode: red glow on popular brand hover */
+.restricted-mode .brand-popular-item:hover .brand-popular-square {
+  border-color: rgba(255, 60, 60, 0.8);
+  background: rgba(90, 20, 20, 0.35);
+  box-shadow:
+    0 0 18px rgba(255, 40, 40, 0.55),
+    0 0 36px rgba(200, 0, 0, 0.3);
+}
+.restricted-mode .brand-popular-item:hover .brand-popular-label {
+  background: rgba(120, 20, 20, 0.85);
+  color: rgba(255, 180, 180, 0.95);
+}
+
 .brand-popular-square {
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -1481,6 +1513,12 @@ main.products-page::before {
 
 .brand-popular-entry:hover {
   background: rgba(107,124,78,0.08);
+}
+
+/* Restricted mode: red glow on popular entry hover */
+.restricted-mode .brand-popular-entry:hover {
+  background: rgba(90, 20, 20, 0.3);
+  box-shadow: inset 0 0 12px rgba(255, 40, 40, 0.15);
 }
 
 .brand-popular-entry-title {
