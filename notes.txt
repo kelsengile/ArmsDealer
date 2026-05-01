@@ -76,10 +76,10 @@ GLOBAL
             [ ] Exclusive Drops ......... Limited-edition or rare releases
             [ ] Event-Based Sales ....... Live or special event promotions
             [ ] Vouchers ............... Discount codes or credits used to reduce purchase cost
-          [ ] Categories
+          [/] Categories
             [/] Main Categories Content
             [/] Specific Categories Content      
-          [ ] Brands
+          [/] Brands
             [/] Main Brands Content
             [/] Specific Brands Content
 
@@ -273,13 +273,5 @@ CATEGORIES
     email    : eugene.crabs@thekrustykrab.com
     password : MoneyM0ney!
     role     : admin
-
-
-================================================================================
-  REMINDERS & OPEN ITEMS
-================================================================================
-
-  [ ] Create Mind Map For the project
-  [ ] Specs for the products and services
 
 ================================================================================
