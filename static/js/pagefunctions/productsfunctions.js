@@ -971,6 +971,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ─────────────────────────────────────────────
+    // URL PARAM OVERRIDE — ?category=<slug>
+    // Allows the homepage categories carousel to deep-link
+    // directly into a specific category on this page.
+    // e.g. /products?category=firearms
+    // ─────────────────────────────────────────────
+    (function applyUrlCategoryParam() {
+        const params = new URLSearchParams(window.location.search);
+        const cat = params.get("category");
+        if (cat && CATEGORY_SLUG_MAP[cat] !== undefined) {
+            // Override whatever was in localStorage
+            state.filter = "categories";
+            state.category = cat;
+            state.brand = null;
+            // Clean the URL so a refresh / back-button doesn't re-apply it
+            const cleanUrl = window.location.pathname;
+            window.history.replaceState({}, "", cleanUrl);
+        }
+    })();
+
+    // ─────────────────────────────────────────────
     // INITIAL LOAD
     // ─────────────────────────────────────────────
     restoreSubmenus();
