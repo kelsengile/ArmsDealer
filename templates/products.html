@@ -85,6 +85,7 @@
 
                     <!-- AUTHORIZED brand list -->
                     <div class="filter-submenu brands-submenu" id="brands-toc-authorized">
+                        <a class="toc-link toc-link--brand toc-link--brand-own" data-brand="armsdealer">Armsdealer</a>
                         <a class="toc-link toc-link--brand" data-brand="glock">Glock</a>
                         <a class="toc-link toc-link--brand" data-brand="colt">Colt</a>
                         <a class="toc-link toc-link--brand" data-brand="heckler-koch">Heckler &amp; Koch</a>
@@ -948,6 +949,8 @@
             <section class="brand-main-section">
                 <h2 class="brand-main-heading brand-main-heading--center">All Brands</h2>
                 <div class="brand-all-grid">
+                    <!-- Own Brand -->
+                    <div class="brand-icon-item brand-icon-item--own" data-brand="armsdealer"><div class="brand-icon-square"><img src="../static/assets/icons/brandslogo/armsdealer.png" alt="Armsdealer" class="brand-icon-img"></div><div class="brand-icon-label">Armsdealer</div></div>
                     <!-- Firearms / Blades / Blunts -->
                     <div class="brand-icon-item" data-brand="glock"><div class="brand-icon-square"><img src="../static/assets/icons/brandslogo/glock.png" alt="Glock" class="brand-icon-img"></div><div class="brand-icon-label">Glock</div></div>
                     <div class="brand-icon-item" data-brand="colt"><div class="brand-icon-square"><img src="../static/assets/icons/brandslogo/colt.png" alt="Colt" class="brand-icon-img"></div><div class="brand-icon-label">Colt</div></div>
@@ -1108,6 +1111,21 @@
          Content empty for now; headers only.
     ═══════════════════════════════════════════════════════════════ -->
 
+    <template id="panel-brand-armsdealer">
+        <div class="specific-brand">
+            <div class="specific-brand-header">
+                <div class="specific-brand-icon"><img src="../static/assets/icons/brandslogo/armsdealer.png" alt="brand logo" class="specific-brand-icon-img"></div>
+                <h2 class="specific-brand-title">Armsdealer</h2>
+                <span class="specific-brand-badge specific-brand-badge--own">Own Brand</span>
+            </div>
+            <p class="specific-cat-description">The Armsdealer in-house label — curated and sold directly through this platform, covering a select range of authorized and restricted products hand-picked for quality, value, and operational readiness.</p>
+            <div class="specific-brand-products">
+                <div class="specific-sub-body brand-products-body empty-section" id="brand-body-armsdealer">
+                    <p class="selection-status">Loading products...</p>
+                </div>
+            </div>
+        </div>
+    </template>
         <template id="panel-brand-glock">
         <div class="specific-brand">
             <div class="specific-brand-header">
@@ -2325,5 +2343,11 @@
     </template>
 
 </main>
+<script>
+    // Auth state injected server-side — used by productsfunctions.js to
+    // guard the RESTRICTED access toggle for unauthenticated visitors.
+    window.IS_AUTHENTICATED = "{{ 'yes' if session.get('user_id') else 'no' }}" === "yes";
+    window.LOGIN_URL = "{{ url_for('auth.login') }}";
+</script>
 <script src="{{ url_for('static', filename='js/pagefunctions/productsfunctions.js') }}"></script>
 {% endblock %}

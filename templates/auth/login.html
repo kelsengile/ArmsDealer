@@ -7,6 +7,10 @@
 <main class="authcontainer">
     <div class="auth-form">
         <h2 data-translate="authlogin"></h2>
+
+        {# ── Restricted-access notice (populated by JS from ?notice= param) #}
+        <ul class="flashes" id="js-notices" style="display:none"></ul>
+
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         <ul class="flashes">
@@ -35,4 +39,27 @@
         </p>
     </div>
 </main>
+
+<script>
+    // Read ?notice= query param and inject a message into #js-notices.
+    // This does NOT interact with Flask flash in any way.
+    (function () {
+        var params = new URLSearchParams(window.location.search);
+        var notice = params.get('notice');
+        var msgs = {
+            'restricted': {
+                cls: 'danger',
+                text: '⛔ You cannot browse RESTRICTED Products or Services while not logged in. Please log in to continue.'
+            }
+        };
+        if (notice && msgs[notice]) {
+            var list = document.getElementById('js-notices');
+            var li = document.createElement('li');
+            li.className = msgs[notice].cls;
+            li.textContent = msgs[notice].text;
+            list.appendChild(li);
+            list.style.display = '';
+        }
+    })();
+</script>
 {% endblock %}

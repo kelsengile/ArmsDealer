@@ -142,6 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "hikvision": "hikvision",
         "sgs": "sgs",
         "kbr": "kbr",
+        "armsdealer": "armsdealer",
         "anonymous": "anonymous",
         "winchester": "winchester",
         "walther": "walther",
@@ -741,6 +742,17 @@ document.addEventListener("DOMContentLoaded", () => {
     // ─────────────────────────────────────────────
     accessBtns.forEach(btn => {
         btn.addEventListener("click", () => {
+            // ── RESTRICTED ACCESS GUARD ─────────────────────────────────
+            // If the visitor is not logged in and tries to open restricted
+            // browsing, redirect to the login page with a notification
+            // query param. Original auth and login flows are not modified.
+            if (btn.dataset.access === "restricted" && !window.IS_AUTHENTICATED) {
+                const loginUrl = (window.LOGIN_URL || "/login") +
+                    "?next=" + encodeURIComponent(window.location.pathname) +
+                    "&notice=restricted";
+                window.location.href = loginUrl;
+                return; // abort — do NOT change state or load panel
+            }
             state.access = btn.dataset.access;
             if (state.filter === "brands") {
                 state.brand = null;

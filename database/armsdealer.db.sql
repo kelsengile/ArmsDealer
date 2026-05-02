@@ -273,7 +273,8 @@ INSERT INTO "brands" ("id","name","slug","logo_file","description","is_authorize
  (78,'Steyr Mannlicher','steyr-mannlicher','steyrmannlicher.png','Austrian arms manufacturer known for the AUG bullpup assault rifle and the Steyr Scout precision rifle.',1,'2026-04-25 12:10:27','2026-04-25 12:10:27'),
  (79,'IMI Systems','imi-systems','imisystems.png','Israeli Military Industries; manufacturer of the Uzi submachine gun, Desert Eagle pistol, and Tavor bullpup rifle.',1,'2026-04-25 12:10:27','2026-04-25 12:10:27'),
  (80,'Accuracy International','accuracy-international','accuracyinternational.png','British precision rifle manufacturer; maker of the AXMC and Arctic Warfare sniper systems used by elite forces worldwide.',1,'2026-04-25 12:10:27','2026-04-25 12:10:27'),
- (81,'L3 Technologies','l3-technologies','l3technologies.png','American defense contractor producing Gen III night vision, thermal optics, and advanced targeting systems.',1,'2026-04-25 12:10:27','2026-04-25 12:10:27');
+ (81,'L3 Technologies','l3-technologies','l3technologies.png','American defense contractor producing Gen III night vision, thermal optics, and advanced targeting systems.',1,'2026-04-25 12:10:27','2026-04-25 12:10:27'),
+ (82,'Armsdealer','armsdealer','armsdealer.png','The house brand of Armsdealer — curated, verified, and sourced directly by our procurement team. Every Armsdealer-branded listing meets the platform''s highest standards of quality and authenticity.',1,'2026-05-02 12:12:39','2026-05-02 12:12:39');
 INSERT INTO "brands_translations" ("id","brand_id","lang_code","name","description") VALUES (1,1,'filipino','Glock','Isang Austrian na tagagawa ng mga pistolang may polymer frame.'),
  (2,2,'filipino','Colt','Isang makasaysayang Amerikanong tagagawa ng mga baril.'),
  (3,3,'filipino','Heckler & Koch','Isang Aleman na tagagawa ng mga sandata at kagamitang pandepensa.'),
@@ -597,7 +598,11 @@ INSERT INTO "brands_translations" ("id","brand_id","lang_code","name","descripti
  (321,78,'mandarin','Steyr Mannlicher','以AUG步枪闻名的奥地利制造商。'),
  (322,79,'mandarin','IMI Systems','生产Uzi和Desert Eagle的以色列制造商。'),
  (323,80,'mandarin','Accuracy International','为精英部队制造精密狙击步枪的英国公司。'),
- (324,81,'mandarin','L3 Technologies','生产夜视和先进瞄准系统的美国防务承包商。');
+ (324,81,'mandarin','L3 Technologies','生产夜视和先进瞄准系统的美国防务承包商。'),
+ (325,82,'filipino','Armsdealer','Ang sariling brand ng Armsdealer — pinili, na-verify, at direktang kinuha ng aming procurement team. Ang bawat listing na may tatak na Armsdealer ay nakakatugon sa pinakamataas na pamantayan ng kalidad at pagiging tunay ng platform.'),
+ (326,82,'japanese','Armsdealer','Armsdealerのハウスブランド — 当社の調達チームが厳選、検証、直接調達。Armsdealer ブランドのすべての商品はプラットフォーム最高水準の品質と真正性を満たしています。'),
+ (327,82,'spanish','Armsdealer','La marca propia de Armsdealer — seleccionada, verificada y abastecida directamente por nuestro equipo de adquisiciones. Cada listado con la marca Armsdealer cumple los más altos estándares de calidad y autenticidad de la plataforma.'),
+ (328,82,'mandarin','Armsdealer','Armsdealer自有品牌——由我们的采购团队精心挑选、核实并直接采购。每件Armsdealer品牌商品均符合平台最高的质量与真实性标准。');
 INSERT INTO "categories" ("id","name","slug","type","icon_file","description") VALUES (1,'Firearms','firearms','product',NULL,'Guns and ranged weapons'),
  (2,'Blades','blades','product',NULL,'Knives, swords, and edged weapons'),
  (3,'Blunts','blunts','product',NULL,'Impact weapons like bats and clubs'),
