@@ -21,7 +21,7 @@ def homepage():
     FROM products p
     LEFT JOIN products_translations pt
            ON pt.product_id = p.id AND pt.lang_code = ?
-    WHERE p.id IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
+    WHERE p.id IN (1,5,6,7,8,19,21,62,161,162,163,164,165,302,319,318)
     ORDER BY p.id
 """, (lang,)).fetchall()
     products = {row["id"]: row for row in product_rows}
