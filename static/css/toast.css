@@ -1,0 +1,187 @@
+/* ═══════════════════════════════════════════════════════════════════
+   TOAST NOTIFICATIONS — ArmsDealer
+   Tactical military aesthetic to match the site's design language
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Container ─────────────────────────────────────────────────── */
+#toast-container {
+    position: fixed;
+    top: 80px; /* clears the sticky header */
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+    max-width: 340px;
+    width: calc(100vw - 40px);
+}
+
+/* ── Base Toast ─────────────────────────────────────────────────── */
+.toast {
+    pointer-events: all;
+    display: grid;
+    grid-template-columns: 36px 1fr 22px;
+    grid-template-rows: auto auto;
+    gap: 2px 10px;
+    align-items: start;
+    padding: 14px 14px 12px 14px;
+
+    /* Tactical dark panel */
+    background: rgba(13, 16, 13, 0.97);
+    border: 1px solid var(--mil-border, #2e3a2e);
+    border-left-width: 3px;
+    border-radius: 0;                    /* sharp military corners */
+
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--mil-text, #c8d4b8);
+    font-size: 12px;
+    line-height: 1.5;
+
+    box-shadow:
+        0 4px 24px rgba(0,0,0,0.7),
+        inset 0 0 40px rgba(0,0,0,0.3);
+
+    /* Enter animation */
+    transform: translateX(110%);
+    opacity: 0;
+    transition:
+        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.3s ease;
+
+    /* Progress bar lives at the bottom */
+    position: relative;
+    overflow: hidden;
+}
+
+.toast.toast--visible {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toast.toast--hiding {
+    transform: translateX(110%);
+    opacity: 0;
+}
+
+/* ── Accent bar (bottom progress) ──────────────────────────────── */
+.toast__progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    transform-origin: left;
+    animation: toast-drain linear forwards;
+}
+
+@keyframes toast-drain {
+    from { transform: scaleX(1); }
+    to   { transform: scaleX(0); }
+}
+
+/* ── Icon cell ─────────────────────────────────────────────────── */
+.toast__icon {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    display: flex;
+    align-items: flex-start;
+    padding-top: 2px;
+    font-size: 18px;
+    line-height: 1;
+}
+
+/* ── Label (category tag) ──────────────────────────────────────── */
+.toast__label {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    opacity: 0.65;
+}
+
+/* ── Message ───────────────────────────────────────────────────── */
+.toast__message {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 12.5px;
+    letter-spacing: 0.02em;
+    color: var(--mil-text, #c8d4b8);
+}
+
+/* ── Close button ──────────────────────────────────────────────── */
+.toast__close {
+    grid-column: 3;
+    grid-row: 1;
+    background: transparent;
+    border: none;
+    color: rgba(200, 212, 184, 0.4);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.15s;
+    font-family: inherit;
+}
+.toast__close:hover {
+    color: rgba(200, 212, 184, 0.9);
+}
+
+/* ── Variants ──────────────────────────────────────────────────── */
+
+/* SUCCESS — olive/green */
+.toast--success {
+    border-left-color: #5a8a3c;
+}
+.toast--success .toast__label  { color: #7ab84e; }
+.toast--success .toast__progress { background: #5a8a3c; }
+.toast--success .toast__icon   { color: #7ab84e; }
+
+/* DANGER — red */
+.toast--danger {
+    border-left-color: #c0392b;
+}
+.toast--danger .toast__label  { color: #e74c3c; }
+.toast--danger .toast__progress { background: #c0392b; }
+.toast--danger .toast__icon   { color: #e74c3c; }
+
+/* WARNING — amber */
+.toast--warning {
+    border-left-color: #b8860b;
+}
+.toast--warning .toast__label  { color: #d4a017; }
+.toast--warning .toast__progress { background: #b8860b; }
+.toast--warning .toast__icon   { color: #d4a017; }
+
+/* INFO — muted teal */
+.toast--info {
+    border-left-color: #2a6e7e;
+}
+.toast--info .toast__label  { color: #4a9fb5; }
+.toast--info .toast__progress { background: #2a6e7e; }
+.toast--info .toast__icon   { color: #4a9fb5; }
+
+/* ── Mobile ────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+    #toast-container {
+        top: auto;
+        bottom: 20px;
+        right: 12px;
+        left: 12px;
+        max-width: none;
+        width: auto;
+    }
+
+    .toast.toast--hiding {
+        transform: translateY(120%);
+        opacity: 0;
+    }
+    .toast {
+        transform: translateY(120%);
+    }
+    .toast.toast--visible {
+        transform: translateY(0);
+    }
+}

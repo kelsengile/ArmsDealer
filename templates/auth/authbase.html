@@ -10,6 +10,7 @@
         href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Share+Tech+Mono&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/globalstyles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/toast.css') }}">
     {% block styles %} {% endblock %}
 </head>
 <body>
@@ -103,7 +104,11 @@
 }
     </style>
 
+    {# ── Toast flash bridge: converts Flask flash → popup toasts ── #}
+    {% include 'partials/toast.html' %}
+
     <script src="{{ url_for('static', filename='js/translations.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
     <script>
         // Exit button — go back in history, or fall back to homepage
         document.getElementById('authExitBtn').addEventListener('click', function () {

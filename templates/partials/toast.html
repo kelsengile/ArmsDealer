@@ -1,0 +1,27 @@
+{# ─────────────────────────────────────────────────────────────────────────────
+   partials/toast.html
+   Include this at the bottom of base.html (and authbase.html) BEFORE toast.js.
+
+   It converts Flask flash messages into hidden data-toast elements that
+   toast.js picks up on DOM ready and fires as popup notifications.
+
+   Flask flash categories → toast types:
+     'success'  →  green  (confirmed)
+     'danger'   →  red    (alert)
+     'warning'  →  amber  (warning)
+     'info'     →  teal   (notice)
+     anything else → 'info'
+───────────────────────────────────────────────────────────────────────────── #}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div id="toast-flash-data" style="display:none" aria-hidden="true">
+    {% for category, message in messages %}
+    <div data-toast
+         data-type="{{ category if category in ['success','danger','warning','info'] else 'info' }}"
+         data-message="{{ message | e }}">
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
