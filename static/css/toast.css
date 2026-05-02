@@ -157,7 +157,7 @@
 
 /* INFO — muted teal */
 .toast--info {
-    border-left-color: #ffffff;
+    border-left-color: #aeaeae;
 }
 .toast--info .toast__label  { color: #aeaeae; }
 .toast--info .toast__progress { background: #aeaeae;; }
