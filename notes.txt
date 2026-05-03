@@ -83,7 +83,7 @@ GLOBAL
             [/] Main Brands Content
             [/] Specific Brands Content
 
-    [ ] Specific Product Page
+    [/] Specific Product Page
 
   SERVICES PAGE
   -------------
