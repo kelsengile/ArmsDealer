@@ -41,7 +41,7 @@
     display: flex;
     flex-direction: column;
     gap: 0;
-    background: var(--mil-black, #0d0f0d);
+    background: transparent;
     position: relative;
 }
 
@@ -70,7 +70,7 @@
 
 /* ── Access Badge ─────────────────────────────────────────────────── */
 .sp-access-badge-wrap {
-    background: var(--mil-dark, #131713);
+    background: trans;
     padding: 0;
 }
 .sp-access-badge {
@@ -110,7 +110,7 @@
     gap: 0;
     background: rgba(13, 15, 13, 0.55);
     border: 1px solid var(--mil-border, #2e3a2e);
-    align-items: start;
+    align-items: stretch;
     position: relative;
 }
 /* Corner accent matching products-content */
@@ -124,9 +124,31 @@
     pointer-events: none;
     z-index: 2;
 }
+
+.flex-spacer {
+  flex: 1;
+}
+
 @media (max-width: 1100px) {
     .sp-main { grid-template-columns: 1fr; }
     .sp-center { padding: 0 16px; }
+
+    .sp-info {
+        height: auto;
+        max-height: none;
+        border-left: none;
+        border-top: 1px solid var(--mil-border, #2e3a2e);
+    }
+
+    .flex-spacer {
+        flex: none;
+        height: 50px;
+    }
+
+    .sp-desc-section,
+    .sp-related-section {
+        border-top: 1px solid var(--mil-border, #2e3a2e);
+    }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -242,14 +264,15 @@
 .sp-info {
     display: flex;
     flex-direction: column;
-    height: 780px;
-    max-height: 780px;
     gap: 16px;
     padding: 24px 24px 0 24px;
     border-left: 1px solid var(--mil-border, #2e3a2e);
     min-height: 0;
 }
 
+@media (max-width: 1180px) {
+  /* no fixed height override needed — height is always auto */
+}
 /* Product Name */
 .sp-name {
     font-family: var(--font-stencil, 'Oswald', sans-serif);
@@ -322,8 +345,8 @@
     font-size: 10px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--sp-accent-dim);
-    border: 1px solid var(--mil-border, #2e3a2e);
+    color: var(--sp-accent);
+    border: 1px solid rgba(168, 196, 122, 0.4);
     padding: 4px 12px;
     text-decoration: none;
     cursor: pointer;
@@ -339,8 +362,33 @@
 }
 .sp-cat-arrow {
     font-size: 10px;
-    color: var(--mil-border, #2e3a2e);
+    color: var(--sp-accent-dim);
     flex-shrink: 0;
+}
+
+/* Inline description inside sp-info */
+.sp-info-desc {
+    border-left: 2px solid var(--mil-border, #2e3a2e);
+    padding-left: 14px;
+    overflow-y: auto;
+    max-height: 160px;
+    flex-shrink: 1;
+    min-height: 0;
+}
+.sp-info-desc-header {
+    font-family: var(--font-mono, 'Share Tech Mono', monospace);
+    font-size: 8px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--sp-accent-dim);
+    margin-bottom: 8px;
+}
+.sp-info-desc-body {
+    font-family: var(--font-mono, 'Share Tech Mono', monospace);
+    font-size: 11px;
+    line-height: 1.8;
+    color: var(--mil-text, #c8d4b8);
+    margin: 0;
 }
 
 /* Tags */
@@ -355,7 +403,7 @@
     font-size: 9px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--mil-muted, #4a5e4a);
+    color: var(--mil-text, #c8d4b8);
     flex-shrink: 0;
     margin-top: 4px;
 }
@@ -364,10 +412,10 @@
     font-size: 9px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--mil-text, #c8d4b8);
-    border: 1px solid var(--mil-border, #2e3a2e);
+    color: var(--mil-light, #e2ead4);
+    border: 1px solid rgba(168, 196, 122, 0.35);
     padding: 3px 10px;
-    background: rgba(0,0,0,0.2);
+    background: rgba(168, 196, 122, 0.06);
 }
 
 /* Stock Row */
@@ -381,7 +429,7 @@
     font-size: 10px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--mil-muted, #4a5e4a);
+    color: var(--mil-text, #c8d4b8);
 }
 .sp-stock-val {
     font-family: var(--font-stencil, 'Oswald', sans-serif);
@@ -452,19 +500,19 @@
 .sp-brand-panel {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     padding: 12px 20px 12px 24px;
     border: none;
     border-top: 1px solid var(--mil-border, #2e3a2e);
-    background: rgba(19, 23, 19, 0.6);
+    background: rgba(168, 196, 122, 0.05);
     text-decoration: none;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, border-color 0.2s;
     min-width: 0;
     width: 100%;
 }
 .sp-brand-panel:hover {
-    background: rgba(107, 124, 78, 0.07);
+    background: rgba(168, 196, 122, 0.11);
 }
 .sp-brand-logo-wrap {
     width: 40px;
@@ -500,20 +548,22 @@
 .sp-brand-meta {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     font-family: var(--font-mono, 'Share Tech Mono', monospace);
     font-size: 9px;
     letter-spacing: 0.1em;
-    color: var(--mil-muted, #4a5e4a);
+    color: var(--sp-accent-dim);
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 .sp-brand-home-icon {
     display: inline-block;
     vertical-align: middle;
-    color: var(--sp-accent-dim);
+    color: var(--sp-accent);
     flex-shrink: 0;
 }
 .sp-brand-count {
-    color: var(--sp-accent-dim);
+    color: var(--sp-accent);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -525,15 +575,16 @@
     gap: 0;
     margin: 0 -24px;
     border-top: 1px solid var(--mil-border, #2e3a2e);
-    margin-top: auto;
+    margin: 20px;
     flex-shrink: 0;
+    padding: 12px 0 0;
 }
 
 .sp-cart-btn {
     display: flex;
     align-items: stretch;
     flex: 1;
-    min-height: 54px;
+    min-height: 66px;
     background: var(--sp-accent);
     border: none;
     cursor: pointer;
@@ -554,12 +605,12 @@
 }
 .sp-qty-btn {
     font-family: var(--font-stencil, 'Oswald', sans-serif);
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
     color: var(--sp-badge-color);
     background: transparent;
     border: none;
-    width: 34px;
+    width: 44px;
     cursor: pointer;
     transition: background 0.15s;
     display: flex;
@@ -570,10 +621,10 @@
 .sp-qty-btn:hover { background: rgba(0,0,0,0.22); }
 .sp-qty-val {
     font-family: var(--font-stencil, 'Oswald', sans-serif);
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--sp-badge-color);
-    min-width: 32px;
+    min-width: 42px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -585,12 +636,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
     flex: 1;
+    padding: 0 20px;
     font-family: var(--font-stencil, 'Oswald', sans-serif);
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--sp-badge-color);
 }
@@ -603,6 +655,9 @@
     border: 1px solid var(--mil-border, #2e3a2e);
     border-top: none;
     padding: 28px 32px;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
 }
 .sp-section-header {
     font-family: var(--font-mono, 'Share Tech Mono', monospace);
@@ -672,8 +727,14 @@
 /* Related fc-cards: no-bg image, use product image as card bg */
 .sp-related-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(6, 1fr);
     gap: clamp(8px, 1.5vw, 16px);
+}
+
+@media (max-width: 1200px) {
+    .sp-related-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -731,10 +792,20 @@
     position: fixed;
     inset: 0;
     pointer-events: none;
-    background: repeating-linear-gradient(
-        0deg, transparent, transparent 3px,
-        rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px
-    );
+
+    background:
+        /* dark overlay */
+        rgb(0, 0, 0),
+
+        /* scanlines */
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 3px,
+            rgba(0,0,0,0.04) 3px,
+            rgba(0,0,0,0.04) 4px
+        );
+
     z-index: 9999;
 }
 
@@ -751,7 +822,7 @@
     .sp-related-section { padding: 20px 16px; }
     .sp-footer { padding: 20px 16px; }
     .sp-info { padding: 16px 16px 0; border-left: none; border-top: 1px solid var(--mil-border); }
-    .sp-action-row { margin: 0 -16px; }
+    .sp-action-row { margin: 0 -16px; padding: 10px 0 0; }
     .sp-brand-panel { padding: 12px 16px; }
     .sp-qty-group { min-height: 48px; }
 }
@@ -777,11 +848,11 @@
         <a href="{{ url_for('main.products') }}">Products</a>
         {% if product.category_slug %}
         <span class="sp-breadcrumb-sep">/</span>
-        <a href="{{ url_for('main.products') }}">{{ product.category_name or product.category_slug | title }}</a>
+        <a href="{{ url_for('main.products') }}?category={{ product.category_slug }}">{{ product.category_name or product.category_slug | title }}</a>
         {% endif %}
         {% if product.subcategory_slug %}
         <span class="sp-breadcrumb-sep">/</span>
-        <a href="{{ url_for('main.products') }}">{{ product.subcategory_name or product.subcategory_slug | title }}</a>
+        <a href="{{ url_for('main.products') }}?category={{ product.category_slug }}&subcategory={{ product.subcategory_slug }}">{{ product.subcategory_name or product.subcategory_slug | title }}</a>
         {% endif %}
         <span class="sp-breadcrumb-sep">/</span>
         <span class="sp-breadcrumb-current">{{ product.name }}</span>
@@ -864,13 +935,13 @@
               </div>
               <div class="sp-brand-info">
                   <span class="sp-brand-name">{{ product.brand_name }}</span>
-                  <div class="sp-brand-meta">
-                      <svg class="sp-brand-home-icon" width="10" height="10" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M2 8.5L8 3l6 5.5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M4 7v6h3v-4h2v4h3V7" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                      <span class="sp-brand-count">{{ brand_product_count }} product{{ 's' if brand_product_count != 1 }}</span>
-                  </div>
+              </div>
+              <div class="sp-brand-meta">
+                  <svg class="sp-brand-home-icon" width="10" height="10" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M2 8.5L8 3l6 5.5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M4 7v6h3v-4h2v4h3V7" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span class="sp-brand-count">{{ brand_product_count }} product{{ 's' if brand_product_count != 1 }}</span>
               </div>
           </a>
           {% else %}
@@ -922,22 +993,30 @@
             <!-- Category / Subcategory pills -->
             <div class="sp-cats-row">
                 {% if product.category_slug %}
-                <a class="sp-cat-pill" href="{{ url_for('main.products') }}"
+                <a class="sp-cat-pill" href="{{ url_for('main.products') }}?category={{ product.category_slug }}"
                    title="Browse {{ product.category_name }}">
                     {{ product.category_name or product.category_slug | title }}
                 </a>
                 {% endif %}
                 {% if product.subcategory_slug %}
                 <span class="sp-cat-arrow">▶</span>
-                <a class="sp-cat-pill" href="{{ url_for('main.products') }}"
+                <a class="sp-cat-pill" href="{{ url_for('main.products') }}?category={{ product.category_slug }}&subcategory={{ product.subcategory_slug }}"
                    title="Browse {{ product.subcategory_name }}">
                     {{ product.subcategory_name or product.subcategory_slug | title }}
                 </a>
                 {% endif %}
             </div>
 
+            <!-- Description (inline in info panel) -->
+            {% if product.description %}
+            <div class="sp-info-desc">
+                <div class="sp-info-desc-header">Description</div>
+                <p class="sp-info-desc-body">{{ product.description }}</p>
+            </div>
+            {% endif %}
+
             <!-- Spacer — pushes bottom block down -->
-            <div style="flex: 1;"></div>
+            <div class="flex-spacer"></div>
 
             <!-- Tags -->
             {% if tags_list %}
@@ -1009,17 +1088,6 @@
     </div><!-- /.sp-main-container -->
     </div><!-- /.sp-center -->
 
-    <!-- ═════════════════════════════════════════════════════════════════ -->
-    <!-- DESCRIPTION                                                        -->
-    <!-- ═════════════════════════════════════════════════════════════════ -->
-    {% if product.description %}
-    <div class="sp-center">
-    <section class="sp-desc-section">
-        <div class="sp-section-header">Description</div>
-        <p class="sp-description">{{ product.description }}</p>
-    </section>
-    </div>
-    {% endif %}
 
     <!-- ═════════════════════════════════════════════════════════════════ -->
     <!-- RELATED PRODUCTS                                                   -->
