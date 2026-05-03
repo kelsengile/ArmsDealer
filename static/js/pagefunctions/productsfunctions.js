@@ -731,10 +731,20 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.classList.remove("submenu-open");
     }
 
-    function toggleSubmenu(btn, menu) {
-        menu.classList.contains("open")
-            ? closeSubmenu(btn, menu)
-            : openSubmenu(btn, menu);
+    // ── Mutex: close every panel except the one being opened ────────────
+    // Only one of the three nav sections (Promotions / Categories / Brands)
+    // can be expanded at a time. Call this before opening any submenu.
+    function closeOtherSubmenus(keepFilter) {
+        if (keepFilter !== "promotions") {
+            closeSubmenu(promoToggleBtn, promoSubmenu);
+        }
+        if (keepFilter !== "categories") {
+            closeSubmenu(categoriesToggleBtn, categoriesSubmenu);
+        }
+        if (keepFilter !== "brands") {
+            closeSubmenu(brandsToggleBtn, brandsSubmenuAuthorized);
+            closeSubmenu(brandsToggleBtn, brandsSubmenuRestricted);
+        }
     }
 
     // ─────────────────────────────────────────────
@@ -756,6 +766,7 @@ document.addEventListener("DOMContentLoaded", () => {
             state.access = btn.dataset.access;
             if (state.filter === "brands") {
                 state.brand = null;
+                // Keep the brands submenu open but swap authorized ↔ restricted list
                 openSubmenu(brandsToggleBtn, activeBrandsSubmenu());
                 closeSubmenu(brandsToggleBtn, inactiveBrandsSubmenu());
             }
@@ -767,16 +778,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ─────────────────────────────────────────────
     // EVENTS — FILTER BUTTONS
+    // Only one section can be open at a time (mutex).
+    // Clicking the already-open section's button collapses it.
     // ─────────────────────────────────────────────
     filterBtns.forEach(btn => {
         btn.addEventListener("click", () => {
             const filter = btn.dataset.filter;
 
             if (filter === "promotions") {
-                toggleSubmenu(promoToggleBtn, promoSubmenu);
-                closeSubmenu(categoriesToggleBtn, categoriesSubmenu);
-                closeSubmenu(brandsToggleBtn, brandsSubmenuAuthorized);
-                closeSubmenu(brandsToggleBtn, brandsSubmenuRestricted);
+                const isOpen = promoSubmenu.classList.contains("open");
+                closeOtherSubmenus("promotions");
+                if (isOpen) {
+                    // Collapse — clicking the active section closes it
+                    closeSubmenu(promoToggleBtn, promoSubmenu);
+                    return;
+                }
+                openSubmenu(promoToggleBtn, promoSubmenu);
                 state.filter = "promotions";
                 state.category = null;
                 loadPanel();
@@ -785,17 +802,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (filter === "categories") {
                 const isOpen = categoriesSubmenu.classList.contains("open");
-                closeSubmenu(promoToggleBtn, promoSubmenu);
-                closeSubmenu(brandsToggleBtn, brandsSubmenuAuthorized);
-                closeSubmenu(brandsToggleBtn, brandsSubmenuRestricted);
+                closeOtherSubmenus("categories");
 
                 if (isOpen && state.category) {
+                    // Already on a specific category — collapse back to category index
                     state.filter = "categories";
                     state.category = null;
                     loadPanel();
                     return;
                 }
                 if (isOpen) {
+                    // Collapse
                     closeSubmenu(categoriesToggleBtn, categoriesSubmenu);
                     return;
                 }
@@ -808,19 +825,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (filter === "brands") {
                 const active = activeBrandsSubmenu();
-                const inactive = inactiveBrandsSubmenu();
                 const isOpen = active.classList.contains("open");
-                closeSubmenu(promoToggleBtn, promoSubmenu);
-                closeSubmenu(categoriesToggleBtn, categoriesSubmenu);
-                closeSubmenu(brandsToggleBtn, inactive);
+                closeOtherSubmenus("brands");
+                // Always close the inactive brand list (access-level swap)
+                closeSubmenu(brandsToggleBtn, inactiveBrandsSubmenu());
 
                 if (isOpen && state.brand) {
+                    // Already on a specific brand — collapse back to brand index
                     state.filter = "brands";
                     state.brand = null;
                     loadPanel();
                     return;
                 }
                 if (isOpen) {
+                    // Collapse
                     closeSubmenu(brandsToggleBtn, active);
                     return;
                 }
@@ -831,10 +849,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            closeSubmenu(promoToggleBtn, promoSubmenu);
-            closeSubmenu(categoriesToggleBtn, categoriesSubmenu);
-            closeSubmenu(brandsToggleBtn, brandsSubmenuAuthorized);
-            closeSubmenu(brandsToggleBtn, brandsSubmenuRestricted);
+            // Fallback for any future filter types
+            closeOtherSubmenus(null);
             state.filter = filter;
             state.category = null;
             state.brand = null;

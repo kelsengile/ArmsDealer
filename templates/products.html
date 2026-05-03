@@ -2349,74 +2349,100 @@
     window.IS_AUTHENTICATED = "{{ 'yes' if session.get('user_id') else 'no' }}" === "yes";
     window.LOGIN_URL = "{{ url_for('auth.login') }}";
 
-    // ── Brand redirect from specific product page ──────────────────────
-    // When a user clicks the brand button on a product page, we store the
-    // target brand slug in sessionStorage and navigate here. On load we
-    // pick it up and trigger the brand filter/panel, then clear the entry.
+    // ── Redirect handler from specific product page ──────────────────────
+    // specificproduct.js writes sp_open_nav ("brands" or "categories") plus
+    // the relevant slug keys before navigating here. On DOMContentLoaded we
+    // read those keys, enforce the nav mutex (only one section open), trigger
+    // the correct sidebar link, then clear all keys.
     window.addEventListener('DOMContentLoaded', function () {
 
-        // ── Brand ────────────────────────────────────────────────────────
+        const openNav  = sessionStorage.getItem('sp_open_nav');       // 'brands' | 'categories'
         const brandSlug = sessionStorage.getItem('sp_open_brand');
-        if (brandSlug) {
-            sessionStorage.removeItem('sp_open_brand');
-            // Find the matching brand link and click it to trigger the panel
-            const link = document.querySelector(
-                '.toc-link--brand[data-brand="' + CSS.escape(brandSlug) + '"]'
-            );
-            if (link) {
-                // Give productsfunctions.js time to initialise
-                setTimeout(function () { link.click(); }, 120);
+        const catSlug   = sessionStorage.getItem('sp_open_category');
+        const subSlug   = sessionStorage.getItem('sp_open_subcategory');
+
+        // Nothing to restore — leave the page in its persisted localStorage state
+        if (!openNav && !brandSlug && !catSlug) return;
+
+        // Clean up all keys immediately so a refresh doesn't re-apply them
+        sessionStorage.removeItem('sp_open_nav');
+        sessionStorage.removeItem('sp_open_brand');
+        sessionStorage.removeItem('sp_open_category');
+        sessionStorage.removeItem('sp_open_subcategory');
+
+        // Give productsfunctions.js time to initialise before we trigger clicks
+        setTimeout(function () {
+
+            // ── Helpers: grab the three toggle buttons and their submenus ──
+            const promoBtn      = document.querySelector('[data-filter="promotions"]');
+            const promoMenu     = document.getElementById('promotions-toc');
+            const catBtn        = document.querySelector('[data-filter="categories"]');
+            const catMenu       = document.getElementById('categories-toc');
+            const brandBtn      = document.querySelector('[data-filter="brands"]');
+            const brandMenuAuth = document.getElementById('brands-toc-authorized');
+            const brandMenuRes  = document.getElementById('brands-toc-restricted');
+
+            function forceClose(btn, menu) {
+                if (!menu) return;
+                menu.classList.remove('open');
+                if (btn) btn.classList.remove('submenu-open', 'active');
             }
-            return; // brand takes priority — don't also run category logic
-        }
+            function forceOpen(btn, menu) {
+                if (!menu) return;
+                menu.classList.add('open');
+                if (btn) btn.classList.add('submenu-open', 'active');
+            }
 
-        // ── Category (with optional subcategory scroll) ──────────────────
-        const catSlug = sessionStorage.getItem('sp_open_category');
-        if (catSlug) {
-            sessionStorage.removeItem('sp_open_category');
-            const subSlug = sessionStorage.getItem('sp_open_subcategory');
-            if (subSlug) sessionStorage.removeItem('sp_open_subcategory');
-
-            // Click the matching sidebar category link to open the panel
-            const catLink = document.querySelector(
-                '.toc-link--category[data-category="' + CSS.escape(catSlug) + '"]'
-            );
-            if (catLink) {
-                setTimeout(function () {
-                    catLink.click();
-
-                    // After the panel renders, scroll to the subcategory section
-                    if (subSlug) {
-                        setTimeout(function () {
-                            // subSlug from the DB looks like "firearms-handguns".
-                            // The SECTION_ID_TO_SUBCAT_SLUG map in productsfunctions.js
-                            // maps section ids → db slugs, so we do a reverse lookup:
-                            // find a .specific-sub whose id maps to this subSlug.
-                            // Simplest approach: scan all rendered specific-sub sections.
-                            const allSubs = document.querySelectorAll('.specific-sub');
-                            let target = null;
-                            allSubs.forEach(function (sec) {
-                                // The section body contains the subcategory name — but
-                                // the most reliable match is the section's id against
-                                // the SECTION_ID_TO_SUBCAT_SLUG map exposed on window.
-                                // productsfunctions.js doesn't expose it, so we use a
-                                // data attribute approach: match by checking the rendered
-                                // sub-title text against the slug suffix.
-                                // Best-effort: check if the section id suffix appears in subSlug.
-                                const id = sec.id; // e.g. "sub-handguns"
-                                const suffix = id.replace(/^sub-/, ''); // e.g. "handguns"
-                                if (subSlug.includes(suffix)) {
-                                    if (!target) target = sec;
-                                }
-                            });
-                            if (target) {
-                                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                            }
-                        }, 300); // wait for populateCategoryProducts to render
+            // ── Mutex: close every section that is NOT the target ──────────
+            if (openNav === 'brands') {
+                forceClose(promoBtn, promoMenu);
+                forceClose(catBtn,   catMenu);
+                // Open the correct brand list (authorized vs restricted)
+                // by clicking the matching sidebar brand link, which lets
+                // productsfunctions.js handle state + panel render correctly.
+                if (brandSlug) {
+                    const link = document.querySelector(
+                        '.toc-link--brand[data-brand="' + CSS.escape(brandSlug) + '"]'
+                    );
+                    if (link) {
+                        // Ensure the brand submenu is visible first
+                        const activeMenu = link.closest('.brands-submenu');
+                        if (activeMenu) forceOpen(brandBtn, activeMenu);
+                        link.click(); // productsfunctions handles state + panel
                     }
-                }, 120);
+                }
+
+            } else if (openNav === 'categories') {
+                forceClose(promoBtn,  promoMenu);
+                forceClose(brandBtn,  brandMenuAuth);
+                forceClose(brandBtn,  brandMenuRes);
+                // Open categories submenu then click the specific category link
+                if (catSlug) {
+                    forceOpen(catBtn, catMenu);
+                    const catLink = document.querySelector(
+                        '.toc-link--category[data-category="' + CSS.escape(catSlug) + '"]'
+                    );
+                    if (catLink) {
+                        catLink.click(); // productsfunctions handles state + panel render
+                        // Scroll to subcategory section after panel renders
+                        if (subSlug) {
+                            setTimeout(function () {
+                                const allSubs = document.querySelectorAll('.specific-sub');
+                                let target = null;
+                                allSubs.forEach(function (sec) {
+                                    const suffix = sec.id.replace(/^sub-/, '');
+                                    if (subSlug.includes(suffix) && !target) target = sec;
+                                });
+                                if (target) {
+                                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                }
+                            }, 300);
+                        }
+                    }
+                }
             }
-        }
+
+        }, 120);
     });
 </script>
 <script src="{{ url_for('static', filename='js/pagefunctions/productsfunctions.js') }}"></script>
