@@ -97,6 +97,15 @@ CREATE TABLE orders (
     created_at  TEXT    NOT NULL DEFAULT (datetime('now')),
     updated_at  TEXT    NOT NULL DEFAULT (datetime('now'))
 );
+DROP TABLE IF EXISTS "product_images";
+CREATE TABLE product_images (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id  INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    image_file  TEXT    NOT NULL,
+    sort_order  INTEGER NOT NULL DEFAULT 1,
+    created_at  TEXT    NOT NULL DEFAULT (datetime('now')),
+    UNIQUE (product_id, sort_order)
+);
 DROP TABLE IF EXISTS "products";
 CREATE TABLE products (
     id             INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -195,7 +204,7 @@ CREATE TABLE users (
 );
 INSERT INTO "brands" ("id","name","slug","logo_file","description","is_authorized","created_at","updated_at") VALUES (1,'Glock','glock','glock.png','Austrian manufacturer of polymer-framed pistols.',1,'2026-04-24 09:14:11','2026-04-24 09:14:11'),
  (2,'Colt','colt','colt.png','Historic American firearms manufacturer.',1,'2026-04-24 09:14:11','2026-04-24 09:14:11'),
- (3,'Heckler & Koch','heckler-koch','hecklerkoch.png','German defense manufacturer of firearms.',1,'2026-04-24 09:14:11','2026-04-24 09:14:11'),
+ (3,'Heckler & Koch','heckler-koch','heckler&koch.png','German defense manufacturer of firearms.',1,'2026-04-24 09:14:11','2026-04-24 09:14:11'),
  (4,'Sig Sauer','sig-sauer','sigsauer.png','Global firearms and optics manufacturer.',1,'2026-04-24 09:14:11','2026-04-24 09:14:11'),
  (5,'FN Herstal','fn-herstal','fnherstal.png','Belgian producer of military firearms.',1,'2026-04-24 09:14:11','2026-04-24 09:14:11'),
  (6,'Benchmade','benchmade','benchmade.png','Premium knife manufacturer.',1,'2026-04-24 09:14:11','2026-04-24 09:14:11'),
@@ -778,6 +787,10 @@ INSERT INTO "languages" ("code","label","locale","is_active","sort_order") VALUE
  ('japanese','Japanese','ja',1,3),
  ('spanish','Spanish','es',1,4),
  ('mandarin','Mandarin','zh',1,5);
+INSERT INTO "product_images" ("id","product_id","image_file","sort_order","created_at") VALUES (1,1,'glock 19 gen5.png',1,'2026-05-03 12:48:09'),
+ (2,1,'glock 43x.png',2,'2026-05-03 12:48:09'),
+ (3,1,'glock 21 gen4.png',3,'2026-05-03 12:48:09'),
+ (4,1,'glock 34 gen5 mos.png',4,'2026-05-03 12:48:09');
 INSERT INTO "products" ("id","name","slug","category_id","subcategory_id","brand_id","description","price","discount","stock","rating","sales_count","image_file","tags","is_authorized","created_at","updated_at") VALUES (1,'Glock 17 Gen5','glock-17-gen5',1,1,1,'Full-size 9mm service pistol. 17-round magazine, nDLC finish, Marksman barrel.',29990.0,0.0,45,4.8,312,'glock 17 gen5.png','["9mm","pistol","full-size","police"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (2,'Glock 19 Gen5','glock-19-gen5',1,1,1,'Compact 9mm pistol. 15-round magazine, front serrations, ambidextrous slide stop.',27990.0,5.0,60,4.9,487,'glock 19 gen5.png','["9mm","compact","concealed-carry"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (3,'Glock 43X','glock-43x',1,1,1,'Slimline 9mm subcompact. 10-round magazine, extended grip frame.',24990.0,0.0,38,4.7,203,'glock 43x.png','["9mm","subcompact","slim","concealed-carry"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
@@ -2385,6 +2398,9 @@ DROP INDEX IF EXISTS "idx_orders_status";
 CREATE INDEX idx_orders_status      ON orders        (status);
 DROP INDEX IF EXISTS "idx_orders_user";
 CREATE INDEX idx_orders_user        ON orders        (user_id);
+DROP INDEX IF EXISTS "idx_product_images_product";
+CREATE INDEX idx_product_images_product
+    ON product_images (product_id);
 DROP INDEX IF EXISTS "idx_products_brand";
 CREATE INDEX idx_products_brand     ON products      (brand_id);
 DROP INDEX IF EXISTS "idx_products_category";
