@@ -23,11 +23,16 @@
         <a href="{{ url_for('main.products') }}">Products</a>
         {% if product.category_slug %}
         <span class="sp-breadcrumb-sep">/</span>
-        <a href="{{ url_for('main.products') }}?category={{ product.category_slug }}">{{ product.category_name or product.category_slug | title }}</a>
+        <a href="{{ url_for('main.products') }}"
+           data-category-slug="{{ product.category_slug }}"
+           onclick="spGoToCategory(event, this)">{{ product.category_name or product.category_slug | title }}</a>
         {% endif %}
         {% if product.subcategory_slug %}
         <span class="sp-breadcrumb-sep">/</span>
-        <a href="{{ url_for('main.products') }}?category={{ product.category_slug }}&subcategory={{ product.subcategory_slug }}">{{ product.subcategory_name or product.subcategory_slug | title }}</a>
+        <a href="{{ url_for('main.products') }}"
+           data-category-slug="{{ product.category_slug }}"
+           data-subcategory-slug="{{ product.subcategory_slug }}"
+           onclick="spGoToSubcategory(event, this)">{{ product.subcategory_name or product.subcategory_slug | title }}</a>
         {% endif %}
         <span class="sp-breadcrumb-sep">/</span>
         <span class="sp-breadcrumb-current">{{ product.name }}</span>
@@ -168,14 +173,21 @@
             <!-- Category / Subcategory pills -->
             <div class="sp-cats-row">
                 {% if product.category_slug %}
-                <a class="sp-cat-pill" href="{{ url_for('main.products') }}?category={{ product.category_slug }}"
+                <a class="sp-cat-pill"
+                   href="{{ url_for('main.products') }}"
+                   data-category-slug="{{ product.category_slug }}"
+                   onclick="spGoToCategory(event, this)"
                    title="Browse {{ product.category_name }}">
                     {{ product.category_name or product.category_slug | title }}
                 </a>
                 {% endif %}
                 {% if product.subcategory_slug %}
                 <span class="sp-cat-arrow">▶</span>
-                <a class="sp-cat-pill" href="{{ url_for('main.products') }}?category={{ product.category_slug }}&subcategory={{ product.subcategory_slug }}"
+                <a class="sp-cat-pill"
+                   href="{{ url_for('main.products') }}"
+                   data-category-slug="{{ product.category_slug }}"
+                   data-subcategory-slug="{{ product.subcategory_slug }}"
+                   onclick="spGoToSubcategory(event, this)"
                    title="Browse {{ product.subcategory_name }}">
                     {{ product.subcategory_name or product.subcategory_slug | title }}
                 </a>

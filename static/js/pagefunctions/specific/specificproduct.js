@@ -12,6 +12,30 @@ function spGoToBrand(e, el) {
     window.location.href = el.href;
 }
 
+// ── Category Navigation — go to category panel in products page ───────
+function spGoToCategory(e, el) {
+    e.preventDefault();
+    const cat = el.dataset.categorySlug;
+    if (!cat) { window.location.href = el.href; return; }
+    // Store category so products page opens the correct panel
+    sessionStorage.setItem('sp_open_category', cat);
+    // Clear any leftover subcategory target
+    sessionStorage.removeItem('sp_open_subcategory');
+    window.location.href = el.href;
+}
+
+// ── Subcategory Navigation — go to category panel + scroll to subcategory ──
+function spGoToSubcategory(e, el) {
+    e.preventDefault();
+    const cat = el.dataset.categorySlug;
+    const sub = el.dataset.subcategorySlug;
+    if (!cat) { window.location.href = el.href; return; }
+    // Store both so products page opens the panel and scrolls to the section
+    sessionStorage.setItem('sp_open_category', cat);
+    if (sub) sessionStorage.setItem('sp_open_subcategory', sub);
+    window.location.href = el.href;
+}
+
 // ── Image Gallery ────────────────────────────────────────────────────
 const spActiveImg = document.getElementById('sp-active-img');
 const spThumbs = document.querySelectorAll('.sp-thumb');

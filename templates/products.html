@@ -2354,17 +2354,68 @@
     // target brand slug in sessionStorage and navigate here. On load we
     // pick it up and trigger the brand filter/panel, then clear the entry.
     window.addEventListener('DOMContentLoaded', function () {
-        const brandSlug = sessionStorage.getItem('sp_open_brand');
-        if (!brandSlug) return;
-        sessionStorage.removeItem('sp_open_brand');
 
-        // Find the matching brand link and click it to trigger the panel
-        const link = document.querySelector(
-            '.toc-link--brand[data-brand="' + CSS.escape(brandSlug) + '"]'
-        );
-        if (link) {
-            // Give productsfunctions.js time to initialise
-            setTimeout(function () { link.click(); }, 120);
+        // ── Brand ────────────────────────────────────────────────────────
+        const brandSlug = sessionStorage.getItem('sp_open_brand');
+        if (brandSlug) {
+            sessionStorage.removeItem('sp_open_brand');
+            // Find the matching brand link and click it to trigger the panel
+            const link = document.querySelector(
+                '.toc-link--brand[data-brand="' + CSS.escape(brandSlug) + '"]'
+            );
+            if (link) {
+                // Give productsfunctions.js time to initialise
+                setTimeout(function () { link.click(); }, 120);
+            }
+            return; // brand takes priority — don't also run category logic
+        }
+
+        // ── Category (with optional subcategory scroll) ──────────────────
+        const catSlug = sessionStorage.getItem('sp_open_category');
+        if (catSlug) {
+            sessionStorage.removeItem('sp_open_category');
+            const subSlug = sessionStorage.getItem('sp_open_subcategory');
+            if (subSlug) sessionStorage.removeItem('sp_open_subcategory');
+
+            // Click the matching sidebar category link to open the panel
+            const catLink = document.querySelector(
+                '.toc-link--category[data-category="' + CSS.escape(catSlug) + '"]'
+            );
+            if (catLink) {
+                setTimeout(function () {
+                    catLink.click();
+
+                    // After the panel renders, scroll to the subcategory section
+                    if (subSlug) {
+                        setTimeout(function () {
+                            // subSlug from the DB looks like "firearms-handguns".
+                            // The SECTION_ID_TO_SUBCAT_SLUG map in productsfunctions.js
+                            // maps section ids → db slugs, so we do a reverse lookup:
+                            // find a .specific-sub whose id maps to this subSlug.
+                            // Simplest approach: scan all rendered specific-sub sections.
+                            const allSubs = document.querySelectorAll('.specific-sub');
+                            let target = null;
+                            allSubs.forEach(function (sec) {
+                                // The section body contains the subcategory name — but
+                                // the most reliable match is the section's id against
+                                // the SECTION_ID_TO_SUBCAT_SLUG map exposed on window.
+                                // productsfunctions.js doesn't expose it, so we use a
+                                // data attribute approach: match by checking the rendered
+                                // sub-title text against the slug suffix.
+                                // Best-effort: check if the section id suffix appears in subSlug.
+                                const id = sec.id; // e.g. "sub-handguns"
+                                const suffix = id.replace(/^sub-/, ''); // e.g. "handguns"
+                                if (subSlug.includes(suffix)) {
+                                    if (!target) target = sec;
+                                }
+                            });
+                            if (target) {
+                                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                        }, 300); // wait for populateCategoryProducts to render
+                    }
+                }, 120);
+            }
         }
     });
 </script>
