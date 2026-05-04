@@ -14,7 +14,7 @@ def homepage():
     lang = get_locale()
     currency = get_currency(db)
     product_rows = db.execute("""
-    SELECT p.id, p.price, p.discount, p.image_file, p.tags,
+    SELECT p.id, p.slug, p.price, p.discount, p.image_file, p.tags,
            p.rating, p.sales_count,
            COALESCE(pt.name, p.name)               AS name,
            COALESCE(pt.description, p.description) AS description
@@ -26,7 +26,7 @@ def homepage():
 """, (lang,)).fetchall()
     products = {row["id"]: row for row in product_rows}
     service_rows = db.execute("""
-    SELECT s.id, s.price, s.discount, s.image_file, s.tags,
+    SELECT s.id, s.slug, s.price, s.discount, s.image_file, s.tags,
            s.rating, s.sales_count,
            COALESCE(st.name, s.name)               AS name,
            COALESCE(st.description, s.description) AS description

@@ -614,6 +614,32 @@ document
     if (e.key === "ArrowLeft") fcGo(cur - 1);
     if (e.key === "ArrowRight") fcGo(cur + 1);
   });
+
+  // ── fc-card click → navigate to specific product page ───────────────
+  document.querySelectorAll(".fc-card[data-product-slug]").forEach((card) => {
+    const slug = (card.dataset.productSlug || "").trim();
+    if (!slug) return;
+
+    // Ensure all child layers pass pointer-events up to the card
+    card.style.cursor = "pointer";
+    card.querySelectorAll("*").forEach((child) => {
+      child.style.pointerEvents = "none";
+    });
+
+    card.addEventListener("click", (e) => {
+      // stopImmediatePropagation kills any popup listener on the same element
+      e.stopImmediatePropagation();
+      e.preventDefault();
+
+      // Brief press-flash visual feedback before navigating
+      card.style.transition = "opacity 0.12s ease";
+      card.style.opacity = "0.7";
+      setTimeout(() => {
+        card.style.opacity = "";
+        window.location.href = "/product/" + encodeURIComponent(slug);
+      }, 120);
+    });
+  });
 })();
 // ───────────────────────────────────────────//
 // INITIALIZATION
