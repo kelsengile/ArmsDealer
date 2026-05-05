@@ -1,9 +1,170 @@
-{% extends 'partials/base.html' %}
-{% block title %}<title data-translate="cart"></title>{% endblock %}
+{% extends 'partials/subbase.html' %}
+{% block title %}<title>Orders — Arms Dealer</title>{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pagestyles/user/orders.css') }}">
+{% endblock %}
 
 {% block main %}
-<main class="container">
-    <h1>Your Cart</h1>
-    <p>Cart functionality coming soon.</p>
+<main class="ordpage-main">
+    <div class="ordpage-container">
+
+        {# ══════════════════════════════════════════════
+           HEADER + TAB TOGGLE
+        ══════════════════════════════════════════════ #}
+        <section class="ordpage-header-strip">
+            <h1 class="ordpage-title">MY ORDERS</h1>
+            <div class="ordpage-tabs">
+                <button class="ordpage-tab" data-tab="cart" id="tab-cart">
+                    <span class="ordpage-tab-icon">⊡</span>
+                    <span class="ordpage-tab-label">CART</span>
+                    {% if session.get('cart_count', 0) > 0 %}
+                    <span class="ordpage-tab-badge">{{ session.get('cart_count', 0) }}</span>
+                    {% endif %}
+                </button>
+                <button class="ordpage-tab" data-tab="shipping" id="tab-shipping">
+                    <span class="ordpage-tab-icon">◎</span>
+                    <span class="ordpage-tab-label">SHIPPING</span>
+                </button>
+                <button class="ordpage-tab" data-tab="history" id="tab-history">
+                    <span class="ordpage-tab-icon">☰</span>
+                    <span class="ordpage-tab-label">HISTORY</span>
+                </button>
+            </div>
+        </section>
+
+        {# ══════════════════════════════════════════════
+           CONTENT PANELS
+        ══════════════════════════════════════════════ #}
+        <section class="ordpage-content">
+
+            {# ── CART PANEL ─────────────────────────────────────── #}
+            <div class="ordpage-panel" id="panel-cart">
+                <div class="ordpage-panel-header">
+                    <span class="ordpage-panel-title">CART</span>
+                    <span class="ordpage-panel-sub">Items pending checkout</span>
+                </div>
+                <div class="ordpage-panel-body">
+                    {% if cart_items and cart_items | length > 0 %}
+                    <div class="ordpage-item-list">
+                        {% for item in cart_items %}
+                        <div class="ordpage-item-row">
+                            <div class="ordpage-item-img-wrap">
+                                {% if item.image_file %}
+                                <img src="{{ url_for('static', filename='assets/images/' + item.image_file) }}"
+                                    alt="{{ item.name }}" class="ordpage-item-img">
+                                {% else %}
+                                <div class="ordpage-item-img-placeholder">⊡</div>
+                                {% endif %}
+                            </div>
+                            <div class="ordpage-item-info">
+                                <div class="ordpage-item-name">{{ item.name }}</div>
+                                <div class="ordpage-item-meta">
+                                    <span class="ordpage-item-type">{{ item.item_type | upper }}</span>
+                                    <span class="ordpage-item-qty">QTY: {{ item.quantity }}</span>
+                                </div>
+                            </div>
+                            <div class="ordpage-item-price">
+                                ₱{{ '{:,.0f}'.format(item.price * item.quantity) }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="ordpage-cart-footer">
+                        <div class="ordpage-cart-total">
+                            <span class="ordpage-cart-total-label">TOTAL</span>
+                            <span class="ordpage-cart-total-val">₱{{ '{:,.0f}'.format(cart_total) }}</span>
+                        </div>
+                        <a href="#" class="ordpage-checkout-btn">PROCEED TO CHECKOUT ▶</a>
+                    </div>
+                    {% else %}
+                    <div class="ordpage-empty">
+                        <div class="ordpage-empty-icon">⊡</div>
+                        <div class="ordpage-empty-text">Your cart is empty</div>
+                        <a href="{{ url_for('main.products') }}" class="ordpage-empty-btn">BROWSE PRODUCTS ▶</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# ── SHIPPING PANEL ──────────────────────────────────── #}
+            <div class="ordpage-panel hidden" id="panel-shipping">
+                <div class="ordpage-panel-header">
+                    <span class="ordpage-panel-title">SHIPPING</span>
+                    <span class="ordpage-panel-sub">Active shipments & tracking</span>
+                </div>
+                <div class="ordpage-panel-body">
+                    <div class="ordpage-empty">
+                        <div class="ordpage-empty-icon">◎</div>
+                        <div class="ordpage-empty-text">No active shipments</div>
+                        <div class="ordpage-empty-sub">Orders in transit will appear here</div>
+                    </div>
+                </div>
+            </div>
+
+            {# ── HISTORY PANEL ───────────────────────────────────── #}
+            <div class="ordpage-panel hidden" id="panel-history">
+                <div class="ordpage-panel-header">
+                    <span class="ordpage-panel-title">ORDER HISTORY</span>
+                    <span class="ordpage-panel-sub">Completed & past orders</span>
+                </div>
+                <div class="ordpage-panel-body">
+                    {% if orders and orders | length > 0 %}
+                    <div class="ordpage-item-list">
+                        {% for order in orders %}
+                        <div class="ordpage-history-row">
+                            <div class="ordpage-history-id">ORD-{{ '%06d' % order.id }}</div>
+                            <div class="ordpage-history-date">{{ order.created_at[:10] if order.created_at else '—' }}</div>
+                            <div class="ordpage-history-status ordpage-status-{{ order.status | lower }}">
+                                {{ order.status | upper }}
+                            </div>
+                            <div class="ordpage-history-total">₱{{ '{:,.0f}'.format(order.total) }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="ordpage-empty">
+                        <div class="ordpage-empty-icon">☰</div>
+                        <div class="ordpage-empty-text">No order history</div>
+                        <div class="ordpage-empty-sub">Completed orders will appear here</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </section>
+    </div>
 </main>
+
+<script>
+    (function () {
+        // Determine initial tab from URL param or default to 'cart'
+        const params = new URLSearchParams(window.location.search);
+        const initTab = params.get('tab') || 'cart';
+
+        function activateTab(tabName) {
+            // Deactivate all
+            document.querySelectorAll('.ordpage-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.ordpage-panel').forEach(p => p.classList.add('hidden'));
+            // Activate chosen
+            const btn = document.getElementById('tab-' + tabName);
+            const panel = document.getElementById('panel-' + tabName);
+            if (btn) btn.classList.add('active');
+            if (panel) panel.classList.remove('hidden');
+        }
+
+        // Wire tab buttons
+        document.querySelectorAll('.ordpage-tab').forEach(btn => {
+            btn.addEventListener('click', function () {
+                activateTab(this.dataset.tab);
+                // Update URL without reload
+                const url = new URL(window.location);
+                url.searchParams.set('tab', this.dataset.tab);
+                window.history.replaceState({}, '', url);
+            });
+        });
+
+        activateTab(initTab);
+    })();
+</script>
 {% endblock %}

@@ -1,8 +1,195 @@
-{% extends 'partials/base.html' %}
-{% block title %}<title data-translate="settings"></title>{% endblock %}
+{% extends 'partials/subbase.html' %}
+{% block title %}<title>Settings — Arms Dealer</title>{% endblock %}
+
 {% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/pagestyles/settingsstyles.css') }}">{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pagestyles/settings.css') }}">
+{% endblock %}
+
 {% block main %}
-<main>
+<main class="setpage-main">
+    <div class="setpage-layout">
+
+        {# ══════════════════════════════════════════════
+           LEFT NAV PANEL
+        ══════════════════════════════════════════════ #}
+        <nav class="setpage-nav" id="setpageNav">
+            <div class="setpage-nav-header">
+                <span class="setpage-nav-title">SETTINGS</span>
+            </div>
+
+            <div class="setpage-nav-section-label">PREFERENCES</div>
+            <button class="setpage-nav-item" data-section="account">
+                <span class="setpage-nav-icon">◉</span>
+                <span class="setpage-nav-label">Account</span>
+                <span class="setpage-nav-arrow">▶</span>
+            </button>
+            <button class="setpage-nav-item" data-section="privacy">
+                <span class="setpage-nav-icon">◉</span>
+                <span class="setpage-nav-label">Privacy & Security</span>
+                <span class="setpage-nav-arrow">▶</span>
+            </button>
+            <button class="setpage-nav-item" data-section="appearance">
+                <span class="setpage-nav-icon">◉</span>
+                <span class="setpage-nav-label">Appearance</span>
+                <span class="setpage-nav-arrow">▶</span>
+            </button>
+            <button class="setpage-nav-item" data-section="notifications">
+                <span class="setpage-nav-icon">◉</span>
+                <span class="setpage-nav-label">Notifications</span>
+                <span class="setpage-nav-arrow">▶</span>
+            </button>
+
+            <div class="setpage-nav-divider"></div>
+            <div class="setpage-nav-section-label">GENERAL</div>
+            <button class="setpage-nav-item" data-section="language">
+                <span class="setpage-nav-icon">◉</span>
+                <span class="setpage-nav-label">Language & Region</span>
+                <span class="setpage-nav-arrow">▶</span>
+            </button>
+            <button class="setpage-nav-item" data-section="help">
+                <span class="setpage-nav-icon">◉</span>
+                <span class="setpage-nav-label">Help & Support</span>
+                <span class="setpage-nav-arrow">▶</span>
+            </button>
+
+            <div class="setpage-nav-divider"></div>
+            <div class="setpage-nav-section-label">ADVANCED</div>
+            <button class="setpage-nav-item" data-section="system">
+                <span class="setpage-nav-icon">◉</span>
+                <span class="setpage-nav-label">System Actions</span>
+                <span class="setpage-nav-arrow">▶</span>
+            </button>
+        </nav>
+
+        {# ══════════════════════════════════════════════
+           RIGHT CONTENT PANEL
+        ══════════════════════════════════════════════ #}
+        <div class="setpage-content" id="setpageContent">
+
+            {# Default state — no section selected #}
+            <div class="setpage-panel active" id="setpanel-default">
+                <div class="setpage-panel-placeholder">
+                    <div class="setpage-placeholder-icon">⚙</div>
+                    <div class="setpage-placeholder-text">SELECT A SETTING</div>
+                    <div class="setpage-placeholder-sub">Choose a category from the left panel</div>
+                </div>
+            </div>
+
+            {# Account #}
+            <div class="setpage-panel" id="setpanel-account">
+                <div class="setpage-panel-header">
+                    <h2 class="setpage-panel-title">ACCOUNT</h2>
+                    <p class="setpage-panel-sub">Manage your profile information</p>
+                </div>
+                <div class="setpage-panel-body">
+                    <div class="setpage-placeholder-text">— Account settings content coming soon —</div>
+                </div>
+            </div>
+
+            {# Privacy & Security #}
+            <div class="setpage-panel" id="setpanel-privacy">
+                <div class="setpage-panel-header">
+                    <h2 class="setpage-panel-title">PRIVACY & SECURITY</h2>
+                    <p class="setpage-panel-sub">Password, two-factor authentication, and data</p>
+                </div>
+                <div class="setpage-panel-body">
+                    <div class="setpage-placeholder-text">— Privacy & Security settings coming soon —</div>
+                </div>
+            </div>
+
+            {# Appearance #}
+            <div class="setpage-panel" id="setpanel-appearance">
+                <div class="setpage-panel-header">
+                    <h2 class="setpage-panel-title">APPEARANCE</h2>
+                    <p class="setpage-panel-sub">Theme, display, and visual preferences</p>
+                </div>
+                <div class="setpage-panel-body">
+                    <div class="setpage-placeholder-text">— Appearance settings coming soon —</div>
+                </div>
+            </div>
+
+            {# Notifications #}
+            <div class="setpage-panel" id="setpanel-notifications">
+                <div class="setpage-panel-header">
+                    <h2 class="setpage-panel-title">NOTIFICATIONS</h2>
+                    <p class="setpage-panel-sub">Email, push, and in-app notification preferences</p>
+                </div>
+                <div class="setpage-panel-body">
+                    <div class="setpage-placeholder-text">— Notification settings coming soon —</div>
+                </div>
+            </div>
+
+            {# Language & Region #}
+            <div class="setpage-panel" id="setpanel-language">
+                <div class="setpage-panel-header">
+                    <h2 class="setpage-panel-title">LANGUAGE & REGION</h2>
+                    <p class="setpage-panel-sub">Language, timezone, and currency preferences</p>
+                </div>
+                <div class="setpage-panel-body">
+                    <div class="setpage-placeholder-text">— Language & Region settings coming soon —</div>
+                </div>
+            </div>
+
+            {# Help & Support #}
+            <div class="setpage-panel" id="setpanel-help">
+                <div class="setpage-panel-header">
+                    <h2 class="setpage-panel-title">HELP & SUPPORT</h2>
+                    <p class="setpage-panel-sub">Documentation, FAQs, and contact options</p>
+                </div>
+                <div class="setpage-panel-body">
+                    <div class="setpage-placeholder-text">— Help & Support content coming soon —</div>
+                </div>
+            </div>
+
+            {# System Actions #}
+            <div class="setpage-panel" id="setpanel-system">
+                <div class="setpage-panel-header">
+                    <h2 class="setpage-panel-title">SYSTEM ACTIONS</h2>
+                    <p class="setpage-panel-sub">Data export, account deletion, and advanced options</p>
+                </div>
+                <div class="setpage-panel-body">
+                    <div class="setpage-placeholder-text">— System Actions coming soon —</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </main>
+
+<script>
+    (function () {
+        const params = new URLSearchParams(window.location.search);
+        const initSection = params.get('section') || null;
+
+        function activateSection(section) {
+            // Deactivate all nav items and panels
+            document.querySelectorAll('.setpage-nav-item').forEach(i => i.classList.remove('active'));
+            document.querySelectorAll('.setpage-panel').forEach(p => p.classList.remove('active'));
+
+            if (!section) {
+                document.getElementById('setpanel-default').classList.add('active');
+                return;
+            }
+
+            const btn = document.querySelector(`.setpage-nav-item[data-section="${section}"]`);
+            const panel = document.getElementById(`setpanel-${section}`);
+            if (btn) btn.classList.add('active');
+            if (panel) panel.classList.add('active');
+            else document.getElementById('setpanel-default').classList.add('active');
+        }
+
+        // Wire nav items
+        document.querySelectorAll('.setpage-nav-item').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const sec = this.dataset.section;
+                activateSection(sec);
+                const url = new URL(window.location);
+                url.searchParams.set('section', sec);
+                window.history.replaceState({}, '', url);
+            });
+        });
+
+        activateSection(initSection);
+    })();
+</script>
 {% endblock %}

@@ -12,9 +12,15 @@
         {% if session.get('user_id') %}
         {# ── LOGGED IN STATE ─────────────────────────────────────────── #}
         {% set initials = (session.get('username', 'U')[:1] + session.get('username', 'U')[1:2]).upper() %}
-        <div class="acct-avatar-block">
+
+        {# ── Avatar block — clickable → account page ─────────────────── #}
+        <a href="{{ url_for('main.account') }}" class="acct-avatar-block acct-avatar-link">
             <div class="acct-avatar">
+                {% if session.get('profile_image') %}
+                <img src="{{ session.get('profile_image') }}" alt="Profile" class="acct-avatar-img">
+                {% else %}
                 <span class="acct-avatar-initials">{{ initials }}</span>
+                {% endif %}
                 <div class="acct-avatar-online"></div>
             </div>
             <div class="acct-avatar-info">
@@ -22,8 +28,10 @@
                 <span class="acct-role-badge {% if session.get('role') == 'admin' %}admin{% endif %}">
                     {% if session.get('role') == 'admin' %}◈ Admin{% else %}◉ Customer{% endif %}
                 </span>
+                <div class="acct-view-profile" data-translate="accountpanelviewprofile">View Profile ▶</div>
             </div>
-        </div>
+        </a>
+
         <div class="acct-section-label" data-translate="accountpanelidentification">Identification</div>
         <div class="acct-info-row">
             <span class="acct-info-label" data-translate="accountpaneluserid">User ID</span>
@@ -41,9 +49,12 @@
             <span class="acct-info-label" data-translate="accountpaneljoined">Joined</span>
             <span class="acct-info-value">{{ session.get('created_at', '—')[:10] }}</span>
         </div>
+
         <div class="acct-divider"></div>
         <div class="acct-section-label" data-translate="accountpanelorderscart">Orders & Cart</div>
-        <a href="{{ url_for('cart.cart') }}" class="acct-cart-row">
+
+        {# Cart → orders page with cart tab active #}
+        <a href="{{ url_for('main.orders') }}?tab=cart" class="acct-cart-row">
             <div class="acct-cart-left">
                 <span class="acct-cart-icon">⊡</span> <span data-translate="accountpanelcart">Cart</span>
             </div>
@@ -56,31 +67,39 @@
                 <span class="acct-cart-arrow">▶</span>
             </div>
         </a>
-        <a href="#" class="acct-action-btn">
+
+        {# Order History → orders page with history tab active #}
+        <a href="{{ url_for('main.orders') }}?tab=history" class="acct-action-btn">
             <span class="acct-btn-icon">☰</span> <span data-translate="accountpanelorderhistory">Order History</span>
             <span class="acct-btn-arrow">▶</span>
         </a>
-        <a href="#" class="acct-action-btn">
+
+        {# Track Shipment → orders page with shipping tab active #}
+        <a href="{{ url_for('main.orders') }}?tab=shipping" class="acct-action-btn">
             <span class="acct-btn-icon">◎</span> <span data-translate="accountpaneltrackshipment">Track Shipment</span>
             <span class="acct-btn-arrow">▶</span>
         </a>
+
         <div class="acct-divider"></div>
         <div class="acct-section-label" data-translate="accountpanelaccount">Account</div>
-        <a href="#" class="acct-action-btn">
+
+        {# Edit Profile → settings page, account section #}
+        <a href="{{ url_for('main.settings') }}?section=account" class="acct-action-btn">
             <span class="acct-btn-icon">◉</span> <span data-translate="accountpaneleditprofile">Edit Profile</span>
             <span class="acct-btn-arrow">▶</span>
         </a>
-        <a href="{{ url_for('auth.forgot_password') }}" class="acct-action-btn">
-            <span class="acct-btn-icon">⊕</span> <span data-translate="accountpanelchangepassword">Change
-                Password</span>
+
+        {# Change Password → settings page, privacy section #}
+        <a href="{{ url_for('main.settings') }}?section=privacy" class="acct-action-btn">
+            <span class="acct-btn-icon">⊕</span> <span data-translate="accountpanelchangepassword">Change Password</span>
             <span class="acct-btn-arrow">▶</span>
         </a>
+
         {% if session.get('role') == 'admin' %}
         <div class="acct-divider"></div>
         <div class="acct-section-label" data-translate="accountpaneladmin">Admin</div>
-        <a href="#" class="acct-action-btn">
-            <span class="acct-btn-icon">⌕</span> <span data-translate="accountpaneladmindashboard">Admin
-                Dashboard</span>
+        <a href="{{ url_for('main.dashboard') }}" class="acct-action-btn">
+            <span class="acct-btn-icon">⌕</span> <span data-translate="accountpaneladmindashboard">Admin Dashboard</span>
             <span class="acct-btn-arrow">▶</span>
         </a>
         <a href="#" class="acct-action-btn">
@@ -88,10 +107,12 @@
             <span class="acct-btn-arrow">▶</span>
         </a>
         {% endif %}
+
         <div class="acct-divider"></div>
         <a href="{{ url_for('auth.logout') }}" class="acct-action-btn danger">
             <span class="acct-btn-icon">⊗</span> <span data-translate="accountpanellogout">Logout</span>
         </a>
+
         {% else %}
         {# ── LOGGED OUT STATE ────────────────────────────────────────── #}
         <div class="acct-auth-block" id="authBlock">

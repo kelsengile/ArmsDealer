@@ -1,0 +1,141 @@
+{% extends 'partials/subbase.html' %}
+{% block title %}<title>Account — Arms Dealer</title>{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pagestyles/user/acount.css') }}">
+{% endblock %}
+
+{% block main %}
+<main class="acctpage-main">
+    <div class="acctpage-container">
+
+        {# ══════════════════════════════════════════════
+           PROFILE CARD
+        ══════════════════════════════════════════════ #}
+        <section class="acctpage-profile-card">
+
+            {# Left — Avatar + identity info #}
+            <div class="acctpage-profile-left">
+                <div class="acctpage-avatar-wrap">
+                    {% if user.profile_image %}
+                    <img src="{{ user.profile_image }}" alt="{{ user.username }}" class="acctpage-avatar-img">
+                    {% else %}
+                    {% set initials = (user.username[:1] + user.username[1:2]).upper() %}
+                    <div class="acctpage-avatar-placeholder">{{ initials }}</div>
+                    {% endif %}
+                    <div class="acctpage-avatar-status"></div>
+                </div>
+
+                <div class="acctpage-identity">
+                    <h1 class="acctpage-username">{{ user.username }}</h1>
+                    <div class="acctpage-userid">USR-{{ '%05d' % user.id }}</div>
+
+                    {% if user.bio %}
+                    <p class="acctpage-bio">{{ user.bio }}</p>
+                    {% endif %}
+
+                    <div class="acctpage-meta-list">
+                        {% if user.country %}
+                        <div class="acctpage-meta-item">
+                            <span class="acctpage-meta-icon">◎</span>
+                            <span class="acctpage-meta-text">{{ user.country }}</span>
+                        </div>
+                        {% endif %}
+                        {% if user.email %}
+                        <div class="acctpage-meta-item">
+                            <span class="acctpage-meta-icon">⊠</span>
+                            <span class="acctpage-meta-text">{{ user.email }}</span>
+                        </div>
+                        {% endif %}
+                        {% if user.contact_number %}
+                        <div class="acctpage-meta-item">
+                            <span class="acctpage-meta-icon">◉</span>
+                            <span class="acctpage-meta-text">{{ user.contact_number }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {# Social links — only render available ones #}
+                    {% set socials = [user.social_link_1, user.social_link_2, user.social_link_3, user.social_link_4] %}
+                    {% set social_icons = ['①', '②', '③', '④'] %}
+                    {% if socials | select | list | length > 0 %}
+                    <div class="acctpage-socials">
+                        {% for link in socials %}
+                        {% if link %}
+                        <a href="{{ link }}" target="_blank" rel="noopener" class="acctpage-social-link">
+                            {{ social_icons[loop.index0] }}
+                        </a>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# Right — Badge + Edit button #}
+            <div class="acctpage-profile-right">
+                <div class="acctpage-role-badge {% if user.role == 'admin' %}admin{% endif %}">
+                    {% if user.role == 'admin' %}
+                    <span class="acctpage-badge-icon">◈</span>
+                    <span class="acctpage-badge-text">ADMINISTRATOR</span>
+                    {% else %}
+                    <span class="acctpage-badge-icon">◉</span>
+                    <span class="acctpage-badge-text">CUSTOMER</span>
+                    {% endif %}
+                </div>
+                <div class="acctpage-joined">
+                    <span class="acctpage-joined-label">MEMBER SINCE</span>
+                    <span class="acctpage-joined-date">{{ user.created_at[:10] if user.created_at else '—' }}</span>
+                </div>
+                <a href="{{ url_for('main.settings') }}?section=account" class="acctpage-edit-btn">
+                    <span>◉</span> EDIT PROFILE
+                </a>
+            </div>
+
+        </section>
+
+        {# ══════════════════════════════════════════════
+           ORDERS STRIP
+        ══════════════════════════════════════════════ #}
+        <section class="acctpage-orders-strip">
+            <div class="acctpage-orders-header">
+                <h2 class="acctpage-orders-title">MY ORDERS</h2>
+            </div>
+            <div class="acctpage-orders-btns">
+                <a href="{{ url_for('main.orders') }}?tab=cart" class="acctpage-order-btn">
+                    <span class="acctpage-order-btn-icon">⊡</span>
+                    <span class="acctpage-order-btn-label">CART</span>
+                    {% if session.get('cart_count', 0) > 0 %}
+                    <span class="acctpage-order-btn-badge">{{ session.get('cart_count', 0) }}</span>
+                    {% endif %}
+                </a>
+                <a href="{{ url_for('main.orders') }}?tab=shipping" class="acctpage-order-btn">
+                    <span class="acctpage-order-btn-icon">◎</span>
+                    <span class="acctpage-order-btn-label">SHIPPING</span>
+                </a>
+                <a href="{{ url_for('main.orders') }}?tab=history" class="acctpage-order-btn">
+                    <span class="acctpage-order-btn-icon">☰</span>
+                    <span class="acctpage-order-btn-label">HISTORY</span>
+                </a>
+            </div>
+        </section>
+
+        {# ══════════════════════════════════════════════
+           ADMIN PANEL BUTTON (admin only)
+        ══════════════════════════════════════════════ #}
+        {% if session.get('role') == 'admin' %}
+        <section class="acctpage-admin-strip">
+            <a href="{{ url_for('main.dashboard') }}" class="acctpage-admin-btn">
+                <span class="acctpage-admin-btn-icon">⌕</span>
+                <div class="acctpage-admin-btn-text">
+                    <span class="acctpage-admin-btn-title">ADMIN DASHBOARD</span>
+                    <span class="acctpage-admin-btn-sub">Manage products, users & orders</span>
+                </div>
+                <span class="acctpage-admin-btn-arrow">▶</span>
+            </a>
+        </section>
+        {% endif %}
+
+    </div>
+</main>
+{% endblock %}

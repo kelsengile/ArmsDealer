@@ -1,0 +1,86 @@
+{% extends 'partials/subbase.html' %}
+{% block title %}<title>Dashboard — Arms Dealer</title>{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block main %}
+<main class="dash-main">
+    <div class="dash-container">
+
+        {# ══════════════════════════════════════════════
+           HEADER
+        ══════════════════════════════════════════════ #}
+        <section class="dash-header-strip">
+            <div class="dash-header-left">
+                <span class="dash-header-icon">⌕</span>
+                <div>
+                    <h1 class="dash-title">ADMIN DASHBOARD</h1>
+                    <p class="dash-sub">System overview &amp; management</p>
+                </div>
+            </div>
+            <div class="dash-header-badge">
+                <span class="dash-badge-icon">◈</span>
+                <span class="dash-badge-text">{{ session.get('username', 'Admin') | upper }}</span>
+            </div>
+        </section>
+
+        {# ══════════════════════════════════════════════
+           STATS ROW
+        ══════════════════════════════════════════════ #}
+        <section class="dash-stats-row">
+            <div class="dash-stat-card">
+                <div class="dash-stat-icon">◉</div>
+                <div class="dash-stat-label">TOTAL USERS</div>
+                <div class="dash-stat-value">—</div>
+            </div>
+            <div class="dash-stat-card">
+                <div class="dash-stat-icon">⊡</div>
+                <div class="dash-stat-label">TOTAL ORDERS</div>
+                <div class="dash-stat-value">—</div>
+            </div>
+            <div class="dash-stat-card">
+                <div class="dash-stat-icon">◈</div>
+                <div class="dash-stat-label">PRODUCTS</div>
+                <div class="dash-stat-value">—</div>
+            </div>
+            <div class="dash-stat-card">
+                <div class="dash-stat-icon">◎</div>
+                <div class="dash-stat-label">SERVICES</div>
+                <div class="dash-stat-value">—</div>
+            </div>
+        </section>
+
+        {# ══════════════════════════════════════════════
+           QUICK ACTIONS
+        ══════════════════════════════════════════════ #}
+        <section class="dash-actions-section">
+            <div class="dash-section-label">QUICK ACTIONS</div>
+            <div class="dash-actions-grid">
+                <a href="#" class="dash-action-btn">
+                    <span class="dash-action-icon">☰</span>
+                    <span class="dash-action-label">Manage Users</span>
+                    <span class="dash-action-arrow">▶</span>
+                </a>
+                <a href="#" class="dash-action-btn">
+                    <span class="dash-action-icon">◈</span>
+                    <span class="dash-action-label">Manage Products</span>
+                    <span class="dash-action-arrow">▶</span>
+                </a>
+                <a href="#" class="dash-action-btn">
+                    <span class="dash-action-icon">◎</span>
+                    <span class="dash-action-label">Manage Services</span>
+                    <span class="dash-action-arrow">▶</span>
+                </a>
+                <a href="{{ url_for('main.orders') }}" class="dash-action-btn">
+                    <span class="dash-action-icon">⊡</span>
+                    <span class="dash-action-label">View Orders</span>
+                    <span class="dash-action-arrow">▶</span>
+                </a>
+            </div>
+        </section>
+
+    </div>
+</main>
+{% endblock %}
