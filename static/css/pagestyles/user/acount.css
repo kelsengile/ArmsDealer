@@ -1,0 +1,502 @@
+/* ========================================================================================================================================================
+   ACCOUNT PAGE STYLES
+   ======================================================================================================================================================== */
+
+/* ── Layout ─────────────────────────────────────────────────────── */
+.acctpage-main {
+    min-height: calc(100vh - var(--header-h, 98px));
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 16px 60px;
+}
+
+.acctpage-container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PROFILE CARD
+══════════════════════════════════════════════════════════════════ */
+.acctpage-profile-card {
+    display: flex;
+    gap: 0;
+    background: var(--mil-dark, #131713);
+    border: 1px solid var(--mil-border, #2e3a2e);
+    border-top: 3px solid var(--mil-olive, #6b7c4e);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Corner brackets */
+.acctpage-profile-card::before {
+    content: "";
+    position: absolute;
+    top: -3px;
+    left: -1px;
+    width: 32px;
+    height: 32px;
+    border-top: 3px solid var(--mil-bright, #a8c47a);
+    border-left: 3px solid var(--mil-bright, #a8c47a);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.acctpage-profile-card::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 32px;
+    height: 32px;
+    border-bottom: 2px solid var(--mil-olive, #6b7c4e);
+    border-right: 2px solid var(--mil-olive, #6b7c4e);
+    pointer-events: none;
+}
+
+/* Scanline */
+.acctpage-profile-card .acctpage-scanline {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0, 0, 0, 0.04) 3px,
+        rgba(0, 0, 0, 0.04) 4px
+    );
+    pointer-events: none;
+}
+
+/* ── Left side ───────────────────────────────────────────────────── */
+.acctpage-profile-left {
+    display: flex;
+    gap: 28px;
+    padding: 36px 32px;
+    flex: 1;
+    border-right: 1px solid var(--mil-border, #2e3a2e);
+}
+
+/* Avatar */
+.acctpage-avatar-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.acctpage-avatar-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border: 1px solid var(--mil-olive, #6b7c4e);
+    display: block;
+}
+
+.acctpage-avatar-placeholder {
+    width: 100px;
+    height: 100px;
+    background: rgba(138, 170, 106, 0.1);
+    border: 1px solid var(--mil-olive, #6b7c4e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-stencil, "Oswald", sans-serif);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--mil-bright, #a8c47a);
+    letter-spacing: 0.1em;
+}
+
+.acctpage-avatar-status {
+    position: absolute;
+    bottom: -3px;
+    right: -3px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--mil-green, #8aaa6a);
+    border: 2px solid var(--mil-dark, #131713);
+    box-shadow: 0 0 8px var(--mil-green, #8aaa6a);
+    animation: acctStatusPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes acctStatusPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* Identity */
+.acctpage-identity {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.acctpage-username {
+    font-family: var(--font-stencil, "Oswald", sans-serif);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mil-light, #e2ead4);
+    margin: 0;
+    line-height: 1.1;
+}
+
+.acctpage-userid {
+    font-family: var(--font-mono, "Share Tech Mono", monospace);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--mil-bright, #a8c47a);
+    text-transform: uppercase;
+}
+
+.acctpage-bio {
+    font-family: var(--font-mono, "Share Tech Mono", monospace);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--mil-text, #c8d4b8);
+    line-height: 1.6;
+    margin-top: 4px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(46, 58, 46, 0.5);
+}
+
+.acctpage-meta-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 4px;
+}
+
+.acctpage-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono, "Share Tech Mono", monospace);
+    font-size: 11px;
+    color: var(--mil-muted, #4a5e4a);
+}
+
+.acctpage-meta-icon {
+    color: var(--mil-olive, #6b7c4e);
+    font-size: 12px;
+    width: 14px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.acctpage-meta-text {
+    color: var(--mil-text, #c8d4b8);
+    letter-spacing: 0.06em;
+}
+
+/* Social links */
+.acctpage-socials {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.acctpage-social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--mil-border, #2e3a2e);
+    background: rgba(107, 124, 78, 0.06);
+    color: var(--mil-olive, #6b7c4e);
+    font-family: var(--font-mono, monospace);
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.acctpage-social-link:hover {
+    background: rgba(138, 170, 106, 0.12);
+    border-color: var(--mil-olive, #6b7c4e);
+    color: var(--mil-bright, #a8c47a);
+    box-shadow: 0 0 8px rgba(138, 170, 106, 0.2);
+}
+
+/* ── Right side ──────────────────────────────────────────────────── */
+.acctpage-profile-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 28px 32px;
+    min-width: 220px;
+}
+
+.acctpage-role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border: 1px solid var(--mil-border, #2e3a2e);
+    background: rgba(107, 124, 78, 0.06);
+    color: var(--mil-olive, #6b7c4e);
+}
+
+.acctpage-role-badge.admin {
+    border-color: var(--mil-olive, #6b7c4e);
+    background: rgba(138, 170, 106, 0.1);
+    color: var(--mil-bright, #a8c47a);
+}
+
+.acctpage-badge-icon {
+    font-size: 14px;
+}
+
+.acctpage-badge-text {
+    font-family: var(--font-stencil, "Oswald", sans-serif);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+}
+
+.acctpage-joined {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+}
+
+.acctpage-joined-label {
+    font-family: var(--font-mono, monospace);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mil-muted, #4a5e4a);
+}
+
+.acctpage-joined-date {
+    font-family: var(--font-mono, monospace);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--mil-text, #c8d4b8);
+}
+
+.acctpage-edit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(107, 124, 78, 0.1);
+    border: 1px solid var(--mil-olive, #6b7c4e);
+    color: var(--mil-bright, #a8c47a);
+    font-family: var(--font-stencil, "Oswald", sans-serif);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.acctpage-edit-btn:hover {
+    background: rgba(138, 170, 106, 0.18);
+    box-shadow: 0 0 14px rgba(138, 170, 106, 0.2);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   ORDERS STRIP
+══════════════════════════════════════════════════════════════════ */
+.acctpage-orders-strip {
+    background: var(--mil-dark, #131713);
+    border: 1px solid var(--mil-border, #2e3a2e);
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.acctpage-orders-header {
+    flex-shrink: 0;
+}
+
+.acctpage-orders-title {
+    font-family: var(--font-stencil, "Oswald", sans-serif);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mil-light, #e2ead4);
+    margin: 0;
+    position: relative;
+    padding-bottom: 6px;
+}
+
+.acctpage-orders-title::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 32px;
+    height: 2px;
+    background: var(--mil-bright, #a8c47a);
+}
+
+.acctpage-orders-btns {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+}
+
+.acctpage-order-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    background: rgba(107, 124, 78, 0.06);
+    border: 1px solid var(--mil-border, #2e3a2e);
+    color: var(--mil-text, #c8d4b8);
+    font-family: var(--font-stencil, "Oswald", sans-serif);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+    flex: 1;
+    justify-content: center;
+}
+
+.acctpage-order-btn:hover {
+    background: rgba(138, 170, 106, 0.12);
+    border-color: var(--mil-olive, #6b7c4e);
+    color: var(--mil-bright, #a8c47a);
+    box-shadow: 0 0 12px rgba(138, 170, 106, 0.15);
+}
+
+.acctpage-order-btn-icon {
+    font-size: 16px;
+    opacity: 0.7;
+}
+
+.acctpage-order-btn-badge {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    background: var(--mil-redbright, #c0392b);
+    color: #fff;
+    font-family: var(--font-stencil, "Oswald", sans-serif);
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    min-width: 18px;
+    text-align: center;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   ADMIN STRIP
+══════════════════════════════════════════════════════════════════ */
+.acctpage-admin-strip {
+    background: rgba(192, 57, 43, 0.04);
+    border: 1px solid rgba(192, 57, 43, 0.25);
+    border-left: 3px solid var(--mil-redbright, #c0392b);
+}
+
+.acctpage-admin-btn {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 28px;
+    text-decoration: none;
+    width: 100%;
+    transition: background 0.2s;
+}
+
+.acctpage-admin-btn:hover {
+    background: rgba(192, 57, 43, 0.06);
+}
+
+.acctpage-admin-btn-icon {
+    font-size: 22px;
+    color: var(--mil-redbright, #c0392b);
+    width: 28px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.acctpage-admin-btn-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+}
+
+.acctpage-admin-btn-title {
+    font-family: var(--font-stencil, "Oswald", sans-serif);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mil-redbright, #c0392b);
+}
+
+.acctpage-admin-btn-sub {
+    font-family: var(--font-mono, monospace);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--mil-muted, #4a5e4a);
+}
+
+.acctpage-admin-btn-arrow {
+    font-size: 12px;
+    color: var(--mil-redbright, #c0392b);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.acctpage-admin-btn:hover .acctpage-admin-btn-arrow {
+    opacity: 1;
+}
+
+/* ── Avatar block as link ────────────────────────────────────────── */
+.acctpage-avatar-link {
+    text-decoration: none;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .acctpage-profile-card {
+        flex-direction: column;
+    }
+
+    .acctpage-profile-left {
+        border-right: none;
+        border-bottom: 1px solid var(--mil-border, #2e3a2e);
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .acctpage-profile-right {
+        align-items: flex-start;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 16px;
+        min-width: unset;
+    }
+
+    .acctpage-orders-strip {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+
+    .acctpage-orders-btns {
+        width: 100%;
+    }
+}
