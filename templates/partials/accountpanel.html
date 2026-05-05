@@ -17,7 +17,7 @@
         <a href="{{ url_for('main.account') }}" class="acct-avatar-block acct-avatar-link">
             <div class="acct-avatar">
                 {% if session.get('profile_image') %}
-                <img src="{{ session.get('profile_image') }}" alt="Profile" class="acct-avatar-img">
+                <img src="{{ url_for('static', filename='assets/images/userimages/' + session.get('profile_image')) }}" alt="Profile" class="acct-avatar-img">
                 {% else %}
                 <span class="acct-avatar-initials">{{ initials }}</span>
                 {% endif %}
