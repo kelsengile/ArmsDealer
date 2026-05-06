@@ -6,6 +6,7 @@
     min-height: calc(100vh - var(--header-h, 98px));
     display: flex;
     background: var(--mil-black, #0d0f0d);
+    background-color:#1c211c78;
 }
 
 .adm-wrapper {
