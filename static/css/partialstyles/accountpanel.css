@@ -22,7 +22,7 @@
   right: 0;
   bottom: 0;
   width: var(--set-width);
-  background: var(--mil-dark);
+  background: #1c211c;
   border-left: 1px solid var(--mil-border);
   display: flex;
   flex-direction: column;

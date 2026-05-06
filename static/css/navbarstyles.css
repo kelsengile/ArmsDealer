@@ -370,17 +370,30 @@
 }
 .nav-btn-cart {
   border-right: 1px solid var(--mil-border);
+  position: relative;
 }
-/* .cart-badge {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--mil-redbright);
-    box-shadow: 0 0 5px var(--mil-redbright);
-} */
+/* Live cart badge on navbar cart button */
+.nav-btn-cart .cart-badge {
+  position: absolute;
+  top: 10px;
+  right: 6px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  background: var(--mil-redbright, #c0392b);
+  color: #fff;
+  font-family: var(--font-stencil, "Oswald", sans-serif);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  letter-spacing: 0.05em;
+  display: none;
+  pointer-events: none;
+}
+.nav-btn-cart .cart-badge.visible {
+  display: block;
+}
 /* Coordinate readout */
 .nav-coord {
   display: flex;
