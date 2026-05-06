@@ -1,5 +1,5 @@
 /* ========================================================================================================================================================
-   ACCOUNT PAGE STYLES
+   ACCOUNT PAGE STYLES — REDESIGNED
    ======================================================================================================================================================== */
 
 /* ── Layout ─────────────────────────────────────────────────────── */
@@ -13,10 +13,10 @@
 
 .acctpage-container {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1100px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
 }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -25,40 +25,42 @@
 .acctpage-profile-card {
     display: flex;
     gap: 0;
+    min-height: 300px;
     background: var(--mil-dark, #131713);
     border: 1px solid var(--mil-border, #2e3a2e);
-    border-top: 3px solid var(--mil-olive, #6b7c4e);
+    border-top: 3px solid var(--mil-bright, #a8c47a); /* Elevated to bright — primary accent */
     position: relative;
     overflow: hidden;
 }
 
-/* Corner brackets */
+/* Corner bracket — top-left */
 .acctpage-profile-card::before {
     content: "";
     position: absolute;
     top: -3px;
     left: -1px;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border-top: 3px solid var(--mil-bright, #a8c47a);
     border-left: 3px solid var(--mil-bright, #a8c47a);
     pointer-events: none;
     z-index: 1;
 }
 
+/* Corner bracket — bottom-right */
 .acctpage-profile-card::after {
     content: "";
     position: absolute;
     bottom: -1px;
     right: -1px;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border-bottom: 2px solid var(--mil-olive, #6b7c4e);
     border-right: 2px solid var(--mil-olive, #6b7c4e);
     pointer-events: none;
 }
 
-/* Scanline */
+/* Scanline overlay */
 .acctpage-profile-card .acctpage-scanline {
     position: absolute;
     inset: 0;
@@ -66,10 +68,11 @@
         0deg,
         transparent,
         transparent 3px,
-        rgba(0, 0, 0, 0.04) 3px,
-        rgba(0, 0, 0, 0.04) 4px
+        rgba(0, 0, 0, 0.03) 3px,
+        rgba(0, 0, 0, 0.03) 4px
     );
     pointer-events: none;
+    z-index: 0;
 }
 
 /* ── Left side ───────────────────────────────────────────────────── */
@@ -79,180 +82,109 @@
     padding: 36px 32px;
     flex: 1;
     border-right: 1px solid var(--mil-border, #2e3a2e);
+    position: relative;
+    z-index: 1;
 }
 
-/* Avatar */
+/* ── Avatar ──────────────────────────────────────────────────────── */
 .acctpage-avatar-wrap {
     position: relative;
     flex-shrink: 0;
+    align-self: flex-start;
 }
 
 .acctpage-avatar-img {
-    width: 100px;
-    height: 100px;
+    width: 96px;
+    height: 96px;
     object-fit: cover;
-    border: 1px solid var(--mil-olive, #6b7c4e);
+    border: 2px solid var(--mil-olive, #6b7c4e);
     display: block;
 }
 
 .acctpage-avatar-placeholder {
-    width: 100px;
-    height: 100px;
-    background: rgba(138, 170, 106, 0.1);
-    border: 1px solid var(--mil-olive, #6b7c4e);
+    width: 96px;
+    height: 96px;
+    background: rgba(168, 196, 122, 0.08);
+    border: 2px solid var(--mil-olive, #6b7c4e);
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: var(--font-stencil, "Oswald", sans-serif);
-    font-size: 32px;
+    font-size: 30px;
     font-weight: 700;
     color: var(--mil-bright, #a8c47a);
     letter-spacing: 0.1em;
 }
 
-.acctpage-avatar-status {
+/* Online status dot */
+.acctpage-status-dot {
     position: absolute;
-    bottom: -3px;
-    right: -3px;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--mil-green, #8aaa6a);
+    bottom: 6px;
+    right: 6px;
+    width: 10px;
+    height: 10px;
+    background: var(--mil-bright, #a8c47a);
     border: 2px solid var(--mil-dark, #131713);
-    box-shadow: 0 0 8px var(--mil-green, #8aaa6a);
     animation: acctStatusPulse 2.4s ease-in-out infinite;
 }
 
 @keyframes acctStatusPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
 }
 
-/* Identity */
+/* ── Identity block ──────────────────────────────────────────────── */
 .acctpage-identity {
     flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
 }
 
+/* Username — PRIMARY hierarchy */
 .acctpage-username {
     font-family: var(--font-stencil, "Oswald", sans-serif);
-    font-size: 28px;
+    font-size: 30px;
     font-weight: 700;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--mil-light, #e2ead4);
     margin: 0;
-    line-height: 1.1;
+    line-height: 1.05;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--mil-bright, #a8c47a);
+    display: inline-block;
+    align-self: flex-start;
 }
 
+/* UID — below the name */
 .acctpage-userid {
     font-family: var(--font-mono, "Share Tech Mono", monospace);
-    font-size: 11px;
-    letter-spacing: 0.22em;
-    color: var(--mil-bright, #a8c47a);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    color: var(--mil-olive, #6b7c4e);
     text-transform: uppercase;
+    margin-top: -4px;
 }
 
-.acctpage-bio {
-    font-family: var(--font-mono, "Share Tech Mono", monospace);
-    font-size: 11px;
-    letter-spacing: 0.05em;
-    color: var(--mil-text, #c8d4b8);
-    line-height: 1.6;
-    margin-top: 4px;
-    padding-top: 8px;
-    border-top: 1px solid rgba(46, 58, 46, 0.5);
-}
-
-.acctpage-meta-list {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-top: 4px;
-}
-
-.acctpage-meta-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--font-mono, "Share Tech Mono", monospace);
-    font-size: 11px;
-    color: var(--mil-muted, #4a5e4a);
-}
-
-.acctpage-meta-icon {
-    color: var(--mil-olive, #6b7c4e);
-    font-size: 12px;
-    width: 14px;
-    text-align: center;
-    flex-shrink: 0;
-}
-
-.acctpage-meta-text {
-    color: var(--mil-text, #c8d4b8);
-    letter-spacing: 0.06em;
-}
-
-/* Social links */
-.acctpage-socials {
-    display: flex;
-    gap: 8px;
-    margin-top: 6px;
-}
-
-.acctpage-social-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    border: 1px solid var(--mil-border, #2e3a2e);
-    background: rgba(107, 124, 78, 0.06);
-    color: var(--mil-olive, #6b7c4e);
-    font-family: var(--font-mono, monospace);
-    font-size: 13px;
-    text-decoration: none;
-    transition: all 0.2s;
-}
-
-.acctpage-social-link:hover {
-    background: rgba(138, 170, 106, 0.12);
-    border-color: var(--mil-olive, #6b7c4e);
-    color: var(--mil-bright, #a8c47a);
-    box-shadow: 0 0 8px rgba(138, 170, 106, 0.2);
-}
-
-/* ── Right side ──────────────────────────────────────────────────── */
-.acctpage-profile-right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: space-between;
-    padding: 28px 32px;
-    min-width: 220px;
-}
-
+/* Role badge — lives in right panel */
 .acctpage-role-badge {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 6px 14px;
+    gap: 6px;
+    padding: 8px 14px;
     border: 1px solid var(--mil-border, #2e3a2e);
     background: rgba(107, 124, 78, 0.06);
     color: var(--mil-olive, #6b7c4e);
+    width: 100%;
+    justify-content: center;
 }
 
 .acctpage-role-badge.admin {
-    border-color: var(--mil-olive, #6b7c4e);
-    background: rgba(138, 170, 106, 0.1);
+    border-color: var(--mil-bright, #a8c47a);
+    background: rgba(168, 196, 122, 0.1);
     color: var(--mil-bright, #a8c47a);
-}
-
-.acctpage-badge-icon {
-    font-size: 14px;
 }
 
 .acctpage-badge-text {
@@ -263,56 +195,135 @@
     text-transform: uppercase;
 }
 
-.acctpage-joined {
+/* Bio — secondary text */
+.acctpage-bio {
+    font-family: var(--font-mono, "Share Tech Mono", monospace);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--mil-text, #c8d4b8); /* Secondary text */
+    line-height: 1.65;
+    margin: 0;
+    padding-top: 6px;
+    border-top: 1px solid rgba(46, 58, 46, 0.5);
+}
+
+/* Meta list — tertiary / supporting info */
+.acctpage-meta-list {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    gap: 3px;
+    gap: 6px;
 }
 
-.acctpage-joined-label {
-    font-family: var(--font-mono, monospace);
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--mil-muted, #4a5e4a);
+.acctpage-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-family: var(--font-mono, "Share Tech Mono", monospace);
+    font-size: 11px;
 }
 
-.acctpage-joined-date {
-    font-family: var(--font-mono, monospace);
-    font-size: 12px;
-    letter-spacing: 0.1em;
+.acctpage-meta-icon {
+    color: var(--mil-olive, #6b7c4e); /* Icon: olive — tertiary accent */
+    flex-shrink: 0;
+    display: block;
+}
+
+.acctpage-meta-text {
     color: var(--mil-text, #c8d4b8);
+    letter-spacing: 0.06em;
+}
+
+/* Social links */
+.acctpage-socials {
+    display: flex;
+    gap: 6px;
+    margin-top: 2px;
+}
+
+.acctpage-social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border: 1px solid var(--mil-border, #2e3a2e);
+    background: rgba(107, 124, 78, 0.05);
+    color: var(--mil-olive, #6b7c4e);
+    font-family: var(--font-mono, monospace);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.acctpage-social-link:hover {
+    background: rgba(168, 196, 122, 0.1);
+    border-color: var(--mil-olive, #6b7c4e);
+    color: var(--mil-bright, #a8c47a);
+}
+
+/* ── Right side — badge top, member-since middle, edit bottom ────── */
+.acctpage-profile-right {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-between;
+    padding: 28px 24px;
+    min-width: 190px;
+    position: relative;
+    z-index: 1;
+    gap: 0;
+}
+
+/* Member since — centered in the right column */
+.acctpage-right-member-since {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+    font-family: var(--font-mono, "Share Tech Mono", monospace);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: var(--mil-olive, #6b7c4e);
+    text-transform: uppercase;
+    line-height: 1.5;
+    padding: 8px 0;
+}
+
+.acctpage-right-member-since .acctpage-meta-icon {
+    color: var(--mil-olive, #6b7c4e);
 }
 
 .acctpage-edit-btn {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    background: rgba(107, 124, 78, 0.1);
-    border: 1px solid var(--mil-olive, #6b7c4e);
-    color: var(--mil-bright, #a8c47a);
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 12px;
+    background: transparent;
+    border: 1px solid var(--mil-border, #2e3a2e);
+    color: var(--mil-muted, #4a5e4a);
     font-family: var(--font-stencil, "Oswald", sans-serif);
-    font-size: 12px;
+    font-size: 9px;
     font-weight: 600;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     text-decoration: none;
     cursor: pointer;
     transition: all 0.2s;
+    width: 100%;
 }
 
 .acctpage-edit-btn:hover {
-    background: rgba(138, 170, 106, 0.18);
-    box-shadow: 0 0 14px rgba(138, 170, 106, 0.2);
+    border-color: var(--mil-olive, #6b7c4e);
+    color: var(--mil-olive, #6b7c4e);
 }
 
 /* ══════════════════════════════════════════════════════════════════
    ORDERS STRIP
 ══════════════════════════════════════════════════════════════════ */
 .acctpage-orders-strip {
-    background: var(--mil-dark, #131713);
+    background: #1c211c;
     border: 1px solid var(--mil-border, #2e3a2e);
     padding: 24px 32px;
     display: flex;
@@ -326,44 +337,49 @@
 
 .acctpage-orders-title {
     font-family: var(--font-stencil, "Oswald", sans-serif);
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 700;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--mil-light, #e2ead4);
     margin: 0;
+    text-align: center;
     position: relative;
-    padding-bottom: 6px;
+    padding-bottom: 10px;
 }
 
 .acctpage-orders-title::after {
     content: "";
     position: absolute;
     bottom: 0;
-    left: 0;
-    width: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
     height: 2px;
     background: var(--mil-bright, #a8c47a);
 }
 
 .acctpage-orders-btns {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
 }
 
+/* Order buttons — row layout, icon left of text */
 .acctpage-order-btn {
     display: flex;
+    flex-direction: row;
     align-items: center;
     gap: 10px;
-    padding: 12px 24px;
-    background: rgba(107, 124, 78, 0.06);
+    padding: 14px 20px;
+    background: rgba(107, 124, 78, 0.04);
     border: 1px solid var(--mil-border, #2e3a2e);
+    border-top: 2px solid transparent;
     color: var(--mil-text, #c8d4b8);
     font-family: var(--font-stencil, "Oswald", sans-serif);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     text-decoration: none;
     cursor: pointer;
@@ -374,20 +390,29 @@
 }
 
 .acctpage-order-btn:hover {
-    background: rgba(138, 170, 106, 0.12);
+    background: rgba(168, 196, 122, 0.08);
     border-color: var(--mil-olive, #6b7c4e);
+    border-top-color: var(--mil-bright, #a8c47a); /* Top accent on hover */
     color: var(--mil-bright, #a8c47a);
-    box-shadow: 0 0 12px rgba(138, 170, 106, 0.15);
+}
+
+.acctpage-order-btn:hover .acctpage-order-btn-icon {
+    color: var(--mil-bright, #a8c47a);
 }
 
 .acctpage-order-btn-icon {
-    font-size: 16px;
-    opacity: 0.7;
+    color: var(--mil-olive, #6b7c4e);
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.acctpage-order-btn-label {
+    color: inherit;
 }
 
 .acctpage-order-btn-badge {
     position: absolute;
-    top: 6px;
+    top: 8px;
     right: 8px;
     background: var(--mil-redbright, #c0392b);
     color: #fff;
@@ -397,77 +422,108 @@
     padding: 1px 5px;
     min-width: 18px;
     text-align: center;
+    line-height: 1.4;
 }
 
 /* ══════════════════════════════════════════════════════════════════
-   ADMIN STRIP
+   ADMIN STRIP — full-width, high-impact, military red
 ══════════════════════════════════════════════════════════════════ */
 .acctpage-admin-strip {
-    background: rgba(192, 57, 43, 0.12);
-    border: 1px solid rgba(192, 57, 43, 0.4);
-    border-left: 3px solid var(--mil-redbright, #c0392b);
+    background: transparent;
+    border: none;
+    display: flex;
+    padding: 0;
+    justify-content: flex-end;
 }
 
 .acctpage-admin-btn {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 18px;
     padding: 20px 28px;
+    background: var(--mil-redbright, #c0392b);
+    border: none;
+    border-top: 3px solid rgba(255,255,255,0.15);
+    border-left: 4px solid rgba(0,0,0,0.2);
+    color: #fff;
+    font-family: var(--font-stencil, "Oswald", sans-serif);
     text-decoration: none;
-    width: 100%;
-    background: rgba(192, 57, 43, 0.08);
-    transition: background 0.2s;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+    width: 350px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Diagonal stripe overlay */
+.acctpage-admin-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 12px,
+        rgba(0,0,0,0.06) 12px,
+        rgba(0,0,0,0.06) 14px
+    );
+    pointer-events: none;
 }
 
 .acctpage-admin-btn:hover {
-    background: rgba(192, 57, 43, 0.18);
+    background: #a93226;
 }
 
 .acctpage-admin-btn-icon {
-    font-size: 22px;
-    color: var(--mil-redbright, #c0392b);
-    width: 28px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(0,0,0,0.2);
     flex-shrink: 0;
+    position: relative;
+    z-index: 1;
 }
 
 .acctpage-admin-btn-text {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
     flex: 1;
+    position: relative;
+    z-index: 1;
+}
+
+.acctpage-admin-btn-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    opacity: 0.65;
+    line-height: 1;
 }
 
 .acctpage-admin-btn-title {
-    font-family: var(--font-stencil, "Oswald", sans-serif);
-    font-size: 15px;
+    font-size: 20px;
     font-weight: 700;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--mil-redbright, #c0392b);
-}
-
-.acctpage-admin-btn-sub {
-    font-family: var(--font-mono, monospace);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    color: var(--mil-muted, #4a5e4a);
+    line-height: 1.1;
 }
 
 .acctpage-admin-btn-arrow {
-    font-size: 12px;
-    color: var(--mil-redbright, #c0392b);
-    opacity: 0;
-    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    opacity: 0.7;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.2s;
 }
 
 .acctpage-admin-btn:hover .acctpage-admin-btn-arrow {
+    transform: translateX(4px);
     opacity: 1;
-}
-
-/* ── Avatar block as link ────────────────────────────────────────── */
-.acctpage-avatar-link {
-    text-decoration: none;
 }
 
 /* ── Responsive ──────────────────────────────────────────────────── */
@@ -481,23 +537,29 @@
         border-bottom: 1px solid var(--mil-border, #2e3a2e);
         flex-direction: column;
         gap: 20px;
+        padding: 28px 20px;
     }
 
     .acctpage-profile-right {
         align-items: flex-start;
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 16px;
+        padding: 16px 20px 24px;
         min-width: unset;
     }
 
     .acctpage-orders-strip {
-        flex-direction: column;
-        gap: 16px;
-        align-items: flex-start;
+        padding: 20px 16px;
     }
 
     .acctpage-orders-btns {
-        width: 100%;
+        gap: 8px;
+    }
+
+    .acctpage-order-btn {
+        padding: 16px 8px;
+        font-size: 10px;
+    }
+
+    .acctpage-username {
+        font-size: 22px;
     }
 }
