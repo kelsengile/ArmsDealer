@@ -17,7 +17,11 @@
         <a href="{{ url_for('main.account') }}" class="acct-avatar-block acct-avatar-link">
             <div class="acct-avatar">
                 {% if session.get('profile_image') %}
-                <img src="{{ url_for('static', filename='assets/images/userimages/' + session.get('profile_image')) }}" alt="Profile" class="acct-avatar-img">
+                <img src="{{ url_for('static', filename='assets/images/userimages/' + session.get('profile_image')) }}"
+                     alt="{{ session.get('username', 'User') }}"
+                     class="acct-avatar-img"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                <span class="acct-avatar-initials" style="display:none;">{{ initials }}</span>
                 {% else %}
                 <span class="acct-avatar-initials">{{ initials }}</span>
                 {% endif %}
@@ -56,7 +60,14 @@
         {# Cart → orders page with cart tab active #}
         <a href="{{ url_for('main.orders') }}?tab=cart" class="acct-cart-row">
             <div class="acct-cart-left">
-                <span class="acct-cart-icon">⊡</span> <span data-translate="accountpanelcart">Cart</span>
+                <span class="acct-btn-icon">
+                    <svg width="14" height="14" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 1h2l2.4 8.4a1 1 0 0 0 1 .6h5.2a1 1 0 0 0 .97-.76L14 5H4" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="6.5" cy="13" r="1" fill="currentColor"/>
+                        <circle cx="11.5" cy="13" r="1" fill="currentColor"/>
+                    </svg>
+                </span>
+                <span data-translate="accountpanelcart">Cart</span>
             </div>
             <div class="acct-cart-right">
                 {% if session.get('cart_count', 0) > 0 %}
@@ -64,20 +75,45 @@
                 {% else %}
                 <span class="acct-cart-empty" id="panelCartCount" data-translate="accountpanelempty">EMPTY</span>
                 {% endif %}
-                <span class="acct-cart-arrow">▶</span>
+                <span class="acct-cart-arrow">
+                    <svg width="8" height="8" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 2l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
             </div>
-        </a>
-
-        {# Order History → orders page with history tab active #}
-        <a href="{{ url_for('main.orders') }}?tab=history" class="acct-action-btn">
-            <span class="acct-btn-icon">☰</span> <span data-translate="accountpanelorderhistory">Order History</span>
-            <span class="acct-btn-arrow">▶</span>
         </a>
 
         {# Track Shipment → orders page with shipping tab active #}
         <a href="{{ url_for('main.orders') }}?tab=shipping" class="acct-action-btn">
-            <span class="acct-btn-icon">◎</span> <span data-translate="accountpaneltrackshipment">Track Shipment</span>
-            <span class="acct-btn-arrow">▶</span>
+            <span class="acct-btn-icon">
+                <svg width="14" height="14" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="1" y="4" width="10" height="8" rx="1" stroke="currentColor" stroke-width="1.4" fill="none"/>
+                    <path d="M11 6h2.5l1.5 2v3h-4V6z" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/>
+                    <circle cx="4" cy="13" r="1.2" fill="currentColor"/>
+                    <circle cx="12" cy="13" r="1.2" fill="currentColor"/>
+                </svg>
+            </span>
+            <span data-translate="accountpaneltrackshipment">Track Shipment</span>
+            <span class="acct-btn-arrow">
+                <svg width="8" height="8" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 2l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </span>
+        </a>
+
+        {# Order History → orders page with history tab active #}
+        <a href="{{ url_for('main.orders') }}?tab=history" class="acct-action-btn">
+            <span class="acct-btn-icon">
+                <svg width="14" height="14" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 4h12M2 8h9M2 12h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+            </span>
+            <span data-translate="accountpanelorderhistory">Order History</span>
+            <span class="acct-btn-arrow">
+                <svg width="8" height="8" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 2l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </span>
         </a>
 
         <div class="acct-divider"></div>
@@ -85,32 +121,84 @@
 
         {# Edit Profile → settings page, account section #}
         <a href="{{ url_for('main.settings') }}?section=account" class="acct-action-btn">
-            <span class="acct-btn-icon">◉</span> <span data-translate="accountpaneleditprofile">Edit Profile</span>
-            <span class="acct-btn-arrow">▶</span>
+            <span class="acct-btn-icon">
+                <svg width="13" height="13" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="8" cy="5" r="3" fill="currentColor"/>
+                    <path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+                </svg>
+            </span>
+            <span data-translate="accountpaneleditprofile">Edit Profile</span>
+            <span class="acct-btn-arrow">
+                <svg width="8" height="8" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 2l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </span>
         </a>
 
         {# Change Password → settings page, privacy section #}
         <a href="{{ url_for('main.settings') }}?section=privacy" class="acct-action-btn">
-            <span class="acct-btn-icon">⊕</span> <span data-translate="accountpanelchangepassword">Change Password</span>
-            <span class="acct-btn-arrow">▶</span>
+            <span class="acct-btn-icon">
+                <svg width="13" height="13" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="7" width="10" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4" fill="none"/>
+                    <path d="M5 7V5a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+                    <circle cx="8" cy="11" r="1.2" fill="currentColor"/>
+                </svg>
+            </span>
+            <span data-translate="accountpanelchangepassword">Change Password</span>
+            <span class="acct-btn-arrow">
+                <svg width="8" height="8" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 2l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </span>
         </a>
 
         {% if session.get('role') == 'admin' %}
         <div class="acct-divider"></div>
         <div class="acct-section-label" data-translate="accountpaneladmin">Admin</div>
         <a href="{{ url_for('main.dashboard') }}" class="acct-action-btn">
-            <span class="acct-btn-icon">⌕</span> <span data-translate="accountpaneladmindashboard">Admin Dashboard</span>
-            <span class="acct-btn-arrow">▶</span>
+            <span class="acct-btn-icon">
+                <svg width="13" height="13" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4" fill="none"/>
+                    <rect x="9" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4" fill="none"/>
+                    <rect x="1" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4" fill="none"/>
+                    <rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4" fill="none"/>
+                </svg>
+            </span>
+            <span data-translate="accountpaneladmindashboard">Admin Dashboard</span>
+            <span class="acct-btn-arrow">
+                <svg width="8" height="8" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 2l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </span>
         </a>
         <a href="#" class="acct-action-btn">
-            <span class="acct-btn-icon">☰</span> <span data-translate="accountpanelmanageusers">Manage Users</span>
-            <span class="acct-btn-arrow">▶</span>
+            <span class="acct-btn-icon">
+                <svg width="13" height="13" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="5" cy="5" r="2.5" fill="currentColor"/>
+                    <circle cx="11" cy="5" r="2.5" fill="currentColor"/>
+                    <path d="M1 13c0-2.2 1.8-4 4-4" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+                    <path d="M8 13c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+                </svg>
+            </span>
+            <span data-translate="accountpanelmanageusers">Manage Users</span>
+            <span class="acct-btn-arrow">
+                <svg width="8" height="8" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 2l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </span>
         </a>
         {% endif %}
 
         <div class="acct-divider"></div>
         <a href="{{ url_for('auth.logout') }}" class="acct-action-btn danger">
-            <span class="acct-btn-icon">⊗</span> <span data-translate="accountpanellogout">Logout</span>
+            <span class="acct-btn-icon">
+                <svg width="13" height="13" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+                    <path d="M10 11l4-3.5L10 4" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M6 7.5h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+            </span>
+            <span data-translate="accountpanellogout">Logout</span>
         </a>
 
         {% else %}

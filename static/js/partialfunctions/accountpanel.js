@@ -82,10 +82,23 @@
             }
         }
 
-        /* ── Navbar badge ─────────────────────────────────────────── */
+        /* ── All .cart-badge elements (navbar desktop + drawer) ───── */
+        document.querySelectorAll(".cart-badge").forEach(badge => {
+            if (count > 0) {
+                badge.textContent = count > 99 ? "99+" : count;
+                badge.classList.add("visible");
+                badge.style.display = "";
+            } else {
+                badge.textContent = "";
+                badge.classList.remove("visible");
+                badge.style.display = "none";
+            }
+        });
+
+        /* ── #navCartBadge specifically (legacy compat) ───────────── */
         if (navCartBadge) {
             if (count > 0) {
-                navCartBadge.textContent = count;
+                navCartBadge.textContent = count > 99 ? "99+" : count;
                 navCartBadge.classList.add("visible");
             } else {
                 navCartBadge.textContent = "";

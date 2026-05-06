@@ -98,17 +98,25 @@ function spShowToast(msg, type) {
     toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 3000);
 }
 
-// ── Update cart badge in navbar ───────────────────────────────────────
+// ── Update cart badge — delegates to global updateCartCount if available ──
 function spUpdateCartBadge(count) {
-    document.querySelectorAll('.cart-badge').forEach(badge => {
-        if (count > 0) {
-            badge.textContent = count > 99 ? '99+' : count;
-            badge.style.display = '';
-        } else {
-            badge.textContent = '';
-            badge.style.display = 'none';
-        }
-    });
+    if (typeof window.updateCartCount === 'function') {
+        // accountpanel.js is loaded — it handles panel + all .cart-badge elements
+        window.updateCartCount(count);
+    } else {
+        // Fallback: update .cart-badge elements directly
+        document.querySelectorAll('.cart-badge').forEach(badge => {
+            if (count > 0) {
+                badge.textContent = count > 99 ? '99+' : count;
+                badge.classList.add('visible');
+                badge.style.display = '';
+            } else {
+                badge.textContent = '';
+                badge.classList.remove('visible');
+                badge.style.display = 'none';
+            }
+        });
+    }
 }
 
 // ── Add to Cart ──────────────────────────────────────────────────────
@@ -162,4 +170,4 @@ if (spCartBtn) {
                 this.style.pointerEvents = '';
             });
     });
-}
+} Kw
