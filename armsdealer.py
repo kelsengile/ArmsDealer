@@ -41,6 +41,20 @@ def close_db(error):
         db.close()
 
 
+@app.before_request
+def refresh_profile_image():
+    """Keep session profile_image in sync with the DB on every request."""
+    from flask import session
+    user_id = session.get('user_id')
+    if user_id:
+        db = get_db()
+        row = db.execute(
+            'SELECT profile_image FROM users WHERE id = ?', (user_id,)
+        ).fetchone()
+        if row:
+            session['profile_image'] = row['profile_image'] or None
+
+
 # ─────────────────────────────────────────
 # REGISTER BLUEPRINTS
 # ─────────────────────────────────────────

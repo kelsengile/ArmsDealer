@@ -84,6 +84,7 @@ def _populate_session(user):
     session['email'] = user['email']
     session['role'] = user['role']
     session['created_at'] = user['created_at']
+    session['profile_image'] = user['profile_image'] if user['profile_image'] else None
     # cart_count: update this whenever cart changes;
     # here we just initialise to 0 if not already set
     if 'cart_count' not in session:
