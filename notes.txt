@@ -270,3 +270,19 @@ CATEGORIES
     role     : admin
 
 ================================================================================
+  DATABASE CART ORDERS RESET
+================================================================================
+
+PRAGMA foreign_keys = OFF;
+
+DELETE FROM cart_items;
+DELETE FROM order_items;
+DELETE FROM orders;
+
+DELETE FROM sqlite_sequence WHERE name='cart_items';
+DELETE FROM sqlite_sequence WHERE name='order_items';
+DELETE FROM sqlite_sequence WHERE name='orders';
+
+PRAGMA foreign_keys = ON;
+
+================================================================================
