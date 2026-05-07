@@ -17,13 +17,16 @@
         <a href="{{ url_for('main.account') }}" class="acct-avatar-block acct-avatar-link">
             <div class="acct-avatar">
                 {% if session.get('profile_image') %}
-                <img src="{{ url_for('static', filename='assets/images/userimages/' + session.get('profile_image')) }}"
-                     alt="{{ session.get('username', 'User') }}"
-                     class="acct-avatar-img"
-                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                <span class="acct-avatar-initials" style="display:none;">{{ initials }}</span>
+                    {% set _img = session.get('profile_image') %}
+                    {% if _img.startswith('http') or _img.startswith('/') %}
+                        <img src="{{ _img }}" alt="{{ session.get('username', 'User') }}" class="acct-avatar-img">
+                    {% elif '/' in _img %}
+                        <img src="{{ url_for('static', filename=_img) }}" alt="{{ session.get('username', 'User') }}" class="acct-avatar-img">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='assets/images/userimages/' + _img) }}" alt="{{ session.get('username', 'User') }}" class="acct-avatar-img">
+                    {% endif %}
                 {% else %}
-                <span class="acct-avatar-initials">{{ initials }}</span>
+                    <span class="acct-avatar-initials">{{ initials }}</span>
                 {% endif %}
                 <div class="acct-avatar-online"></div>
             </div>
