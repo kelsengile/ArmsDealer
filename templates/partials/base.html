@@ -123,4 +123,15 @@
     <script src="{{ url_for('static', filename='js/navbarfunctions.js') }}"></script>
     <script src="{{ url_for('static', filename='js/partialfunctions/accountpanel.js') }}"></script>
     <script src="{{ url_for('static', filename='js/partialfunctions/settingspanel.js') }}"></script>
+
+    <script>
+        // ── bfcache guard — if the browser restores this page from its
+        //    back/forward cache, force a real reload so the navbar cart badge,
+        //    account panel cart count, and order list are never stale.
+        window.addEventListener('pageshow', function (e) {
+            if (e.persisted) {
+                window.location.reload();
+            }
+        });
+    </script>
 </body>

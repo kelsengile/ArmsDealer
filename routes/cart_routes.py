@@ -193,6 +193,9 @@ def place_order():
     db.execute('DELETE FROM cart_items WHERE user_id = ?', (user_id,))
     db.commit()
 
+    # ── Keep session in sync so every page reflects the empty cart ──
+    session['cart_count'] = 0
+
     return redirect(url_for('main.orders') + '?tab=shipping')
 
 

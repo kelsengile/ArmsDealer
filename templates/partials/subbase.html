@@ -54,12 +54,30 @@
     <script src="{{ url_for('static', filename='js/partialfunctions/settingspanel.js') }}"></script>
 
     <script>
-        // Back button — go back in history, fall back to homepage
+        // ── EXIT button — always performs a hard navigation so the target
+        //    page is fetched fresh from the server (never a stale bfcache
+        //    snapshot).  This ensures cart counts, order lists, and account
+        //    panel data are always up-to-date when returning from checkout,
+        //    orders, or any sub-page.
         document.getElementById('subBackBtn').addEventListener('click', function () {
-            if (window.history.length > 1) {
-                window.history.back();
+            var ref = document.referrer;
+            var home = "{{ url_for('main.homepage') }}";
+
+            if (ref && ref !== window.location.href) {
+                // Use location.replace so the sub-page is removed from history
+                // and the browser cannot restore a cached version of it.
+                window.location.replace(ref);
             } else {
-                window.location.href = "{{ url_for('main.homepage') }}";
+                window.location.replace(home);
+            }
+        });
+
+        // ── bfcache guard — if the browser restores THIS page from its own
+        //    back/forward cache (e.g. user presses browser Back after EXIT),
+        //    force a real reload so data is never stale.
+        window.addEventListener('pageshow', function (e) {
+            if (e.persisted) {
+                window.location.reload();
             }
         });
     </script>
