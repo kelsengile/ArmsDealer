@@ -3,7 +3,6 @@
 
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pagestyles/user/orders.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/pagestyles/user/orders_extra.css') }}">
 {% endblock %}
 
 {% block main %}
@@ -33,6 +32,9 @@
                 <button class="ordpage-tab" data-tab="history" id="tab-history">
                     <span class="ordpage-tab-icon">☰</span>
                     <span class="ordpage-tab-label">HISTORY</span>
+                    {% if delivered_orders and delivered_orders | length > 0 %}
+                    <span class="ordpage-tab-badge">{{ delivered_orders | length }}</span>
+                    {% endif %}
                 </button>
             </div>
         </section>
@@ -50,19 +52,26 @@
                 </div>
                 <div class="ordpage-panel-body">
                     {% if cart_items and cart_items | length > 0 %}
-                    <div class="ordpage-item-list">
+                    <div class="ordpage-item-list" id="cart-item-list">
                         {% for item in cart_items %}
-                        <div class="ordpage-item-row">
-                            <div class="ordpage-item-img-wrap">
+                        <div class="ordpage-item-row" data-item-type="{{ item.item_type }}" data-item-id="{{ item.item_id }}">
+                            {# Clickable image → product page #}
+                            <a href="{{ url_for('api.product_detail', slug=item.slug) if item.item_type == 'product' and item.slug is defined else '#' }}"
+                               class="ordpage-item-img-wrap ordpage-item-img-link"
+                               title="View {{ item.name }}">
                                 {% if item.image_file %}
-                                <img src="{{ url_for('static', filename='assets/images/' + item.image_file) }}"
+                                <img src="{{ url_for('static', filename='assets/images/' ~ item.image_file) }}"
                                     alt="{{ item.name }}" class="ordpage-item-img">
                                 {% else %}
                                 <div class="ordpage-item-img-placeholder">⊡</div>
                                 {% endif %}
-                            </div>
+                                <div class="ordpage-item-img-overlay">
+                                    <span class="ordpage-view-icon">↗</span>
+                                </div>
+                            </a>
                             <div class="ordpage-item-info">
-                                <div class="ordpage-item-name">{{ item.name }}</div>
+                                <a href="{{ url_for('api.product_detail', slug=item.slug) if item.item_type == 'product' and item.slug is defined else '#' }}"
+                                   class="ordpage-item-name ordpage-item-name-link">{{ item.name }}</a>
                                 <div class="ordpage-item-meta">
                                     <span class="ordpage-item-type">{{ item.item_type | upper }}</span>
                                     <span class="ordpage-item-qty">QTY: {{ item.quantity }}</span>
@@ -71,18 +80,28 @@
                             <div class="ordpage-item-price">
                                 {{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(item.price * item.quantity) }}
                             </div>
+                            {# Remove button — visible on hover via CSS #}
+                            <button class="ordpage-remove-btn"
+                                    data-item-type="{{ item.item_type }}"
+                                    data-item-id="{{ item.item_id }}"
+                                    title="Remove from cart"
+                                    onclick="removeFromCart(this)">
+                                ✕ REMOVE
+                            </button>
                         </div>
                         {% endfor %}
                     </div>
-                    <div class="ordpage-cart-footer">
+                    <div class="ordpage-cart-footer" id="cart-footer">
                         <div class="ordpage-cart-total">
                             <span class="ordpage-cart-total-label">TOTAL</span>
-                            <span class="ordpage-cart-total-val">{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(cart_total) }}</span>
+                            <span class="ordpage-cart-total-val" id="cart-total-val">
+                                {{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(cart_total) }}
+                            </span>
                         </div>
                         <a href="{{ url_for('cart.checkout') }}" class="ordpage-checkout-btn">PROCEED TO CHECKOUT ▶</a>
                     </div>
                     {% else %}
-                    <div class="ordpage-empty">
+                    <div class="ordpage-empty" id="cart-empty-state">
                         <div class="ordpage-empty-icon">⊡</div>
                         <div class="ordpage-empty-text">Your cart is empty</div>
                         <a href="{{ url_for('main.products') }}" class="ordpage-empty-btn">BROWSE PRODUCTS ▶</a>
@@ -99,46 +118,82 @@
                 </div>
                 <div class="ordpage-panel-body">
                     {% if active_orders and active_orders | length > 0 %}
-                    <div class="ordpage-item-list">
+                    <div class="ship-order-list">
                         {% for order in active_orders %}
-                        <div class="ordpage-shipping-card">
-                            <div class="ordpage-shipping-top">
-                                <div class="ordpage-shipping-id">ORD-{{ '%06d' % order.id }}</div>
-                                <div class="ordpage-shipping-date">{{ order.created_at[:10] if order.created_at else '—' }}</div>
-                                <div class="ordpage-status-pill ordpage-status-{{ order.status | lower | replace(' ', '-') }}">
+                        {% set status_lower = order.status | lower %}
+                        {% set steps = ['order placed', 'packing', 'shipping', 'delivered'] %}
+                        {% set current_idx = steps.index(status_lower) if status_lower in steps else 0 %}
+                        <div class="ship-card" data-order-id="{{ order.id }}">
+
+                            {# Card top bar #}
+                            <div class="ship-card-topbar">
+                                <div class="ship-card-id">
+                                    <span class="ship-card-id-label">ORDER</span>
+                                    <span class="ship-card-id-val">ORD-{{ '%06d' % order.id }}</span>
+                                </div>
+                                <div class="ship-card-date">
+                                    <span class="ship-card-date-label">PLACED</span>
+                                    <span class="ship-card-date-val">{{ order.created_at[:10] if order.created_at else '—' }}</span>
+                                </div>
+                                <div class="ship-status-pill ship-status-{{ status_lower | replace(' ', '-') }}">
+                                    <span class="ship-status-dot"></span>
                                     {{ order.status | upper }}
                                 </div>
                             </div>
-                            <!-- Status progress bar -->
-                            <div class="ordpage-progress-track">
-                                {% set steps = ['order placed', 'packing', 'shipping', 'delivered'] %}
-                                {% set current_idx = steps.index(order.status | lower) if order.status | lower in steps else 0 %}
+
+                            {# Progress track #}
+                            <div class="ship-progress-wrap">
                                 {% for step in steps %}
                                 {% set i = loop.index0 %}
-                                <div class="ordpage-progress-step {% if i <= current_idx %}active{% endif %} {% if i < current_idx %}done{% endif %}">
-                                    <div class="ordpage-progress-dot"></div>
-                                    <div class="ordpage-progress-label">{{ step | upper }}</div>
+                                <div class="ship-step {% if i <= current_idx %}active{% endif %} {% if i < current_idx %}done{% endif %}">
+                                    <div class="ship-step-node">
+                                        <div class="ship-step-dot"></div>
+                                    </div>
+                                    <div class="ship-step-label">{{ step | upper }}</div>
                                 </div>
                                 {% if not loop.last %}
-                                <div class="ordpage-progress-line {% if i < current_idx %}done{% endif %}"></div>
+                                <div class="ship-step-line {% if i < current_idx %}done{% endif %}"></div>
                                 {% endif %}
                                 {% endfor %}
                             </div>
-                            <!-- Order items in this order -->
+
+                            {# Order items #}
                             {% if order.order_lines %}
-                            <div class="ordpage-shipping-items">
-                                {% for oi in order.order_lines %}
-                                <div class="ordpage-shipping-item-row">
-                                    <span class="ordpage-shipping-item-name">{{ oi.name }}</span>
-                                    <span class="ordpage-shipping-item-qty">× {{ oi.quantity }}</span>
-                                    <span class="ordpage-shipping-item-price">{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format((oi.unit_price or 0) * oi.quantity) }}</span>
+                            <div class="ship-items-wrap">
+                                <div class="ship-items-label">ITEMS IN ORDER</div>
+                                <div class="ship-items-list">
+                                    {% for oi in order.order_lines %}
+                                    <div class="ship-item-row">
+                                        <span class="ship-item-name">{{ oi.name }}</span>
+                                        <span class="ship-item-qty">× {{ oi.quantity }}</span>
+                                        <span class="ship-item-price">
+                                            {{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format((oi.unit_price or 0) * oi.quantity) }}
+                                        </span>
+                                    </div>
+                                    {% endfor %}
                                 </div>
-                                {% endfor %}
                             </div>
                             {% endif %}
-                            <div class="ordpage-shipping-total">
-                                TOTAL: {{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(order.total) }}
+
+                            {# Card footer — total + cancel #}
+                            <div class="ship-card-footer">
+                                <div class="ship-card-total">
+                                    <span class="ship-card-total-label">ORDER TOTAL</span>
+                                    <span class="ship-card-total-val">
+                                        {{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(order.total) }}
+                                    </span>
+                                </div>
+                                {% if status_lower == 'order placed' or status_lower == 'packing' %}
+                                <button class="ship-cancel-btn"
+                                        data-order-id="{{ order.id }}"
+                                        onclick="cancelOrder(this)">
+                                    ✕ CANCEL ORDER
+                                </button>
+                                {% elif status_lower == 'shipping' %}
+                                <div class="ship-no-cancel-note">Cannot cancel — already shipped</div>
+                                {% endif %}
                             </div>
+
                         </div>
                         {% endfor %}
                     </div>
@@ -160,22 +215,68 @@
                 </div>
                 <div class="ordpage-panel-body">
                     {% if delivered_orders and delivered_orders | length > 0 %}
-                    <div class="ordpage-item-list">
+                    <div class="hist-order-list">
                         {% for order in delivered_orders %}
-                        <div class="ordpage-history-card">
-                            <div class="ordpage-history-row">
-                                <div class="ordpage-history-id">ORD-{{ '%06d' % order.id }}</div>
-                                <div class="ordpage-history-date">{{ (order.updated_at or order.created_at or '')[:10] }}</div>
-                                <div class="ordpage-history-status ordpage-status-delivered">DELIVERED</div>
-                                <div class="ordpage-history-total">{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(order.total) }}</div>
+                        <div class="hist-card" data-order-id="{{ order.id }}">
+
+                            {# Clickable summary row #}
+                            <div class="hist-card-summary" onclick="toggleHistoryCard(this)">
+                                <div class="hist-card-left">
+                                    <span class="hist-card-id">ORD-{{ '%06d' % order.id }}</span>
+                                    <span class="hist-card-chips">
+                                        {% if order.order_lines %}
+                                        {% for oi in order.order_lines[:2] %}
+                                        <span class="hist-chip">{{ oi.name }} ×{{ oi.quantity }}</span>
+                                        {% endfor %}
+                                        {% if order.order_lines | length > 2 %}
+                                        <span class="hist-chip hist-chip-more">+{{ order.order_lines | length - 2 }} more</span>
+                                        {% endif %}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <div class="hist-card-right">
+                                    <span class="hist-card-date">{{ (order.updated_at or order.created_at or '')[:10] }}</span>
+                                    <span class="hist-card-total">
+                                        {{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(order.total) }}
+                                    </span>
+                                    <span class="hist-status-badge">DELIVERED</span>
+                                    <span class="hist-toggle-icon">▼</span>
+                                </div>
                             </div>
-                            {% if order.order_lines %}
-                            <div class="ordpage-history-items">
-                                {% for oi in order.order_lines %}
-                                <span class="ordpage-history-item-chip">{{ oi.name }} ×{{ oi.quantity }}</span>
-                                {% endfor %}
+
+                            {# Expandable detail + ratings #}
+                            <div class="hist-card-detail hidden">
+                                {% if order.order_lines %}
+                                <div class="hist-items-label">RATE YOUR ITEMS</div>
+                                <div class="hist-rate-list">
+                                    {% for oi in order.order_lines %}
+                                    <div class="hist-rate-row" data-item-idx="{{ loop.index0 }}">
+                                        <div class="hist-rate-item-info">
+                                            <span class="hist-rate-item-name">{{ oi.name }}</span>
+                                            <span class="hist-rate-item-qty">× {{ oi.quantity }}</span>
+                                        </div>
+                                        <div class="hist-star-group" data-rated="false">
+                                            {% for s in range(1, 6) %}
+                                            <button class="hist-star" data-val="{{ s }}" onclick="rateStar(this)" title="{{ s }} star">★</button>
+                                            {% endfor %}
+                                            <span class="hist-star-locked-msg hidden">✓ RATED</span>
+                                        </div>
+                                        <div class="hist-upload-wrap">
+                                            <label class="hist-upload-btn" title="Upload photo">
+                                                ⊞ PHOTO
+                                                <input type="file" accept="image/*" class="hist-upload-input" onchange="handleUpload(this)" disabled>
+                                            </label>
+                                            <span class="hist-upload-name"></span>
+                                        </div>
+                                        <button class="hist-submit-btn" onclick="submitRating(this)" disabled>
+                                            SUBMIT ▶
+                                        </button>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
                             </div>
-                            {% endif %}
+
                         </div>
                         {% endfor %}
                     </div>
@@ -194,29 +295,199 @@
 </main>
 
 <script>
-    (function () {
-        const params = new URLSearchParams(window.location.search);
-        const initTab = params.get('tab') || 'cart';
+(function () {
+    // ── TAB LOGIC ──────────────────────────────────────────────────
+    const params = new URLSearchParams(window.location.search);
+    const initTab = params.get('tab') || 'cart';
 
-        function activateTab(tabName) {
-            document.querySelectorAll('.ordpage-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.ordpage-panel').forEach(p => p.classList.add('hidden'));
-            const btn = document.getElementById('tab-' + tabName);
-            const panel = document.getElementById('panel-' + tabName);
-            if (btn) btn.classList.add('active');
-            if (panel) panel.classList.remove('hidden');
-        }
+    function activateTab(tabName) {
+        document.querySelectorAll('.ordpage-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.ordpage-panel').forEach(p => p.classList.add('hidden'));
+        const btn = document.getElementById('tab-' + tabName);
+        const panel = document.getElementById('panel-' + tabName);
+        if (btn) btn.classList.add('active');
+        if (panel) panel.classList.remove('hidden');
+    }
 
-        document.querySelectorAll('.ordpage-tab').forEach(btn => {
-            btn.addEventListener('click', function () {
-                activateTab(this.dataset.tab);
-                const url = new URL(window.location);
-                url.searchParams.set('tab', this.dataset.tab);
-                window.history.replaceState({}, '', url);
-            });
+    document.querySelectorAll('.ordpage-tab').forEach(btn => {
+        btn.addEventListener('click', function () {
+            activateTab(this.dataset.tab);
+            const url = new URL(window.location);
+            url.searchParams.set('tab', this.dataset.tab);
+            window.history.replaceState({}, '', url);
         });
+    });
 
-        activateTab(initTab);
-    })();
+    activateTab(initTab);
+})();
+
+// ── REMOVE FROM CART ───────────────────────────────────────────────
+function removeFromCart(btn) {
+    const row = btn.closest('.ordpage-item-row');
+    const itemType = btn.dataset.itemType;
+    const itemId = btn.dataset.itemId;
+
+    btn.disabled = true;
+    btn.textContent = '…';
+
+    fetch('/api/cart/remove', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ item_type: itemType, item_id: parseInt(itemId) })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            row.style.transition = 'opacity 0.25s, transform 0.25s';
+            row.style.opacity = '0';
+            row.style.transform = 'translateX(20px)';
+            setTimeout(() => {
+                row.remove();
+                updateCartTotal(data.cart_total, data.cart_count);
+                // Update tab badge
+                const badge = document.querySelector('#tab-cart .ordpage-tab-badge');
+                if (badge) badge.textContent = data.cart_count || '';
+                if (data.cart_count === 0) showCartEmpty();
+            }, 280);
+        } else {
+            btn.disabled = false;
+            btn.textContent = '✕ REMOVE';
+            alert(data.error || 'Failed to remove item');
+        }
+    })
+    .catch(() => {
+        btn.disabled = false;
+        btn.textContent = '✕ REMOVE';
+    });
+}
+
+function updateCartTotal(total, count) {
+    const el = document.getElementById('cart-total-val');
+    if (el && total !== undefined) {
+        el.textContent = '₱' + Number(total).toLocaleString('en-US', {maximumFractionDigits: 0});
+    }
+}
+
+function showCartEmpty() {
+    const list = document.getElementById('cart-item-list');
+    const footer = document.getElementById('cart-footer');
+    if (list) list.remove();
+    if (footer) footer.remove();
+    const body = document.querySelector('#panel-cart .ordpage-panel-body');
+    if (body) {
+        body.innerHTML = `
+            <div class="ordpage-empty" id="cart-empty-state">
+                <div class="ordpage-empty-icon">⊡</div>
+                <div class="ordpage-empty-text">Your cart is empty</div>
+                <a href="/products" class="ordpage-empty-btn">BROWSE PRODUCTS ▶</a>
+            </div>`;
+    }
+}
+
+// ── CANCEL ORDER ───────────────────────────────────────────────────
+function cancelOrder(btn) {
+    const orderId = btn.dataset.orderId;
+    if (!confirm('Cancel order ORD-' + String(orderId).padStart(6, '0') + '? This cannot be undone.')) return;
+
+    btn.disabled = true;
+    btn.textContent = '…';
+
+    fetch('/api/order/' + orderId + '/cancel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            const card = btn.closest('.ship-card');
+            card.style.transition = 'opacity 0.3s, transform 0.3s';
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(-8px)';
+            setTimeout(() => {
+                card.remove();
+                // Update badge
+                const remaining = document.querySelectorAll('.ship-card').length;
+                const badge = document.querySelector('#tab-shipping .ordpage-tab-badge');
+                if (badge) badge.textContent = remaining || '';
+                if (remaining === 0) {
+                    const body = document.querySelector('#panel-shipping .ordpage-panel-body');
+                    if (body) body.innerHTML = `
+                        <div class="ordpage-empty">
+                            <div class="ordpage-empty-icon">◎</div>
+                            <div class="ordpage-empty-text">No active shipments</div>
+                            <div class="ordpage-empty-sub">Orders in transit will appear here</div>
+                        </div>`;
+                }
+            }, 320);
+        } else {
+            btn.disabled = false;
+            btn.textContent = '✕ CANCEL ORDER';
+            alert(data.error || 'Could not cancel order');
+        }
+    })
+    .catch(() => {
+        btn.disabled = false;
+        btn.textContent = '✕ CANCEL ORDER';
+    });
+}
+
+// ── HISTORY DROPDOWN ───────────────────────────────────────────────
+function toggleHistoryCard(summaryEl) {
+    const detail = summaryEl.nextElementSibling;
+    const icon = summaryEl.querySelector('.hist-toggle-icon');
+    const isHidden = detail.classList.contains('hidden');
+    detail.classList.toggle('hidden', !isHidden);
+    if (icon) icon.textContent = isHidden ? '▲' : '▼';
+}
+
+// ── STAR RATING ────────────────────────────────────────────────────
+function rateStar(starBtn) {
+    const group = starBtn.closest('.hist-star-group');
+    if (group.dataset.rated === 'true') return;
+
+    const val = parseInt(starBtn.dataset.val);
+    const stars = group.querySelectorAll('.hist-star');
+
+    stars.forEach((s, i) => {
+        s.classList.toggle('selected', i < val);
+    });
+
+    group.dataset.selectedVal = val;
+
+    // Enable upload and submit
+    const row = starBtn.closest('.hist-rate-row');
+    const uploadInput = row.querySelector('.hist-upload-input');
+    const submitBtn = row.querySelector('.hist-submit-btn');
+    if (uploadInput) uploadInput.disabled = false;
+    if (submitBtn) submitBtn.disabled = false;
+}
+
+function handleUpload(input) {
+    const nameEl = input.closest('.hist-upload-wrap').querySelector('.hist-upload-name');
+    if (nameEl && input.files[0]) nameEl.textContent = input.files[0].name;
+}
+
+function submitRating(btn) {
+    const row = btn.closest('.hist-rate-row');
+    const group = row.querySelector('.hist-star-group');
+    if (group.dataset.rated === 'true') return;
+
+    const rating = group.dataset.selectedVal;
+    if (!rating) { alert('Please select a star rating first.'); return; }
+
+    // Lock everything in this row
+    group.dataset.rated = 'true';
+    group.querySelectorAll('.hist-star').forEach(s => s.disabled = true);
+    row.querySelector('.hist-upload-input').disabled = true;
+    btn.disabled = true;
+    btn.textContent = '✓ SUBMITTED';
+    btn.classList.add('submitted');
+
+    const lockedMsg = group.querySelector('.hist-star-locked-msg');
+    if (lockedMsg) lockedMsg.classList.remove('hidden');
+
+    // TODO: POST rating to your backend endpoint here
+    // fetch('/api/rate', { method:'POST', body: JSON.stringify({rating, ...}) })
+}
 </script>
 {% endblock %}
