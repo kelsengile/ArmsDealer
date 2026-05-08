@@ -85,6 +85,69 @@ def api_cart_add():
 
 
 # ─────────────────────────────────────────
+# REMOVE FROM CART (POST /api/cart/remove)
+# ─────────────────────────────────────────
+
+@cart_bp.route('/api/cart/remove', methods=['POST'])
+def api_cart_remove():
+    """Remove one cart item for the current user.
+
+    Expects JSON body:
+        { "item_type": "product", "item_id": <int> }
+
+    Returns JSON:
+        { "ok": true, "cart_count": <int>, "cart_total": <float> }
+        { "ok": false, "error": "..." }
+    """
+    if not session.get('user_id'):
+        return jsonify(ok=False, error='Not authenticated'), 401
+
+    data = request.get_json(silent=True) or {}
+    item_type = data.get('item_type')
+    item_id = data.get('item_id')
+
+    if item_type not in ('product', 'service'):
+        return jsonify(ok=False, error='Invalid item_type'), 400
+    if not item_id:
+        return jsonify(ok=False, error='Missing item_id'), 400
+
+    db = get_db()
+    user_id = session['user_id']
+
+    db.execute(
+        'DELETE FROM cart_items WHERE user_id = ? AND item_type = ? AND item_id = ?',
+        (user_id, item_type, int(item_id))
+    )
+    db.commit()
+
+    # Recalculate count and total
+    row = db.execute(
+        'SELECT COALESCE(SUM(quantity), 0) AS cnt FROM cart_items WHERE user_id = ?',
+        (user_id,)
+    ).fetchone()
+    cart_count = int(row['cnt']) if row else 0
+
+    total_row = db.execute("""
+        SELECT COALESCE(SUM(ci.quantity *
+            CASE
+                WHEN ci.item_type = 'product' THEN p.price
+                WHEN ci.item_type = 'service' THEN s.price
+                ELSE 0
+            END
+        ), 0) AS total
+        FROM cart_items ci
+        LEFT JOIN products p ON ci.item_type = 'product' AND ci.item_id = p.id
+        LEFT JOIN services s ON ci.item_type = 'service' AND ci.item_id = s.id
+        WHERE ci.user_id = ?
+    """, (user_id,)).fetchone()
+    cart_total = float(total_row['total']) if total_row else 0.0
+
+    session['cart_count'] = cart_count
+
+    return jsonify(ok=True, cart_count=cart_count, cart_total=cart_total)
+
+
+# ─────────────────────────────────────────
 # CHECKOUT PAGE (GET)
 # ─────────────────────────────────────────
 
