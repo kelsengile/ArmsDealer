@@ -106,6 +106,16 @@ CREATE TABLE product_images (
     created_at  TEXT    NOT NULL DEFAULT (datetime('now')),
     UNIQUE (product_id, sort_order)
 );
+DROP TABLE IF EXISTS "product_ratings";
+CREATE TABLE product_ratings (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    item_type   TEXT    NOT NULL CHECK (item_type IN ('product', 'service')),
+    item_id     INTEGER NOT NULL,
+    rating      INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    created_at  TEXT    NOT NULL DEFAULT (datetime('now')),
+    UNIQUE (user_id, item_type, item_id)   -- one rating per user per item
+);
 DROP TABLE IF EXISTS "products";
 CREATE TABLE products (
     id             INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -811,7 +821,7 @@ INSERT INTO "products" ("id","name","slug","category_id","subcategory_id","brand
  (18,'Colt AR-15 A4','colt-ar15-a4',1,2,2,'Semi-automatic 5.56mm rifle. 20-inch barrel, fixed A2 stock, mil-spec forged receiver.',149990.0,0.0,15,4.7,112,'colt ar-15 a4.png','["5.56","ar-15","semi-auto","precision"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (19,'HK G36C','hk-g36c',1,2,3,'5.56mm compact assault rifle. Folding stock, integrated optic rail, 30-round magazine.',224990.0,0.0,8,4.8,55,'hk g36c.png','["5.56","assault-rifle","compact","police"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (20,'HK 416 D14.5RS','hk-416-d145rs',1,2,3,'5.56mm gas piston rifle. 14.5-inch barrel, cold hammer-forged, used by SEAL Team Six.',279990.0,0.0,6,4.9,41,'hk 416 d14.5rs.png','["5.56","gas-piston","elite","military"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
- (21,'Sig Sauer MCX Spear','sig-mcx-spear',1,2,4,'6.8x51mm NGSW contender. Next-gen squad weapon, folding stock, suppressor-ready.',349990.0,0.0,5,4.9,28,'sig sauer mcx spear.png','["6.8x51","next-gen","military"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
+ (21,'Sig Sauer MCX Spear','sig-mcx-spear',1,2,4,'6.8x51mm NGSW contender. Next-gen squad weapon, folding stock, suppressor-ready.',349990.0,0.0,5,4.9,28,'sig sauer mcx spear.png','["6.8x51","next-gen","military"]',1,'2026-04-24 13:58:44','2026-05-08 10:02:14'),
  (22,'Sig Sauer M400 Tread','sig-m400-tread',1,2,4,'5.56mm AR-platform rifle. 16-inch barrel, Magpul stock, 30-round PMAG.',89990.0,5.0,20,4.6,134,'sig sauer m400 tread.png','["5.56","ar-platform","budget-friendly"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (23,'FN SCAR 16S','fn-scar-16s',1,2,5,'5.56mm modular combat rifle. 16-inch barrel, folding stock, side-charging handle.',199990.0,0.0,12,4.8,96,'fn scar 16s.png','["5.56","scar","modular","socom"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (24,'FN SCAR 17S','fn-scar-17s',1,2,5,'7.62x51mm heavy-variant SCAR. Semi-auto, 20-round magazine, folding adjustable stock.',239990.0,0.0,9,4.9,61,'fn scar 17s.png','["7.62","scar","designated-marksman"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
@@ -826,7 +836,7 @@ INSERT INTO "products" ("id","name","slug","category_id","subcategory_id","brand
  (33,'FN P90','fn-p90',1,4,5,'5.7x28mm bullpup PDW/SMG. 50-round top-mounted magazine, fully ambidextrous.',169990.0,0.0,8,4.9,71,'fn p90.png','["5.7x28","pdw","bullpup","high-capacity"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (34,'FN M249 SAW','fn-m249-saw',1,5,5,'5.56mm light machine gun. 200-round belt, bipod, quick-change barrel.',449990.0,0.0,5,4.9,22,'fn m249 saw.png','["5.56","lmg","squad-support","belt-fed"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (35,'FN M240B','fn-m240b',1,5,5,'7.62x51mm general purpose machine gun. Sustained fire capability, vehicle mount compatible.',549990.0,0.0,4,4.8,18,'fn m240b.png','["7.62","gpmg","vehicle","military"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
- (36,'HK MG4','hk-mg4',1,5,3,'5.56mm belt-fed LMG. Quick-change barrel, integral bipod, folding stock.',489990.0,0.0,4,4.8,14,'hk mg4.png','["5.56","belt-fed","lmg","modern"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
+ (36,'HK MG4','hk-mg4',1,5,3,'5.56mm belt-fed LMG. Quick-change barrel, integral bipod, folding stock.',489990.0,0.0,4,4.55,14,'hk mg4.png','["5.56","belt-fed","lmg","modern"]',1,'2026-04-24 13:58:44','2026-05-08 10:04:37'),
  (37,'Browning M2HB .50 Cal','browning-m2hb',1,5,2,'.50 BMG heavy machine gun. Vehicle/tripod mounted, 600 rpm cyclic rate.',999990.0,0.0,2,4.9,8,'browning m2hb .50 cal.png','[".50bmg","heavy","vehicle-mount","iconic"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (38,'Sig Sauer MRAD','sig-mrad',1,6,4,'Multi-caliber bolt-action precision rifle. Folding stock, 24-inch barrel, user-interchangeable barrels.',299990.0,0.0,8,4.9,37,'sig sauer mrad.png','["multi-caliber","bolt-action","precision","sniper"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (39,'HK PSG1','hk-psg1',1,6,3,'7.62x51mm semi-auto sniper rifle. Tripod rest, adjustable stock, 20-round magazine.',349990.0,0.0,5,4.8,24,'hk psg1.png','["7.62","semi-auto","precision","german"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
