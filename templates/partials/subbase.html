@@ -26,8 +26,13 @@
     <!-- ═══════════════════════════════════════════════════════════ -->
     <header class="sub-header">
 
-        <!-- Left — page indicator -->
+        <!-- Left — back button + page indicator -->
         <div class="sub-header__page-info">
+            <button class="sub-header__back" id="subBackStepBtn" aria-label="Go back one step">
+                <svg width="10" height="10" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11 2L5 8l6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
             <span class="sub-header__page-label" id="subPageLabel">PAGE</span>
         </div>
 
@@ -59,14 +64,22 @@
         //    snapshot).  This ensures cart counts, order lists, and account
         //    panel data are always up-to-date when returning from checkout,
         //    orders, or any sub-page.
-        document.getElementById('subBackBtn').addEventListener('click', function () {
-            var ref = document.referrer;
-            var home = "{{ url_for('main.homepage') }}";
+        // ── EXIT — jump to the most recent main page in the nav stack ────────────
+        // The stack is written by base.html on every non-sub-page visit, so it
+        // only ever contains real main pages (products, services, homepage, etc.)
+        var home = "{{ url_for('main.homepage') }}";
 
-            if (ref && ref !== window.location.href) {
-                // Use location.replace so the sub-page is removed from history
-                // and the browser cannot restore a cached version of it.
-                window.location.replace(ref);
+        document.getElementById('subBackBtn').addEventListener('click', function () {
+            var stack = JSON.parse(sessionStorage.getItem('_navStack') || '[]');
+            // The last entry IS the most recent main page — go straight to it
+            var dest = stack.length > 0 ? stack[stack.length - 1] : home;
+            window.location.replace(dest);
+        });
+
+                // ── BACK (←) — simple one-step back in browser history ─────────────────
+        document.getElementById('subBackStepBtn').addEventListener('click', function () {
+            if (window.history.length > 1) {
+                window.history.back();
             } else {
                 window.location.replace(home);
             }
@@ -164,6 +177,35 @@
 
         .sub-header__exit:active {
             transform: translateY(1px);
+        }
+
+        /* ── Back Button (left of title) ───────────────────────── */
+        .sub-header__back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: transparent;
+            border: 1px solid rgba(168, 196, 122, 0.25);
+            color: var(--mil-muted, #6b7c4e);
+            cursor: pointer;
+            flex-shrink: 0;
+            transition:
+                background 0.2s,
+                border-color 0.2s,
+                color 0.2s;
+            border-radius: 0;
+        }
+
+        .sub-header__back:hover {
+            background: rgba(138, 170, 106, 0.1);
+            border-color: var(--mil-bright, #a8c47a);
+            color: var(--mil-bright, #a8c47a);
+        }
+
+        .sub-header__back:active {
+            transform: translateX(-1px);
         }
 
         /* ── Responsive ─────────────────────────────────────────── */
