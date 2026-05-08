@@ -16,21 +16,38 @@
             <h1 class="ordpage-title">MY ORDERS</h1>
             <div class="ordpage-tabs">
                 <button class="ordpage-tab" data-tab="cart" id="tab-cart">
-                    <span class="ordpage-tab-icon">⊡</span>
+                    <span class="ordpage-tab-icon">
+                        <svg width="15" height="15" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 1h2l2.4 8.4a1 1 0 0 0 1 .6h5.2a1 1 0 0 0 .97-.76L14 5H4" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="6.5" cy="13" r="1" fill="currentColor"/>
+                            <circle cx="11.5" cy="13" r="1" fill="currentColor"/>
+                        </svg>
+                    </span>
                     <span class="ordpage-tab-label">CART</span>
                     {% if cart_items and cart_items | length > 0 %}
                     <span class="ordpage-tab-badge">{{ cart_items | length }}</span>
                     {% endif %}
                 </button>
                 <button class="ordpage-tab" data-tab="shipping" id="tab-shipping">
-                    <span class="ordpage-tab-icon">◎</span>
+                    <span class="ordpage-tab-icon">
+                        <svg width="15" height="15" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="1" y="4" width="10" height="8" rx="1" stroke="currentColor" stroke-width="1.4" fill="none"/>
+                            <path d="M11 6h2.5l1.5 2v3h-4V6z" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/>
+                            <circle cx="4" cy="13" r="1.2" fill="currentColor"/>
+                            <circle cx="12" cy="13" r="1.2" fill="currentColor"/>
+                        </svg>
+                    </span>
                     <span class="ordpage-tab-label">SHIPPING</span>
                     {% if active_orders and active_orders | length > 0 %}
                     <span class="ordpage-tab-badge">{{ active_orders | length }}</span>
                     {% endif %}
                 </button>
                 <button class="ordpage-tab" data-tab="history" id="tab-history">
-                    <span class="ordpage-tab-icon">☰</span>
+                    <span class="ordpage-tab-icon">
+                        <svg width="15" height="15" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 4h12M2 8h9M2 12h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                        </svg>
+                    </span>
                     <span class="ordpage-tab-label">HISTORY</span>
                     {% if delivered_orders and delivered_orders | length > 0 %}
                     <span class="ordpage-tab-badge">{{ delivered_orders | length }}</span>
@@ -60,13 +77,21 @@
                                class="ordpage-item-img-wrap ordpage-item-img-link"
                                title="View {{ item.name }}">
                                 {% if item.image_file %}
-                                <img src="{{ url_for('static', filename='assets/images/' ~ item.image_file) }}"
+                                <img src="{{ url_for('static', filename='assets/images/productsimages/' ~ item.image_file) }}"
                                     alt="{{ item.name }}" class="ordpage-item-img">
                                 {% else %}
-                                <div class="ordpage-item-img-placeholder">⊡</div>
+                                <div class="ordpage-item-img-placeholder">
+                                    <svg width="22" height="22" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="1" y="3" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3" fill="none"/>
+                                        <circle cx="5.5" cy="6.5" r="1.2" fill="currentColor"/>
+                                        <path d="M1 11l3.5-3.5 2.5 2.5 2.5-2.5L15 11" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
                                 {% endif %}
                                 <div class="ordpage-item-img-overlay">
-                                    <span class="ordpage-view-icon">↗</span>
+                                    <svg width="12" height="12" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 2h5v5M14 2L8 8M6 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-3" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
                                 </div>
                             </a>
                             <div class="ordpage-item-info">
@@ -77,17 +102,22 @@
                                     <span class="ordpage-item-qty">QTY: {{ item.quantity }}</span>
                                 </div>
                             </div>
+                            <div class="ordpage-item-right">
                             <div class="ordpage-item-price">
                                 {{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(item.price * item.quantity) }}
                             </div>
-                            {# Remove button — visible on hover via CSS #}
+                            {# Remove button — slides in from right on hover #}
                             <button class="ordpage-remove-btn"
                                     data-item-type="{{ item.item_type }}"
                                     data-item-id="{{ item.item_id }}"
                                     title="Remove from cart"
                                     onclick="removeFromCart(this)">
-                                ✕ REMOVE
+                                <svg width="11" height="11" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                </svg>
+                                REMOVE
                             </button>
+                            </div>
                         </div>
                         {% endfor %}
                     </div>
@@ -102,7 +132,13 @@
                     </div>
                     {% else %}
                     <div class="ordpage-empty" id="cart-empty-state">
-                        <div class="ordpage-empty-icon">⊡</div>
+                        <div class="ordpage-empty-icon">
+                            <svg width="36" height="36" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 1h2l2.4 8.4a1 1 0 0 0 1 .6h5.2a1 1 0 0 0 .97-.76L14 5H4" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="6.5" cy="13" r="1" fill="currentColor"/>
+                                <circle cx="11.5" cy="13" r="1" fill="currentColor"/>
+                            </svg>
+                        </div>
                         <div class="ordpage-empty-text">Your cart is empty</div>
                         <a href="{{ url_for('main.products') }}" class="ordpage-empty-btn">BROWSE PRODUCTS ▶</a>
                     </div>
@@ -187,7 +223,10 @@
                                 <button class="ship-cancel-btn"
                                         data-order-id="{{ order.id }}"
                                         onclick="cancelOrder(this)">
-                                    ✕ CANCEL ORDER
+                                    <svg width="10" height="10" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                    </svg>
+                                    CANCEL ORDER
                                 </button>
                                 {% elif status_lower == 'shipping' %}
                                 <div class="ship-no-cancel-note">Cannot cancel — already shipped</div>
@@ -199,7 +238,14 @@
                     </div>
                     {% else %}
                     <div class="ordpage-empty">
-                        <div class="ordpage-empty-icon">◎</div>
+                        <div class="ordpage-empty-icon">
+                            <svg width="36" height="36" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="1" y="4" width="10" height="8" rx="1" stroke="currentColor" stroke-width="1.3" fill="none"/>
+                                <path d="M11 6h2.5l1.5 2v3h-4V6z" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+                                <circle cx="4" cy="13" r="1.2" fill="currentColor"/>
+                                <circle cx="12" cy="13" r="1.2" fill="currentColor"/>
+                            </svg>
+                        </div>
                         <div class="ordpage-empty-text">No active shipments</div>
                         <div class="ordpage-empty-sub">Orders in transit will appear here</div>
                     </div>
@@ -282,7 +328,11 @@
                     </div>
                     {% else %}
                     <div class="ordpage-empty">
-                        <div class="ordpage-empty-icon">☰</div>
+                        <div class="ordpage-empty-icon">
+                            <svg width="36" height="36" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 4h12M2 8h9M2 12h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                            </svg>
+                        </div>
                         <div class="ordpage-empty-text">No order history</div>
                         <div class="ordpage-empty-sub">Delivered orders will appear here</div>
                     </div>
@@ -351,13 +401,13 @@ function removeFromCart(btn) {
             }, 280);
         } else {
             btn.disabled = false;
-            btn.textContent = '✕ REMOVE';
+            btn.innerHTML = '<svg width="11" height="11" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg> REMOVE';
             alert(data.error || 'Failed to remove item');
         }
     })
     .catch(() => {
         btn.disabled = false;
-        btn.textContent = '✕ REMOVE';
+        btn.innerHTML = '<svg width="11" height="11" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg> REMOVE';
     });
 }
 
@@ -377,7 +427,13 @@ function showCartEmpty() {
     if (body) {
         body.innerHTML = `
             <div class="ordpage-empty" id="cart-empty-state">
-                <div class="ordpage-empty-icon">⊡</div>
+                <div class="ordpage-empty-icon">
+                    <svg width="36" height="36" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 1h2l2.4 8.4a1 1 0 0 0 1 .6h5.2a1 1 0 0 0 .97-.76L14 5H4" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="6.5" cy="13" r="1" fill="currentColor"/>
+                        <circle cx="11.5" cy="13" r="1" fill="currentColor"/>
+                    </svg>
+                </div>
                 <div class="ordpage-empty-text">Your cart is empty</div>
                 <a href="/products" class="ordpage-empty-btn">BROWSE PRODUCTS ▶</a>
             </div>`;
@@ -413,7 +469,14 @@ function cancelOrder(btn) {
                     const body = document.querySelector('#panel-shipping .ordpage-panel-body');
                     if (body) body.innerHTML = `
                         <div class="ordpage-empty">
-                            <div class="ordpage-empty-icon">◎</div>
+                            <div class="ordpage-empty-icon">
+                                <svg width="36" height="36" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="1" y="4" width="10" height="8" rx="1" stroke="currentColor" stroke-width="1.3" fill="none"/>
+                                    <path d="M11 6h2.5l1.5 2v3h-4V6z" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+                                    <circle cx="4" cy="13" r="1.2" fill="currentColor"/>
+                                    <circle cx="12" cy="13" r="1.2" fill="currentColor"/>
+                                </svg>
+                            </div>
                             <div class="ordpage-empty-text">No active shipments</div>
                             <div class="ordpage-empty-sub">Orders in transit will appear here</div>
                         </div>`;
@@ -421,13 +484,13 @@ function cancelOrder(btn) {
             }, 320);
         } else {
             btn.disabled = false;
-            btn.textContent = '✕ CANCEL ORDER';
+            btn.textContent = 'CANCEL ORDER';
             alert(data.error || 'Could not cancel order');
         }
     })
     .catch(() => {
         btn.disabled = false;
-        btn.textContent = '✕ CANCEL ORDER';
+        btn.textContent = 'CANCEL ORDER';
     });
 }
 

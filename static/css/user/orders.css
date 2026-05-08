@@ -307,13 +307,32 @@
     text-transform: uppercase;
 }
 
+/* ── Right-side slot: price slides left, remove button slides in ─── */
+.ordpage-item-right {
+    position: relative;
+    flex-shrink: 0;
+    /* wide enough to hold price + button side-by-side when revealed.
+       button ~120px + price ~80px + gap = 210px is safe */
+    width: 210px;
+    height: 36px;
+    /* clips the button that starts off-screen to the right,
+       but price is absolutely positioned inside so it never gets clipped */
+    overflow: hidden;
+}
+
 .ordpage-item-price {
     font-family: var(--font-stencil, "Oswald", sans-serif);
     font-size: 15px;
     font-weight: 600;
     letter-spacing: 0.1em;
     color: var(--mil-bright, #a8c47a);
-    flex-shrink: 0;
+    white-space: nowrap;
+    /* anchored to the far right of the slot */
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: right 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Cart footer */
@@ -561,18 +580,16 @@
     color: var(--mil-bright, #a8c47a);
 }
 
-/* Remove button — hidden by default, shown on row hover */
-.ordpage-item-row {
-    position: relative;
-}
-
+/* Remove button — absolutely positioned, slides in from the right */
 .ordpage-remove-btn {
     display: flex;
     align-items: center;
-    gap: 5px;
-    padding: 6px 14px;
+    gap: 6px;
+    padding: 0 16px;
+    height: 100%;
     background: rgba(192, 57, 43, 0.12);
-    border: 1px solid rgba(192, 57, 43, 0.4);
+    border: none;
+    border-left: 1px solid rgba(192, 57, 43, 0.0);
     color: #c0392b;
     font-family: var(--font-stencil, "Oswald", sans-serif);
     font-size: 10px;
@@ -580,25 +597,44 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
     cursor: pointer;
-    flex-shrink: 0;
+    white-space: nowrap;
+    /* absolutely placed so it doesn't affect price position */
+    position: absolute;
+    right: 0;
+    top: 0;
+    /* start off the right edge — translate by own width */
+    transform: translateX(100%);
     opacity: 0;
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity   0.22s ease,
+                background 0.18s,
+                border-color 0.18s;
     pointer-events: none;
-    transition: opacity 0.18s, background 0.18s, border-color 0.18s;
+}
+
+/* On row hover: price slides left to make room, button slides in */
+.ordpage-item-row:hover .ordpage-item-price {
+    /* move left by button width + a small gap so they don't overlap */
+    right: 126px;
 }
 
 .ordpage-item-row:hover .ordpage-remove-btn {
+    transform: translateX(0);
     opacity: 1;
     pointer-events: auto;
+    border-left-color: rgba(192, 57, 43, 0.35);
 }
 
 .ordpage-remove-btn:hover {
-    background: rgba(192, 57, 43, 0.25);
-    border-color: rgba(192, 57, 43, 0.7);
+    background: rgba(192, 57, 43, 0.26);
+    border-left-color: rgba(192, 57, 43, 0.7);
+    color: #e05046;
 }
 
 .ordpage-remove-btn:disabled {
     cursor: not-allowed;
     opacity: 0.5;
+    pointer-events: none;
 }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -1260,5 +1296,7 @@
     .hist-card-date { display: none; }
     .hist-rate-row { gap: 8px; }
     .hist-rate-item-name { max-width: 110px; }
-    .ordpage-remove-btn { opacity: 1; pointer-events: auto; }
+    .ordpage-item-right { width: 130px; }
+    .ordpage-remove-btn { transform: translateX(0); opacity: 1; pointer-events: auto; border-left-color: rgba(192,57,43,0.35); }
+    .ordpage-item-row:hover .ordpage-item-price { right: 126px; }
 }
