@@ -12,8 +12,8 @@
         {# ══════════════════════════════════════════════
            HEADER + TAB TOGGLE
         ══════════════════════════════════════════════ #}
-        <section class="ordpage-header-strip">
-            <h1 class="ordpage-title">MY ORDERS</h1>
+        <section class="ordpage-header-strip"
+                style="background-image: url('static/assets/images/pageimages/orderspageimages/ordersheroimg.png')">            <h1 class="ordpage-title">MY ORDERS</h1>
             <div class="ordpage-tabs">
                 <button class="ordpage-tab" data-tab="cart" id="tab-cart">
                     <span class="ordpage-tab-icon">
@@ -200,10 +200,16 @@
                                 <div class="ship-items-list">
                                     {% for oi in order.order_lines %}
                                     <div class="ship-item-row">
+                                        {# Clickable name — only if slug available and item is a product #}
+                                        {% if oi.slug and oi.item_type == 'product' %}
+                                        <a href="{{ url_for('api.product_detail', slug=oi.slug) }}"
+                                           class="ship-item-name ship-item-name-link">{{ oi.name }}</a>
+                                        {% else %}
                                         <span class="ship-item-name">{{ oi.name }}</span>
+                                        {% endif %}
                                         <span class="ship-item-qty">× {{ oi.quantity }}</span>
                                         <span class="ship-item-price">
-                                            {{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format((oi.unit_price or 0) * oi.quantity) }}
+                                            {{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(oi.display_price * oi.quantity) }}
                                         </span>
                                     </div>
                                     {% endfor %}
@@ -216,7 +222,7 @@
                                 <div class="ship-card-total">
                                     <span class="ship-card-total-label">ORDER TOTAL</span>
                                     <span class="ship-card-total-val">
-                                        {{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(order.total) }}
+                                        {{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(order.total_converted) }}
                                     </span>
                                 </div>
                                 {% if status_lower == 'order placed' or status_lower == 'packing' %}
@@ -283,7 +289,7 @@
                                 <div class="hist-card-right">
                                     <span class="hist-card-date">{{ (order.updated_at or order.created_at or '')[:10] }}</span>
                                     <span class="hist-card-total">
-                                        {{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(order.total) }}
+                                        {{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(order.total_converted) }}
                                     </span>
                                     <span class="hist-status-badge">DELIVERED</span>
                                     <span class="hist-toggle-icon">▼</span>
@@ -296,26 +302,46 @@
                                 <div class="hist-items-label">RATE YOUR ITEMS</div>
                                 <div class="hist-rate-list">
                                     {% for oi in order.order_lines %}
-                                    <div class="hist-rate-row" data-item-idx="{{ loop.index0 }}">
+                                    {% set already_rated = oi.existing_rating is not none %}
+                                    <div class="hist-rate-row"
+                                         data-item-idx="{{ loop.index0 }}"
+                                         data-item-type="{{ oi.item_type }}"
+                                         data-item-id="{{ oi.item_id }}">
                                         <div class="hist-rate-item-info">
+                                            {# Clickable item name in history #}
+                                            {% if oi.slug and oi.item_type == 'product' %}
+                                            <a href="{{ url_for('api.product_detail', slug=oi.slug) }}"
+                                               class="hist-rate-item-name hist-rate-item-name-link">{{ oi.name }}</a>
+                                            {% else %}
                                             <span class="hist-rate-item-name">{{ oi.name }}</span>
+                                            {% endif %}
                                             <span class="hist-rate-item-qty">× {{ oi.quantity }}</span>
                                         </div>
-                                        <div class="hist-star-group" data-rated="false">
+                                        <div class="hist-star-group"
+                                             data-rated="{{ 'true' if already_rated else 'false' }}"
+                                             data-selected-val="{{ oi.existing_rating if already_rated else '' }}">
                                             {% for s in range(1, 6) %}
-                                            <button class="hist-star" data-val="{{ s }}" onclick="rateStar(this)" title="{{ s }} star">★</button>
+                                            <button class="hist-star {% if already_rated and s <= oi.existing_rating %}selected{% endif %}"
+                                                    data-val="{{ s }}"
+                                                    {% if already_rated %}disabled{% endif %}
+                                                    onclick="rateStar(this)"
+                                                    title="{{ s }} star">★</button>
                                             {% endfor %}
-                                            <span class="hist-star-locked-msg hidden">✓ RATED</span>
+                                            <span class="hist-star-locked-msg {% if not already_rated %}hidden{% endif %}">✓ RATED</span>
                                         </div>
                                         <div class="hist-upload-wrap">
                                             <label class="hist-upload-btn" title="Upload photo">
                                                 ⊞ PHOTO
-                                                <input type="file" accept="image/*" class="hist-upload-input" onchange="handleUpload(this)" disabled>
+                                                <input type="file" accept="image/*" class="hist-upload-input"
+                                                       onchange="handleUpload(this)"
+                                                       {% if already_rated %}disabled{% endif %}>
                                             </label>
                                             <span class="hist-upload-name"></span>
                                         </div>
-                                        <button class="hist-submit-btn" onclick="submitRating(this)" disabled>
-                                            SUBMIT ▶
+                                        <button class="hist-submit-btn {% if already_rated %}submitted{% endif %}"
+                                                onclick="submitRating(this)"
+                                                {% if already_rated %}disabled{% endif %}>
+                                            {% if already_rated %}✓ SUBMITTED{% else %}SUBMIT ▶{% endif %}
                                         </button>
                                     </div>
                                     {% endfor %}
@@ -414,7 +440,7 @@ function removeFromCart(btn) {
 function updateCartTotal(total, count) {
     const el = document.getElementById('cart-total-val');
     if (el && total !== undefined) {
-        el.textContent = '₱' + Number(total).toLocaleString('en-US', {maximumFractionDigits: 0});
+        el.textContent = '{{ currency.symbol if currency else "₱" }}' + Number(total).toLocaleString('en-US', {maximumFractionDigits: 0});
     }
 }
 
@@ -461,7 +487,6 @@ function cancelOrder(btn) {
             card.style.transform = 'translateY(-8px)';
             setTimeout(() => {
                 card.remove();
-                // Update badge
                 const remaining = document.querySelectorAll('.ship-card').length;
                 const badge = document.querySelector('#tab-shipping .ordpage-tab-badge');
                 if (badge) badge.textContent = remaining || '';
@@ -535,22 +560,56 @@ function submitRating(btn) {
     const group = row.querySelector('.hist-star-group');
     if (group.dataset.rated === 'true') return;
 
-    const rating = group.dataset.selectedVal;
+    const rating = parseInt(group.dataset.selectedVal);
     if (!rating) { alert('Please select a star rating first.'); return; }
 
-    // Lock everything in this row
+    const itemType = row.dataset.itemType;
+    const itemId   = parseInt(row.dataset.itemId);
+
+    if (!itemType || !itemId) {
+        alert('Could not identify item. Please reload and try again.');
+        return;
+    }
+
+    // Lock UI immediately
     group.dataset.rated = 'true';
     group.querySelectorAll('.hist-star').forEach(s => s.disabled = true);
-    row.querySelector('.hist-upload-input').disabled = true;
+    const uploadInput = row.querySelector('.hist-upload-input');
+    if (uploadInput) uploadInput.disabled = true;
     btn.disabled = true;
-    btn.textContent = '✓ SUBMITTED';
-    btn.classList.add('submitted');
+    btn.textContent = '…';
 
-    const lockedMsg = group.querySelector('.hist-star-locked-msg');
-    if (lockedMsg) lockedMsg.classList.remove('hidden');
-
-    // TODO: POST rating to your backend endpoint here
-    // fetch('/api/rate', { method:'POST', body: JSON.stringify({rating, ...}) })
+    fetch('/api/rate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ item_type: itemType, item_id: itemId, rating: rating })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok || data.error === 'already_rated') {
+            btn.textContent = '✓ SUBMITTED';
+            btn.classList.add('submitted');
+            const lockedMsg = group.querySelector('.hist-star-locked-msg');
+            if (lockedMsg) lockedMsg.classList.remove('hidden');
+        } else {
+            // Unlock on failure
+            group.dataset.rated = 'false';
+            group.querySelectorAll('.hist-star').forEach(s => s.disabled = false);
+            if (uploadInput) uploadInput.disabled = false;
+            btn.disabled = false;
+            btn.textContent = 'SUBMIT ▶';
+            alert(data.error || 'Could not submit rating. Please try again.');
+        }
+    })
+    .catch(() => {
+        group.dataset.rated = 'false';
+        group.querySelectorAll('.hist-star').forEach(s => s.disabled = false);
+        if (uploadInput) uploadInput.disabled = false;
+        btn.disabled = false;
+        btn.textContent = 'SUBMIT ▶';
+        alert('Network error. Please try again.');
+    });
 }
 </script>
 {% endblock %}
