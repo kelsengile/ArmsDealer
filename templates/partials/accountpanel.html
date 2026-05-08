@@ -158,18 +158,21 @@
         {% if session.get('role') == 'admin' %}
         <div class="acct-divider"></div>
         <div class="acct-section-label" data-translate="accountpaneladmin">Admin</div>
-        <a href="{{ url_for('main.dashboard') }}" class="acct-action-btn">
-            <span class="acct-btn-icon">
-                <svg width="13" height="13" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <a href="{{ url_for('main.dashboard') }}" class="acct-admin-dashboard-btn">
+            <span class="acct-admin-dashboard-btn-icon">
+                <svg width="20" height="20" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
                     <rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4" fill="none"/>
                     <rect x="9" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4" fill="none"/>
                     <rect x="1" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4" fill="none"/>
                     <rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4" fill="none"/>
                 </svg>
             </span>
-            <span data-translate="accountpaneladmindashboard">Admin Dashboard</span>
-            <span class="acct-btn-arrow">
-                <svg width="8" height="8" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <span class="acct-admin-dashboard-btn-text">
+                <span class="acct-admin-dashboard-btn-label" data-translate="accountpaneladmin">Admin Access</span>
+                <span class="acct-admin-dashboard-btn-title" data-translate="accountpaneladmindashboard">Dashboard</span>
+            </span>
+            <span class="acct-admin-dashboard-btn-arrow">
+                <svg width="10" height="10" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 2l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </span>

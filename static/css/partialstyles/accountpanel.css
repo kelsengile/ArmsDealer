@@ -609,3 +609,94 @@
     object-fit: cover;
     display: block;
 }
+
+/* ── Admin Dashboard Button ─────────────────────────────────────── */
+.acct-admin-dashboard-btn {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 20px 20px;
+    background: var(--mil-redbright, #c0392b);
+    border: none;
+    border-top: 3px solid rgba(255, 255, 255, 0.15);
+    border-left: 4px solid rgba(0, 0, 0, 0.2);
+    color: #fff;
+    font-family: var(--font-stencil, "Oswald", sans-serif);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Diagonal stripe overlay */
+.acct-admin-dashboard-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 12px,
+        rgba(0, 0, 0, 0.06) 12px,
+        rgba(0, 0, 0, 0.06) 14px
+    );
+    pointer-events: none;
+}
+
+.acct-admin-dashboard-btn:hover {
+    background: #a93226;
+}
+
+.acct-admin-dashboard-btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.acct-admin-dashboard-btn-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    position: relative;
+    z-index: 1;
+}
+
+.acct-admin-dashboard-btn-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    opacity: 0.65;
+    line-height: 1;
+}
+
+.acct-admin-dashboard-btn-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    line-height: 1.1;
+}
+
+.acct-admin-dashboard-btn-arrow {
+    display: flex;
+    align-items: center;
+    opacity: 0.7;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.2s;
+}
+
+.acct-admin-dashboard-btn:hover .acct-admin-dashboard-btn-arrow {
+    transform: translateX(4px);
+    opacity: 1;
+}
