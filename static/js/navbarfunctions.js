@@ -47,21 +47,19 @@
     /* /* ──────────────────────────────────────────────────────────────────────────
       //     ACTIVE PAGE HIGHLIGHT 
       // ───────────────────────────────────────────────────────────────────────────── */
-    const currentPage = (document.body.dataset.page || "home").toLowerCase();
-    if (currentPage !== "home") {
-        // Match anchors whose href contains the page keyword
-        const allNavLinks = document.querySelectorAll(
-            ".nav-links a, .nav-drawer a",
-        );
-        allNavLinks.forEach((link) => {
-            const href = link.getAttribute("href") || "";
-            const pageName = href.replace(/.*\/|\.html.*/g, "").toLowerCase();
-            if (pageName === currentPage) {
-                link.classList.add("nav-active");
-                link.setAttribute("aria-current", "page");
-            }
-        });
-    }
+    // Match nav links against the current URL path — works for any page
+    const currentPath = window.location.pathname.toLowerCase();
+    const currentSegment = currentPath.replace(/\/+$/, '').split('/').filter(Boolean).pop() || '';
+    const allNavLinks = document.querySelectorAll('.nav-links a, .nav-drawer a');
+    allNavLinks.forEach((link) => {
+        const href = (link.getAttribute('href') || '').toLowerCase();
+        if (!href || href === '/' || href === '#') return;
+        const linkSegment = href.replace(/\?.*$/, '').replace(/\/+$/, '').split('/').filter(Boolean).pop() || '';
+        if (linkSegment && currentSegment && linkSegment === currentSegment) {
+            link.classList.add('nav-active');
+            link.setAttribute('aria-current', 'page');
+        }
+    });
     /* ────────────────────────────────────────────────────────────────────────── 
   // HAMBURGER MENU 
   // ───────────────────────────────────────────────────────────────────────── */
