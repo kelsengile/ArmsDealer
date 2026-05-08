@@ -3,34 +3,12 @@
    ────────────────────────────────────────────────────────────────────── */
 
 // ── Brand Navigation — go to brand section in products page ──────────
-function spGoToBrand(e, el) {
-    e.preventDefault();
-    const slug = el.dataset.brandSlug;
-    if (!slug) { window.location.href = el.href; return; }
-    sessionStorage.setItem('sp_open_brand', slug);
-    window.location.href = el.href;
-}
-
-// ── Category Navigation — go to category panel in products page ───────
-function spGoToCategory(e, el) {
-    e.preventDefault();
-    const cat = el.dataset.categorySlug;
-    if (!cat) { window.location.href = el.href; return; }
-    sessionStorage.setItem('sp_open_category', cat);
-    sessionStorage.removeItem('sp_open_subcategory');
-    window.location.href = el.href;
-}
-
-// ── Subcategory Navigation ──────────────────────────────────────────
-function spGoToSubcategory(e, el) {
-    e.preventDefault();
-    const cat = el.dataset.categorySlug;
-    const sub = el.dataset.subcategorySlug;
-    if (!cat) { window.location.href = el.href; return; }
-    sessionStorage.setItem('sp_open_category', cat);
-    if (sub) sessionStorage.setItem('sp_open_subcategory', sub);
-    window.location.href = el.href;
-}
+// NOTE: spGoToBrand / spGoToCategory / spGoToSubcategory are defined in the
+// inline <script> block at the bottom of specificproduct.html (after this file
+// loads). They set sp_open_nav so products.html knows which sidebar section to
+// open on arrival. The stubs below are intentionally absent — do not add them
+// here or the inline versions will still win (inline runs last) but the file
+// becomes misleading.
 
 // ── Image Gallery ────────────────────────────────────────────────────
 const spActiveImg = document.getElementById('sp-active-img');

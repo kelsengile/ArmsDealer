@@ -2370,6 +2370,235 @@
         sessionStorage.removeItem('sp_open_category');
         sessionStorage.removeItem('sp_open_subcategory');
 
+        // ── Reverse-lookup maps: DB slug → sidebar key ───────────────────
+        // specificproduct.js stores the DB slug (e.g. "maintenance-equipment",
+        // "lockheed-martin"). The sidebar links use shorter keys. We must
+        // reverse-map before querying data-category / data-brand attributes.
+        const CAT_SLUG_TO_KEY = {
+            "firearms": "firearms",
+            "blades": "blades",
+            "blunts": "blunts",
+            "projectile": "projectiles",
+            "explosives": "explosive",
+            "electronic": "electronic",
+            "chemical": "chemical",
+            "biological": "biological",
+            "vehicle": "vehicle",
+            "cyber": "cyber",
+            "security": "security",
+            "ammunition": "ammunition",
+            "protective": "protective",
+            "tactical": "tactical",
+            "attachments": "attachments",
+            "maintenance-equipment": "maintenance",
+            "storage-equipment": "storage",
+            "communication": "communication",
+            "survival": "survival",
+            "training-equipment": "training",
+        };
+
+        const BRAND_SLUG_TO_KEY = {
+            "glock": "glock", "colt": "colt", "heckler-koch": "heckler-koch",
+            "sig-sauer": "sig-sauer", "fn-herstal": "fn-herstal",
+            "benchmade": "benchmade", "ka-bar": "ka-bar", "cold-steel": "cold-steel",
+            "asp": "asp", "barnett": "barnett", "bear-archery": "bear-archery",
+            "raytheon": "raytheon",
+            "lockheed-martin": "lockheed",
+            "northrop-grumman": "northrop",
+            "axon": "axon", "combined-systems": "combined-systems",
+            "defense-technology": "defense-technology", "thermo-fisher": "thermo-fisher",
+            "mirion": "mirion",
+            "oshkosh-defense": "oshkosh",
+            "general-dynamics": "general-dynamics", "crowdstrike": "crowdstrike",
+            "palo-alto": "palo-alto", "safariland": "safariland", "peerless": "peerless",
+            "hornady": "hornady", "federal-premium": "federal-premium", "3m": "3m",
+            "armor-express": "armor-express",
+            "5-11-tactical": "511-tactical",
+            "crye-precision": "crye",
+            "trijicon": "trijicon", "eotech": "eotech",
+            "vortex-optics": "vortex",
+            "magpul": "magpul", "surefire": "surefire", "otis": "otis",
+            "hoppes": "hoppes", "liberty-safe": "liberty-safe", "pelican": "pelican",
+            "motorola-solutions": "motorola",
+            "garmin": "garmin", "flir": "flir", "garrett": "garrett",
+            "polaris-defense": "polaris",
+            "duracell": "duracell", "goal-zero": "goal-zero", "lifestraw": "lifestraw",
+            "leatherman": "leatherman", "bluegun": "bluegun",
+            "action-target": "action-target", "honeywell": "honeywell",
+            "zev-tech": "zev",
+            "agency-arms": "agency-arms", "amentum": "amentum", "brinks": "brinks",
+            "gardaworld": "gardaworld", "iron-mountain": "iron-mountain",
+            "academi": "academi", "g4s": "g4s", "allied-universal": "allied-universal",
+            "control-risks": "control-risks", "mitre": "mitre",
+            "ul-solutions": "ul-solutions", "veolia": "veolia", "hikvision": "hikvision",
+            "sgs": "sgs", "kbr": "kbr", "armsdealer": "armsdealer",
+            "anonymous": "anonymous", "winchester": "winchester", "walther": "walther",
+            "mauser": "mauser", "kalashnikov": "kalashnikov", "remington": "remington",
+            "smith-wesson": "smith-wesson", "beretta": "beretta",
+            "springfield-armory": "springfield",
+            "steyr-mannlicher": "steyr",
+            "imi-systems": "imi",
+            "accuracy-international": "accuracy-intl",
+            "l3-technologies": "l3",
+        };
+
+        // ── Reverse-lookup: DB subcategory slug → section id ─────────────
+        // The authoritative forward map lives in productsfunctions.js
+        // (SECTION_ID_TO_SUBCAT_SLUG). We invert it here so that the DB slug
+        // stored by specificproduct.js (e.g. "maint-cleaning-kits") resolves
+        // directly to the correct section id ("sub-cleaningkits") without any
+        // fragile string-splitting that breaks on multi-segment slugs.
+        const SUBCAT_SLUG_TO_SECTION_ID = {
+            "firearms-handguns": "sub-handguns",
+            "firearms-rifles": "sub-rifles",
+            "firearms-shotguns": "sub-shotguns",
+            "firearms-submachine-guns": "sub-smg",
+            "firearms-machine-guns": "sub-mg",
+            "firearms-sniper-rifles": "sub-sniper",
+            "firearms-carbines": "sub-carbines",
+            "firearms-pdw": "sub-pdw",
+            "blades-knives": "sub-knives",
+            "blades-swords": "sub-swords",
+            "blades-daggers": "sub-daggers",
+            "blades-machetes": "sub-machetes",
+            "blades-bayonets": "sub-bayonets",
+            "blades-axes": "sub-axes",
+            "blades-hatchets": "sub-hatchets",
+            "blades-combat-spears": "sub-spears",
+            "blades-polearms": "sub-polearms",
+            "blades-throwing-knives": "sub-throwing",
+            "blunts-batons": "sub-batons",
+            "blunts-clubs": "sub-clubs",
+            "blunts-maces": "sub-maces",
+            "blunts-hammers": "sub-hammers",
+            "blunts-flails": "sub-flails",
+            "blunts-nunchaku": "sub-nunchaku",
+            "blunts-staves": "sub-staves",
+            "blunts-saps": "sub-saps",
+            "blunts-blackjacks": "sub-blackjacks",
+            "projectile-bows": "sub-bows",
+            "projectile-crossbows": "sub-crossbows",
+            "projectile-slingshots": "sub-slingshots",
+            "projectile-spear-launchers": "sub-spearlaunchers",
+            "projectile-blowguns": "sub-blowguns",
+            "projectile-javelin-systems": "sub-javelin",
+            "projectile-pneumatic-launchers": "sub-pneumatic",
+            "explosives-grenades": "sub-grenades",
+            "explosives-bombs": "sub-bombs",
+            "explosives-mines": "sub-mines",
+            "explosives-demolition-charges": "sub-demolition",
+            "explosives-rocket-launchers": "sub-rockets",
+            "explosives-mortars": "sub-mortars",
+            "explosives-artillery-shells": "sub-artillery",
+            "explosives-breaching-charges": "sub-breaching",
+            "explosives-flash-bangs": "sub-flashbangs",
+            "electronic-tasers": "sub-tasers",
+            "electronic-stun-guns": "sub-stunguns",
+            "electronic-emp-devices": "sub-emp",
+            "electronic-jamming-devices": "sub-jamming",
+            "electronic-directed-energy-weapons": "sub-dew",
+            "electronic-sonic-devices": "sub-sonic",
+            "electronic-laser-dazzlers": "sub-laser",
+            "chemical-tear-gas": "sub-teargas",
+            "chemical-smoke-agents": "sub-smoke",
+            "chemical-incendiary": "sub-incendiary",
+            "chemical-pepper-sprays": "sub-peppersprays",
+            "chemical-aerosol-dispersants": "sub-aerosol",
+            "chemical-riot-control": "sub-rca",
+            "biological-delivery-systems": "sub-delivery",
+            "biological-containment-units": "sub-containment",
+            "biological-detection-equipment": "sub-biodetection",
+            "biological-neutralization-agents": "sub-neutralization",
+            "vehicle-armed": "sub-armedvehicles",
+            "vehicle-drones": "sub-drones",
+            "vehicle-naval": "sub-naval",
+            "vehicle-aerial": "sub-aerial",
+            "vehicle-anti-vehicle": "sub-antivehicle",
+            "cyber-malware-tools": "sub-malware",
+            "cyber-exploit-kits": "sub-exploits",
+            "cyber-hacking-devices": "sub-hackingdevices",
+            "cyber-intrusion-systems": "sub-intrusion",
+            "cyber-data-exfiltration": "sub-exfiltration",
+            "cyber-ransomware-platforms": "sub-ransomware",
+            "security-access-control": "sub-accesscontrol",
+            "security-crowd-control": "sub-crowdcontrol",
+            "security-non-lethal": "sub-nonlethal",
+            "security-deterrent": "sub-deterrent",
+            "security-restraint": "sub-restraint",
+            "ammo-bullets": "sub-bullets",
+            "ammo-shells": "sub-shells",
+            "ammo-cartridges": "sub-cartridges",
+            "ammo-energy-cells": "sub-energycells",
+            "ammo-primers": "sub-primers",
+            "ammo-propellants": "sub-propellants",
+            "ammo-specialty-rounds": "sub-specialtyrounds",
+            "ammo-caseless": "sub-caseless",
+            "protective-helmets": "sub-helmets",
+            "protective-body-armor": "sub-bodyarmor",
+            "protective-shields": "sub-shields",
+            "protective-suits": "sub-protectivesuits",
+            "protective-ballistic-glasses": "sub-ballisticglasses",
+            "protective-hearing": "sub-hearingprotection",
+            "protective-gas-masks": "sub-gasmasks",
+            "protective-blast-resistant": "sub-blastresistant",
+            "tactical-load-bearing": "sub-lbg",
+            "tactical-holsters": "sub-holsters",
+            "tactical-utility-belts": "sub-utilitybelts",
+            "tactical-field-kits": "sub-fieldkits",
+            "tactical-chest-rigs": "sub-chestrigs",
+            "tactical-plate-carriers": "sub-platecarriers",
+            "tactical-drop-leg": "sub-dropleg",
+            "tactical-modular-pouches": "sub-modular",
+            "attachments-suppressors": "sub-suppressors",
+            "attachments-grips": "sub-grips",
+            "attachments-laser-sights": "sub-lasersights",
+            "attachments-foregrips": "sub-foregrips",
+            "attachments-bipods": "sub-bipods",
+            "attachments-muzzle-brakes": "sub-muzzlebrakes",
+            "attachments-flashlights": "sub-flashlights",
+            "attachments-bayonet-mounts": "sub-bayonetmounts",
+            "maint-cleaning-kits": "sub-cleaningkits",
+            "maint-repair-tools": "sub-repairtools",
+            "maint-lubricants": "sub-lubricants",
+            "maint-bore-snakes": "sub-boresnakes",
+            "maint-armorer-tools": "sub-armorer",
+            "maint-parts-kits": "sub-partskits",
+            "maint-solvent-traps": "sub-solventtraps",
+            "storage-safes": "sub-safes",
+            "storage-cases": "sub-cases",
+            "storage-lockers": "sub-lockers",
+            "storage-ammo-cans": "sub-ammocans",
+            "storage-weapon-racks": "sub-weaponracks",
+            "storage-concealment-furniture": "sub-concealment",
+            "storage-transport-containers": "sub-transport",
+            "comm-radios": "sub-radios",
+            "comm-signal-devices": "sub-signaldevices",
+            "comm-encryption-units": "sub-encryption",
+            "comm-earpieces": "sub-earpieces",
+            "comm-tactical-headsets": "sub-tacticalheadsets",
+            "comm-satellite": "sub-satellite",
+            "comm-covert-devices": "sub-covert",
+            "survival-first-aid": "sub-firstaid",
+            "survival-rations": "sub-rations",
+            "survival-water-purification": "sub-waterpurif",
+            "survival-navigation": "sub-navigation",
+            "survival-shelters": "sub-shelters",
+            "survival-fire-starters": "sub-firestarters",
+            "survival-multi-tools": "sub-multitools",
+            "survival-tourniquets": "sub-tourniquets",
+            "training-simulators": "sub-simulators",
+            "training-dummy-equipment": "sub-dummy",
+            "training-targets": "sub-targets",
+            "training-manuals": "sub-manuals",
+            "training-blue-guns": "sub-blueguns",
+            "training-force-on-force": "sub-fof",
+            "training-recoil-trainers": "sub-recoiltrainers",
+        };
+
+        // Resolve stored DB slugs → sidebar keys
+        const resolvedCatKey   = catSlug   ? (CAT_SLUG_TO_KEY[catSlug]     || catSlug)   : null;
+        const resolvedBrandKey = brandSlug ? (BRAND_SLUG_TO_KEY[brandSlug] || brandSlug) : null;
+
         // Give productsfunctions.js time to initialise before we trigger clicks
         setTimeout(function () {
 
@@ -2400,9 +2629,9 @@
                 // Open the correct brand list (authorized vs restricted)
                 // by clicking the matching sidebar brand link, which lets
                 // productsfunctions.js handle state + panel render correctly.
-                if (brandSlug) {
+                if (resolvedBrandKey) {
                     const link = document.querySelector(
-                        '.toc-link--brand[data-brand="' + CSS.escape(brandSlug) + '"]'
+                        '.toc-link--brand[data-brand="' + CSS.escape(resolvedBrandKey) + '"]'
                     );
                     if (link) {
                         // Ensure the brand submenu is visible first
@@ -2416,23 +2645,25 @@
                 forceClose(promoBtn,  promoMenu);
                 forceClose(brandBtn,  brandMenuAuth);
                 forceClose(brandBtn,  brandMenuRes);
+                // Also strip active state from brandBtn itself (forceClose only clears the menu)
+                if (brandBtn) brandBtn.classList.remove('submenu-open', 'active');
                 // Open categories submenu then click the specific category link
-                if (catSlug) {
+                if (resolvedCatKey) {
                     forceOpen(catBtn, catMenu);
                     const catLink = document.querySelector(
-                        '.toc-link--category[data-category="' + CSS.escape(catSlug) + '"]'
+                        '.toc-link--category[data-category="' + CSS.escape(resolvedCatKey) + '"]'
                     );
                     if (catLink) {
                         catLink.click(); // productsfunctions handles state + panel render
                         // Scroll to subcategory section after panel renders
                         if (subSlug) {
                             setTimeout(function () {
-                                const allSubs = document.querySelectorAll('.specific-sub');
-                                let target = null;
-                                allSubs.forEach(function (sec) {
-                                    const suffix = sec.id.replace(/^sub-/, '');
-                                    if (subSlug.includes(suffix) && !target) target = sec;
-                                });
+                                // Use the explicit reverse-map to go from DB slug → section id.
+                                // This is the only reliable approach: simple indexOf('-') stripping
+                                // fails for slugs with multiple segments (e.g. maint-cleaning-kits
+                                // → equipment-cleaning-kits instead of sub-cleaningkits).
+                                const sectionId = SUBCAT_SLUG_TO_SECTION_ID[subSlug];
+                                const target = sectionId ? document.getElementById(sectionId) : null;
                                 if (target) {
                                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                                 }
