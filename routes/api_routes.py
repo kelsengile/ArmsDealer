@@ -1,7 +1,7 @@
 # ──────────────────────────────────────────────────────────────────────────────────
 # API ROUTES
 # ──────────────────────────────────────────────────────────────────────────────────
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, request, jsonify, render_template, session
 from db_helpers import get_db, get_locale, get_currency
 
 api_bp = Blueprint('api', __name__)
@@ -13,11 +13,7 @@ api_bp = Blueprint('api', __name__)
 
 @api_bp.route('/api/products/<category_slug>')
 def api_products_by_category(category_slug):
-    """Return all products for a given category slug filtered by access level.
-    Query params:
-        access   = authorized | restricted  (default: authorized)
-        currency = PHP | USD | EUR | ...    (falls back to cookie)
-    """
+    """Return all products for a given category slug filtered by access level."""
     db = get_db()
     lang = get_locale()
     currency = get_currency(db)
@@ -117,10 +113,7 @@ def api_services_by_category(category_slug):
 
 @api_bp.route('/api/brands/<brand_slug>')
 def api_products_by_brand(brand_slug):
-    """Return all products for a given brand slug filtered by access level.
-    Query params:
-        access   = authorized | restricted  (default: authorized)
-    """
+    """Return all products for a given brand slug filtered by access level."""
     db = get_db()
     lang = get_locale()
     currency = get_currency(db)
@@ -244,3 +237,101 @@ def product_detail(slug):
         related=related,
         currency=currency
     )
+
+
+# ─────────────────────────────────────────
+# RATING ENDPOINT  POST /api/rate
+# ─────────────────────────────────────────
+
+@api_bp.route('/api/rate', methods=['POST'])
+def api_rate():
+    """Submit a star rating for a product or service.
+
+    Expects JSON:
+        { "item_type": "product"|"service", "item_id": <int>, "rating": 1-5 }
+
+    Rating calculation:
+        new_avg = (current_rating * sales_count + user_rating) / (sales_count + 1)
+        (uses sales_count as a proxy for total number of ratings)
+
+    Returns:
+        { "ok": true, "new_rating": <float> }
+        { "ok": false, "error": "..." }
+    """
+    if not session.get('user_id'):
+        return jsonify(ok=False, error='Not authenticated'), 401
+
+    data = request.get_json(silent=True) or {}
+    item_type = data.get('item_type')
+    item_id = data.get('item_id')
+    rating = data.get('rating')
+
+    if item_type not in ('product', 'service'):
+        return jsonify(ok=False, error='Invalid item_type'), 400
+    if not item_id:
+        return jsonify(ok=False, error='Missing item_id'), 400
+    try:
+        rating = int(rating)
+        if not (1 <= rating <= 5):
+            raise ValueError
+    except (TypeError, ValueError):
+        return jsonify(ok=False, error='Rating must be 1–5'), 400
+
+    db = get_db()
+    user_id = session['user_id']
+
+    # ── Ensure product_ratings table exists (auto-migrate) ──────────
+    db.execute("""
+        CREATE TABLE IF NOT EXISTS product_ratings (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            item_type  TEXT    NOT NULL CHECK (item_type IN ('product', 'service')),
+            item_id    INTEGER NOT NULL,
+            rating     INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+            created_at TEXT    NOT NULL DEFAULT (datetime('now')),
+            UNIQUE (user_id, item_type, item_id)
+        )
+    """)
+
+    # ── Check for duplicate rating ───────────────────────────────────
+    existing = db.execute(
+        "SELECT id FROM product_ratings WHERE user_id=? AND item_type=? AND item_id=?",
+        (user_id, item_type, int(item_id))
+    ).fetchone()
+
+    if existing:
+        return jsonify(ok=False, error='already_rated'), 409
+
+    # ── Fetch current aggregate values ──────────────────────────────
+    table = 'products' if item_type == 'product' else 'services'
+    row = db.execute(
+        f"SELECT rating, sales_count FROM {table} WHERE id = ?",
+        (int(item_id),)
+    ).fetchone()
+
+    if not row:
+        return jsonify(ok=False, error='Item not found'), 404
+
+    current_rating = row['rating'] or 0
+    sales_count = row['sales_count'] or 0
+
+    # Weighted average: treat sales_count as the proxy for how many people rated
+    # new_avg = (current_avg * n + new_rating) / (n + 1)
+    n = max(sales_count, 1)  # avoid div-by-zero if nothing sold yet
+    new_rating = round((current_rating * n + rating) / (n + 1), 2)
+    new_rating = min(5.0, max(0.0, new_rating))  # clamp to [0, 5]
+
+    # ── Persist the rating row ───────────────────────────────────────
+    db.execute(
+        "INSERT INTO product_ratings (user_id, item_type, item_id, rating) VALUES (?,?,?,?)",
+        (user_id, item_type, int(item_id), rating)
+    )
+
+    # ── Update aggregate rating on the product/service ──────────────
+    db.execute(
+        f"UPDATE {table} SET rating = ?, updated_at = datetime('now') WHERE id = ?",
+        (new_rating, int(item_id))
+    )
+
+    db.commit()
+    return jsonify(ok=True, new_rating=new_rating)

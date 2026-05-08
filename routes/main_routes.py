@@ -105,6 +105,7 @@ def orders():
     db = get_db()
     user_id = session['user_id']
     currency = get_currency(db)
+    rate = currency['rate_to_php'] if currency else 1
 
     # ── Cart items ──────────────────────────────────────────────────
     cart_rows = db.execute("""
@@ -139,7 +140,6 @@ def orders():
     cart_total_php = sum((item['price'] or 0) * item['quantity']
                          for item in cart_items)
 
-    rate = currency['rate_to_php'] if currency else 1
     for item in cart_items:
         item['price'] = round((item['price'] or 0) * rate)
     cart_total = round(cart_total_php * rate)
@@ -156,20 +156,35 @@ def orders():
     for row in active_order_rows:
         order = dict(row)
         items = db.execute("""
-            SELECT oi.quantity, COALESCE(oi.unit_price, 0) AS unit_price,
+            SELECT oi.quantity,
+                   COALESCE(oi.unit_price, 0) AS unit_price,
+                   oi.item_type,
+                   oi.item_id,
                    COALESCE(
                        CASE
                            WHEN oi.item_type = 'product' THEN p.name
                            WHEN oi.item_type = 'service' THEN s.name
                        END,
                        '[Deleted Item]'
-                   ) AS name
+                   ) AS name,
+                   CASE
+                       WHEN oi.item_type = 'product' THEN p.slug
+                       WHEN oi.item_type = 'service' THEN s.slug
+                   END AS slug
             FROM order_items oi
             LEFT JOIN products p ON oi.item_type = 'product' AND oi.item_id = p.id
             LEFT JOIN services s ON oi.item_type = 'service' AND oi.item_id = s.id
             WHERE oi.order_id = ?
         """, (order['id'],)).fetchall()
-        order['order_lines'] = [dict(i) for i in items]
+
+        order_lines = []
+        for i in items:
+            line = dict(i)
+            line['display_price'] = round((line['unit_price'] or 0) * rate)
+            order_lines.append(line)
+
+        order['order_lines'] = order_lines
+        order['total_converted'] = round((order.get('total') or 0) * rate)
         active_orders.append(order)
 
     # ── Delivered orders (history) ──────────────────────────────────
@@ -179,24 +194,56 @@ def orders():
         (user_id,)
     ).fetchall()
 
+    # Fetch all ratings this user has already submitted (for delivered orders)
+    existing_ratings = {}
+    try:
+        rating_rows = db.execute(
+            """SELECT item_type, item_id, rating FROM product_ratings
+               WHERE user_id = ?""",
+            (user_id,)
+        ).fetchall()
+        for r in rating_rows:
+            existing_ratings[(r['item_type'], r['item_id'])] = r['rating']
+    except Exception:
+        # Table may not exist yet — will be created by migration SQL
+        pass
+
     delivered_orders = []
     for row in delivered_rows:
         order = dict(row)
         items = db.execute("""
-            SELECT oi.quantity, COALESCE(oi.unit_price, 0) AS unit_price,
+            SELECT oi.quantity,
+                   COALESCE(oi.unit_price, 0) AS unit_price,
+                   oi.item_type,
+                   oi.item_id,
                    COALESCE(
                        CASE
                            WHEN oi.item_type = 'product' THEN p.name
                            WHEN oi.item_type = 'service' THEN s.name
                        END,
                        '[Deleted Item]'
-                   ) AS name
+                   ) AS name,
+                   CASE
+                       WHEN oi.item_type = 'product' THEN p.slug
+                       WHEN oi.item_type = 'service' THEN s.slug
+                   END AS slug
             FROM order_items oi
             LEFT JOIN products p ON oi.item_type = 'product' AND oi.item_id = p.id
             LEFT JOIN services s ON oi.item_type = 'service' AND oi.item_id = s.id
             WHERE oi.order_id = ?
         """, (order['id'],)).fetchall()
-        order['order_lines'] = [dict(i) for i in items]
+
+        order_lines = []
+        for i in items:
+            line = dict(i)
+            line['display_price'] = round((line['unit_price'] or 0) * rate)
+            # Attach any previously submitted rating for this item
+            key = (line['item_type'], line['item_id'])
+            line['existing_rating'] = existing_ratings.get(key)
+            order_lines.append(line)
+
+        order['order_lines'] = order_lines
+        order['total_converted'] = round((order.get('total') or 0) * rate)
         delivered_orders.append(order)
 
     return render_template(
