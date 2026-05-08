@@ -266,6 +266,53 @@ def place_order():
 # ADMIN — UPDATE ORDER STATUS (POST /admin/order/<id>/status)
 # ─────────────────────────────────────────
 
+# ─────────────────────────────────────────
+# CANCEL ORDER (POST /api/order/<id>/cancel)
+# ─────────────────────────────────────────
+
+@cart_bp.route('/api/order/<int:order_id>/cancel', methods=['POST'])
+def api_cancel_order(order_id):
+    """Cancel an order if it is still in 'order placed' or 'packing' status.
+
+    Only the owning user (or an admin) may cancel.
+    Deletes the order and its items from the database.
+
+    Returns:
+        { "ok": true }
+        { "ok": false, "error": "..." }
+    """
+    if not session.get('user_id'):
+        return jsonify(ok=False, error='Not authenticated'), 401
+
+    db = get_db()
+    user_id = session['user_id']
+    role = session.get('role', 'customer')
+
+    # Fetch the order
+    order = db.execute(
+        'SELECT id, user_id, status FROM orders WHERE id = ?', (order_id,)
+    ).fetchone()
+
+    if not order:
+        return jsonify(ok=False, error='Order not found'), 404
+
+    # Only the owner or an admin can cancel
+    if order['user_id'] != user_id and role != 'admin':
+        return jsonify(ok=False, error='Forbidden'), 403
+
+    # Only allow cancellation for early statuses
+    cancellable = {'order placed', 'packing'}
+    if order['status'].lower() not in cancellable:
+        return jsonify(ok=False, error='Order cannot be cancelled at this stage'), 409
+
+    # Delete order items first (FK constraint), then the order
+    db.execute('DELETE FROM order_items WHERE order_id = ?', (order_id,))
+    db.execute('DELETE FROM orders WHERE id = ?', (order_id,))
+    db.commit()
+
+    return jsonify(ok=True)
+
+
 @cart_bp.route('/admin/order/<int:order_id>/status', methods=['POST'])
 def admin_update_order_status(order_id):
     """Admin API to update order status. Returns JSON."""
