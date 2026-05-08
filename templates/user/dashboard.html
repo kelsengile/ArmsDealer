@@ -193,9 +193,6 @@
     </div>
 </main>
 
-<!-- ── Toast feedback ── -->
-<div class="adm-toast" id="admToast"></div>
-
 <script>
 (function () {
     // ── Section switching ──────────────────────────────
@@ -213,12 +210,12 @@
         });
     });
 
-    // ── Toast helper ──────────────────────────────────
+    // ── Toast helper — delegates to global ArmsToast ──
     function showToast(msg, type) {
-        const t = document.getElementById('admToast');
-        t.textContent = msg;
-        t.className = 'adm-toast adm-toast-' + (type || 'ok') + ' show';
-        setTimeout(() => t.classList.remove('show'), 3000);
+        const armsType = type === 'err' ? 'danger' : 'success';
+        if (window.ArmsToast) {
+            ArmsToast.show(msg, armsType);
+        }
     }
 
     // ── Update order status ───────────────────────────
