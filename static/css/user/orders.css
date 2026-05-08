@@ -1344,9 +1344,58 @@
     .hist-card-date { display: none; }
     .hist-rate-row { gap: 8px; }
     .hist-rate-item-name { max-width: 110px; }
-    .ordpage-item-right { width: 130px; }
-    .ordpage-remove-btn { transform: translateX(0); opacity: 1; pointer-events: auto; border-left-color: rgba(192,57,43,0.35); }
-    .ordpage-item-row:hover .ordpage-item-price { right: 126px; }
+    /* ── Cart item row: switch to 2-row stacked layout on small screens ── */
+
+    /* Row becomes a CSS grid:
+       [img] [name + meta]
+             [price + remove btn] ← second row, right-aligned          */
+    .ordpage-item-row {
+        display: grid;
+        grid-template-columns: 52px 1fr;
+        grid-template-rows: auto auto;
+        gap: 0 12px;
+        align-items: start;
+        padding: 12px 12px;
+    }
+
+    /* Image stays in col-1, spans both rows */
+    .ordpage-item-img-wrap,
+    .ordpage-item-img-link {
+        grid-column: 1;
+        grid-row: 1 / 3;
+        align-self: center;
+    }
+
+    /* Name + meta in col-2 row-1 */
+    .ordpage-item-info {
+        grid-column: 2;
+        grid-row: 1;
+        min-width: 0;
+    }
+
+    /* Right slot (price + remove) in col-2 row-2:
+       keep relative positioning so the slide-in trick still works */
+    .ordpage-item-right {
+        grid-column: 2;
+        grid-row: 2;
+        position: relative;
+        width: 100%;
+        height: 28px;
+        overflow: hidden;
+        margin-top: 6px;
+    }
+
+    /* Price: keep absolute so it can slide left on hover */
+    .ordpage-item-price {
+        font-size: 13px;
+    }
+
+    /* Remove button: keep the slide-in behaviour, just size it for small screens */
+    .ordpage-remove-btn {
+        height: 100%;
+        padding: 0 10px;
+        font-size: 9px;
+    }
 }
 /* ══════════════════════════════════════════════════════════════════
    RESPONSIVE — HEADER STRIP & TABS (updated)
