@@ -124,7 +124,7 @@
 }
 /* ── Section labels & dividers ──────────────────────────────────── */
 .acct-section-label {
-  padding: 14px 20px 5px;
+  padding: 12px 18px 3px;
   font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 0.22em;
@@ -615,7 +615,7 @@
     display: flex;
     align-items: center;
     gap: 18px;
-    padding: 20px 20px;
+    padding: 10px 10px;
     background: var(--mil-redbright, #c0392b);
     border: none;
     border-top: 3px solid rgba(255, 255, 255, 0.15);
@@ -625,9 +625,10 @@
     text-decoration: none;
     cursor: pointer;
     transition: background 0.2s, opacity 0.2s;
-    width: 100%;
+    width: 93%;
     position: relative;
     overflow: hidden;
+    margin: 10px 8px 10px 8px;
 }
 
 /* Diagonal stripe overlay */
@@ -653,8 +654,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 30px;
+    height: 30px;
     background: rgba(0, 0, 0, 0.2);
     flex-shrink: 0;
     position: relative;
@@ -680,7 +681,7 @@
 }
 
 .acct-admin-dashboard-btn-title {
-    font-size: 20px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.22em;
     text-transform: uppercase;
