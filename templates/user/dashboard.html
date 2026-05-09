@@ -3,6 +3,486 @@
 
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/user/dashboard.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pagestyles/settingsstyles.css') }}">
+<style>
+/* ── Dashboard overrides to match Settings layout ─────────────── */
+
+/* Reuse setpage structure but with dashboard-specific names */
+.adm-main {
+    min-height: calc(100vh - var(--header-h, 98px));
+    display: flex;
+    align-items: stretch;
+    background: var(--mil-black, #0d0f0d);
+}
+
+.adm-wrapper {
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+    align-items: stretch;
+    flex: 1;
+}
+
+/* ── LEFT NAV — mirrors .setpage-nav ──────────────────────────── */
+.adm-sidenav {
+    width: 280px;
+    flex-shrink: 0;
+    background: var(--mil-dark, #131713);
+    border-right: 1px solid var(--mil-border, #2e3a2e);
+    border-top: 3px solid var(--mil-bright, #a8c47a); /* bright on admin vs olive on settings */
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Corner bracket accent */
+.adm-sidenav::after {
+    content: "";
+    position: absolute;
+    top: -3px;
+    right: -1px;
+    width: 24px;
+    height: 24px;
+    border-top: 3px solid var(--mil-bright, #a8c47a);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Nav header */
+.adm-sidenav-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--mil-border, #2e3a2e);
+}
+
+.adm-sidenav-title {
+    font-family: var(--font-stencil, 'Oswald', sans-serif);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--mil-bright, #a8c47a);
+}
+
+.adm-sidenav-title::before {
+    content: "◈ ";
+    opacity: 0.7;
+    font-size: 11px;
+}
+
+.adm-sidenav-user {
+    font-family: var(--font-mono, 'Share Tech Mono', monospace);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--mil-muted, #4a5e4a);
+    margin-top: 4px;
+    text-transform: uppercase;
+}
+
+/* Section label (mirrors setpage-nav-section-label) */
+.adm-nav-section-label {
+    padding: 12px 20px 4px;
+    font-family: var(--font-mono, 'Share Tech Mono', monospace);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mil-muted, #4a5e4a);
+}
+
+/* Nav list cleanup */
+.adm-nav-list {
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+    flex: 1;
+}
+
+.adm-nav-list li { margin: 0; }
+
+/* Nav items — mirrors setpage-nav-item exactly */
+.adm-nav-item {
+    width: 100%;
+    background: none;
+    border: none;
+    border-left: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px 10px 20px;
+    font-family: var(--font-stencil, 'Oswald', sans-serif);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mil-muted, #4a5e4a);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    position: relative;
+}
+
+.adm-nav-item:hover {
+    background: rgba(138, 170, 106, 0.05);
+    color: var(--mil-text, #c8d4b8);
+    border-left-color: transparent;
+}
+
+.adm-nav-item:hover .adm-nav-arrow {
+    opacity: 1;
+}
+
+.adm-nav-item.active {
+    background: rgba(138, 170, 106, 0.08);
+    color: var(--mil-bright, #a8c47a);
+    border-left-color: var(--mil-bright, #a8c47a);
+}
+
+.adm-nav-item.active .adm-nav-icon { opacity: 1; }
+
+.adm-nav-icon {
+    font-size: 12px;
+    width: 14px;
+    text-align: center;
+    flex-shrink: 0;
+    opacity: 0.65;
+}
+
+.adm-nav-label { flex: 1; }
+
+.adm-nav-arrow {
+    font-size: 9px;
+    color: var(--mil-bright, #a8c47a);
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.adm-nav-item.active .adm-nav-arrow { opacity: 1; }
+
+/* Badge */
+.adm-nav-badge {
+    background: var(--mil-bright, #a8c47a);
+    color: var(--mil-black, #0d0f0d);
+    font-family: var(--font-mono, monospace);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 2px;
+    min-width: 20px;
+    text-align: center;
+}
+
+/* Divider */
+.adm-nav-divider {
+    height: 1px;
+    background: var(--mil-border, #2e3a2e);
+    margin: 6px 16px;
+}
+
+/* Footer */
+.adm-sidenav-footer {
+    padding: 14px 20px;
+    border-top: 1px solid var(--mil-border, #2e3a2e);
+}
+
+.adm-back-site-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-stencil, 'Oswald', sans-serif);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--mil-muted, #4a5e4a);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.15s;
+}
+
+.adm-back-site-btn:hover { color: var(--mil-text, #c8d4b8); }
+
+/* ── RIGHT CONTENT — mirrors .setpage-content ─────────────────── */
+.adm-content {
+    flex: 1;
+    background: var(--mil-dark, #131713);
+    border-top: 3px solid var(--mil-olive, #6b7c4e);
+    border-left: none;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden auto;
+}
+
+/* Scanlines */
+.adm-content::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0, 0, 0, 0.04) 3px,
+        rgba(0, 0, 0, 0.04) 4px
+    );
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Sections */
+.adm-section {
+    display: none;
+    position: relative;
+    z-index: 1;
+}
+
+.adm-section.active { display: block; }
+
+/* Section header — mirrors setpage-panel-header */
+.adm-section-header {
+    padding: 24px 32px 18px;
+    border-bottom: 1px solid var(--mil-border, #2e3a2e);
+    margin-bottom: 0;
+}
+
+.adm-section-title {
+    font-family: var(--font-stencil, 'Oswald', sans-serif);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mil-light, #e2ead4);
+    margin: 0 0 4px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.adm-section-title::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 36px;
+    height: 2px;
+    background: var(--mil-bright, #a8c47a);
+}
+
+.adm-section-sub {
+    font-family: var(--font-mono, 'Share Tech Mono', monospace);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--mil-muted, #4a5e4a);
+    text-transform: uppercase;
+    display: block;
+    margin-top: 4px;
+}
+
+/* Section body padding */
+.adm-section-body {
+    padding: 28px 32px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Stats grid ────────────────────────────────────────────────── */
+.adm-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px;
+}
+
+.adm-stat-card {
+    background: rgba(28, 33, 28, 0.8);
+    border: 1px solid var(--mil-border, #2e3a2e);
+    border-top: 2px solid var(--mil-olive, #6b7c4e);
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.adm-stat-card.adm-stat-highlight {
+    border-top-color: var(--mil-bright, #a8c47a);
+}
+
+.adm-stat-icon {
+    font-size: 18px;
+    color: var(--mil-olive, #6b7c4e);
+}
+
+.adm-stat-label {
+    font-family: var(--font-stencil, 'Oswald', sans-serif);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--mil-muted, #4a5e4a);
+    text-transform: uppercase;
+}
+
+.adm-stat-value {
+    font-family: var(--font-stencil, 'Oswald', sans-serif);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--mil-light, #e2ead4);
+    line-height: 1;
+}
+
+/* ── Orders table ──────────────────────────────────────────────── */
+.adm-orders-table-wrap { overflow-x: auto; }
+
+.adm-orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono, monospace);
+    font-size: 12px;
+}
+
+.adm-orders-table thead tr {
+    background: rgba(28, 33, 28, 0.8);
+    border-bottom: 2px solid var(--mil-border, #2e3a2e);
+}
+
+.adm-orders-table th {
+    font-family: var(--font-stencil, 'Oswald', sans-serif);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--mil-muted, #4a5e4a);
+    text-transform: uppercase;
+    padding: 12px 14px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.adm-orders-table tbody tr {
+    border-bottom: 1px solid var(--mil-border, #2e3a2e);
+    transition: background 0.15s;
+}
+
+.adm-orders-table tbody tr:hover {
+    background: rgba(168, 196, 122, 0.04);
+}
+
+.adm-orders-table td {
+    padding: 12px 14px;
+    color: var(--mil-text, #c8d4b8);
+    vertical-align: middle;
+}
+
+.adm-order-id {
+    font-family: var(--font-stencil, 'Oswald', sans-serif);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--mil-light, #e2ead4);
+    white-space: nowrap;
+}
+
+/* Status pills */
+.adm-status-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    font-family: var(--font-stencil, 'Oswald', sans-serif);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 1px solid;
+    white-space: nowrap;
+}
+
+.adm-status-order-placed { color: #8aaa6a; border-color: #3a5a2a; background: rgba(138,170,106,0.08); }
+.adm-status-packing      { color: #c0a050; border-color: #6a5020; background: rgba(192,160,80,0.08); }
+.adm-status-shipping     { color: #5090c0; border-color: #204060; background: rgba(80,144,192,0.08); }
+.adm-status-delivered    { color: var(--mil-bright,#a8c47a); border-color: var(--mil-olive,#6b7c4e); background: rgba(168,196,122,0.12); }
+
+/* Status controls */
+.adm-status-controls { display: flex; gap: 8px; align-items: center; }
+
+.adm-status-select {
+    background: rgba(28, 33, 28, 0.8);
+    border: 1px solid var(--mil-border, #2e3a2e);
+    color: var(--mil-text, #c8d4b8);
+    font-family: var(--font-stencil, 'Oswald', sans-serif);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 6px 8px;
+    cursor: pointer;
+    outline: none;
+}
+
+.adm-status-select:focus { border-color: var(--mil-olive, #6b7c4e); }
+
+.adm-update-btn {
+    background: var(--mil-olive, #6b7c4e);
+    border: none;
+    color: var(--mil-black, #0d0f0d);
+    font-family: var(--font-stencil, 'Oswald', sans-serif);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background 0.18s;
+    white-space: nowrap;
+}
+
+.adm-update-btn:hover { background: var(--mil-bright, #a8c47a); }
+
+/* ── Empty / coming soon — mirrors setpage-panel-placeholder ─── */
+.adm-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+    gap: 12px;
+    text-align: center;
+}
+
+.adm-empty-icon {
+    font-size: 48px;
+    color: var(--mil-muted, #4a5e4a);
+    opacity: 0.2;
+    line-height: 1;
+}
+
+.adm-empty-text {
+    font-family: var(--font-stencil, 'Oswald', sans-serif);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--mil-muted, #4a5e4a);
+    opacity: 0.5;
+}
+
+.adm-empty-sub {
+    font-family: var(--font-mono, monospace);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--mil-muted, #4a5e4a);
+    opacity: 0.4;
+    text-transform: uppercase;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .adm-wrapper { flex-direction: column; }
+    .adm-sidenav {
+        width: 100%;
+        height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid var(--mil-border, #2e3a2e);
+    }
+    .adm-content {
+        border-top: none;
+        min-height: 300px;
+    }
+    .adm-section-header,
+    .adm-section-body { padding-left: 20px; padding-right: 20px; }
+}
+</style>
 {% endblock %}
 
 {% block main %}
@@ -14,45 +494,52 @@
         ══════════════════════════════════ -->
         <nav class="adm-sidenav" id="admSidenav">
             <div class="adm-sidenav-header">
-                <span class="adm-sidenav-icon">◈</span>
-                <div>
-                    <div class="adm-sidenav-title">ADMIN</div>
-                    <div class="adm-sidenav-user">{{ session.get('username', 'Admin') | upper }}</div>
-                </div>
+                <div class="adm-sidenav-title">ADMIN PANEL</div>
+                <div class="adm-sidenav-user">{{ session.get('username', 'Admin') | upper }}</div>
             </div>
 
+            <div class="adm-nav-section-label">OVERVIEW</div>
             <ul class="adm-nav-list">
                 <li>
                     <button class="adm-nav-item active" data-section="analytics">
                         <span class="adm-nav-icon">◉</span>
-                        <span class="adm-nav-label">ANALYTICS</span>
+                        <span class="adm-nav-label">Analytics</span>
+                        <span class="adm-nav-arrow">▶</span>
                     </button>
                 </li>
                 <li>
                     <button class="adm-nav-item" data-section="orders">
                         <span class="adm-nav-icon">⊡</span>
-                        <span class="adm-nav-label">ORDERS</span>
+                        <span class="adm-nav-label">Orders</span>
                         {% if stats.pending_orders > 0 %}
                         <span class="adm-nav-badge">{{ stats.pending_orders }}</span>
                         {% endif %}
+                        <span class="adm-nav-arrow">▶</span>
                     </button>
                 </li>
+            </ul>
+
+            <div class="adm-nav-divider"></div>
+            <div class="adm-nav-section-label">MANAGEMENT</div>
+            <ul class="adm-nav-list">
                 <li>
                     <button class="adm-nav-item" data-section="users">
                         <span class="adm-nav-icon">☰</span>
-                        <span class="adm-nav-label">USERS</span>
+                        <span class="adm-nav-label">Users</span>
+                        <span class="adm-nav-arrow">▶</span>
                     </button>
                 </li>
                 <li>
                     <button class="adm-nav-item" data-section="inventory">
                         <span class="adm-nav-icon">◎</span>
-                        <span class="adm-nav-label">INVENTORY</span>
+                        <span class="adm-nav-label">Inventory</span>
+                        <span class="adm-nav-arrow">▶</span>
                     </button>
                 </li>
             </ul>
 
             <div class="adm-sidenav-footer">
-                <a href="{{ url_for('main.homepage') }}" class="adm-back-site-btn">← BACK TO SITE</a>
+                <a href="{{ url_for('main.homepage') }}" class="adm-back-site-btn">← Back to Site</a>
             </div>
         </nav>
 
@@ -61,131 +548,136 @@
         ══════════════════════════════════ -->
         <div class="adm-content" id="admContent">
 
-            <!-- ─── ANALYTICS SECTION ──────────────────────── -->
+            <!-- ─── ANALYTICS ──────────────────────────────────── -->
             <section class="adm-section active" id="section-analytics">
                 <div class="adm-section-header">
                     <h2 class="adm-section-title">ANALYTICS</h2>
-                    <span class="adm-section-sub">System overview</span>
+                    <span class="adm-section-sub">System overview & performance metrics</span>
                 </div>
-
-                <div class="adm-stats-grid">
-                    <div class="adm-stat-card">
-                        <div class="adm-stat-icon">◉</div>
-                        <div class="adm-stat-label">TOTAL USERS</div>
-                        <div class="adm-stat-value">{{ stats.total_users }}</div>
-                    </div>
-                    <div class="adm-stat-card">
-                        <div class="adm-stat-icon">⊡</div>
-                        <div class="adm-stat-label">TOTAL ORDERS</div>
-                        <div class="adm-stat-value">{{ stats.total_orders }}</div>
-                    </div>
-                    <div class="adm-stat-card">
-                        <div class="adm-stat-icon">◈</div>
-                        <div class="adm-stat-label">PRODUCTS</div>
-                        <div class="adm-stat-value">{{ stats.total_products }}</div>
-                    </div>
-                    <div class="adm-stat-card">
-                        <div class="adm-stat-icon">◎</div>
-                        <div class="adm-stat-label">SERVICES</div>
-                        <div class="adm-stat-value">{{ stats.total_services }}</div>
-                    </div>
-                    <div class="adm-stat-card adm-stat-highlight">
-                        <div class="adm-stat-icon">▶</div>
-                        <div class="adm-stat-label">PENDING ORDERS</div>
-                        <div class="adm-stat-value">{{ stats.pending_orders }}</div>
-                    </div>
-                    <div class="adm-stat-card">
-                        <div class="adm-stat-icon">✓</div>
-                        <div class="adm-stat-label">DELIVERED</div>
-                        <div class="adm-stat-value">{{ stats.delivered_orders }}</div>
-                    </div>
-                    <div class="adm-stat-card">
-                        <div class="adm-stat-icon">₱</div>
-                        <div class="adm-stat-label">TOTAL REVENUE</div>
-                        <div class="adm-stat-value">₱{{ '{:,.0f}'.format(stats.total_revenue) }}</div>
+                <div class="adm-section-body">
+                    <div class="adm-stats-grid">
+                        <div class="adm-stat-card">
+                            <div class="adm-stat-icon">◉</div>
+                            <div class="adm-stat-label">Total Users</div>
+                            <div class="adm-stat-value">{{ stats.total_users }}</div>
+                        </div>
+                        <div class="adm-stat-card">
+                            <div class="adm-stat-icon">⊡</div>
+                            <div class="adm-stat-label">Total Orders</div>
+                            <div class="adm-stat-value">{{ stats.total_orders }}</div>
+                        </div>
+                        <div class="adm-stat-card">
+                            <div class="adm-stat-icon">◈</div>
+                            <div class="adm-stat-label">Products</div>
+                            <div class="adm-stat-value">{{ stats.total_products }}</div>
+                        </div>
+                        <div class="adm-stat-card">
+                            <div class="adm-stat-icon">◎</div>
+                            <div class="adm-stat-label">Services</div>
+                            <div class="adm-stat-value">{{ stats.total_services }}</div>
+                        </div>
+                        <div class="adm-stat-card adm-stat-highlight">
+                            <div class="adm-stat-icon">▶</div>
+                            <div class="adm-stat-label">Pending Orders</div>
+                            <div class="adm-stat-value">{{ stats.pending_orders }}</div>
+                        </div>
+                        <div class="adm-stat-card">
+                            <div class="adm-stat-icon">✓</div>
+                            <div class="adm-stat-label">Delivered</div>
+                            <div class="adm-stat-value">{{ stats.delivered_orders }}</div>
+                        </div>
+                        <div class="adm-stat-card">
+                            <div class="adm-stat-icon">₱</div>
+                            <div class="adm-stat-label">Total Revenue</div>
+                            <div class="adm-stat-value">₱{{ '{:,.0f}'.format(stats.total_revenue) }}</div>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- ─── ORDERS SECTION ─────────────────────────── -->
+            <!-- ─── ORDERS ─────────────────────────────────────── -->
             <section class="adm-section" id="section-orders">
                 <div class="adm-section-header">
-                    <h2 class="adm-section-title">ALL ORDERS</h2>
+                    <h2 class="adm-section-title">ORDERS</h2>
                     <span class="adm-section-sub">Manage and update order statuses</span>
                 </div>
-
-                {% if orders and orders | length > 0 %}
-                <div class="adm-orders-table-wrap">
-                    <table class="adm-orders-table">
-                        <thead>
-                            <tr>
-                                <th>ORDER ID</th>
-                                <th>USER</th>
-                                <th>DATE</th>
-                                <th>ITEMS</th>
-                                <th>TOTAL</th>
-                                <th>STATUS</th>
-                                <th>ACTION</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for order in orders %}
-                            <tr class="adm-order-row" id="order-row-{{ order.id }}">
-                                <td class="adm-order-id">ORD-{{ '%06d' % order.id }}</td>
-                                <td class="adm-order-user">{{ order.username or '—' }}</td>
-                                <td class="adm-order-date">{{ order.created_at[:10] if order.created_at else '—' }}</td>
-                                <td class="adm-order-items">{{ order.item_count or 0 }}</td>
-                                <td class="adm-order-total">₱{{ '{:,.0f}'.format(order.total) }}</td>
-                                <td class="adm-order-status">
-                                    <span class="adm-status-pill adm-status-{{ order.status | lower | replace(' ', '-') }}" id="status-{{ order.id }}">
-                                        {{ order.status | upper }}
-                                    </span>
-                                </td>
-                                <td class="adm-order-action">
-                                    <div class="adm-status-controls">
-                                        <select class="adm-status-select" id="select-{{ order.id }}" data-order-id="{{ order.id }}">
-                                            <option value="order placed" {% if order.status == 'order placed' %}selected{% endif %}>Order Placed</option>
-                                            <option value="packing" {% if order.status == 'packing' %}selected{% endif %}>Packing</option>
-                                            <option value="shipping" {% if order.status == 'shipping' %}selected{% endif %}>Shipping</option>
-                                            <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
-                                        </select>
-                                        <button class="adm-update-btn" data-order-id="{{ order.id | int }}">UPDATE &rsaquo;</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                <div class="adm-section-body">
+                    {% if orders and orders | length > 0 %}
+                    <div class="adm-orders-table-wrap">
+                        <table class="adm-orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>User</th>
+                                    <th>Date</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                <tr class="adm-order-row" id="order-row-{{ order.id }}">
+                                    <td class="adm-order-id">ORD-{{ '%06d' % order.id }}</td>
+                                    <td>{{ order.username or '—' }}</td>
+                                    <td>{{ order.created_at[:10] if order.created_at else '—' }}</td>
+                                    <td>{{ order.item_count or 0 }}</td>
+                                    <td>₱{{ '{:,.0f}'.format(order.total) }}</td>
+                                    <td>
+                                        <span class="adm-status-pill adm-status-{{ order.status | lower | replace(' ', '-') }}" id="status-{{ order.id }}">
+                                            {{ order.status | upper }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="adm-status-controls">
+                                            <select class="adm-status-select" id="select-{{ order.id }}" data-order-id="{{ order.id }}">
+                                                <option value="order placed" {% if order.status == 'order placed' %}selected{% endif %}>Order Placed</option>
+                                                <option value="packing" {% if order.status == 'packing' %}selected{% endif %}>Packing</option>
+                                                <option value="shipping" {% if order.status == 'shipping' %}selected{% endif %}>Shipping</option>
+                                                <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                                            </select>
+                                            <button class="adm-update-btn" data-order-id="{{ order.id | int }}">UPDATE ›</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="adm-empty">
+                        <div class="adm-empty-icon">⊡</div>
+                        <div class="adm-empty-text">No orders yet</div>
+                        <div class="adm-empty-sub">Orders will appear here once placed</div>
+                    </div>
+                    {% endif %}
                 </div>
-                {% else %}
-                <div class="adm-empty">
-                    <div class="adm-empty-icon">⊡</div>
-                    <div class="adm-empty-text">No orders yet</div>
-                </div>
-                {% endif %}
             </section>
 
-            <!-- ─── USERS SECTION ──────────────────────────── -->
+            <!-- ─── USERS ──────────────────────────────────────── -->
             <section class="adm-section" id="section-users">
                 <div class="adm-section-header">
                     <h2 class="adm-section-title">USERS</h2>
-                    <span class="adm-section-sub">Coming soon</span>
+                    <span class="adm-section-sub">User accounts and management</span>
                 </div>
                 <div class="adm-empty">
                     <div class="adm-empty-icon">☰</div>
-                    <div class="adm-empty-text">User management — coming soon</div>
+                    <div class="adm-empty-text">Coming Soon</div>
+                    <div class="adm-empty-sub">User management — under construction</div>
                 </div>
             </section>
 
-            <!-- ─── INVENTORY SECTION ──────────────────────── -->
+            <!-- ─── INVENTORY ──────────────────────────────────── -->
             <section class="adm-section" id="section-inventory">
                 <div class="adm-section-header">
                     <h2 class="adm-section-title">INVENTORY</h2>
-                    <span class="adm-section-sub">Coming soon</span>
+                    <span class="adm-section-sub">Stock levels and product management</span>
                 </div>
                 <div class="adm-empty">
                     <div class="adm-empty-icon">◎</div>
-                    <div class="adm-empty-text">Inventory management — coming soon</div>
+                    <div class="adm-empty-text">Coming Soon</div>
+                    <div class="adm-empty-sub">Inventory management — under construction</div>
                 </div>
             </section>
 
@@ -195,7 +687,6 @@
 
 <script>
 (function () {
-    // ── Section switching ──────────────────────────────
     const navItems = document.querySelectorAll('.adm-nav-item');
     const sections = document.querySelectorAll('.adm-section');
 
@@ -210,15 +701,10 @@
         });
     });
 
-    // ── Toast helper — delegates to global ArmsToast ──
     function showToast(msg, type) {
-        const armsType = type === 'err' ? 'danger' : 'success';
-        if (window.ArmsToast) {
-            ArmsToast.show(msg, armsType);
-        }
+        if (window.ArmsToast) ArmsToast.show(msg, type === 'err' ? 'danger' : 'success');
     }
 
-    // ── Update order status ───────────────────────────
     document.addEventListener('click', function (e) {
         const btn = e.target.closest('.adm-update-btn');
         if (!btn) return;
