@@ -3,100 +3,503 @@
 
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pagestyles/user/checkout.css') }}">
+<style>
+/* ── Receipt Checkout ──────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Oswald:wght@400;600;700&family=Courier+Prime:wght@400;700&display=swap');
+
+.chk-main {
+    min-height: calc(100vh - var(--header-h, 98px));
+    background: var(--mil-black, #0d0f0d);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 48px 20px 80px;
+}
+
+/* ── Receipt wrapper ──────────────────────────────────────── */
+.chk-container {
+    width: 100%;
+    max-width: 540px;
+    position: relative;
+}
+
+/* The receipt card */
+.chk-receipt {
+    background: #f5f0e8;
+    position: relative;
+    box-shadow:
+        0 2px 4px rgba(0,0,0,0.3),
+        0 8px 24px rgba(0,0,0,0.5),
+        0 24px 64px rgba(0,0,0,0.4);
+}
+
+/* Torn top edge */
+.chk-receipt::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background:
+        radial-gradient(circle at 10px 10px, #0d0f0d 8px, #f5f0e8 9px) repeat-x;
+    background-size: 20px 10px;
+}
+
+/* Torn bottom edge */
+.chk-receipt::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background:
+        radial-gradient(circle at 10px 0px, #0d0f0d 8px, #f5f0e8 9px) repeat-x;
+    background-size: 20px 10px;
+}
+
+/* Paper texture overlay */
+.chk-receipt-inner {
+    padding: 36px 40px 40px;
+    position: relative;
+    /* subtle noise texture */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+/* ── Store header ─────────────────────────────────────────── */
+.chk-store-header {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed #b0a890;
+    margin-bottom: 20px;
+}
+
+.chk-store-logo {
+    font-family: 'Oswald', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    color: #1a1f1a;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.chk-store-logo span {
+    color: #4a5e2a;
+}
+
+.chk-store-tagline {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: #7a7060;
+    text-transform: uppercase;
+}
+
+.chk-receipt-meta {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    color: #7a7060;
+    letter-spacing: 0.05em;
+    margin-top: 12px;
+}
+
+/* ── Section label ────────────────────────────────────────── */
+.chk-receipt-section-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    color: #7a7060;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+/* ── Items ────────────────────────────────────────────────── */
+.chk-items-block {
+    margin-bottom: 20px;
+}
+
+/* Column headers */
+.chk-items-header {
+    display: grid;
+    grid-template-columns: 1fr 52px 52px 72px;
+    gap: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #c8bfa8;
+    font-family: 'Oswald', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: #7a7060;
+    text-transform: uppercase;
+}
+
+.chk-items-header .col-price,
+.chk-items-header .col-qty,
+.chk-items-header .col-sub {
+    text-align: right;
+}
+
+.chk-item-row {
+    display: grid;
+    grid-template-columns: 1fr 52px 52px 72px;
+    gap: 8px;
+    padding: 9px 0;
+    border-bottom: 1px dotted #d8cfc0;
+    align-items: start;
+}
+
+.chk-item-row:last-child {
+    border-bottom: none;
+}
+
+.chk-item-name {
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a1f1a;
+    line-height: 1.3;
+}
+
+.chk-item-type-badge {
+    font-family: 'Oswald', sans-serif;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: #fff;
+    background: #4a5e2a;
+    padding: 1px 5px;
+    display: inline-block;
+    margin-top: 3px;
+}
+
+.chk-item-price,
+.chk-item-qty,
+.chk-item-sub {
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    color: #3a3628;
+    text-align: right;
+    padding-top: 1px;
+}
+
+.chk-item-sub {
+    font-weight: 700;
+    color: #1a1f1a;
+}
+
+/* ── Totals block ─────────────────────────────────────────── */
+.chk-totals-block {
+    border-top: 2px solid #1a1f1a;
+    padding-top: 14px;
+    margin-bottom: 24px;
+}
+
+.chk-totals-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+}
+
+.chk-totals-label {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    color: #5a5040;
+    letter-spacing: 0.04em;
+}
+
+.chk-totals-val {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    color: #3a3628;
+}
+
+.chk-totals-val.chk-free {
+    color: #4a5e2a;
+    font-weight: 700;
+}
+
+.chk-totals-divider {
+    border: none;
+    border-top: 1px dashed #b0a890;
+    margin: 8px 0;
+}
+
+.chk-total-final-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0 4px;
+    border-top: 2px solid #1a1f1a;
+    margin-top: 4px;
+}
+
+.chk-total-final-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: #1a1f1a;
+}
+
+.chk-total-final-val {
+    font-family: 'Courier Prime', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1f1a;
+}
+
+/* ── Barcode decoration ───────────────────────────────────── */
+.chk-barcode {
+    text-align: center;
+    margin: 20px 0 16px;
+    padding: 16px 0;
+    border-top: 1px dashed #b0a890;
+    border-bottom: 1px dashed #b0a890;
+}
+
+.chk-barcode-bars {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 2px;
+    height: 40px;
+    margin-bottom: 6px;
+}
+
+.chk-barcode-bars span {
+    display: inline-block;
+    background: #1a1f1a;
+    width: var(--w, 2px);
+    height: var(--h, 40px);
+}
+
+.chk-barcode-num {
+    font-family: 'Courier Prime', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: #7a7060;
+}
+
+/* ── Actions ──────────────────────────────────────────────── */
+.chk-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.chk-place-btn {
+    width: 100%;
+    background: #1a1f1a;
+    color: #f5f0e8;
+    border: none;
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    padding: 16px 24px;
+    cursor: pointer;
+    transition: background 0.18s, letter-spacing 0.18s;
+    position: relative;
+    overflow: hidden;
+}
+
+.chk-place-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #4a5e2a;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.22s ease;
+}
+
+.chk-place-btn:hover::before {
+    transform: scaleX(1);
+}
+
+.chk-place-btn span {
+    position: relative;
+    z-index: 1;
+}
+
+.chk-cancel-btn {
+    text-align: center;
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: #7a7060;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.15s;
+    padding: 6px;
+}
+
+.chk-cancel-btn:hover {
+    color: #1a1f1a;
+}
+
+/* ── Note ─────────────────────────────────────────────────── */
+.chk-receipt-note {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px dashed #b0a890;
+    text-align: center;
+    font-family: 'Courier Prime', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: #9a8e78;
+    line-height: 1.7;
+}
+
+/* ── Empty state ──────────────────────────────────────────── */
+.chk-empty {
+    text-align: center;
+    padding: 60px 0;
+}
+
+.chk-empty-icon {
+    font-size: 40px;
+    color: #4a5e2a;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.chk-empty-text {
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.22em;
+    color: #5a5040;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.chk-empty-btn {
+    display: inline-block;
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: #1a1f1a;
+    text-decoration: none;
+    border: 1.5px solid #1a1f1a;
+    padding: 10px 20px;
+    transition: background 0.15s, color 0.15s;
+}
+
+.chk-empty-btn:hover {
+    background: #1a1f1a;
+    color: #f5f0e8;
+}
+</style>
 {% endblock %}
 
 {% block main %}
 <main class="chk-main">
     <div class="chk-container">
 
-        <!-- ── Header ─────────────────────────────────── -->
-        <section class="chk-header-strip">
-            <h1 class="chk-title">CHECKOUT</h1>
-            <span class="chk-sub">Review your order before placing</span>
-        </section>
-
         {% if cart_items and cart_items | length > 0 %}
-        <div class="chk-body">
+        <div class="chk-receipt">
+            <div class="chk-receipt-inner">
 
-            <!-- ── Order Items ─────────────────────────── -->
-            <div class="chk-items-panel">
-                <div class="chk-panel-label">ORDER ITEMS</div>
-                <div class="chk-item-list">
+                <!-- Store header -->
+                <div class="chk-store-header">
+                    <div class="chk-store-logo">ARMS <span>DEALER</span></div>
+                    <div class="chk-store-tagline">Tactical Equipment & Services</div>
+                    <div class="chk-receipt-meta">
+                        <span>ORDER RECEIPT</span>
+                        <span>{{ now().strftime('%Y-%m-%d') if now else '—' }}</span>
+                    </div>
+                </div>
+
+                <!-- Items -->
+                <div class="chk-items-block">
+                    <div class="chk-receipt-section-label">ORDER ITEMS</div>
+                    <div class="chk-items-header">
+                        <div>DESCRIPTION</div>
+                        <div class="col-price">PRICE</div>
+                        <div class="col-qty">QTY</div>
+                        <div class="col-sub">AMOUNT</div>
+                    </div>
                     {% for item in cart_items %}
                     <div class="chk-item-row">
-                        <div class="chk-item-img-wrap">
-                            {% if item.image_file %}
-                            <img src="{{ url_for('static', filename='assets/images/' + item.image_file) }}"
-                                 alt="{{ item.name }}" class="chk-item-img">
-                            {% else %}
-                            <div class="chk-item-img-placeholder">⊡</div>
-                            {% endif %}
-                        </div>
-                        <div class="chk-item-info">
+                        <div class="chk-item-name-block">
                             <div class="chk-item-name">{{ item.name }}</div>
-                            <div class="chk-item-meta">
-                                <span class="chk-item-type">{{ item.item_type | upper }}</span>
-                                <span class="chk-item-qty">QTY: {{ item.quantity }}</span>
-                            </div>
+                            <span class="chk-item-type-badge">{{ item.item_type | upper }}</span>
                         </div>
-                        <div class="chk-item-price">
-                            {{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(item.price) }}
-                            <span class="chk-item-unit">/ unit</span>
-                        </div>
-                        <div class="chk-item-subtotal">
-                            {{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(item.price * item.quantity) }}
-                        </div>
+                        <div class="chk-item-price">{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(item.price) }}</div>
+                        <div class="chk-item-qty">{{ item.quantity }}</div>
+                        <div class="chk-item-sub">{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(item.price * item.quantity) }}</div>
                     </div>
                     {% endfor %}
                 </div>
-            </div>
 
-            <!-- ── Cost Breakdown ─────────────────────── -->
-            <div class="chk-summary-panel">
-                <div class="chk-panel-label">COST BREAKDOWN</div>
-                <div class="chk-breakdown">
-                    <div class="chk-breakdown-row">
-                        <span class="chk-breakdown-label">Subtotal</span>
-                        <span class="chk-breakdown-val">{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(cart_total) }}</span>
+                <!-- Totals -->
+                <div class="chk-totals-block">
+                    <div class="chk-totals-row">
+                        <span class="chk-totals-label">Subtotal</span>
+                        <span class="chk-totals-val">{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(cart_total) }}</span>
                     </div>
-                    <div class="chk-breakdown-row">
-                        <span class="chk-breakdown-label">Shipping</span>
-                        <span class="chk-breakdown-val chk-free">FREE</span>
+                    <div class="chk-totals-row">
+                        <span class="chk-totals-label">Shipping</span>
+                        <span class="chk-totals-val chk-free">FREE</span>
                     </div>
-                    <div class="chk-breakdown-row">
-                        <span class="chk-breakdown-label">Tax (0%)</span>
-                        <span class="chk-breakdown-val">{{ currency.symbol if currency else '₱' }}0</span>
+                    <div class="chk-totals-row">
+                        <span class="chk-totals-label">Tax (0%)</span>
+                        <span class="chk-totals-val">{{ currency.symbol if currency else '₱' }}0</span>
                     </div>
-                    <div class="chk-breakdown-divider"></div>
-                    <div class="chk-breakdown-row chk-total-row">
-                        <span class="chk-breakdown-label">TOTAL</span>
-                        <span class="chk-breakdown-val chk-total-val">{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(cart_total) }}</span>
+                    <div class="chk-totals-divider"></div>
+                    <div class="chk-total-final-row">
+                        <span class="chk-total-final-label">TOTAL DUE</span>
+                        <span class="chk-total-final-val">{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(cart_total) }}</span>
                     </div>
                 </div>
 
-                <!-- ── Action Buttons ──────────────────── -->
+                <!-- Barcode decoration -->
+                <div class="chk-barcode">
+                    <div class="chk-barcode-bars">
+                        <span style="--w:1px;--h:38px"></span><span style="--w:3px;--h:38px"></span><span style="--w:1px;--h:28px"></span><span style="--w:2px;--h:38px"></span><span style="--w:1px;--h:32px"></span><span style="--w:3px;--h:38px"></span><span style="--w:1px;--h:24px"></span><span style="--w:2px;--h:38px"></span><span style="--w:1px;--h:38px"></span><span style="--w:3px;--h:30px"></span><span style="--w:1px;--h:38px"></span><span style="--w:2px;--h:38px"></span><span style="--w:1px;--h:22px"></span><span style="--w:3px;--h:38px"></span><span style="--w:1px;--h:38px"></span><span style="--w:2px;--h:34px"></span><span style="--w:1px;--h:38px"></span><span style="--w:1px;--h:26px"></span><span style="--w:3px;--h:38px"></span><span style="--w:1px;--h:38px"></span><span style="--w:2px;--h:38px"></span><span style="--w:1px;--h:20px"></span><span style="--w:3px;--h:38px"></span><span style="--w:1px;--h:38px"></span><span style="--w:2px;--h:30px"></span><span style="--w:1px;--h:38px"></span><span style="--w:3px;--h:38px"></span><span style="--w:1px;--h:24px"></span><span style="--w:2px;--h:38px"></span><span style="--w:1px;--h:38px"></span>
+                    </div>
+                    <div class="chk-barcode-num">ARM-{{ range(1000000,9999999) | random if range else '4821659' }}</div>
+                </div>
+
+                <!-- Actions -->
                 <div class="chk-actions">
                     <form method="POST" action="{{ url_for('cart.place_order') }}">
                         <input type="hidden" name="csrf_token" value="{{ session.get('_csrf_token', '') }}">
                         <button type="submit" class="chk-place-btn">
-                            <span>PLACE ORDER ▶</span>
+                            <span>▶ CONFIRM & PLACE ORDER</span>
                         </button>
                     </form>
-                    <a href="{{ url_for('main.orders') }}" class="chk-cancel-btn">✕ CANCEL</a>
+                    <a href="{{ url_for('main.orders') }}" class="chk-cancel-btn">✕ Cancel and return to cart</a>
                 </div>
 
-                <div class="chk-note">
-                    <span class="chk-note-icon">◈</span>
-                    <span>Orders are reviewed and processed by our team. You will be notified of status changes.</span>
+                <div class="chk-receipt-note">
+                    Orders are reviewed and processed by our team.<br>
+                    You will be notified of all status changes.<br>
+                    THANK YOU FOR YOUR PURCHASE
+                </div>
+
+            </div>
+        </div>
+
+        {% else %}
+        <div class="chk-receipt">
+            <div class="chk-receipt-inner">
+                <div class="chk-store-header">
+                    <div class="chk-store-logo">ARMS <span>DEALER</span></div>
+                    <div class="chk-store-tagline">Tactical Equipment & Services</div>
+                </div>
+                <div class="chk-empty">
+                    <div class="chk-empty-icon">⊡</div>
+                    <div class="chk-empty-text">Your cart is empty</div>
+                    <a href="{{ url_for('main.products') }}" class="chk-empty-btn">BROWSE PRODUCTS ▶</a>
                 </div>
             </div>
-
-        </div>
-        {% else %}
-        <div class="chk-empty">
-            <div class="chk-empty-icon">⊡</div>
-            <div class="chk-empty-text">Your cart is empty</div>
-            <a href="{{ url_for('main.products') }}" class="chk-empty-btn">BROWSE PRODUCTS ▶</a>
         </div>
         {% endif %}
 
