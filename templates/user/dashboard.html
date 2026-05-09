@@ -31,14 +31,22 @@
     width: 280px;
     flex-shrink: 0;
     background: var(--mil-dark, #131713);
-    border-right: 1px solid var(--mil-border, #2e3a2e);
-    border-top: 3px solid var(--mil-bright, #a8c47a); /* bright on admin vs olive on settings */
+    border-top: 3px solid var(--mil-olive, #6b7c4e);
     position: sticky;
     top: 0;
     height: 100vh;
+
     overflow-y: auto;
+    overflow-x: hidden;   /* 🔑 prevent horizontal scroll */
+
     display: flex;
     flex-direction: column;
+}
+
+/* Optional but recommended: prevent child overflow */
+.adm-sidenav * {
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 /* Corner bracket accent */
@@ -209,6 +217,7 @@
     flex: 1;
     background: var(--mil-dark, #131713);
     border-top: 3px solid var(--mil-olive, #6b7c4e);
+    padding-top: 15px;
     border-left: none;
     min-height: 100vh;
     position: relative;
@@ -493,10 +502,6 @@
              LEFT NAVIGATION PANEL
         ══════════════════════════════════ -->
         <nav class="adm-sidenav" id="admSidenav">
-            <div class="adm-sidenav-header">
-                <div class="adm-sidenav-title">ADMIN PANEL</div>
-                <div class="adm-sidenav-user">{{ session.get('username', 'Admin') | upper }}</div>
-            </div>
 
             <div class="adm-nav-section-label">OVERVIEW</div>
             <ul class="adm-nav-list">
