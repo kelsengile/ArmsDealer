@@ -5,114 +5,151 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/user/dashboard.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pagestyles/settingsstyles.css') }}">
 <style>
-/* ── Dashboard overrides to match Settings layout ─────────────── */
+/* ══════════════════════════════════════════════════════════════════
+   ADMIN DASHBOARD — FULL REDESIGN
+══════════════════════════════════════════════════════════════════ */
 
-/* Reuse setpage structure but with dashboard-specific names */
+:root {
+    --mil-black:  #0d0f0d;
+    --mil-dark:   #111411;
+    --mil-panel:  #161b16;
+    --mil-border: #252e25;
+    --mil-olive:  #5a6e3e;
+    --mil-bright: #96b562;
+    --mil-light:  #d8e4c4;
+    --mil-text:   #b8c9a4;
+    --mil-muted:  #3d523d;
+    --mil-dim:    #2a352a;
+    --mil-gold:   #c0922a;
+    --mil-red:    #8b2a2a;
+    --mil-blue:   #2a5080;
+    --mil-teal:   #2a7060;
+    --font-stencil: 'Oswald', sans-serif;
+    --font-mono: 'Share Tech Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
 .adm-main {
     min-height: calc(100vh - var(--header-h, 98px));
     display: flex;
-    align-items: stretch;
-    background: var(--mil-black, #0d0f0d);
+    background: var(--mil-black);
 }
 
 .adm-wrapper {
     display: flex;
     width: 100%;
     max-width: 100%;
-    margin: 0;
-    padding: 0;
-    gap: 0;
     align-items: stretch;
     flex: 1;
 }
 
-/* ── LEFT NAV — mirrors .setpage-nav ──────────────────────────── */
+/* ── SIDENAV ────────────────────────────────────────────────────── */
 .adm-sidenav {
-    width: 280px;
+    width: 260px;
     flex-shrink: 0;
-    background: var(--mil-dark, #131713);
-    border-top: 3px solid var(--mil-olive, #6b7c4e);
+    background: var(--mil-dark);
+    border-right: 1px solid var(--mil-border);
+    border-top: 3px solid var(--mil-bright);
     position: sticky;
     top: 0;
     height: 100vh;
-
     overflow-y: auto;
-    overflow-x: hidden;   /* 🔑 prevent horizontal scroll */
-
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
+    scrollbar-width: none;
 }
+.adm-sidenav::-webkit-scrollbar { display: none; }
 
-/* Optional but recommended: prevent child overflow */
-.adm-sidenav * {
-    max-width: 100%;
-    box-sizing: border-box;
-}
-
-/* Corner bracket accent */
-.adm-sidenav::after {
-    content: "";
-    position: absolute;
-    top: -3px;
-    right: -1px;
-    width: 24px;
-    height: 24px;
-    border-top: 3px solid var(--mil-bright, #a8c47a);
-    pointer-events: none;
-    z-index: 2;
-}
-
-/* Nav header */
 .adm-sidenav-header {
-    padding: 16px 20px 12px;
-    border-bottom: 1px solid var(--mil-border, #2e3a2e);
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--mil-border);
+    background: linear-gradient(135deg, rgba(150,181,98,0.06) 0%, transparent 60%);
+}
+
+.adm-sidenav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.adm-sidenav-brand-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--mil-bright);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--mil-black);
+    clip-path: polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%);
+    flex-shrink: 0;
 }
 
 .adm-sidenav-title {
-    font-family: var(--font-stencil, 'Oswald', sans-serif);
-    font-size: 14px;
+    font-family: var(--font-stencil);
+    font-size: 13px;
     font-weight: 700;
-    letter-spacing: 0.26em;
+    letter-spacing: 0.22em;
+    color: var(--mil-bright);
     text-transform: uppercase;
-    color: var(--mil-bright, #a8c47a);
 }
 
-.adm-sidenav-title::before {
-    content: "◈ ";
-    opacity: 0.7;
-    font-size: 11px;
-}
-
-.adm-sidenav-user {
-    font-family: var(--font-mono, 'Share Tech Mono', monospace);
+.adm-sidenav-sub {
+    font-family: var(--font-mono);
     font-size: 9px;
     letter-spacing: 0.1em;
-    color: var(--mil-muted, #4a5e4a);
-    margin-top: 4px;
+    color: var(--mil-muted);
+    margin-top: 2px;
+}
+
+/* Quick stats in sidebar */
+.adm-sidenav-quickstats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.adm-qs-item {
+    background: rgba(150,181,98,0.04);
+    border: 1px solid var(--mil-border);
+    padding: 8px 10px;
+}
+
+.adm-qs-label {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: var(--mil-muted);
     text-transform: uppercase;
 }
 
-/* Section label (mirrors setpage-nav-section-label) */
+.adm-qs-value {
+    font-family: var(--font-stencil);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--mil-light);
+    line-height: 1.1;
+    margin-top: 2px;
+}
+
+.adm-qs-value.highlight { color: var(--mil-bright); }
+
+/* Nav sections */
 .adm-nav-section-label {
-    padding: 12px 20px 4px;
-    font-family: var(--font-mono, 'Share Tech Mono', monospace);
-    font-size: 9px;
-    letter-spacing: 0.22em;
+    padding: 14px 20px 4px;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.28em;
     text-transform: uppercase;
-    color: var(--mil-muted, #4a5e4a);
+    color: var(--mil-muted);
 }
 
-/* Nav list cleanup */
-.adm-nav-list {
-    list-style: none;
-    padding: 8px 0;
-    margin: 0;
-    flex: 1;
-}
-
+.adm-nav-list { list-style: none; padding: 4px 0; }
 .adm-nav-list li { margin: 0; }
 
-/* Nav items — mirrors setpage-nav-item exactly */
 .adm-nav-item {
     width: 100%;
     background: none;
@@ -122,12 +159,12 @@
     align-items: center;
     gap: 10px;
     padding: 10px 18px 10px 20px;
-    font-family: var(--font-stencil, 'Oswald', sans-serif);
-    font-size: 13px;
+    font-family: var(--font-stencil);
+    font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--mil-muted, #4a5e4a);
+    color: var(--mil-muted);
     cursor: pointer;
     text-align: left;
     transition: all 0.15s;
@@ -135,135 +172,133 @@
 }
 
 .adm-nav-item:hover {
-    background: rgba(138, 170, 106, 0.05);
-    color: var(--mil-text, #c8d4b8);
-    border-left-color: transparent;
-}
-
-.adm-nav-item:hover .adm-nav-arrow {
-    opacity: 1;
+    background: rgba(150,181,98,0.05);
+    color: var(--mil-text);
 }
 
 .adm-nav-item.active {
-    background: rgba(138, 170, 106, 0.08);
-    color: var(--mil-bright, #a8c47a);
-    border-left-color: var(--mil-bright, #a8c47a);
+    background: rgba(150,181,98,0.08);
+    color: var(--mil-bright);
+    border-left-color: var(--mil-bright);
 }
-
-.adm-nav-item.active .adm-nav-icon { opacity: 1; }
 
 .adm-nav-icon {
     font-size: 12px;
-    width: 14px;
+    width: 16px;
     text-align: center;
     flex-shrink: 0;
-    opacity: 0.65;
+    opacity: 0.7;
 }
 
+.adm-nav-item.active .adm-nav-icon { opacity: 1; }
 .adm-nav-label { flex: 1; }
 
 .adm-nav-arrow {
-    font-size: 9px;
-    color: var(--mil-bright, #a8c47a);
+    font-size: 8px;
+    color: var(--mil-bright);
     opacity: 0;
     transition: opacity 0.15s;
 }
 
+.adm-nav-item:hover .adm-nav-arrow,
 .adm-nav-item.active .adm-nav-arrow { opacity: 1; }
 
-/* Badge */
 .adm-nav-badge {
-    background: var(--mil-bright, #a8c47a);
-    color: var(--mil-black, #0d0f0d);
-    font-family: var(--font-mono, monospace);
-    font-size: 10px;
+    background: var(--mil-bright);
+    color: var(--mil-black);
+    font-family: var(--font-mono);
+    font-size: 9px;
     font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 2px;
-    min-width: 20px;
+    padding: 1px 6px;
+    border-radius: 1px;
+    min-width: 18px;
     text-align: center;
 }
 
-/* Divider */
-.adm-nav-divider {
-    height: 1px;
-    background: var(--mil-border, #2e3a2e);
-    margin: 6px 16px;
+.adm-nav-badge.red-badge {
+    background: #c0392b;
+    color: #fff;
 }
 
-/* Footer */
+.adm-nav-divider {
+    height: 1px;
+    background: var(--mil-border);
+    margin: 8px 16px;
+}
+
 .adm-sidenav-footer {
     padding: 14px 20px;
-    border-top: 1px solid var(--mil-border, #2e3a2e);
+    border-top: 1px solid var(--mil-border);
+    margin-top: auto;
 }
 
 .adm-back-site-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-family: var(--font-stencil, 'Oswald', sans-serif);
+    font-family: var(--font-stencil);
     font-size: 11px;
     letter-spacing: 0.12em;
-    color: var(--mil-muted, #4a5e4a);
+    color: var(--mil-muted);
     text-decoration: none;
     text-transform: uppercase;
     transition: color 0.15s;
 }
 
-.adm-back-site-btn:hover { color: var(--mil-text, #c8d4b8); }
+.adm-back-site-btn:hover { color: var(--mil-text); }
 
-/* ── RIGHT CONTENT — mirrors .setpage-content ─────────────────── */
+/* ── CONTENT ────────────────────────────────────────────────────── */
 .adm-content {
     flex: 1;
-    background: var(--mil-dark, #131713);
-    border-top: 3px solid var(--mil-olive, #6b7c4e);
-    padding-top: 15px;
-    border-left: none;
+    background: var(--mil-dark);
+    border-top: 3px solid var(--mil-olive);
     min-height: 100vh;
-    position: relative;
     overflow: hidden auto;
+    position: relative;
 }
 
-/* Scanlines */
-.adm-content::after {
+/* Scanline overlay */
+.adm-content::before {
     content: "";
-    position: absolute;
+    position: fixed;
     inset: 0;
     background: repeating-linear-gradient(
         0deg,
         transparent,
         transparent 3px,
-        rgba(0, 0, 0, 0.04) 3px,
-        rgba(0, 0, 0, 0.04) 4px
+        rgba(0,0,0,0.025) 3px,
+        rgba(0,0,0,0.025) 4px
     );
     pointer-events: none;
-    z-index: 0;
+    z-index: 100;
 }
 
-/* Sections */
-.adm-section {
-    display: none;
-    position: relative;
-    z-index: 1;
-}
 
+.adm-section { display: none; }
 .adm-section.active { display: block; }
 
-/* Section header — mirrors setpage-panel-header */
+/* Section header */
 .adm-section-header {
     padding: 24px 32px 18px;
-    border-bottom: 1px solid var(--mil-border, #2e3a2e);
-    margin-bottom: 0;
+    border-bottom: 1px solid var(--mil-border);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    background: linear-gradient(90deg, rgba(150,181,98,0.03) 0%, transparent 50%);
 }
 
+.adm-section-header-left {}
+
 .adm-section-title {
-    font-family: var(--font-stencil, 'Oswald', sans-serif);
-    font-size: 20px;
+    font-family: var(--font-stencil);
+    font-size: 22px;
     font-weight: 700;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.26em;
     text-transform: uppercase;
-    color: var(--mil-light, #e2ead4);
-    margin: 0 0 4px;
+    color: var(--mil-light);
+    margin: 0 0 6px;
     position: relative;
     padding-bottom: 10px;
 }
@@ -273,125 +308,414 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 36px;
+    width: 32px;
     height: 2px;
-    background: var(--mil-bright, #a8c47a);
+    background: var(--mil-bright);
 }
 
 .adm-section-sub {
-    font-family: var(--font-mono, 'Share Tech Mono', monospace);
+    font-family: var(--font-mono);
     font-size: 10px;
-    letter-spacing: 0.1em;
-    color: var(--mil-muted, #4a5e4a);
+    letter-spacing: 0.12em;
+    color: var(--mil-muted);
     text-transform: uppercase;
     display: block;
-    margin-top: 4px;
 }
 
-/* Section body padding */
-.adm-section-body {
-    padding: 28px 32px;
-    position: relative;
-    z-index: 1;
+.adm-section-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
 }
 
-/* ── Stats grid ────────────────────────────────────────────────── */
+.adm-section-body { padding: 28px 32px; }
+
+/* ══ STAT CARDS ══ */
 .adm-stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
 }
 
 .adm-stat-card {
-    background: rgba(28, 33, 28, 0.8);
-    border: 1px solid var(--mil-border, #2e3a2e);
-    border-top: 2px solid var(--mil-olive, #6b7c4e);
-    padding: 20px 18px;
+    background: var(--mil-panel);
+    border: 1px solid var(--mil-border);
+    border-top: 2px solid var(--mil-olive);
+    padding: 18px 16px;
     display: flex;
     flex-direction: column;
     gap: 6px;
+    position: relative;
+    overflow: hidden;
+    transition: border-top-color 0.2s, transform 0.15s;
 }
 
-.adm-stat-card.adm-stat-highlight {
-    border-top-color: var(--mil-bright, #a8c47a);
+.adm-stat-card:hover {
+    transform: translateY(-1px);
+}
+
+.adm-stat-card.highlight { border-top-color: var(--mil-bright); }
+.adm-stat-card.gold      { border-top-color: var(--mil-gold); }
+.adm-stat-card.red       { border-top-color: var(--mil-red); }
+.adm-stat-card.blue      { border-top-color: var(--mil-blue); }
+
+.adm-stat-card::after {
+    content: "";
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 40px; height: 40px;
+    background: radial-gradient(circle at 100% 100%, rgba(150,181,98,0.06) 0%, transparent 70%);
 }
 
 .adm-stat-icon {
-    font-size: 18px;
-    color: var(--mil-olive, #6b7c4e);
+    font-size: 16px;
+    color: var(--mil-olive);
 }
 
+.adm-stat-card.highlight .adm-stat-icon { color: var(--mil-bright); }
+.adm-stat-card.gold .adm-stat-icon { color: var(--mil-gold); }
+.adm-stat-card.red .adm-stat-icon { color: #c0392b; }
+.adm-stat-card.blue .adm-stat-icon { color: #5090c0; }
+
 .adm-stat-label {
-    font-family: var(--font-stencil, 'Oswald', sans-serif);
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    color: var(--mil-muted, #4a5e4a);
+    font-family: var(--font-stencil);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--mil-muted);
     text-transform: uppercase;
 }
 
 .adm-stat-value {
-    font-family: var(--font-stencil, 'Oswald', sans-serif);
-    font-size: 28px;
+    font-family: var(--font-stencil);
+    font-size: 26px;
     font-weight: 700;
-    color: var(--mil-light, #e2ead4);
+    color: var(--mil-light);
     line-height: 1;
 }
 
-/* ── Orders table ──────────────────────────────────────────────── */
-.adm-orders-table-wrap { overflow-x: auto; }
+.adm-stat-delta {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--mil-muted);
+    letter-spacing: 0.06em;
+}
 
-.adm-orders-table {
+.adm-stat-delta.pos { color: var(--mil-bright); }
+.adm-stat-delta.neg { color: #c0392b; }
+
+/* ══ CHARTS ══ */
+.adm-charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.adm-charts-row.triple {
+    grid-template-columns: 2fr 1fr 1fr;
+}
+
+.adm-chart-card {
+    background: var(--mil-panel);
+    border: 1px solid var(--mil-border);
+    padding: 0;
+    overflow: hidden;
+}
+
+.adm-chart-header {
+    padding: 14px 18px 12px;
+    border-bottom: 1px solid var(--mil-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.adm-chart-title {
+    font-family: var(--font-stencil);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mil-text);
+}
+
+.adm-chart-meta {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--mil-muted);
+    letter-spacing: 0.08em;
+}
+
+.adm-chart-body {
+    padding: 16px 18px;
+}
+
+/* SVG bar chart */
+.adm-bar-chart {
+    width: 100%;
+    height: 140px;
+    overflow: visible;
+}
+
+/* Donut chart */
+.adm-donut-wrap {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.adm-donut-svg {
+    width: 110px;
+    height: 110px;
+    flex-shrink: 0;
+}
+
+.adm-donut-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.adm-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.adm-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 1px;
+    flex-shrink: 0;
+}
+
+.adm-legend-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--mil-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    flex: 1;
+}
+
+.adm-legend-val {
+    font-family: var(--font-stencil);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--mil-text);
+}
+
+/* Sparkline */
+.adm-sparkline-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.adm-sparkline-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.adm-sparkline-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.adm-sparkline-name {
+    font-family: var(--font-stencil);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: var(--mil-muted);
+    text-transform: uppercase;
+}
+
+.adm-sparkline-val {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--mil-text);
+}
+
+.adm-bar-track {
+    height: 4px;
+    background: var(--mil-border);
+    width: 100%;
+    position: relative;
+}
+
+.adm-bar-fill {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    background: var(--mil-bright);
+    transition: width 0.8s ease;
+}
+
+/* ══ TABLES ══ */
+.adm-table-wrap { overflow-x: auto; }
+
+.adm-table {
     width: 100%;
     border-collapse: collapse;
-    font-family: var(--font-mono, monospace);
-    font-size: 12px;
-}
-
-.adm-orders-table thead tr {
-    background: rgba(28, 33, 28, 0.8);
-    border-bottom: 2px solid var(--mil-border, #2e3a2e);
-}
-
-.adm-orders-table th {
-    font-family: var(--font-stencil, 'Oswald', sans-serif);
+    font-family: var(--font-mono);
     font-size: 11px;
-    letter-spacing: 0.18em;
-    color: var(--mil-muted, #4a5e4a);
+}
+
+.adm-table thead tr {
+    background: rgba(28,33,28,0.8);
+    border-bottom: 2px solid var(--mil-border);
+}
+
+.adm-table th {
+    font-family: var(--font-stencil);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--mil-muted);
     text-transform: uppercase;
-    padding: 12px 14px;
+    padding: 10px 14px;
     text-align: left;
     white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
 }
 
-.adm-orders-table tbody tr {
-    border-bottom: 1px solid var(--mil-border, #2e3a2e);
-    transition: background 0.15s;
+.adm-table th:hover { color: var(--mil-text); }
+
+.adm-table th .sort-arrow { opacity: 0.3; margin-left: 4px; font-size: 8px; }
+.adm-table th.sorted .sort-arrow { opacity: 1; color: var(--mil-bright); }
+
+.adm-table tbody tr {
+    border-bottom: 1px solid var(--mil-border);
+    transition: background 0.12s;
 }
 
-.adm-orders-table tbody tr:hover {
-    background: rgba(168, 196, 122, 0.04);
+.adm-table tbody tr:hover {
+    background: rgba(150,181,98,0.04);
 }
 
-.adm-orders-table td {
-    padding: 12px 14px;
-    color: var(--mil-text, #c8d4b8);
+.adm-table td {
+    padding: 11px 14px;
+    color: var(--mil-text);
     vertical-align: middle;
 }
 
-.adm-order-id {
-    font-family: var(--font-stencil, 'Oswald', sans-serif);
-    font-size: 13px;
+.adm-table-id {
+    font-family: var(--font-stencil);
+    font-size: 12px;
     font-weight: 700;
-    color: var(--mil-light, #e2ead4);
+    color: var(--mil-light);
     white-space: nowrap;
 }
+
+/* Pagination */
+.adm-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0 0;
+    margin-top: 12px;
+    border-top: 1px solid var(--mil-border);
+}
+
+.adm-pagination-info {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--mil-muted);
+    letter-spacing: 0.08em;
+}
+
+.adm-pagination-btns {
+    display: flex;
+    gap: 4px;
+}
+
+.adm-page-btn {
+    background: var(--mil-panel);
+    border: 1px solid var(--mil-border);
+    color: var(--mil-muted);
+    font-family: var(--font-stencil);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.adm-page-btn:hover {
+    border-color: var(--mil-olive);
+    color: var(--mil-text);
+}
+
+.adm-page-btn.active {
+    background: var(--mil-bright);
+    border-color: var(--mil-bright);
+    color: var(--mil-black);
+}
+
+/* Search / filter bar */
+.adm-filter-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.adm-search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 180px;
+}
+
+.adm-search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    color: var(--mil-muted);
+    pointer-events: none;
+}
+
+.adm-search-input {
+    width: 100%;
+    background: var(--mil-panel);
+    border: 1px solid var(--mil-border);
+    color: var(--mil-text);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 8px 10px 8px 30px;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.adm-search-input::placeholder { color: var(--mil-muted); }
+.adm-search-input:focus { border-color: var(--mil-olive); }
+
+.adm-filter-select {
+    background: var(--mil-panel);
+    border: 1px solid var(--mil-border);
+    color: var(--mil-text);
+    font-family: var(--font-stencil);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 8px 10px;
+    cursor: pointer;
+    outline: none;
+}
+
+.adm-filter-select:focus { border-color: var(--mil-olive); }
 
 /* Status pills */
 .adm-status-pill {
     display: inline-block;
-    padding: 4px 10px;
-    font-family: var(--font-stencil, 'Oswald', sans-serif);
-    font-size: 10px;
+    padding: 3px 9px;
+    font-family: var(--font-stencil);
+    font-size: 9px;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -399,98 +723,480 @@
     white-space: nowrap;
 }
 
-.adm-status-order-placed { color: #8aaa6a; border-color: #3a5a2a; background: rgba(138,170,106,0.08); }
-.adm-status-packing      { color: #c0a050; border-color: #6a5020; background: rgba(192,160,80,0.08); }
-.adm-status-shipping     { color: #5090c0; border-color: #204060; background: rgba(80,144,192,0.08); }
-.adm-status-delivered    { color: var(--mil-bright,#a8c47a); border-color: var(--mil-olive,#6b7c4e); background: rgba(168,196,122,0.12); }
+.adm-status-order-placed,.adm-status-pending {
+    color: #8aaa6a; border-color: #3a5a2a; background: rgba(138,170,106,0.08);
+}
+.adm-status-packing,.adm-status-verified {
+    color: #c0a050; border-color: #6a5020; background: rgba(192,160,80,0.08);
+}
+.adm-status-shipping,.adm-status-paid {
+    color: #5090c0; border-color: #204060; background: rgba(80,144,192,0.08);
+}
+.adm-status-delivered,.adm-status-completed {
+    color: var(--mil-bright); border-color: var(--mil-olive); background: rgba(150,181,98,0.12);
+}
+.adm-status-cancelled {
+    color: #c0392b; border-color: #5a1a1a; background: rgba(192,57,43,0.08);
+}
+.adm-status-new {
+    color: #5090c0; border-color: #204060; background: rgba(80,144,192,0.08);
+}
+.adm-status-read {
+    color: var(--mil-muted); border-color: var(--mil-border); background: transparent;
+}
+.adm-status-resolved {
+    color: var(--mil-bright); border-color: var(--mil-olive); background: rgba(150,181,98,0.12);
+}
 
 /* Status controls */
-.adm-status-controls { display: flex; gap: 8px; align-items: center; }
+.adm-status-controls { display: flex; gap: 6px; align-items: center; }
 
 .adm-status-select {
-    background: rgba(28, 33, 28, 0.8);
-    border: 1px solid var(--mil-border, #2e3a2e);
-    color: var(--mil-text, #c8d4b8);
-    font-family: var(--font-stencil, 'Oswald', sans-serif);
-    font-size: 11px;
+    background: var(--mil-panel);
+    border: 1px solid var(--mil-border);
+    color: var(--mil-text);
+    font-family: var(--font-stencil);
+    font-size: 10px;
     letter-spacing: 0.08em;
-    padding: 6px 8px;
+    padding: 5px 8px;
     cursor: pointer;
     outline: none;
 }
 
-.adm-status-select:focus { border-color: var(--mil-olive, #6b7c4e); }
+.adm-status-select:focus { border-color: var(--mil-olive); }
 
 .adm-update-btn {
-    background: var(--mil-olive, #6b7c4e);
+    background: var(--mil-olive);
     border: none;
-    color: var(--mil-black, #0d0f0d);
-    font-family: var(--font-stencil, 'Oswald', sans-serif);
-    font-size: 11px;
+    color: var(--mil-black);
+    font-family: var(--font-stencil);
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.12em;
-    padding: 6px 12px;
+    padding: 5px 10px;
     cursor: pointer;
     transition: background 0.18s;
     white-space: nowrap;
 }
 
-.adm-update-btn:hover { background: var(--mil-bright, #a8c47a); }
+.adm-update-btn:hover { background: var(--mil-bright); }
 
-/* ── Empty / coming soon — mirrors setpage-panel-placeholder ─── */
+/* Action buttons */
+.adm-btn {
+    background: transparent;
+    border: 1px solid var(--mil-border);
+    color: var(--mil-muted);
+    font-family: var(--font-stencil);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.adm-btn:hover {
+    border-color: var(--mil-olive);
+    color: var(--mil-text);
+}
+
+.adm-btn.primary {
+    background: var(--mil-olive);
+    border-color: var(--mil-olive);
+    color: var(--mil-black);
+    font-weight: 700;
+}
+
+.adm-btn.primary:hover {
+    background: var(--mil-bright);
+    border-color: var(--mil-bright);
+}
+
+.adm-btn.danger {
+    border-color: #5a1a1a;
+    color: #c0392b;
+}
+
+.adm-btn.danger:hover {
+    background: rgba(192,57,43,0.1);
+    border-color: #c0392b;
+}
+
+/* Icon buttons */
+.adm-icon-btn {
+    background: none;
+    border: 1px solid var(--mil-border);
+    color: var(--mil-muted);
+    padding: 5px 8px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+    line-height: 1;
+}
+
+.adm-icon-btn:hover {
+    border-color: var(--mil-olive);
+    color: var(--mil-text);
+}
+
+/* Empty state */
 .adm-empty {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 400px;
-    gap: 12px;
+    min-height: 300px;
+    gap: 10px;
     text-align: center;
 }
 
-.adm-empty-icon {
-    font-size: 48px;
-    color: var(--mil-muted, #4a5e4a);
-    opacity: 0.2;
-    line-height: 1;
-}
-
+.adm-empty-icon { font-size: 40px; color: var(--mil-muted); opacity: 0.2; }
 .adm-empty-text {
-    font-family: var(--font-stencil, 'Oswald', sans-serif);
-    font-size: 16px;
+    font-family: var(--font-stencil);
+    font-size: 14px;
     font-weight: 600;
-    letter-spacing: 0.26em;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
-    color: var(--mil-muted, #4a5e4a);
+    color: var(--mil-muted);
     opacity: 0.5;
 }
-
 .adm-empty-sub {
-    font-family: var(--font-mono, monospace);
+    font-family: var(--font-mono);
     font-size: 10px;
-    letter-spacing: 0.12em;
-    color: var(--mil-muted, #4a5e4a);
+    letter-spacing: 0.1em;
+    color: var(--mil-muted);
     opacity: 0.4;
     text-transform: uppercase;
 }
 
-/* ── Responsive ─────────────────────────────────────────────────── */
+/* ══ USER TABLE EXTRAS ══ */
+.adm-user-avatar {
+    width: 28px;
+    height: 28px;
+    background: var(--mil-dim);
+    border: 1px solid var(--mil-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-stencil);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--mil-text);
+    flex-shrink: 0;
+    overflow: hidden;
+    clip-path: polygon(8% 0%, 92% 0%, 100% 8%, 100% 92%, 92% 100%, 8% 100%, 0% 92%, 0% 8%);
+}
+
+.adm-user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.adm-user-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.adm-role-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    font-family: var(--font-stencil);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1px solid;
+}
+
+.adm-role-admin {
+    color: var(--mil-gold);
+    border-color: #5a4010;
+    background: rgba(192,146,42,0.1);
+}
+
+.adm-role-customer {
+    color: var(--mil-muted);
+    border-color: var(--mil-border);
+    background: transparent;
+}
+
+/* ══ INVENTORY EXTRAS ══ */
+.adm-stock-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.adm-stock-track {
+    flex: 1;
+    height: 3px;
+    background: var(--mil-border);
+    position: relative;
+    min-width: 60px;
+}
+
+.adm-stock-fill {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    background: var(--mil-bright);
+    transition: width 0.5s ease;
+}
+
+.adm-stock-fill.low { background: #c0392b; }
+.adm-stock-fill.med { background: var(--mil-gold); }
+
+.adm-stock-num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--mil-muted);
+    white-space: nowrap;
+    min-width: 28px;
+    text-align: right;
+}
+
+/* ══ INQUIRIES ══ */
+.adm-inquiry-row td { cursor: pointer; }
+.adm-inquiry-row:hover td { background: rgba(150,181,98,0.04); }
+
+.adm-inquiry-preview {
+    max-width: 280px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--mil-muted);
+    font-size: 10px;
+}
+
+/* Modal */
+.adm-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.adm-modal-overlay.open { display: flex; }
+
+.adm-modal {
+    background: var(--mil-dark);
+    border: 1px solid var(--mil-border);
+    border-top: 3px solid var(--mil-bright);
+    width: 520px;
+    max-width: 90vw;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.adm-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 14px;
+    border-bottom: 1px solid var(--mil-border);
+}
+
+.adm-modal-title {
+    font-family: var(--font-stencil);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mil-light);
+}
+
+.adm-modal-close {
+    background: none;
+    border: none;
+    color: var(--mil-muted);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 2px 6px;
+    transition: color 0.15s;
+}
+
+.adm-modal-close:hover { color: var(--mil-text); }
+
+.adm-modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.adm-modal-field {
+    margin-bottom: 14px;
+}
+
+.adm-modal-field-label {
+    font-family: var(--font-stencil);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mil-muted);
+    margin-bottom: 6px;
+    display: block;
+}
+
+.adm-modal-field-val {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--mil-text);
+    background: var(--mil-panel);
+    border: 1px solid var(--mil-border);
+    padding: 10px 12px;
+    min-height: 40px;
+    line-height: 1.5;
+}
+
+.adm-modal-footer {
+    padding: 14px 20px;
+    border-top: 1px solid var(--mil-border);
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+/* ══ TOAST ══ */
+.adm-toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--mil-panel);
+    border: 1px solid var(--mil-border);
+    border-left: 3px solid var(--mil-bright);
+    color: var(--mil-light);
+    font-family: var(--font-stencil);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    padding: 12px 18px;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+    max-width: 320px;
+}
+
+.adm-toast.show { opacity: 1; transform: translateY(0); }
+.adm-toast.err { border-left-color: #c0392b; }
+
+/* ══ RESPONSIVE ══ */
+@media (max-width: 900px) {
+    .adm-charts-row { grid-template-columns: 1fr; }
+    .adm-charts-row.triple { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 768px) {
     .adm-wrapper { flex-direction: column; }
-    .adm-sidenav {
-        width: 100%;
-        height: auto;
-        position: static;
-        border-right: none;
-        border-bottom: 1px solid var(--mil-border, #2e3a2e);
-    }
-    .adm-content {
-        border-top: none;
-        min-height: 300px;
-    }
-    .adm-section-header,
-    .adm-section-body { padding-left: 20px; padding-right: 20px; }
+    .adm-sidenav { width: 100%; height: auto; position: static; border-right: none; }
+    .adm-content { border-top: none; }
+    .adm-section-header, .adm-section-body { padding-left: 16px; padding-right: 16px; }
+    .adm-stats-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ══ BRANDS SECTION EXTRAS ══ */
+.adm-brand-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.adm-brand-card {
+    background: var(--mil-panel);
+    border: 1px solid var(--mil-border);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: border-color 0.15s;
+}
+
+.adm-brand-card:hover { border-color: var(--mil-olive); }
+
+.adm-brand-logo {
+    width: 40px;
+    height: 40px;
+    background: var(--mil-dim);
+    border: 1px solid var(--mil-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-stencil);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--mil-bright);
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.adm-brand-logo img { width: 100%; height: 100%; object-fit: contain; }
+
+.adm-brand-info { flex: 1; min-width: 0; }
+
+.adm-brand-name {
+    font-family: var(--font-stencil);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mil-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.adm-brand-meta {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--mil-muted);
+    margin-top: 3px;
+}
+
+.adm-auth-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--mil-bright);
+    display: inline-block;
+    margin-right: 4px;
+}
+
+.adm-auth-dot.unauth { background: #c0392b; }
+
+/* Rating stars */
+.adm-rating {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--mil-gold);
+}
+
+/* Revenue mini chart */
+.adm-rev-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 40px;
+}
+
+.adm-rev-bar {
+    flex: 1;
+    background: rgba(150,181,98,0.2);
+    transition: background 0.15s;
+    min-height: 4px;
+}
+
+.adm-rev-bar:hover { background: rgba(150,181,98,0.5); }
+.adm-rev-bar.today { background: var(--mil-bright); }
 </style>
 {% endblock %}
 
@@ -499,11 +1205,39 @@
     <div class="adm-wrapper">
 
         <!-- ══════════════════════════════════
-             LEFT NAVIGATION PANEL
+             SIDENAV
         ══════════════════════════════════ -->
         <nav class="adm-sidenav" id="admSidenav">
 
-            <div class="adm-nav-section-label">OVERVIEW</div>
+            <div class="adm-sidenav-header">
+                <div class="adm-sidenav-brand">
+                    <div class="adm-sidenav-brand-icon">⚔</div>
+                    <div>
+                        <div class="adm-sidenav-title">Command</div>
+                        <div class="adm-sidenav-sub">Admin Terminal</div>
+                    </div>
+                </div>
+                <div class="adm-sidenav-quickstats">
+                    <div class="adm-qs-item">
+                        <div class="adm-qs-label">Orders</div>
+                        <div class="adm-qs-value highlight">{{ stats.total_orders }}</div>
+                    </div>
+                    <div class="adm-qs-item">
+                        <div class="adm-qs-label">Pending</div>
+                        <div class="adm-qs-value highlight">{{ stats.pending_orders }}</div>
+                    </div>
+                    <div class="adm-qs-item">
+                        <div class="adm-qs-label">Users</div>
+                        <div class="adm-qs-value">{{ stats.total_users }}</div>
+                    </div>
+                    <div class="adm-qs-item">
+                        <div class="adm-qs-label">Products</div>
+                        <div class="adm-qs-value">{{ stats.total_products }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="adm-nav-section-label">Overview</div>
             <ul class="adm-nav-list">
                 <li>
                     <button class="adm-nav-item active" data-section="analytics">
@@ -522,22 +1256,51 @@
                         <span class="adm-nav-arrow">▶</span>
                     </button>
                 </li>
+                <li>
+                    <button class="adm-nav-item" data-section="inquiries">
+                        <span class="adm-nav-icon">✉</span>
+                        <span class="adm-nav-label">Inquiries</span>
+                        {% if stats.new_inquiries is defined and stats.new_inquiries > 0 %}
+                        <span class="adm-nav-badge red-badge">{{ stats.new_inquiries }}</span>
+                        {% endif %}
+                        <span class="adm-nav-arrow">▶</span>
+                    </button>
+                </li>
             </ul>
 
             <div class="adm-nav-divider"></div>
-            <div class="adm-nav-section-label">MANAGEMENT</div>
+            <div class="adm-nav-section-label">Catalog</div>
+            <ul class="adm-nav-list">
+                <li>
+                    <button class="adm-nav-item" data-section="inventory">
+                        <span class="adm-nav-icon">◎</span>
+                        <span class="adm-nav-label">Inventory</span>
+                        <span class="adm-nav-arrow">▶</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="adm-nav-item" data-section="services">
+                        <span class="adm-nav-icon">◈</span>
+                        <span class="adm-nav-label">Services</span>
+                        <span class="adm-nav-arrow">▶</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="adm-nav-item" data-section="brands">
+                        <span class="adm-nav-icon">▣</span>
+                        <span class="adm-nav-label">Brands</span>
+                        <span class="adm-nav-arrow">▶</span>
+                    </button>
+                </li>
+            </ul>
+
+            <div class="adm-nav-divider"></div>
+            <div class="adm-nav-section-label">Management</div>
             <ul class="adm-nav-list">
                 <li>
                     <button class="adm-nav-item" data-section="users">
                         <span class="adm-nav-icon">☰</span>
                         <span class="adm-nav-label">Users</span>
-                        <span class="adm-nav-arrow">▶</span>
-                    </button>
-                </li>
-                <li>
-                    <button class="adm-nav-item" data-section="inventory">
-                        <span class="adm-nav-icon">◎</span>
-                        <span class="adm-nav-label">Inventory</span>
                         <span class="adm-nav-arrow">▶</span>
                     </button>
                 </li>
@@ -549,88 +1312,207 @@
         </nav>
 
         <!-- ══════════════════════════════════
-             RIGHT CONTENT PANEL
+             CONTENT
         ══════════════════════════════════ -->
         <div class="adm-content" id="admContent">
 
-            <!-- ─── ANALYTICS ──────────────────────────────────── -->
+            <!-- ─── ANALYTICS ──────────────────────────────── -->
             <section class="adm-section active" id="section-analytics">
                 <div class="adm-section-header">
-                    <h2 class="adm-section-title">ANALYTICS</h2>
-                    <span class="adm-section-sub">System overview & performance metrics</span>
+                    <div class="adm-section-header-left">
+                        <h2 class="adm-section-title">Analytics</h2>
+                        <span class="adm-section-sub">System overview &amp; performance metrics</span>
+                    </div>
+                    <div class="adm-section-actions">
+                        <span style="font-family:var(--font-mono);font-size:9px;color:var(--mil-muted);letter-spacing:0.1em;" id="adm-date-display"></span>
+                    </div>
                 </div>
                 <div class="adm-section-body">
+
+                    <!-- Stat cards -->
                     <div class="adm-stats-grid">
-                        <div class="adm-stat-card">
-                            <div class="adm-stat-icon">◉</div>
-                            <div class="adm-stat-label">Total Users</div>
-                            <div class="adm-stat-value">{{ stats.total_users }}</div>
+                        <div class="adm-stat-card gold">
+                            <div class="adm-stat-icon">₱</div>
+                            <div class="adm-stat-label">Total Revenue</div>
+                            <div class="adm-stat-value">₱{{ '{:,.0f}'.format(stats.total_revenue) }}</div>
+                            <div class="adm-stat-delta pos">▲ All time</div>
                         </div>
-                        <div class="adm-stat-card">
+                        <div class="adm-stat-card highlight">
                             <div class="adm-stat-icon">⊡</div>
                             <div class="adm-stat-label">Total Orders</div>
                             <div class="adm-stat-value">{{ stats.total_orders }}</div>
+                            <div class="adm-stat-delta">Lifetime</div>
                         </div>
-                        <div class="adm-stat-card">
-                            <div class="adm-stat-icon">◈</div>
-                            <div class="adm-stat-label">Products</div>
-                            <div class="adm-stat-value">{{ stats.total_products }}</div>
-                        </div>
-                        <div class="adm-stat-card">
-                            <div class="adm-stat-icon">◎</div>
-                            <div class="adm-stat-label">Services</div>
-                            <div class="adm-stat-value">{{ stats.total_services }}</div>
-                        </div>
-                        <div class="adm-stat-card adm-stat-highlight">
+                        <div class="adm-stat-card red">
                             <div class="adm-stat-icon">▶</div>
-                            <div class="adm-stat-label">Pending Orders</div>
+                            <div class="adm-stat-label">Pending</div>
                             <div class="adm-stat-value">{{ stats.pending_orders }}</div>
+                            <div class="adm-stat-delta neg">Needs attention</div>
                         </div>
                         <div class="adm-stat-card">
                             <div class="adm-stat-icon">✓</div>
                             <div class="adm-stat-label">Delivered</div>
                             <div class="adm-stat-value">{{ stats.delivered_orders }}</div>
+                            <div class="adm-stat-delta pos">Completed</div>
                         </div>
                         <div class="adm-stat-card">
-                            <div class="adm-stat-icon">₱</div>
-                            <div class="adm-stat-label">Total Revenue</div>
-                            <div class="adm-stat-value">₱{{ '{:,.0f}'.format(stats.total_revenue) }}</div>
+                            <div class="adm-stat-icon">◉</div>
+                            <div class="adm-stat-label">Total Users</div>
+                            <div class="adm-stat-value">{{ stats.total_users }}</div>
+                            <div class="adm-stat-delta">Registered</div>
+                        </div>
+                        <div class="adm-stat-card">
+                            <div class="adm-stat-icon">◈</div>
+                            <div class="adm-stat-label">Products</div>
+                            <div class="adm-stat-value">{{ stats.total_products }}</div>
+                            <div class="adm-stat-delta">In catalog</div>
+                        </div>
+                        <div class="adm-stat-card">
+                            <div class="adm-stat-icon">◎</div>
+                            <div class="adm-stat-label">Services</div>
+                            <div class="adm-stat-value">{{ stats.total_services }}</div>
+                            <div class="adm-stat-delta">Available</div>
+                        </div>
+                        <div class="adm-stat-card blue">
+                            <div class="adm-stat-icon">✉</div>
+                            <div class="adm-stat-label">Inquiries</div>
+                            <div class="adm-stat-value">{{ stats.new_inquiries if stats.new_inquiries is defined else '—' }}</div>
+                            <div class="adm-stat-delta">Unread</div>
                         </div>
                     </div>
+
+                    <!-- Charts row 1: Revenue bar + Order donut -->
+                    <div class="adm-charts-row" style="grid-template-columns: 3fr 2fr;">
+                        <div class="adm-chart-card">
+                            <div class="adm-chart-header">
+                                <span class="adm-chart-title">Revenue Trend</span>
+                                <span class="adm-chart-meta">Last 7 days</span>
+                            </div>
+                            <div class="adm-chart-body">
+                                <svg class="adm-bar-chart" id="revenueChart" viewBox="0 0 520 140" preserveAspectRatio="none">
+                                    <!-- Rendered by JS -->
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="adm-chart-card">
+                            <div class="adm-chart-header">
+                                <span class="adm-chart-title">Order Status</span>
+                                <span class="adm-chart-meta">Breakdown</span>
+                            </div>
+                            <div class="adm-chart-body">
+                                <div class="adm-donut-wrap">
+                                    <svg class="adm-donut-svg" id="donutChart" viewBox="0 0 110 110">
+                                        <!-- Rendered by JS -->
+                                    </svg>
+                                    <div class="adm-donut-legend" id="donutLegend"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts row 2: Category breakdown sparklines -->
+                    <div class="adm-charts-row" style="grid-template-columns: 1fr 1fr;">
+                        <div class="adm-chart-card">
+                            <div class="adm-chart-header">
+                                <span class="adm-chart-title">Top Products by Sales</span>
+                                <span class="adm-chart-meta">By sales_count</span>
+                            </div>
+                            <div class="adm-chart-body">
+                                <div class="adm-sparkline-wrap" id="topProductsChart">
+                                    {% if top_products is defined and top_products %}
+                                    {% set max_sales = top_products[0].sales_count if top_products[0].sales_count > 0 else 1 %}
+                                    {% for p in top_products[:6] %}
+                                    <div class="adm-sparkline-item">
+                                        <div class="adm-sparkline-label">
+                                            <span class="adm-sparkline-name">{{ p.name[:28] }}</span>
+                                            <span class="adm-sparkline-val">{{ p.sales_count }}</span>
+                                        </div>
+                                        <div class="adm-bar-track">
+                                            <div class="adm-bar-fill" style="width:{{ (p.sales_count / max_sales * 100)|int }}%"></div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                    {% else %}
+                                    <div class="adm-empty" style="min-height:120px;">
+                                        <div class="adm-empty-text">No sales data</div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="adm-chart-card">
+                            <div class="adm-chart-header">
+                                <span class="adm-chart-title">Revenue by Day</span>
+                                <span class="adm-chart-meta">Mini chart</span>
+                            </div>
+                            <div class="adm-chart-body">
+                                <div class="adm-rev-chart" id="miniRevChart"></div>
+                                <div style="display:flex;justify-content:space-between;margin-top:8px;" id="miniRevLabels"></div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </section>
 
-            <!-- ─── ORDERS ─────────────────────────────────────── -->
+            <!-- ─── ORDERS ──────────────────────────────────── -->
             <section class="adm-section" id="section-orders">
                 <div class="adm-section-header">
-                    <h2 class="adm-section-title">ORDERS</h2>
-                    <span class="adm-section-sub">Manage and update order statuses</span>
+                    <div class="adm-section-header-left">
+                        <h2 class="adm-section-title">Orders</h2>
+                        <span class="adm-section-sub">Manage and update order statuses</span>
+                    </div>
+                    <div class="adm-section-actions">
+                        <span style="font-family:var(--font-mono);font-size:9px;color:var(--mil-muted);">{{ orders | length if orders else 0 }} total</span>
+                    </div>
                 </div>
                 <div class="adm-section-body">
+                    <div class="adm-filter-bar">
+                        <div class="adm-search-wrap">
+                            <span class="adm-search-icon">⌕</span>
+                            <input type="text" class="adm-search-input" id="ordersSearch" placeholder="Search order ID or user...">
+                        </div>
+                        <select class="adm-filter-select" id="ordersStatusFilter">
+                            <option value="">All Statuses</option>
+                            <option value="order placed">Order Placed</option>
+                            <option value="packing">Packing</option>
+                            <option value="shipping">Shipping</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
                     {% if orders and orders | length > 0 %}
-                    <div class="adm-orders-table-wrap">
-                        <table class="adm-orders-table">
+                    <div class="adm-table-wrap">
+                        <table class="adm-table" id="ordersTable">
                             <thead>
                                 <tr>
-                                    <th>Order ID</th>
-                                    <th>User</th>
-                                    <th>Date</th>
-                                    <th>Items</th>
-                                    <th>Total</th>
+                                    <th data-col="id" class="sorted">Order ID <span class="sort-arrow">▲</span></th>
+                                    <th data-col="user">User <span class="sort-arrow">↕</span></th>
+                                    <th data-col="date">Date <span class="sort-arrow">↕</span></th>
+                                    <th data-col="items">Items <span class="sort-arrow">↕</span></th>
+                                    <th data-col="total">Total <span class="sort-arrow">↕</span></th>
                                     <th>Status</th>
-                                    <th>Action</th>
+                                    <th>Update</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="ordersTableBody">
                                 {% for order in orders %}
-                                <tr class="adm-order-row" id="order-row-{{ order.id }}">
-                                    <td class="adm-order-id">ORD-{{ '%06d' % order.id }}</td>
-                                    <td>{{ order.username or '—' }}</td>
+                                <tr class="adm-order-row" id="order-row-{{ order.id }}"
+                                    data-user="{{ order.username | lower if order.username else '' }}"
+                                    data-status="{{ order.status | lower }}">
+                                    <td><span class="adm-table-id">ORD-{{ '%06d' % order.id }}</span></td>
+                                    <td>
+                                        <div class="adm-user-cell">
+                                            <div class="adm-user-avatar">{{ (order.username or '?')[0].upper() }}</div>
+                                            {{ order.username or '—' }}
+                                        </div>
+                                    </td>
                                     <td>{{ order.created_at[:10] if order.created_at else '—' }}</td>
                                     <td>{{ order.item_count or 0 }}</td>
                                     <td>₱{{ '{:,.0f}'.format(order.total) }}</td>
                                     <td>
-                                        <span class="adm-status-pill adm-status-{{ order.status | lower | replace(' ', '-') }}" id="status-{{ order.id }}">
+                                        <span class="adm-status-pill adm-status-{{ order.status | lower | replace(' ', '-') }}"
+                                              id="status-{{ order.id }}">
                                             {{ order.status | upper }}
                                         </span>
                                     </td>
@@ -638,9 +1520,10 @@
                                         <div class="adm-status-controls">
                                             <select class="adm-status-select" id="select-{{ order.id }}" data-order-id="{{ order.id }}">
                                                 <option value="order placed" {% if order.status == 'order placed' %}selected{% endif %}>Order Placed</option>
-                                                <option value="packing" {% if order.status == 'packing' %}selected{% endif %}>Packing</option>
-                                                <option value="shipping" {% if order.status == 'shipping' %}selected{% endif %}>Shipping</option>
-                                                <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                                                <option value="packing"      {% if order.status == 'packing' %}selected{% endif %}>Packing</option>
+                                                <option value="shipping"     {% if order.status == 'shipping' %}selected{% endif %}>Shipping</option>
+                                                <option value="delivered"    {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                                                <option value="cancelled"    {% if order.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
                                             </select>
                                             <button class="adm-update-btn" data-order-id="{{ order.id | int }}">UPDATE ›</button>
                                         </div>
@@ -650,39 +1533,393 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="adm-pagination" id="ordersPagination">
+                        <span class="adm-pagination-info" id="ordersPageInfo"></span>
+                        <div class="adm-pagination-btns" id="ordersPageBtns"></div>
+                    </div>
                     {% else %}
                     <div class="adm-empty">
                         <div class="adm-empty-icon">⊡</div>
                         <div class="adm-empty-text">No orders yet</div>
-                        <div class="adm-empty-sub">Orders will appear here once placed</div>
+                        <div class="adm-empty-sub">Orders appear here once placed</div>
                     </div>
                     {% endif %}
                 </div>
             </section>
 
-            <!-- ─── USERS ──────────────────────────────────────── -->
-            <section class="adm-section" id="section-users">
+            <!-- ─── INQUIRIES ──────────────────────────────── -->
+            <section class="adm-section" id="section-inquiries">
                 <div class="adm-section-header">
-                    <h2 class="adm-section-title">USERS</h2>
-                    <span class="adm-section-sub">User accounts and management</span>
+                    <div class="adm-section-header-left">
+                        <h2 class="adm-section-title">Inquiries</h2>
+                        <span class="adm-section-sub">Customer contact &amp; support messages</span>
+                    </div>
                 </div>
-                <div class="adm-empty">
-                    <div class="adm-empty-icon">☰</div>
-                    <div class="adm-empty-text">Coming Soon</div>
-                    <div class="adm-empty-sub">User management — under construction</div>
+                <div class="adm-section-body">
+                    <div class="adm-filter-bar">
+                        <div class="adm-search-wrap">
+                            <span class="adm-search-icon">⌕</span>
+                            <input type="text" class="adm-search-input" id="inquiriesSearch" placeholder="Search name, email, subject...">
+                        </div>
+                        <select class="adm-filter-select" id="inquiriesStatusFilter">
+                            <option value="">All</option>
+                            <option value="new">New</option>
+                            <option value="read">Read</option>
+                            <option value="resolved">Resolved</option>
+                        </select>
+                    </div>
+                    {% if inquiries is defined and inquiries and inquiries | length > 0 %}
+                    <div class="adm-table-wrap">
+                        <table class="adm-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Subject</th>
+                                    <th>Preview</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inquiriesTableBody">
+                                {% for inq in inquiries %}
+                                <tr class="adm-inquiry-row"
+                                    data-name="{{ inq.name | lower }}"
+                                    data-email="{{ inq.email | lower }}"
+                                    data-subject="{{ (inq.subject or '') | lower }}"
+                                    data-status="{{ inq.status | lower }}"
+                                    data-id="{{ inq.id }}">
+                                    <td><span class="adm-table-id">INQ-{{ '%04d' % inq.id }}</span></td>
+                                    <td>{{ inq.name }}</td>
+                                    <td style="font-size:10px;">{{ inq.email }}</td>
+                                    <td>{{ inq.subject or '—' }}</td>
+                                    <td><div class="adm-inquiry-preview">{{ inq.message[:80] }}{% if inq.message | length > 80 %}…{% endif %}</div></td>
+                                    <td>
+                                        <span class="adm-status-pill adm-status-{{ inq.status | lower }}" id="inq-status-{{ inq.id }}">
+                                            {{ inq.status | upper }}
+                                        </span>
+                                    </td>
+                                    <td style="white-space:nowrap;">{{ inq.created_at[:10] if inq.created_at else '—' }}</td>
+                                    <td>
+                                        <button class="adm-btn adm-view-inquiry-btn" style="font-size:9px;padding:4px 10px;"
+                                                data-inq-id="{{ inq.id }}"
+                                                data-inq-name="{{ inq.name }}"
+                                                data-inq-email="{{ inq.email }}"
+                                                data-inq-subject="{{ inq.subject or 'No Subject' }}"
+                                                data-inq-message="{{ inq.message }}"
+                                                data-inq-status="{{ inq.status }}"
+                                                data-inq-date="{{ inq.created_at[:10] if inq.created_at else '' }}">
+                                            View ›
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="adm-empty">
+                        <div class="adm-empty-icon">✉</div>
+                        <div class="adm-empty-text">No inquiries</div>
+                        <div class="adm-empty-sub">Customer messages will appear here</div>
+                    </div>
+                    {% endif %}
                 </div>
             </section>
 
-            <!-- ─── INVENTORY ──────────────────────────────────── -->
+            <!-- ─── INVENTORY ──────────────────────────────── -->
             <section class="adm-section" id="section-inventory">
                 <div class="adm-section-header">
-                    <h2 class="adm-section-title">INVENTORY</h2>
-                    <span class="adm-section-sub">Stock levels and product management</span>
+                    <div class="adm-section-header-left">
+                        <h2 class="adm-section-title">Inventory</h2>
+                        <span class="adm-section-sub">Products stock levels &amp; catalog</span>
+                    </div>
+                    <div class="adm-section-actions">
+                        <a href="{{ url_for('admin.add_product') if admin is defined else '#' }}" class="adm-btn primary">+ Add Product</a>
+                    </div>
                 </div>
-                <div class="adm-empty">
-                    <div class="adm-empty-icon">◎</div>
-                    <div class="adm-empty-text">Coming Soon</div>
-                    <div class="adm-empty-sub">Inventory management — under construction</div>
+                <div class="adm-section-body">
+                    <div class="adm-filter-bar">
+                        <div class="adm-search-wrap">
+                            <span class="adm-search-icon">⌕</span>
+                            <input type="text" class="adm-search-input" id="inventorySearch" placeholder="Search product name...">
+                        </div>
+                        <select class="adm-filter-select" id="inventoryStockFilter">
+                            <option value="">All Stock</option>
+                            <option value="out">Out of Stock (0)</option>
+                            <option value="low">Low Stock (≤5)</option>
+                            <option value="ok">In Stock</option>
+                        </select>
+                    </div>
+                    {% if products is defined and products and products | length > 0 %}
+                    <div class="adm-table-wrap">
+                        <table class="adm-table" id="inventoryTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Product</th>
+                                    <th>Category</th>
+                                    <th>Brand</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Rating</th>
+                                    <th>Sales</th>
+                                    <th>Auth</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryTableBody">
+                                {% for p in products %}
+                                {% set stock_pct = [[(p.stock / 100 * 100)|int, 100]|min, 0]|max %}
+                                <tr data-name="{{ p.name | lower }}" data-stock="{{ p.stock }}">
+                                    <td><span class="adm-table-id" style="font-size:11px;">{{ p.id }}</span></td>
+                                    <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ p.name }}</td>
+                                    <td style="font-size:10px;color:var(--mil-muted);">{{ p.category_name if p.category_name is defined else '—' }}</td>
+                                    <td style="font-size:10px;color:var(--mil-muted);">{{ p.brand_name if p.brand_name is defined else '—' }}</td>
+                                    <td>₱{{ '{:,.0f}'.format(p.price) }}</td>
+                                    <td>
+                                        <div class="adm-stock-bar">
+                                            <div class="adm-stock-track">
+                                                <div class="adm-stock-fill {% if p.stock == 0 %}low{% elif p.stock <= 5 %}med{% endif %}"
+                                                     style="width:{{ [p.stock * 2, 100]|min }}%"></div>
+                                            </div>
+                                            <span class="adm-stock-num {% if p.stock == 0 %}{% elif p.stock <= 5 %}{% endif %}"
+                                                  style="{% if p.stock == 0 %}color:#c0392b{% elif p.stock <= 5 %}color:var(--mil-gold){% endif %}">
+                                                {{ p.stock }}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="adm-rating">★ {{ '%.1f'|format(p.rating) }}</span>
+                                    </td>
+                                    <td>{{ p.sales_count }}</td>
+                                    <td>
+                                        {% if p.is_authorized %}
+                                        <span style="color:var(--mil-bright);font-size:10px;">✓</span>
+                                        {% else %}
+                                        <span style="color:var(--mil-muted);font-size:10px;">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div style="display:flex;gap:4px;">
+                                            <a href="{{ url_for('admin.edit_product', id=p.id) if admin is defined else '#' }}" class="adm-icon-btn" title="Edit">✎</a>
+                                            <button class="adm-icon-btn danger" title="Delete"
+                                                    onclick="if(confirm('Delete {{ p.name }}?'))window.location.href='{{ url_for('admin.delete_product', id=p.id) if admin is defined else '#' }}'">✕</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="adm-empty">
+                        <div class="adm-empty-icon">◈</div>
+                        <div class="adm-empty-text">No products</div>
+                        <div class="adm-empty-sub">Add your first product to get started</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- ─── SERVICES ───────────────────────────────── -->
+            <section class="adm-section" id="section-services">
+                <div class="adm-section-header">
+                    <div class="adm-section-header-left">
+                        <h2 class="adm-section-title">Services</h2>
+                        <span class="adm-section-sub">Manage offered services</span>
+                    </div>
+                    <div class="adm-section-actions">
+                        <a href="{{ url_for('admin.add_service') if admin is defined else '#' }}" class="adm-btn primary">+ Add Service</a>
+                    </div>
+                </div>
+                <div class="adm-section-body">
+                    <div class="adm-filter-bar">
+                        <div class="adm-search-wrap">
+                            <span class="adm-search-icon">⌕</span>
+                            <input type="text" class="adm-search-input" id="servicesSearch" placeholder="Search service name...">
+                        </div>
+                    </div>
+                    {% if services is defined and services and services | length > 0 %}
+                    <div class="adm-table-wrap">
+                        <table class="adm-table" id="servicesTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Service</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Discount</th>
+                                    <th>Rating</th>
+                                    <th>Sales</th>
+                                    <th>Auth</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="servicesTableBody">
+                                {% for s in services %}
+                                <tr data-name="{{ s.name | lower }}">
+                                    <td><span class="adm-table-id" style="font-size:11px;">{{ s.id }}</span></td>
+                                    <td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ s.name }}</td>
+                                    <td style="font-size:10px;color:var(--mil-muted);">{{ s.category_name if s.category_name is defined else '—' }}</td>
+                                    <td>₱{{ '{:,.0f}'.format(s.price) }}</td>
+                                    <td>{{ s.discount if s.discount else '—' }}{% if s.discount %}%{% endif %}</td>
+                                    <td><span class="adm-rating">★ {{ '%.1f'|format(s.rating) }}</span></td>
+                                    <td>{{ s.sales_count }}</td>
+                                    <td>
+                                        {% if s.is_authorized %}
+                                        <span style="color:var(--mil-bright);font-size:10px;">✓</span>
+                                        {% else %}
+                                        <span style="color:var(--mil-muted);font-size:10px;">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div style="display:flex;gap:4px;">
+                                            <a href="{{ url_for('admin.edit_service', id=s.id) if admin is defined else '#' }}" class="adm-icon-btn" title="Edit">✎</a>
+                                            <button class="adm-icon-btn danger" title="Delete">✕</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="adm-empty">
+                        <div class="adm-empty-icon">◎</div>
+                        <div class="adm-empty-text">No services</div>
+                        <div class="adm-empty-sub">Add your first service</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- ─── BRANDS ─────────────────────────────────── -->
+            <section class="adm-section" id="section-brands">
+                <div class="adm-section-header">
+                    <div class="adm-section-header-left">
+                        <h2 class="adm-section-title">Brands</h2>
+                        <span class="adm-section-sub">Authorized &amp; partner brands</span>
+                    </div>
+                    <div class="adm-section-actions">
+                        <a href="{{ url_for('admin.add_brand') if admin is defined else '#' }}" class="adm-btn primary">+ Add Brand</a>
+                    </div>
+                </div>
+                <div class="adm-section-body">
+                    {% if brands is defined and brands and brands | length > 0 %}
+                    <div class="adm-brand-grid" id="brandGrid">
+                        {% for b in brands %}
+                        <div class="adm-brand-card">
+                            <div class="adm-brand-logo">
+                                {% if b.logo_file %}
+                                <img src="{{ url_for('static', filename='img/brands/' + b.logo_file) }}" alt="{{ b.name }}">
+                                {% else %}
+                                {{ b.name[0].upper() }}
+                                {% endif %}
+                            </div>
+                            <div class="adm-brand-info">
+                                <div class="adm-brand-name">{{ b.name }}</div>
+                                <div class="adm-brand-meta">
+                                    <span class="adm-auth-dot {% if not b.is_authorized %}unauth{% endif %}"></span>
+                                    {{ 'Authorized' if b.is_authorized else 'Unauthorized' }}
+                                </div>
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:4px;">
+                                <a href="{{ url_for('admin.edit_brand', id=b.id) if admin is defined else '#' }}" class="adm-icon-btn" title="Edit">✎</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="adm-empty">
+                        <div class="adm-empty-icon">▣</div>
+                        <div class="adm-empty-text">No brands</div>
+                        <div class="adm-empty-sub">Add partner brands</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- ─── USERS ──────────────────────────────────── -->
+            <section class="adm-section" id="section-users">
+                <div class="adm-section-header">
+                    <div class="adm-section-header-left">
+                        <h2 class="adm-section-title">Users</h2>
+                        <span class="adm-section-sub">Registered accounts &amp; roles</span>
+                    </div>
+                </div>
+                <div class="adm-section-body">
+                    <div class="adm-filter-bar">
+                        <div class="adm-search-wrap">
+                            <span class="adm-search-icon">⌕</span>
+                            <input type="text" class="adm-search-input" id="usersSearch" placeholder="Search username or email...">
+                        </div>
+                        <select class="adm-filter-select" id="usersRoleFilter">
+                            <option value="">All Roles</option>
+                            <option value="admin">Admin</option>
+                            <option value="customer">Customer</option>
+                        </select>
+                    </div>
+                    {% if users is defined and users and users | length > 0 %}
+                    <div class="adm-table-wrap">
+                        <table class="adm-table" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Country</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                {% for u in users %}
+                                <tr data-username="{{ u.username | lower }}"
+                                    data-email="{{ u.email | lower }}"
+                                    data-role="{{ u.role | lower }}">
+                                    <td><span class="adm-table-id" style="font-size:11px;">{{ u.id }}</span></td>
+                                    <td>
+                                        <div class="adm-user-cell">
+                                            <div class="adm-user-avatar">
+                                                {% if u.profile_image %}
+                                                <img src="{{ url_for('static', filename='img/profiles/' + u.profile_image) }}" alt="{{ u.username }}">
+                                                {% else %}
+                                                {{ u.username[0].upper() }}
+                                                {% endif %}
+                                            </div>
+                                            {{ u.username }}
+                                        </div>
+                                    </td>
+                                    <td style="font-size:10px;">{{ u.email }}</td>
+                                    <td>
+                                        <span class="adm-role-pill adm-role-{{ u.role | lower }}">{{ u.role | upper }}</span>
+                                    </td>
+                                    <td style="font-size:10px;color:var(--mil-muted);">{{ u.country or '—' }}</td>
+                                    <td style="font-size:10px;">{{ u.created_at[:10] if u.created_at else '—' }}</td>
+                                    <td>
+                                        <div style="display:flex;gap:4px;">
+                                            <a href="{{ url_for('admin.view_user', id=u.id) if admin is defined else '#' }}" class="adm-icon-btn" title="View">⊡</a>
+                                            {% if u.role != 'admin' %}
+                                            <button class="adm-icon-btn danger" title="Ban/Delete">✕</button>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="adm-empty">
+                        <div class="adm-empty-icon">☰</div>
+                        <div class="adm-empty-text">No users found</div>
+                        <div class="adm-empty-sub">User accounts appear here once registered</div>
+                    </div>
+                    {% endif %}
                 </div>
             </section>
 
@@ -690,8 +1927,51 @@
     </div>
 </main>
 
+<!-- ─── INQUIRY MODAL ──────────────────────────────────── -->
+<div class="adm-modal-overlay" id="inquiryModal">
+    <div class="adm-modal">
+        <div class="adm-modal-header">
+            <span class="adm-modal-title" id="modalInqTitle">Inquiry</span>
+            <button class="adm-modal-close" id="modalClose">✕</button>
+        </div>
+        <div class="adm-modal-body">
+            <div class="adm-modal-field">
+                <span class="adm-modal-field-label">From</span>
+                <div class="adm-modal-field-val" id="modalInqFrom"></div>
+            </div>
+            <div class="adm-modal-field">
+                <span class="adm-modal-field-label">Email</span>
+                <div class="adm-modal-field-val" id="modalInqEmail"></div>
+            </div>
+            <div class="adm-modal-field">
+                <span class="adm-modal-field-label">Subject</span>
+                <div class="adm-modal-field-val" id="modalInqSubject"></div>
+            </div>
+            <div class="adm-modal-field">
+                <span class="adm-modal-field-label">Message</span>
+                <div class="adm-modal-field-val" id="modalInqMessage" style="min-height:80px;white-space:pre-wrap;"></div>
+            </div>
+            <div class="adm-modal-field">
+                <span class="adm-modal-field-label">Date</span>
+                <div class="adm-modal-field-val" id="modalInqDate"></div>
+            </div>
+        </div>
+        <div class="adm-modal-footer">
+            <button class="adm-btn danger" id="modalMarkNew">Mark New</button>
+            <button class="adm-btn" id="modalMarkRead">Mark Read</button>
+            <button class="adm-btn primary" id="modalMarkResolved">Mark Resolved</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="adm-toast" id="admToast"></div>
+
 <script>
 (function () {
+    'use strict';
+
+    /* ── Nav ───────────────────────────────────────── */
     const navItems = document.querySelectorAll('.adm-nav-item');
     const sections = document.querySelectorAll('.adm-section');
 
@@ -706,10 +1986,25 @@
         });
     });
 
-    function showToast(msg, type) {
-        if (window.ArmsToast) ArmsToast.show(msg, type === 'err' ? 'danger' : 'success');
+    /* ── Date display ──────────────────────────────── */
+    const dd = document.getElementById('adm-date-display');
+    if (dd) {
+        const d = new Date();
+        dd.textContent = d.toLocaleDateString('en-US', { weekday:'short', year:'numeric', month:'short', day:'numeric' }).toUpperCase();
     }
 
+    /* ── Toast ─────────────────────────────────────── */
+    function showToast(msg, type) {
+        const t = document.getElementById('admToast');
+        if (!t) return;
+        t.textContent = msg;
+        t.className = 'adm-toast' + (type === 'err' ? ' err' : '');
+        void t.offsetWidth;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    /* ── Order status update ───────────────────────── */
     document.addEventListener('click', function (e) {
         const btn = e.target.closest('.adm-update-btn');
         if (!btn) return;
@@ -718,6 +2013,8 @@
         const sel = document.getElementById('select-' + orderId);
         if (!sel) return;
         const newStatus = sel.value;
+        btn.textContent = '...';
+        btn.disabled = true;
 
         fetch('/admin/order/' + orderId + '/status', {
             method: 'POST',
@@ -726,19 +2023,274 @@
         })
         .then(r => r.json())
         .then(data => {
+            btn.textContent = 'UPDATE ›';
+            btn.disabled = false;
             if (data.ok) {
                 const pill = document.getElementById('status-' + orderId);
                 if (pill) {
                     pill.textContent = newStatus.toUpperCase();
-                    pill.className = 'adm-status-pill adm-status-' + newStatus.toLowerCase().replace(' ', '-');
+                    pill.className = 'adm-status-pill adm-status-' + newStatus.toLowerCase().replace(/ /g, '-');
                 }
-                showToast('ORD-' + String(orderId).padStart(6, '0') + ' → ' + newStatus.toUpperCase(), 'ok');
+                const row = document.getElementById('order-row-' + orderId);
+                if (row) row.dataset.status = newStatus.toLowerCase();
+                showToast('ORD-' + String(orderId).padStart(6,'0') + ' → ' + newStatus.toUpperCase());
             } else {
                 showToast(data.error || 'Update failed', 'err');
             }
         })
-        .catch(() => showToast('Network error', 'err'));
+        .catch(() => { btn.textContent = 'UPDATE ›'; btn.disabled = false; showToast('Network error', 'err'); });
     });
+
+    /* ── Generic search/filter ─────────────────────── */
+    function setupSearch(inputId, filterId, bodyId, dataAttr, filterAttr) {
+        const input  = document.getElementById(inputId);
+        const filter = filterId ? document.getElementById(filterId) : null;
+        const body   = document.getElementById(bodyId);
+        if (!input || !body) return;
+
+        function doFilter() {
+            const q = input.value.toLowerCase().trim();
+            const fv = filter ? filter.value.toLowerCase() : '';
+            Array.from(body.rows).forEach(row => {
+                const text = (dataAttr || []).map(a => (row.dataset[a] || '')).join(' ');
+                const fullText = (row.textContent || '').toLowerCase();
+                const matchQ = !q || fullText.includes(q) || text.includes(q);
+                const matchF = !fv || (row.dataset[filterAttr || 'status'] || '').includes(fv);
+                row.style.display = matchQ && matchF ? '' : 'none';
+            });
+        }
+
+        input.addEventListener('input', doFilter);
+        if (filter) filter.addEventListener('change', doFilter);
+    }
+
+    setupSearch('ordersSearch', 'ordersStatusFilter', 'ordersTableBody', ['user'], 'status');
+    setupSearch('inventorySearch', 'inventoryStockFilter', 'inventoryTableBody', ['name'], 'stock');
+    setupSearch('usersSearch', 'usersRoleFilter', 'usersTableBody', ['username','email'], 'role');
+    setupSearch('inquiriesSearch', 'inquiriesStatusFilter', 'inquiriesTableBody', ['name','email','subject'], 'status');
+    setupSearch('servicesSearch', null, 'servicesTableBody', ['name']);
+
+    /* Custom stock filter */
+    const stockFilter = document.getElementById('inventoryStockFilter');
+    if (stockFilter) {
+        stockFilter.addEventListener('change', function () {
+            const v = this.value;
+            const body = document.getElementById('inventoryTableBody');
+            if (!body || v === '') return;
+            Array.from(body.rows).forEach(row => {
+                const stock = parseInt(row.dataset.stock, 10) || 0;
+                let show = true;
+                if (v === 'out') show = stock === 0;
+                else if (v === 'low') show = stock > 0 && stock <= 5;
+                else if (v === 'ok')  show = stock > 5;
+                row.style.display = show ? '' : 'none';
+            });
+        });
+    }
+
+    /* ── Inquiry modal ─────────────────────────────── */
+    const modal      = document.getElementById('inquiryModal');
+    const modalClose = document.getElementById('modalClose');
+    let activeInqId  = null;
+
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.adm-view-inquiry-btn');
+        if (!btn) return;
+        activeInqId = btn.dataset.inqId;
+        document.getElementById('modalInqTitle').textContent   = 'INQ-' + String(activeInqId).padStart(4,'0');
+        document.getElementById('modalInqFrom').textContent    = btn.dataset.inqName;
+        document.getElementById('modalInqEmail').textContent   = btn.dataset.inqEmail;
+        document.getElementById('modalInqSubject').textContent = btn.dataset.inqSubject;
+        document.getElementById('modalInqMessage').textContent = btn.dataset.inqMessage;
+        document.getElementById('modalInqDate').textContent    = btn.dataset.inqDate;
+        modal.classList.add('open');
+    });
+
+    if (modalClose) modalClose.addEventListener('click', () => modal.classList.remove('open'));
+    modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+
+    function updateInquiryStatus(newStatus) {
+        if (!activeInqId) return;
+        fetch('/admin/inquiry/' + activeInqId + '/status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok) {
+                const pill = document.getElementById('inq-status-' + activeInqId);
+                if (pill) {
+                    pill.textContent = newStatus.toUpperCase();
+                    pill.className = 'adm-status-pill adm-status-' + newStatus;
+                }
+                const row = document.querySelector('[data-id="' + activeInqId + '"]');
+                if (row) row.dataset.status = newStatus;
+                showToast('INQ-' + String(activeInqId).padStart(4,'0') + ' → ' + newStatus.toUpperCase());
+                modal.classList.remove('open');
+            }
+        })
+        .catch(() => showToast('Network error', 'err'));
+    }
+
+    ['modalMarkNew','modalMarkRead','modalMarkResolved'].forEach((id, i) => {
+        const btn = document.getElementById(id);
+        if (btn) btn.addEventListener('click', () => updateInquiryStatus(['new','read','resolved'][i]));
+    });
+
+    /* ── Revenue bar chart (SVG) ────────────────────── */
+    function buildRevenueChart() {
+        const svg = document.getElementById('revenueChart');
+        if (!svg) return;
+
+        // Pull from template if available, else mock sparkline data
+        const raw = (typeof revenueData !== 'undefined') ? revenueData : [0,0,0,0,0,0,0];
+        const labels = (typeof revenueLabels !== 'undefined') ? revenueLabels : ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+        const max = Math.max(...raw, 1);
+        const W = 520, H = 140, pad = { t:10, b:28, l:10, r:10 };
+        const cw = W - pad.l - pad.r;
+        const ch = H - pad.t - pad.b;
+        const bw = Math.floor((cw / raw.length) * 0.6);
+        const gap = (cw - bw * raw.length) / (raw.length + 1);
+
+        let html = '';
+        // Grid lines
+        [0.25,0.5,0.75,1].forEach(pct => {
+            const y = pad.t + ch * (1 - pct);
+            html += `<line x1="${pad.l}" y1="${y}" x2="${W - pad.r}" y2="${y}" stroke="#252e25" stroke-width="1"/>`;
+        });
+
+        raw.forEach((val, i) => {
+            const barH = Math.max((val / max) * ch, 2);
+            const x = pad.l + gap * (i + 1) + bw * i;
+            const y = pad.t + ch - barH;
+            const isToday = i === raw.length - 1;
+
+            html += `<rect x="${x}" y="${y}" width="${bw}" height="${barH}"
+                fill="${isToday ? '#96b562' : 'rgba(150,181,98,0.25)'}"
+                class="adm-rev-bar"/>`;
+
+            // Label
+            const lx = x + bw / 2;
+            html += `<text x="${lx}" y="${H - 6}" text-anchor="middle"
+                font-family="'Share Tech Mono',monospace" font-size="9" fill="#3d523d">${labels[i]}</text>`;
+
+            // Value label on hover via title
+            if (val > 0) {
+                html += `<text x="${lx}" y="${y - 4}" text-anchor="middle"
+                    font-family="'Oswald',sans-serif" font-size="9" fill="${isToday ? '#96b562' : '#4a5e4a'}">
+                    ₱${(val/1000).toFixed(0)}k</text>`;
+            }
+        });
+
+        // Line overlay
+        const points = raw.map((val, i) => {
+            const x = pad.l + gap * (i + 1) + bw * i + bw/2;
+            const y = pad.t + ch - (val/max)*ch;
+            return `${x},${y}`;
+        }).join(' ');
+
+        if (raw.some(v => v > 0)) {
+            html += `<polyline points="${points}" fill="none" stroke="rgba(150,181,98,0.4)" stroke-width="1.5" stroke-linejoin="round"/>`;
+        }
+
+        svg.innerHTML = html;
+    }
+
+    /* ── Donut chart ────────────────────────────────── */
+    function buildDonutChart() {
+        const svg    = document.getElementById('donutChart');
+        const legend = document.getElementById('donutLegend');
+        if (!svg || !legend) return;
+
+        const data = (typeof orderStatusData !== 'undefined') ? orderStatusData : {
+            'Order Placed': {{ stats.pending_orders or 0 }},
+            'Delivered':    {{ stats.delivered_orders or 0 }},
+            'Other':        Math.max(0, {{ stats.total_orders or 0 }} - {{ stats.pending_orders or 0 }} - {{ stats.delivered_orders or 0 }})
+        };
+
+        const colors  = ['#96b562','#5090c0','#c0922a','#c0392b','#3d523d'];
+        const cx = 55, cy = 55, r = 40, ir = 26;
+        const total = Object.values(data).reduce((a,b) => a+b, 0) || 1;
+
+        let html = '';
+        let legendHtml = '';
+        let angle = -Math.PI / 2;
+
+        Object.entries(data).forEach(([label, val], i) => {
+            if (val === 0) return;
+            const slice = (val / total) * 2 * Math.PI;
+            const x1 = cx + r * Math.cos(angle);
+            const y1 = cy + r * Math.sin(angle);
+            const x2 = cx + r * Math.cos(angle + slice);
+            const y2 = cy + r * Math.sin(angle + slice);
+            const xi1 = cx + ir * Math.cos(angle);
+            const yi1 = cy + ir * Math.sin(angle);
+            const xi2 = cx + ir * Math.cos(angle + slice);
+            const yi2 = cy + ir * Math.sin(angle + slice);
+            const lg = slice > Math.PI ? 1 : 0;
+            const color = colors[i % colors.length];
+
+            html += `<path d="M${xi1},${yi1} L${x1},${y1} A${r},${r} 0 ${lg},1 ${x2},${y2} L${xi2},${yi2} A${ir},${ir} 0 ${lg},0 ${xi1},${yi1} Z"
+                fill="${color}" opacity="0.85"/>`;
+
+            legendHtml += `
+                <div class="adm-legend-item">
+                    <div class="adm-legend-dot" style="background:${color}"></div>
+                    <span class="adm-legend-label">${label}</span>
+                    <span class="adm-legend-val">${val}</span>
+                </div>`;
+
+            angle += slice;
+        });
+
+        // Center text
+        html += `<text x="${cx}" y="${cy - 5}" text-anchor="middle"
+            font-family="'Oswald',sans-serif" font-size="16" font-weight="700" fill="#d8e4c4">${total}</text>
+            <text x="${cx}" y="${cy + 9}" text-anchor="middle"
+            font-family="'Share Tech Mono',monospace" font-size="7" fill="#3d523d">TOTAL</text>`;
+
+        svg.innerHTML = html;
+        legend.innerHTML = legendHtml;
+    }
+
+    /* ── Mini rev chart ─────────────────────────────── */
+    function buildMiniRevChart() {
+        const wrap   = document.getElementById('miniRevChart');
+        const labels = document.getElementById('miniRevLabels');
+        if (!wrap) return;
+
+        const raw    = (typeof revenueData !== 'undefined') ? revenueData : [0,0,0,0,0,0,0];
+        const lbls   = (typeof revenueLabels !== 'undefined') ? revenueLabels : ['M','T','W','T','F','S','S'];
+        const max    = Math.max(...raw, 1);
+
+        wrap.innerHTML = raw.map((v, i) => {
+            const pct = Math.max((v/max)*100, 4);
+            const isToday = i === raw.length - 1;
+            return `<div class="adm-rev-bar ${isToday ? 'today' : ''}" style="height:${pct}%" title="₱${v.toLocaleString()}"></div>`;
+        }).join('');
+
+        if (labels) {
+            labels.innerHTML = lbls.map(l =>
+                `<span style="font-family:var(--font-mono);font-size:8px;color:var(--mil-muted)">${l}</span>`
+            ).join('');
+        }
+    }
+
+    buildRevenueChart();
+    buildDonutChart();
+    buildMiniRevChart();
+
 })();
+</script>
+
+<script>
+    const revenueData   = {{ revenue_by_day | tojson }};
+    const revenueLabels = {{ revenue_labels | tojson }};
+    const orderStatusData = {
+        'Order Placed': {{ stats.pending_orders or 0 }},
+        'Delivered':    {{ stats.delivered_orders or 0 }},
+        'Other':        {{ [stats.total_orders - stats.pending_orders - stats.delivered_orders, 0] | max }}
+    };
 </script>
 {% endblock %}

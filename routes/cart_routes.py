@@ -327,7 +327,7 @@ def admin_update_order_status(order_id):
 
     data = request.get_json(silent=True) or {}
     status = data.get('status', '').strip().lower()
-    valid = {'order placed', 'packing', 'shipping', 'delivered'}
+    valid = {'order placed', 'packing', 'shipping', 'delivered', 'cancelled'}
     if status not in valid:
         return jsonify(ok=False, error='Invalid status'), 400
 
@@ -335,6 +335,29 @@ def admin_update_order_status(order_id):
     db.execute(
         "UPDATE orders SET status = ?, updated_at = datetime('now') WHERE id = ?",
         (status, order_id)
+    )
+    db.commit()
+    return jsonify(ok=True, status=status)
+
+
+@cart_bp.route('/admin/inquiry/<int:inquiry_id>/status', methods=['POST'])
+def admin_update_inquiry_status(inquiry_id):
+    """Admin API to update inquiry status. Returns JSON."""
+    if not session.get('user_id'):
+        return jsonify(ok=False, error='Not authenticated'), 401
+    if session.get('role') != 'admin':
+        return jsonify(ok=False, error='Forbidden'), 403
+
+    data = request.get_json(silent=True) or {}
+    status = data.get('status', '').strip().lower()
+    valid = {'new', 'read', 'resolved'}
+    if status not in valid:
+        return jsonify(ok=False, error='Invalid status'), 400
+
+    db = get_db()
+    db.execute(
+        "UPDATE inquiries SET status = ? WHERE id = ?",
+        (status, inquiry_id)
     )
     db.commit()
     return jsonify(ok=True, status=status)

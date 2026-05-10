@@ -298,6 +298,14 @@ def dashboard():
     ).fetchone()
     total_revenue = revenue_row[0] if revenue_row else 0
 
+    # ── Inquiry count ───────────────────────────────────────────────
+    try:
+        new_inquiries = db.execute(
+            "SELECT COUNT(*) FROM inquiries WHERE status = 'new'"
+        ).fetchone()[0]
+    except Exception:
+        new_inquiries = 0
+
     stats = {
         'total_users': total_users,
         'total_orders': total_orders,
@@ -306,6 +314,7 @@ def dashboard():
         'pending_orders': pending_orders,
         'delivered_orders': delivered_orders,
         'total_revenue': total_revenue,
+        'new_inquiries': new_inquiries,
     }
 
     # ── All orders with username and item count ─────────────────────
@@ -319,7 +328,86 @@ def dashboard():
         GROUP BY o.id
         ORDER BY o.created_at DESC
     """).fetchall()
-
     orders = [dict(row) for row in order_rows]
 
-    return render_template('user/dashboard.html', stats=stats, orders=orders)
+    # ── Inquiries ───────────────────────────────────────────────────
+    try:
+        inq_rows = db.execute(
+            "SELECT * FROM inquiries ORDER BY created_at DESC"
+        ).fetchall()
+        inquiries = [dict(row) for row in inq_rows]
+    except Exception:
+        inquiries = []
+
+    # ── Inventory: all products with category and brand names ────────
+    product_rows = db.execute("""
+        SELECT p.id, p.name, p.slug, p.price, p.discount, p.stock,
+               p.rating, p.sales_count, p.is_authorized,
+               c.name  AS category_name,
+               b.name  AS brand_name
+        FROM products p
+        LEFT JOIN categories  c ON c.id = p.category_id
+        LEFT JOIN brands      b ON b.id = p.brand_id
+        ORDER BY p.id
+    """).fetchall()
+    products = [dict(row) for row in product_rows]
+
+    # ── Services: all services with category name ───────────────────
+    service_rows = db.execute("""
+        SELECT s.id, s.name, s.slug, s.price, s.discount,
+               s.rating, s.sales_count, s.is_authorized,
+               c.name AS category_name
+        FROM services s
+        LEFT JOIN categories c ON c.id = s.category_id
+        ORDER BY s.id
+    """).fetchall()
+    services = [dict(row) for row in service_rows]
+
+    # ── Brands ──────────────────────────────────────────────────────
+    brand_rows = db.execute(
+        "SELECT id, name, slug, logo_file, is_authorized FROM brands ORDER BY name"
+    ).fetchall()
+    brands = [dict(row) for row in brand_rows]
+
+    # ── Users ───────────────────────────────────────────────────────
+    user_rows = db.execute(
+        "SELECT id, username, email, role, profile_image, country, created_at FROM users ORDER BY id"
+    ).fetchall()
+    users = [dict(row) for row in user_rows]
+
+    # ── Top products by sales_count ──────────────────────────────────
+    top_product_rows = db.execute("""
+        SELECT name, sales_count FROM products
+        ORDER BY sales_count DESC
+        LIMIT 6
+    """).fetchall()
+    top_products = [dict(row) for row in top_product_rows]
+
+    # ── Revenue by day (last 7 days) ────────────────────────────────
+    import datetime as _dt
+    revenue_by_day = []
+    revenue_labels = []
+    for i in range(6, -1, -1):
+        day = _dt.date.today() - _dt.timedelta(days=i)
+        row = db.execute(
+            """SELECT COALESCE(SUM(total), 0) FROM orders
+               WHERE status = 'delivered'
+               AND date(created_at) = ?""",
+            (day.isoformat(),)
+        ).fetchone()
+        revenue_by_day.append(float(row[0]) if row else 0.0)
+        revenue_labels.append(day.strftime('%a').upper())
+
+    return render_template(
+        'user/dashboard.html',
+        stats=stats,
+        orders=orders,
+        inquiries=inquiries,
+        products=products,
+        services=services,
+        brands=brands,
+        users=users,
+        top_products=top_products,
+        revenue_by_day=revenue_by_day,
+        revenue_labels=revenue_labels,
+    )
