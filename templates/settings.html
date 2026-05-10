@@ -3,34 +3,638 @@
 
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pagestyles/settingsstyles.css') }}">
+<style>
+/* ── Form Controls ─────────────────────────────────────────────── */
+.set-group {
+    margin-bottom: 28px;
+}
+.set-group-title {
+    font-family: var(--font-stencil);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--mil-bright, #a8c47a);
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--mil-border, #2e3a2e);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.set-group-title::before {
+    content: "";
+    display: inline-block;
+    width: 3px;
+    height: 11px;
+    background: var(--mil-bright, #a8c47a);
+    flex-shrink: 0;
+}
+.set-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(46,58,46,0.45);
+}
+.set-row:last-child { border-bottom: none; }
+.set-row-info { flex: 1; }
+.set-row-label {
+    font-family: var(--font-stencil);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mil-text, #c8d4b8);
+    margin-bottom: 3px;
+}
+.set-row-desc {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--mil-muted, #4a5e4a);
+    line-height: 1.5;
+}
+.set-row-control { flex-shrink: 0; }
+
+/* Toggle switch */
+.set-toggle {
+    position: relative;
+    width: 42px;
+    height: 22px;
+    display: inline-block;
+}
+.set-toggle input { opacity: 0; width: 0; height: 0; }
+.set-toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--mil-border, #2e3a2e);
+    border: 1px solid rgba(138,170,106,0.2);
+    cursor: pointer;
+    transition: 0.2s;
+}
+.set-toggle-slider::before {
+    content: "";
+    position: absolute;
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    top: 3px;
+    background: var(--mil-muted, #4a5e4a);
+    transition: 0.2s;
+}
+.set-toggle input:checked + .set-toggle-slider {
+    background: rgba(138,170,106,0.15);
+    border-color: var(--mil-bright, #a8c47a);
+}
+.set-toggle input:checked + .set-toggle-slider::before {
+    background: var(--mil-bright, #a8c47a);
+    transform: translateX(20px);
+}
+
+/* Select */
+.set-select {
+    appearance: none;
+    background: var(--mil-dark, #131713);
+    border: 1px solid var(--mil-border, #2e3a2e);
+    color: var(--mil-text, #c8d4b8);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 7px 30px 7px 12px;
+    cursor: pointer;
+    outline: none;
+    min-width: 160px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234a5e4a'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    transition: border-color 0.15s;
+}
+.set-select:hover, .set-select:focus {
+    border-color: var(--mil-bright, #a8c47a);
+}
+.set-select option {
+    background: var(--mil-panel, #1c211c);
+}
+
+/* Text input */
+.set-input {
+    background: var(--mil-dark, #131713);
+    border: 1px solid var(--mil-border, #2e3a2e);
+    color: var(--mil-text, #c8d4b8);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 8px 12px;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.15s;
+}
+.set-input:focus { border-color: var(--mil-bright, #a8c47a); }
+.set-input::placeholder { color: var(--mil-muted, #4a5e4a); }
+
+/* Full-width input row */
+.set-row.set-row--full {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+}
+.set-row.set-row--full .set-row-control { width: 100%; }
+
+/* Buttons */
+.set-btn {
+    font-family: var(--font-stencil);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    border: 1px solid;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: transparent;
+}
+.set-btn--primary {
+    border-color: var(--mil-bright, #a8c47a);
+    color: var(--mil-bright, #a8c47a);
+}
+.set-btn--primary:hover {
+    background: rgba(138,170,106,0.12);
+}
+.set-btn--danger {
+    border-color: var(--mil-redbright, #c0392b);
+    color: var(--mil-redbright, #c0392b);
+}
+.set-btn--danger:hover {
+    background: rgba(192,57,43,0.12);
+}
+.set-btn--muted {
+    border-color: var(--mil-border, #2e3a2e);
+    color: var(--mil-muted, #4a5e4a);
+}
+.set-btn--muted:hover {
+    border-color: var(--mil-muted, #4a5e4a);
+    color: var(--mil-text, #c8d4b8);
+}
+.set-btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--mil-border, #2e3a2e);
+}
+
+/* Avatar area */
+.set-avatar-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 16px 0 20px;
+    border-bottom: 1px solid var(--mil-border, #2e3a2e);
+    margin-bottom: 24px;
+}
+.set-avatar {
+    width: 64px;
+    height: 64px;
+    border: 2px solid var(--mil-border, #2e3a2e);
+    background: var(--mil-panel, #1c211c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-stencil);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--mil-bright, #a8c47a);
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+    position: relative;
+}
+.set-avatar::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 10px;
+    height: 10px;
+    background: var(--mil-bright, #a8c47a);
+    border: 2px solid var(--mil-dark, #131713);
+}
+.set-avatar-info {}
+.set-avatar-name {
+    font-family: var(--font-stencil);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mil-light, #e2ead4);
+    margin-bottom: 3px;
+}
+.set-avatar-role {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--mil-muted, #4a5e4a);
+    text-transform: uppercase;
+}
+.set-avatar-upload {
+    margin-left: auto;
+}
+
+/* Status tag */
+.set-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border: 1px solid;
+}
+.set-tag--on {
+    border-color: rgba(138,170,106,0.4);
+    color: var(--mil-bright, #a8c47a);
+    background: rgba(138,170,106,0.06);
+}
+.set-tag--off {
+    border-color: var(--mil-border, #2e3a2e);
+    color: var(--mil-muted, #4a5e4a);
+    background: transparent;
+}
+.set-tag--danger {
+    border-color: rgba(192,57,43,0.4);
+    color: var(--mil-redbright, #c0392b);
+    background: rgba(192,57,43,0.06);
+}
+
+/* Danger zone */
+.set-danger-zone {
+    margin-top: 32px;
+    padding: 20px;
+    border: 1px solid rgba(192,57,43,0.25);
+    background: rgba(192,57,43,0.03);
+    position: relative;
+}
+.set-danger-zone::before {
+    content: "⚠ DANGER ZONE";
+    position: absolute;
+    top: -9px;
+    left: 16px;
+    font-family: var(--font-stencil);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    color: var(--mil-redbright, #c0392b);
+    background: var(--mil-dark, #131713);
+    padding: 0 8px;
+}
+.set-danger-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 0;
+}
+.set-danger-row:not(:last-child) {
+    border-bottom: 1px solid rgba(192,57,43,0.15);
+}
+.set-danger-label {
+    font-family: var(--font-stencil);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mil-text, #c8d4b8);
+}
+.set-danger-desc {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    color: var(--mil-muted, #4a5e4a);
+    margin-top: 2px;
+}
+
+/* Color swatches */
+.set-swatches {
+    display: flex;
+    gap: 8px;
+}
+.set-swatch {
+    width: 28px;
+    height: 28px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.1s;
+    position: relative;
+}
+.set-swatch:hover { transform: scale(1.1); }
+.set-swatch.active {
+    border-color: var(--mil-bright, #a8c47a);
+}
+.set-swatch.active::after {
+    content: "✓";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #fff;
+}
+
+/* Progress bar */
+.set-progress-bar {
+    height: 4px;
+    background: var(--mil-border, #2e3a2e);
+    position: relative;
+    margin-top: 6px;
+}
+.set-progress-fill {
+    height: 100%;
+    background: var(--mil-bright, #a8c47a);
+    transition: width 0.3s;
+}
+.set-progress-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--mil-muted, #4a5e4a);
+    margin-top: 4px;
+}
+
+/* Session card */
+.set-session {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(46,58,46,0.45);
+}
+.set-session:last-child { border-bottom: none; }
+.set-session-icon {
+    font-size: 18px;
+    color: var(--mil-muted, #4a5e4a);
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+.set-session-info { flex: 1; }
+.set-session-name {
+    font-family: var(--font-stencil);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mil-text, #c8d4b8);
+}
+.set-session-meta {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    color: var(--mil-muted, #4a5e4a);
+    margin-top: 2px;
+}
+.set-session-current {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mil-bright, #a8c47a);
+}
+
+/* Help card */
+.set-help-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px;
+    border: 1px solid var(--mil-border, #2e3a2e);
+    background: rgba(138,170,106,0.03);
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    text-decoration: none;
+}
+.set-help-card:hover {
+    border-color: rgba(138,170,106,0.35);
+    background: rgba(138,170,106,0.06);
+}
+.set-help-icon {
+    font-size: 20px;
+    color: var(--mil-olive, #6b7c4e);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+.set-help-title {
+    font-family: var(--font-stencil);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mil-text, #c8d4b8);
+    margin-bottom: 3px;
+}
+.set-help-desc {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--mil-muted, #4a5e4a);
+    line-height: 1.5;
+}
+.set-help-arrow {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--mil-muted, #4a5e4a);
+    flex-shrink: 0;
+    align-self: center;
+}
+
+/* Notification row with frequency select */
+.set-notif-freq {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* System action card */
+.set-sys-action {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid var(--mil-border, #2e3a2e);
+    background: rgba(19,23,19,0.6);
+    margin-bottom: 10px;
+    transition: border-color 0.15s;
+}
+.set-sys-action:hover { border-color: rgba(138,170,106,0.25); }
+.set-sys-action-icon {
+    font-size: 18px;
+    color: var(--mil-olive, #6b7c4e);
+    flex-shrink: 0;
+    width: 22px;
+    text-align: center;
+}
+.set-sys-action-body { flex: 1; }
+.set-sys-action-title {
+    font-family: var(--font-stencil);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mil-text, #c8d4b8);
+    margin-bottom: 2px;
+}
+.set-sys-action-desc {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    color: var(--mil-muted, #4a5e4a);
+}
+
+/* Modal overlay */
+.set-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+.set-modal-backdrop.open { display: flex; }
+.set-modal {
+    background: var(--mil-panel, #1c211c);
+    border: 1px solid var(--mil-border, #2e3a2e);
+    border-top: 3px solid var(--mil-redbright, #c0392b);
+    width: 420px;
+    max-width: 90vw;
+    padding: 28px;
+    position: relative;
+}
+.set-modal-title {
+    font-family: var(--font-stencil);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mil-light, #e2ead4);
+    margin-bottom: 12px;
+}
+.set-modal-body {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.07em;
+    color: var(--mil-muted, #4a5e4a);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+.set-modal-confirm {
+    margin-bottom: 16px;
+}
+.set-modal-confirm-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mil-muted, #4a5e4a);
+    margin-bottom: 6px;
+}
+.set-modal-confirm-label span {
+    color: var(--mil-redbright, #c0392b);
+    font-style: normal;
+}
+.set-modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* 2FA QR placeholder */
+.set-qr-placeholder {
+    width: 100px;
+    height: 100px;
+    border: 1px solid var(--mil-border, #2e3a2e);
+    background: var(--mil-panel, #1c211c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+    color: var(--mil-muted, #4a5e4a);
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+    line-height: 1.4;
+}
+.set-qr-grid {
+    display: grid;
+    grid-template-columns: repeat(5,14px);
+    gap: 2px;
+}
+.set-qr-cell {
+    width: 14px;
+    height: 14px;
+    background: var(--mil-muted, #4a5e4a);
+    opacity: 0;
+}
+.set-qr-cell.on { opacity: 1; }
+
+/* Range slider */
+.set-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 140px;
+    height: 3px;
+    background: var(--mil-border, #2e3a2e);
+    outline: none;
+    cursor: pointer;
+}
+.set-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--mil-bright, #a8c47a);
+    border: none;
+    cursor: pointer;
+}
+.set-range::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--mil-bright, #a8c47a);
+    border: none;
+    cursor: pointer;
+    border-radius: 0;
+}
+</style>
 {% endblock %}
 
 {% block main %}
 <main class="setpage-main">
     <div class="setpage-layout">
 
-        {# ══════════════════════════════════════════════
-           LEFT NAV PANEL
-        ══════════════════════════════════════════════ #}
+        <!-- ── LEFT NAV ──────────────────────────────────────────── -->
         <nav class="setpage-nav" id="setpageNav">
+
             <div class="setpage-nav-section-label">PREFERENCES</div>
             <button class="setpage-nav-item" data-section="account">
-                <span class="setpage-nav-icon">◉</span>
+                <span class="setpage-nav-icon">◈</span>
                 <span class="setpage-nav-label">Account</span>
                 <span class="setpage-nav-arrow">▶</span>
             </button>
             <button class="setpage-nav-item" data-section="privacy">
-                <span class="setpage-nav-icon">◉</span>
+                <span class="setpage-nav-icon">◈</span>
                 <span class="setpage-nav-label">Privacy & Security</span>
                 <span class="setpage-nav-arrow">▶</span>
             </button>
             <button class="setpage-nav-item" data-section="appearance">
-                <span class="setpage-nav-icon">◉</span>
+                <span class="setpage-nav-icon">◈</span>
                 <span class="setpage-nav-label">Appearance</span>
                 <span class="setpage-nav-arrow">▶</span>
             </button>
             <button class="setpage-nav-item" data-section="notifications">
-                <span class="setpage-nav-icon">◉</span>
+                <span class="setpage-nav-icon">◈</span>
                 <span class="setpage-nav-label">Notifications</span>
                 <span class="setpage-nav-arrow">▶</span>
             </button>
@@ -38,12 +642,12 @@
             <div class="setpage-nav-divider"></div>
             <div class="setpage-nav-section-label">GENERAL</div>
             <button class="setpage-nav-item" data-section="language">
-                <span class="setpage-nav-icon">◉</span>
+                <span class="setpage-nav-icon">◈</span>
                 <span class="setpage-nav-label">Language & Region</span>
                 <span class="setpage-nav-arrow">▶</span>
             </button>
             <button class="setpage-nav-item" data-section="help">
-                <span class="setpage-nav-icon">◉</span>
+                <span class="setpage-nav-icon">◈</span>
                 <span class="setpage-nav-label">Help & Support</span>
                 <span class="setpage-nav-arrow">▶</span>
             </button>
@@ -51,18 +655,16 @@
             <div class="setpage-nav-divider"></div>
             <div class="setpage-nav-section-label">ADVANCED</div>
             <button class="setpage-nav-item" data-section="system">
-                <span class="setpage-nav-icon">◉</span>
+                <span class="setpage-nav-icon">◈</span>
                 <span class="setpage-nav-label">System Actions</span>
                 <span class="setpage-nav-arrow">▶</span>
             </button>
         </nav>
 
-        {# ══════════════════════════════════════════════
-           RIGHT CONTENT PANEL
-        ══════════════════════════════════════════════ #}
+        <!-- ── RIGHT CONTENT ─────────────────────────────────────── -->
         <div class="setpage-content" id="setpageContent">
 
-            {# Default state — no section selected #}
+            <!-- DEFAULT -->
             <div class="setpage-panel active" id="setpanel-default">
                 <div class="setpage-panel-placeholder">
                     <div class="setpage-placeholder-icon">⚙</div>
@@ -71,121 +673,1023 @@
                 </div>
             </div>
 
-            {# Account #}
+            <!-- ════════════════ ACCOUNT ════════════════ -->
             <div class="setpage-panel" id="setpanel-account">
                 <div class="setpage-panel-header">
                     <h2 class="setpage-panel-title">ACCOUNT</h2>
-                    <p class="setpage-panel-sub">Manage your profile information</p>
+                    <p class="setpage-panel-sub">Manage your profile information and credentials</p>
                 </div>
                 <div class="setpage-panel-body">
-                    <div class="setpage-placeholder-text">— Account settings content coming soon —</div>
+
+                    <!-- Avatar row -->
+                    <div class="set-avatar-row">
+                        <div class="set-avatar" id="avatarInitials">AD</div>
+                        <div class="set-avatar-info">
+                            <div class="set-avatar-name" id="displayNamePreview">Arms Dealer</div>
+                            <div class="set-avatar-role">REGISTERED OPERATOR · TIER 2 CLEARANCE</div>
+                        </div>
+                        <div class="set-avatar-upload">
+                            <button class="set-btn set-btn--muted" style="font-size:10px;padding:6px 14px;">↑ UPLOAD PHOTO</button>
+                        </div>
+                    </div>
+
+                    <!-- Profile -->
+                    <div class="set-group">
+                        <div class="set-group-title">PROFILE INFORMATION</div>
+                        <div class="set-row set-row--full">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Display Name</div>
+                                <div class="set-row-desc">Your public-facing operator designation</div>
+                            </div>
+                            <div class="set-row-control">
+                                <input class="set-input" type="text" id="displayNameInput" value="Arms Dealer" placeholder="Enter display name" maxlength="40">
+                            </div>
+                        </div>
+                        <div class="set-row set-row--full">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Email Address</div>
+                                <div class="set-row-desc">Used for login and critical notifications</div>
+                            </div>
+                            <div class="set-row-control">
+                                <input class="set-input" type="email" id="emailInput" value="operator@armsdealer.io" placeholder="email@domain.com">
+                            </div>
+                        </div>
+                        <div class="set-row set-row--full">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Phone Number</div>
+                                <div class="set-row-desc">Optional — used for 2FA and recovery</div>
+                            </div>
+                            <div class="set-row-control">
+                                <input class="set-input" type="tel" value="+1 (555) 000-0000" placeholder="+1 (555) 000-0000">
+                            </div>
+                        </div>
+                        <div class="set-row set-row--full">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Bio</div>
+                                <div class="set-row-desc">Short description visible on your profile (160 chars max)</div>
+                            </div>
+                            <div class="set-row-control">
+                                <textarea class="set-input" rows="3" maxlength="160" placeholder="Tell others about your operation..." style="resize:vertical;font-family:var(--font-mono);font-size:11px;line-height:1.5;"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account status -->
+                    <div class="set-group">
+                        <div class="set-group-title">ACCOUNT STATUS</div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Membership Tier</div>
+                                <div class="set-row-desc">Current subscription level</div>
+                            </div>
+                            <div class="set-row-control">
+                                <span class="set-tag set-tag--on">TIER 2 — OPERATOR</span>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Storage Used</div>
+                                <div class="set-row-desc">Attachment and media storage</div>
+                            </div>
+                            <div class="set-row-control" style="min-width:180px;">
+                                <div style="font-family:var(--font-mono);font-size:10px;color:var(--mil-text);margin-bottom:4px;">3.2 GB / 10 GB</div>
+                                <div class="set-progress-bar"><div class="set-progress-fill" style="width:32%"></div></div>
+                                <div class="set-progress-label">32% UTILIZED</div>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Account Created</div>
+                                <div class="set-row-desc">Registration timestamp</div>
+                            </div>
+                            <div class="set-row-control">
+                                <span style="font-family:var(--font-mono);font-size:10px;color:var(--mil-muted);">2023-04-12 · 09:41 UTC</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="set-btn-row">
+                        <button class="set-btn set-btn--primary" onclick="saveSettings('account')">SAVE CHANGES</button>
+                        <button class="set-btn set-btn--muted" onclick="resetSection('account')">DISCARD</button>
+                    </div>
                 </div>
             </div>
 
-            {# Privacy & Security #}
+            <!-- ════════════════ PRIVACY & SECURITY ════════════════ -->
             <div class="setpage-panel" id="setpanel-privacy">
                 <div class="setpage-panel-header">
                     <h2 class="setpage-panel-title">PRIVACY & SECURITY</h2>
-                    <p class="setpage-panel-sub">Password, two-factor authentication, and data</p>
+                    <p class="setpage-panel-sub">Password, authentication, and data controls</p>
                 </div>
                 <div class="setpage-panel-body">
-                    <div class="setpage-placeholder-text">— Privacy & Security settings coming soon —</div>
+
+                    <!-- Password -->
+                    <div class="set-group">
+                        <div class="set-group-title">PASSWORD</div>
+                        <div class="set-row set-row--full">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Current Password</div>
+                            </div>
+                            <div class="set-row-control">
+                                <input class="set-input" type="password" placeholder="Enter current password">
+                            </div>
+                        </div>
+                        <div class="set-row set-row--full">
+                            <div class="set-row-info">
+                                <div class="set-row-label">New Password</div>
+                            </div>
+                            <div class="set-row-control">
+                                <input class="set-input" type="password" id="newPasswordInput" placeholder="Min. 12 characters" oninput="updatePasswordStrength(this.value)">
+                                <div class="set-progress-bar" style="margin-top:8px;"><div class="set-progress-fill" id="pwStrengthBar" style="width:0%;background:var(--mil-redbright)"></div></div>
+                                <div class="set-progress-label" id="pwStrengthLabel">ENTER PASSWORD TO CHECK STRENGTH</div>
+                            </div>
+                        </div>
+                        <div class="set-row set-row--full">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Confirm New Password</div>
+                            </div>
+                            <div class="set-row-control">
+                                <input class="set-input" type="password" placeholder="Repeat new password">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2FA -->
+                    <div class="set-group">
+                        <div class="set-group-title">TWO-FACTOR AUTHENTICATION</div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">2FA Status</div>
+                                <div class="set-row-desc">Adds a second layer of verification at login</div>
+                            </div>
+                            <div class="set-row-control" style="display:flex;align-items:center;gap:12px;">
+                                <span class="set-tag set-tag--off" id="twoFaTag">DISABLED</span>
+                                <label class="set-toggle">
+                                    <input type="checkbox" id="twoFaToggle" onchange="toggle2FA(this)">
+                                    <span class="set-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="twoFaSetup" style="display:none;padding:16px;border:1px solid var(--mil-border);background:rgba(138,170,106,0.03);margin-top:8px;">
+                            <div style="display:flex;gap:20px;align-items:flex-start;">
+                                <div class="set-qr-placeholder">
+                                    <div class="set-qr-grid" id="qrGrid"></div>
+                                    <div style="font-size:8px;letter-spacing:0.08em;margin-top:4px;">SCAN QR</div>
+                                </div>
+                                <div style="flex:1;">
+                                    <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.08em;color:var(--mil-muted);margin-bottom:8px;">SCAN WITH YOUR AUTHENTICATOR APP THEN ENTER THE CODE BELOW</div>
+                                    <input class="set-input" type="text" placeholder="000 000" maxlength="7" style="letter-spacing:0.3em;text-align:center;font-size:16px;width:140px;">
+                                    <div style="margin-top:10px;">
+                                        <button class="set-btn set-btn--primary" style="font-size:10px;padding:6px 14px;">VERIFY & ENABLE</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Backup Codes</div>
+                                <div class="set-row-desc">One-time recovery codes — store securely</div>
+                            </div>
+                            <div class="set-row-control">
+                                <button class="set-btn set-btn--muted" style="font-size:10px;padding:6px 14px;">GENERATE CODES</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sessions -->
+                    <div class="set-group">
+                        <div class="set-group-title">ACTIVE SESSIONS</div>
+                        <div class="set-session">
+                            <div class="set-session-icon">🖥</div>
+                            <div class="set-session-info">
+                                <div class="set-session-name">Chrome — Windows 11</div>
+                                <div class="set-session-meta">Manila, PH · Last active: now</div>
+                            </div>
+                            <div class="set-session-current">CURRENT</div>
+                        </div>
+                        <div class="set-session">
+                            <div class="set-session-icon">📱</div>
+                            <div class="set-session-info">
+                                <div class="set-session-name">Mobile App — iOS 17</div>
+                                <div class="set-session-meta">Manila, PH · Last active: 2 hrs ago</div>
+                            </div>
+                            <button class="set-btn set-btn--danger" style="font-size:9px;padding:5px 10px;">REVOKE</button>
+                        </div>
+                        <div class="set-session">
+                            <div class="set-session-icon">💻</div>
+                            <div class="set-session-info">
+                                <div class="set-session-name">Firefox — macOS</div>
+                                <div class="set-session-meta">Singapore, SG · Last active: 3 days ago</div>
+                            </div>
+                            <button class="set-btn set-btn--danger" style="font-size:9px;padding:5px 10px;">REVOKE</button>
+                        </div>
+                    </div>
+
+                    <!-- Privacy controls -->
+                    <div class="set-group">
+                        <div class="set-group-title">PRIVACY CONTROLS</div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Profile Visibility</div>
+                                <div class="set-row-desc">Who can view your operator profile</div>
+                            </div>
+                            <div class="set-row-control">
+                                <select class="set-select">
+                                    <option>Public</option>
+                                    <option selected>Verified Operators Only</option>
+                                    <option>Private</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Show Online Status</div>
+                                <div class="set-row-desc">Display when you are actively browsing</div>
+                            </div>
+                            <div class="set-row-control">
+                                <label class="set-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="set-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Activity Tracking</div>
+                                <div class="set-row-desc">Allow usage data to improve services</div>
+                            </div>
+                            <div class="set-row-control">
+                                <label class="set-toggle">
+                                    <input type="checkbox">
+                                    <span class="set-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="set-btn-row">
+                        <button class="set-btn set-btn--primary" onclick="saveSettings('privacy')">SAVE CHANGES</button>
+                        <button class="set-btn set-btn--muted" onclick="resetSection('privacy')">DISCARD</button>
+                    </div>
                 </div>
             </div>
 
-            {# Appearance #}
+            <!-- ════════════════ APPEARANCE ════════════════ -->
             <div class="setpage-panel" id="setpanel-appearance">
                 <div class="setpage-panel-header">
                     <h2 class="setpage-panel-title">APPEARANCE</h2>
                     <p class="setpage-panel-sub">Theme, display, and visual preferences</p>
                 </div>
                 <div class="setpage-panel-body">
-                    <div class="setpage-placeholder-text">— Appearance settings coming soon —</div>
+
+                    <div class="set-group">
+                        <div class="set-group-title">THEME</div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Color Mode</div>
+                                <div class="set-row-desc">Overall brightness of the interface</div>
+                            </div>
+                            <div class="set-row-control">
+                                <select class="set-select">
+                                    <option selected>Dark (Default)</option>
+                                    <option>System</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Accent Color</div>
+                                <div class="set-row-desc">Primary highlight color throughout the UI</div>
+                            </div>
+                            <div class="set-row-control">
+                                <div class="set-swatches">
+                                    <div class="set-swatch active" style="background:#a8c47a;" data-color="olive" title="Olive (Default)"></div>
+                                    <div class="set-swatch" style="background:#5b9bd5;" data-color="steel" title="Steel Blue"></div>
+                                    <div class="set-swatch" style="background:#c0392b;" data-color="red" title="Tactical Red"></div>
+                                    <div class="set-swatch" style="background:#e8b84b;" data-color="amber" title="Amber"></div>
+                                    <div class="set-swatch" style="background:#9b59b6;" data-color="violet" title="Violet"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Scanline Effect</div>
+                                <div class="set-row-desc">Subtle CRT scanlines on content panels</div>
+                            </div>
+                            <div class="set-row-control">
+                                <label class="set-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="set-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Background Opacity</div>
+                                <div class="set-row-desc">How visible the camo background appears</div>
+                            </div>
+                            <div class="set-row-control" style="display:flex;align-items:center;gap:10px;">
+                                <input class="set-range" type="range" min="10" max="90" value="38" id="bgOpacity" oninput="document.getElementById('bgOpacityVal').textContent=this.value+'%'">
+                                <span id="bgOpacityVal" style="font-family:var(--font-mono);font-size:10px;color:var(--mil-text);min-width:32px;">38%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="set-group">
+                        <div class="set-group-title">TYPOGRAPHY</div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Font Scale</div>
+                                <div class="set-row-desc">Base text size across the interface</div>
+                            </div>
+                            <div class="set-row-control">
+                                <select class="set-select">
+                                    <option>Small (10px)</option>
+                                    <option selected>Default (12px)</option>
+                                    <option>Large (14px)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Monospace Body Text</div>
+                                <div class="set-row-desc">Use Share Tech Mono for all body text</div>
+                            </div>
+                            <div class="set-row-control">
+                                <label class="set-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="set-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="set-group">
+                        <div class="set-group-title">LAYOUT</div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Compact Mode</div>
+                                <div class="set-row-desc">Reduce padding in tables and lists</div>
+                            </div>
+                            <div class="set-row-control">
+                                <label class="set-toggle">
+                                    <input type="checkbox">
+                                    <span class="set-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Animations</div>
+                                <div class="set-row-desc">Enable UI transitions and micro-animations</div>
+                            </div>
+                            <div class="set-row-control">
+                                <label class="set-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="set-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Sticky Nav</div>
+                                <div class="set-row-desc">Keep settings nav fixed while scrolling</div>
+                            </div>
+                            <div class="set-row-control">
+                                <label class="set-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="set-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="set-btn-row">
+                        <button class="set-btn set-btn--primary" onclick="saveSettings('appearance')">APPLY</button>
+                        <button class="set-btn set-btn--muted">RESET TO DEFAULTS</button>
+                    </div>
                 </div>
             </div>
 
-            {# Notifications #}
+            <!-- ════════════════ NOTIFICATIONS ════════════════ -->
             <div class="setpage-panel" id="setpanel-notifications">
                 <div class="setpage-panel-header">
                     <h2 class="setpage-panel-title">NOTIFICATIONS</h2>
                     <p class="setpage-panel-sub">Email, push, and in-app notification preferences</p>
                 </div>
                 <div class="setpage-panel-body">
-                    <div class="setpage-placeholder-text">— Notification settings coming soon —</div>
+
+                    <div class="set-group">
+                        <div class="set-group-title">DELIVERY CHANNELS</div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Email Notifications</div>
+                                <div class="set-row-desc">Receive alerts to your registered email address</div>
+                            </div>
+                            <div class="set-row-control">
+                                <label class="set-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="set-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Push Notifications</div>
+                                <div class="set-row-desc">Browser or mobile app push alerts</div>
+                            </div>
+                            <div class="set-row-control">
+                                <label class="set-toggle">
+                                    <input type="checkbox">
+                                    <span class="set-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">In-App Alerts</div>
+                                <div class="set-row-desc">Toast and banner notifications while browsing</div>
+                            </div>
+                            <div class="set-row-control">
+                                <label class="set-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="set-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="set-group">
+                        <div class="set-group-title">EVENT TYPES</div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Order Updates</div>
+                                <div class="set-row-desc">Confirmations, shipments, and status changes</div>
+                            </div>
+                            <div class="set-row-control set-notif-freq">
+                                <select class="set-select" style="min-width:130px;">
+                                    <option>Immediately</option>
+                                    <option>Daily Digest</option>
+                                    <option>Never</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Price Alerts</div>
+                                <div class="set-row-desc">Notify when watched items change in price</div>
+                            </div>
+                            <div class="set-row-control set-notif-freq">
+                                <select class="set-select" style="min-width:130px;">
+                                    <option>Immediately</option>
+                                    <option selected>Daily Digest</option>
+                                    <option>Never</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">New Inventory</div>
+                                <div class="set-row-desc">Listings matching your saved categories</div>
+                            </div>
+                            <div class="set-row-control set-notif-freq">
+                                <select class="set-select" style="min-width:130px;">
+                                    <option>Immediately</option>
+                                    <option selected>Daily Digest</option>
+                                    <option>Never</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Security Alerts</div>
+                                <div class="set-row-desc">Login from new device or suspicious activity</div>
+                            </div>
+                            <div class="set-row-control set-notif-freq">
+                                <select class="set-select" style="min-width:130px;">
+                                    <option selected>Immediately</option>
+                                    <option>Daily Digest</option>
+                                    <option disabled>Never</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Promotional & Offers</div>
+                                <div class="set-row-desc">Special deals, events, and announcements</div>
+                            </div>
+                            <div class="set-row-control set-notif-freq">
+                                <select class="set-select" style="min-width:130px;">
+                                    <option>Immediately</option>
+                                    <option>Daily Digest</option>
+                                    <option selected>Never</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Messages</div>
+                                <div class="set-row-desc">Direct messages from other operators</div>
+                            </div>
+                            <div class="set-row-control set-notif-freq">
+                                <select class="set-select" style="min-width:130px;">
+                                    <option selected>Immediately</option>
+                                    <option>Daily Digest</option>
+                                    <option>Never</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="set-group">
+                        <div class="set-group-title">QUIET HOURS</div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Enable Quiet Hours</div>
+                                <div class="set-row-desc">Suppress non-critical notifications during set hours</div>
+                            </div>
+                            <div class="set-row-control">
+                                <label class="set-toggle">
+                                    <input type="checkbox" id="quietHoursToggle" onchange="toggleQuietHours(this)">
+                                    <span class="set-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="quietHoursConfig" style="display:none;">
+                            <div class="set-row">
+                                <div class="set-row-info">
+                                    <div class="set-row-label">From</div>
+                                </div>
+                                <div class="set-row-control">
+                                    <input class="set-input" type="time" value="22:00" style="width:auto;color:var(--mil-text);">
+                                </div>
+                            </div>
+                            <div class="set-row">
+                                <div class="set-row-info">
+                                    <div class="set-row-label">Until</div>
+                                </div>
+                                <div class="set-row-control">
+                                    <input class="set-input" type="time" value="07:00" style="width:auto;color:var(--mil-text);">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="set-btn-row">
+                        <button class="set-btn set-btn--primary" onclick="saveSettings('notifications')">SAVE PREFERENCES</button>
+                        <button class="set-btn set-btn--muted">UNSUBSCRIBE ALL</button>
+                    </div>
                 </div>
             </div>
 
-            {# Language & Region #}
+            <!-- ════════════════ LANGUAGE & REGION ════════════════ -->
             <div class="setpage-panel" id="setpanel-language">
                 <div class="setpage-panel-header">
                     <h2 class="setpage-panel-title">LANGUAGE & REGION</h2>
                     <p class="setpage-panel-sub">Language, timezone, and currency preferences</p>
                 </div>
                 <div class="setpage-panel-body">
-                    <div class="setpage-placeholder-text">— Language & Region settings coming soon —</div>
+
+                    <div class="set-group">
+                        <div class="set-group-title">LOCALIZATION</div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Interface Language</div>
+                                <div class="set-row-desc">Language used for all UI elements and menus</div>
+                            </div>
+                            <div class="set-row-control">
+                                <select class="set-select">
+                                    <option selected>English (US)</option>
+                                    <option>English (UK)</option>
+                                    <option>Español</option>
+                                    <option>Français</option>
+                                    <option>Deutsch</option>
+                                    <option>日本語</option>
+                                    <option>中文 (简体)</option>
+                                    <option>Русский</option>
+                                    <option>العربية</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Timezone</div>
+                                <div class="set-row-desc">Used for order timestamps and scheduling</div>
+                            </div>
+                            <div class="set-row-control">
+                                <select class="set-select">
+                                    <option>UTC+00:00 — London</option>
+                                    <option>UTC-05:00 — New York</option>
+                                    <option>UTC-08:00 — Los Angeles</option>
+                                    <option selected>UTC+08:00 — Manila / Singapore</option>
+                                    <option>UTC+09:00 — Tokyo</option>
+                                    <option>UTC+01:00 — Paris / Berlin</option>
+                                    <option>UTC+03:00 — Moscow</option>
+                                    <option>UTC+05:30 — Mumbai</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Currency Display</div>
+                                <div class="set-row-desc">Currency shown on product listings and orders</div>
+                            </div>
+                            <div class="set-row-control">
+                                <select class="set-select">
+                                    <option selected>USD — US Dollar ($)</option>
+                                    <option>EUR — Euro (€)</option>
+                                    <option>GBP — British Pound (£)</option>
+                                    <option>PHP — Philippine Peso (₱)</option>
+                                    <option>SGD — Singapore Dollar (S$)</option>
+                                    <option>JPY — Japanese Yen (¥)</option>
+                                    <option>AED — UAE Dirham (د.إ)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="set-group">
+                        <div class="set-group-title">DATE & NUMBER FORMAT</div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Date Format</div>
+                                <div class="set-row-desc">How dates are displayed throughout the app</div>
+                            </div>
+                            <div class="set-row-control">
+                                <select class="set-select">
+                                    <option selected>MM/DD/YYYY</option>
+                                    <option>DD/MM/YYYY</option>
+                                    <option>YYYY-MM-DD (ISO)</option>
+                                    <option>DD MMM YYYY</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Time Format</div>
+                                <div class="set-row-desc">12-hour or 24-hour clock</div>
+                            </div>
+                            <div class="set-row-control">
+                                <select class="set-select">
+                                    <option selected>12-Hour (AM/PM)</option>
+                                    <option>24-Hour</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Measurement Units</div>
+                                <div class="set-row-desc">Weight and dimension display units</div>
+                            </div>
+                            <div class="set-row-control">
+                                <select class="set-select">
+                                    <option selected>Metric (kg, cm)</option>
+                                    <option>Imperial (lb, in)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="set-btn-row">
+                        <button class="set-btn set-btn--primary" onclick="saveSettings('language')">SAVE PREFERENCES</button>
+                        <button class="set-btn set-btn--muted">DISCARD</button>
+                    </div>
                 </div>
             </div>
 
-            {# Help & Support #}
+            <!-- ════════════════ HELP & SUPPORT ════════════════ -->
             <div class="setpage-panel" id="setpanel-help">
                 <div class="setpage-panel-header">
                     <h2 class="setpage-panel-title">HELP & SUPPORT</h2>
                     <p class="setpage-panel-sub">Documentation, FAQs, and contact options</p>
                 </div>
                 <div class="setpage-panel-body">
-                    <div class="setpage-placeholder-text">— Help & Support content coming soon —</div>
+
+                    <div class="set-group">
+                        <div class="set-group-title">RESOURCES</div>
+                        <a class="set-help-card" href="#" onclick="return false;">
+                            <div class="set-help-icon">📋</div>
+                            <div>
+                                <div class="set-help-title">Operator Handbook</div>
+                                <div class="set-help-desc">Full documentation on how to use the Arms Dealer platform — listings, orders, escrow, and compliance.</div>
+                            </div>
+                            <div class="set-help-arrow">▶</div>
+                        </a>
+                        <a class="set-help-card" href="#" onclick="return false;">
+                            <div class="set-help-icon">❓</div>
+                            <div>
+                                <div class="set-help-title">Frequently Asked Questions</div>
+                                <div class="set-help-desc">Answers to the most common issues around account, payments, and listings.</div>
+                            </div>
+                            <div class="set-help-arrow">▶</div>
+                        </a>
+                        <a class="set-help-card" href="#" onclick="return false;">
+                            <div class="set-help-icon">📜</div>
+                            <div>
+                                <div class="set-help-title">Compliance & Legal</div>
+                                <div class="set-help-desc">Terms of service, export regulations, and permitted use guidelines for all operators.</div>
+                            </div>
+                            <div class="set-help-arrow">▶</div>
+                        </a>
+                        <a class="set-help-card" href="#" onclick="return false;">
+                            <div class="set-help-icon">🔔</div>
+                            <div>
+                                <div class="set-help-title">Platform Status</div>
+                                <div class="set-help-desc">Real-time uptime status, incident reports, and scheduled maintenance windows.</div>
+                            </div>
+                            <div class="set-help-arrow">▶</div>
+                        </a>
+                    </div>
+
+                    <div class="set-group">
+                        <div class="set-group-title">CONTACT SUPPORT</div>
+                        <div class="set-row set-row--full">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Subject</div>
+                            </div>
+                            <div class="set-row-control">
+                                <select class="set-select" style="width:100%;">
+                                    <option value="">— Select issue category —</option>
+                                    <option>Account & Login</option>
+                                    <option>Orders & Payments</option>
+                                    <option>Listings & Inventory</option>
+                                    <option>Technical Problem</option>
+                                    <option>Compliance Question</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="set-row set-row--full">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Message</div>
+                            </div>
+                            <div class="set-row-control">
+                                <textarea class="set-input" rows="5" placeholder="Describe your issue in detail..." style="resize:vertical;font-family:var(--font-mono);font-size:11px;line-height:1.5;"></textarea>
+                            </div>
+                        </div>
+                        <div class="set-btn-row" style="margin-top:12px;border:none;padding:0;">
+                            <button class="set-btn set-btn--primary" onclick="submitSupport()">SUBMIT TICKET</button>
+                        </div>
+                    </div>
+
+                    <div class="set-group">
+                        <div class="set-group-title">ABOUT</div>
+                        <div class="set-row">
+                            <div class="set-row-info"><div class="set-row-label">Platform Version</div></div>
+                            <div class="set-row-control"><span style="font-family:var(--font-mono);font-size:10px;color:var(--mil-muted);">v2.4.1 · Build 20250510</span></div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info"><div class="set-row-label">API Version</div></div>
+                            <div class="set-row-control"><span style="font-family:var(--font-mono);font-size:10px;color:var(--mil-muted);">REST v3 · Stable</span></div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info"><div class="set-row-label">Changelog</div></div>
+                            <div class="set-row-control"><a href="#" onclick="return false;" style="font-family:var(--font-mono);font-size:10px;color:var(--mil-bright);text-decoration:none;letter-spacing:0.08em;">VIEW RELEASE NOTES ▶</a></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {# System Actions #}
+            <!-- ════════════════ SYSTEM ACTIONS ════════════════ -->
             <div class="setpage-panel" id="setpanel-system">
                 <div class="setpage-panel-header">
                     <h2 class="setpage-panel-title">SYSTEM ACTIONS</h2>
-                    <p class="setpage-panel-sub">Data export, account deletion, and advanced options</p>
+                    <p class="setpage-panel-sub">Data management, export, and account lifecycle</p>
                 </div>
                 <div class="setpage-panel-body">
-                    <div class="setpage-placeholder-text">— System Actions coming soon —</div>
+
+                    <div class="set-group">
+                        <div class="set-group-title">DATA MANAGEMENT</div>
+                        <div class="set-sys-action">
+                            <div class="set-sys-action-icon">📦</div>
+                            <div class="set-sys-action-body">
+                                <div class="set-sys-action-title">Export Account Data</div>
+                                <div class="set-sys-action-desc">Download a full archive of your orders, listings, messages, and profile in JSON or CSV format.</div>
+                            </div>
+                            <button class="set-btn set-btn--muted" style="font-size:10px;padding:7px 14px;white-space:nowrap;">↓ EXPORT</button>
+                        </div>
+                        <div class="set-sys-action">
+                            <div class="set-sys-action-icon">🔄</div>
+                            <div class="set-sys-action-body">
+                                <div class="set-sys-action-title">Clear Cache & Local Data</div>
+                                <div class="set-sys-action-desc">Remove locally stored preferences, cached images, and session tokens. You will be logged out.</div>
+                            </div>
+                            <button class="set-btn set-btn--muted" style="font-size:10px;padding:7px 14px;white-space:nowrap;">CLEAR</button>
+                        </div>
+                        <div class="set-sys-action">
+                            <div class="set-sys-action-icon">🗂</div>
+                            <div class="set-sys-action-body">
+                                <div class="set-sys-action-title">Order History Archive</div>
+                                <div class="set-sys-action-desc">Generate a PDF report of all completed orders for record-keeping or compliance purposes.</div>
+                            </div>
+                            <button class="set-btn set-btn--muted" style="font-size:10px;padding:7px 14px;white-space:nowrap;">GENERATE</button>
+                        </div>
+                    </div>
+
+                    <div class="set-group">
+                        <div class="set-group-title">ACCOUNT MANAGEMENT</div>
+                        <div class="set-sys-action">
+                            <div class="set-sys-action-icon">⏸</div>
+                            <div class="set-sys-action-body">
+                                <div class="set-sys-action-title">Deactivate Account</div>
+                                <div class="set-sys-action-desc">Temporarily hide your profile and suspend all listings. You can reactivate at any time.</div>
+                            </div>
+                            <button class="set-btn set-btn--muted" style="font-size:10px;padding:7px 14px;white-space:nowrap;">DEACTIVATE</button>
+                        </div>
+                        <div class="set-sys-action">
+                            <div class="set-sys-action-icon">📤</div>
+                            <div class="set-sys-action-body">
+                                <div class="set-sys-action-title">Transfer Ownership</div>
+                                <div class="set-sys-action-desc">Assign your account and all assets to another verified operator. Requires identity verification.</div>
+                            </div>
+                            <button class="set-btn set-btn--muted" style="font-size:10px;padding:7px 14px;white-space:nowrap;">INITIATE</button>
+                        </div>
+                    </div>
+
+                    <!-- Danger zone -->
+                    <div class="set-danger-zone">
+                        <div class="set-danger-row">
+                            <div>
+                                <div class="set-danger-label">Close Account Permanently</div>
+                                <div class="set-danger-desc">All data, listings, and history will be permanently erased. This action cannot be undone.</div>
+                            </div>
+                            <button class="set-btn set-btn--danger" style="font-size:10px;padding:7px 14px;white-space:nowrap;" onclick="openDeleteModal()">DELETE ACCOUNT</button>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
-        </div>
+        </div><!-- /setpage-content -->
     </div>
 </main>
 
+<!-- ── DELETE ACCOUNT MODAL ─────────────────────────────────── -->
+<div class="set-modal-backdrop" id="deleteModal">
+    <div class="set-modal">
+        <div class="set-modal-title">⚠ CONFIRM DELETION</div>
+        <div class="set-modal-body">
+            This will permanently delete your operator account, all listings, order history, messages, and associated data. This action is irreversible and cannot be undone by support staff.
+        </div>
+        <div class="set-modal-confirm">
+            <div class="set-modal-confirm-label">Type <span>DELETE MY ACCOUNT</span> to confirm:</div>
+            <input class="set-input" type="text" id="deleteConfirmInput" placeholder="DELETE MY ACCOUNT" oninput="checkDeleteConfirm(this.value)">
+        </div>
+        <div class="set-modal-actions">
+            <button class="set-btn set-btn--muted" onclick="closeDeleteModal()">CANCEL</button>
+            <button class="set-btn set-btn--danger" id="confirmDeleteBtn" disabled style="opacity:0.4;cursor:not-allowed;">CONFIRM DELETE</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    (function () {
-        const params = new URLSearchParams(window.location.search);
-        const initSection = params.get('section') || null;
+(function () {
+    /* ── Nav routing ─────────────────────────────────────────── */
+    const params = new URLSearchParams(window.location.search);
+    const initSection = params.get('section') || null;
 
-        function activateSection(section) {
-            // Deactivate all nav items and panels
-            document.querySelectorAll('.setpage-nav-item').forEach(i => i.classList.remove('active'));
-            document.querySelectorAll('.setpage-panel').forEach(p => p.classList.remove('active'));
-
-            if (!section) {
-                document.getElementById('setpanel-default').classList.add('active');
-                return;
-            }
-
-            const btn = document.querySelector(`.setpage-nav-item[data-section="${section}"]`);
-            const panel = document.getElementById(`setpanel-${section}`);
-            if (btn) btn.classList.add('active');
-            if (panel) panel.classList.add('active');
-            else document.getElementById('setpanel-default').classList.add('active');
+    function activateSection(section) {
+        document.querySelectorAll('.setpage-nav-item').forEach(i => i.classList.remove('active'));
+        document.querySelectorAll('.setpage-panel').forEach(p => p.classList.remove('active'));
+        if (!section) {
+            document.getElementById('setpanel-default').classList.add('active');
+            return;
         }
+        const btn = document.querySelector(`.setpage-nav-item[data-section="${section}"]`);
+        const panel = document.getElementById(`setpanel-${section}`);
+        if (btn) btn.classList.add('active');
+        if (panel) panel.classList.add('active');
+        else document.getElementById('setpanel-default').classList.add('active');
+    }
 
-        // Wire nav items
-        document.querySelectorAll('.setpage-nav-item').forEach(btn => {
-            btn.addEventListener('click', function () {
-                const sec = this.dataset.section;
-                activateSection(sec);
-                const url = new URL(window.location);
-                url.searchParams.set('section', sec);
-                window.history.replaceState({}, '', url);
-            });
+    document.querySelectorAll('.setpage-nav-item').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const sec = this.dataset.section;
+            activateSection(sec);
+            const url = new URL(window.location);
+            url.searchParams.set('section', sec);
+            window.history.replaceState({}, '', url);
         });
+    });
 
-        activateSection(initSection);
-    })();
+    activateSection(initSection);
+
+    /* ── Display name live preview ───────────────────────────── */
+    const nameInput = document.getElementById('displayNameInput');
+    if (nameInput) {
+        nameInput.addEventListener('input', function () {
+            const val = this.value.trim() || 'AD';
+            document.getElementById('displayNamePreview').textContent = val || 'Arms Dealer';
+            const initials = val.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) || 'AD';
+            document.getElementById('avatarInitials').textContent = initials;
+        });
+    }
+
+    /* ── Password strength ───────────────────────────────────── */
+    window.updatePasswordStrength = function (pw) {
+        let score = 0;
+        if (pw.length >= 8) score++;
+        if (pw.length >= 12) score++;
+        if (/[A-Z]/.test(pw)) score++;
+        if (/[0-9]/.test(pw)) score++;
+        if (/[^A-Za-z0-9]/.test(pw)) score++;
+        const pct = Math.round((score / 5) * 100);
+        const bar = document.getElementById('pwStrengthBar');
+        const lbl = document.getElementById('pwStrengthLabel');
+        const colors = ['#c0392b','#c0392b','#e8b84b','#a8c47a','#a8c47a'];
+        const labels = ['WEAK','WEAK','FAIR','STRONG','VERY STRONG'];
+        bar.style.width = pct + '%';
+        bar.style.background = colors[score] || '#c0392b';
+        lbl.textContent = pw.length === 0 ? 'ENTER PASSWORD TO CHECK STRENGTH' : (labels[score] || 'WEAK') + ' · ' + pct + '% STRENGTH';
+    };
+
+    /* ── 2FA toggle ──────────────────────────────────────────── */
+    window.toggle2FA = function (cb) {
+        const tag = document.getElementById('twoFaTag');
+        const setup = document.getElementById('twoFaSetup');
+        if (cb.checked) {
+            tag.textContent = 'ENABLED';
+            tag.className = 'set-tag set-tag--on';
+            setup.style.display = 'block';
+            renderQR();
+        } else {
+            tag.textContent = 'DISABLED';
+            tag.className = 'set-tag set-tag--off';
+            setup.style.display = 'none';
+        }
+    };
+
+    function renderQR() {
+        const pattern = [1,0,1,0,1, 0,1,0,1,0, 1,1,0,0,1, 0,0,1,1,0, 1,0,0,1,1];
+        const grid = document.getElementById('qrGrid');
+        if (!grid) return;
+        grid.innerHTML = '';
+        pattern.forEach(v => {
+            const c = document.createElement('div');
+            c.className = 'set-qr-cell' + (v ? ' on' : '');
+            grid.appendChild(c);
+        });
+    }
+
+    /* ── Quiet hours toggle ──────────────────────────────────── */
+    window.toggleQuietHours = function (cb) {
+        document.getElementById('quietHoursConfig').style.display = cb.checked ? 'block' : 'none';
+    };
+
+    /* ── Accent swatches ─────────────────────────────────────── */
+    document.querySelectorAll('.set-swatch').forEach(sw => {
+        sw.addEventListener('click', function () {
+            document.querySelectorAll('.set-swatch').forEach(s => s.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    /* ── Delete modal ────────────────────────────────────────── */
+    window.openDeleteModal = function () {
+        document.getElementById('deleteModal').classList.add('open');
+        document.getElementById('deleteConfirmInput').value = '';
+        document.getElementById('confirmDeleteBtn').disabled = true;
+        document.getElementById('confirmDeleteBtn').style.opacity = '0.4';
+        document.getElementById('confirmDeleteBtn').style.cursor = 'not-allowed';
+    };
+    window.closeDeleteModal = function () {
+        document.getElementById('deleteModal').classList.remove('open');
+    };
+    window.checkDeleteConfirm = function (val) {
+        const btn = document.getElementById('confirmDeleteBtn');
+        const ok = val.trim() === 'DELETE MY ACCOUNT';
+        btn.disabled = !ok;
+        btn.style.opacity = ok ? '1' : '0.4';
+        btn.style.cursor = ok ? 'pointer' : 'not-allowed';
+    };
+    document.getElementById('deleteModal').addEventListener('click', function (e) {
+        if (e.target === this) closeDeleteModal();
+    });
+
+    /* ── Save / toast feedback ───────────────────────────────── */
+    window.saveSettings = function (section) {
+        if (typeof showToast === 'function') {
+            showToast('Settings saved', 'success');
+        } else {
+            const notice = document.createElement('div');
+            notice.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1c211c;border:1px solid var(--mil-bright);color:var(--mil-bright);font-family:var(--font-stencil);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;padding:12px 20px;z-index:9999;';
+            notice.textContent = '✓ SETTINGS SAVED';
+            document.body.appendChild(notice);
+            setTimeout(() => notice.remove(), 2800);
+        }
+    };
+    window.resetSection = function (section) {
+        if (typeof showToast === 'function') {
+            showToast('Changes discarded', 'info');
+        }
+    };
+    window.submitSupport = function () {
+        if (typeof showToast === 'function') {
+            showToast('Ticket submitted', 'success');
+        } else {
+            alert('Support ticket submitted.');
+        }
+    };
+})();
 </script>
 {% endblock %}
