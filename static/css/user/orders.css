@@ -1047,6 +1047,11 @@
     border-color: var(--mil-olive, #6b7c4e);
 }
 
+.hist-chip--restricted {
+    border-color: rgba(192, 100, 43, 0.45);
+    color: #c87a50;
+}
+
 .hist-card-right {
     display: flex;
     align-items: center;
@@ -1329,6 +1334,96 @@
     color: var(--mil-bright, #a8c47a);
     text-decoration: underline;
     text-underline-offset: 3px;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   AUTH / RESTRICTED BADGES
+   Used in cart, shipping, history (orders page) and checkout
+══════════════════════════════════════════════════════════════════ */
+
+/* Base badge — shared between authorized and restricted */
+.item-auth-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 6px;
+    font-family: var(--font-mono, monospace);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+    line-height: 1.5;
+}
+
+.item-auth-badge--authorized {
+    color: #7ec87e;
+    background: rgba(78, 160, 78, 0.10);
+    border: 1px solid rgba(78, 160, 78, 0.38);
+}
+
+.item-auth-badge--restricted {
+    color: #e07b4a;
+    background: rgba(192, 100, 43, 0.10);
+    border: 1px solid rgba(192, 100, 43, 0.40);
+    animation: restricted-pulse 2.6s ease-in-out infinite;
+}
+
+@keyframes restricted-pulse {
+    0%, 100% { border-color: rgba(192, 100, 43, 0.40); }
+    50%       { border-color: rgba(192, 100, 43, 0.80); }
+}
+
+/* Cart panel — badge sits in the item-meta row */
+.ordpage-item-meta .item-auth-badge {
+    font-size: 8px;
+}
+
+/* Shipping panel — badge sits inline with item name */
+.ship-item-row .item-auth-badge {
+    font-size: 7px;
+    padding: 0px 5px;
+}
+
+/* History panel — badge sits next to item name in rating row */
+.hist-rate-item-info .item-auth-badge {
+    font-size: 7px;
+    padding: 0px 5px;
+}
+
+/* Checkout receipt — badge under item name */
+.chk-item-badges {
+    display: flex;
+    gap: 5px;
+    margin-top: 3px;
+    flex-wrap: wrap;
+}
+
+/* Checkout receipt uses dark-on-light colours to suit the paper background */
+.chk-auth-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 1px 5px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.chk-auth-badge--authorized {
+    color: #2d5a1b;
+    background: rgba(78, 140, 40, 0.12);
+    border: 1px solid rgba(60, 120, 30, 0.45);
+}
+
+.chk-auth-badge--restricted {
+    color: #8b3a10;
+    background: rgba(180, 80, 20, 0.10);
+    border: 1px solid rgba(160, 60, 10, 0.50);
 }
 
 

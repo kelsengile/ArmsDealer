@@ -429,7 +429,20 @@
                     <div class="chk-item-row">
                         <div class="chk-item-name-block">
                             <div class="chk-item-name">{{ item.name }}</div>
-                            <span class="chk-item-type-badge">{{ item.item_type | upper }}</span>
+                            <div class="chk-item-badges">
+                                <span class="chk-item-type-badge">{{ item.item_type | upper }}</span>
+                                {% if item.is_authorized %}
+                                <span class="chk-auth-badge chk-auth-badge--authorized">
+                                    <svg width="7" height="7" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    AUTHORIZED
+                                </span>
+                                {% else %}
+                                <span class="chk-auth-badge chk-auth-badge--restricted">
+                                    <svg width="7" height="7" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M6 2v4m0 2.5v.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+                                    RESTRICTED
+                                </span>
+                                {% endif %}
+                            </div>
                         </div>
                         <div class="chk-item-price">{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(item.price) }}</div>
                         <div class="chk-item-qty">{{ item.quantity }}</div>

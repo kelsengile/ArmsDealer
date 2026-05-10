@@ -157,6 +157,17 @@
                                 <div class="ordpage-item-meta">
                                     <span class="ordpage-item-type">{{ item.item_type | upper }}</span>
                                     <span class="ordpage-item-qty">QTY: {{ item.quantity }}</span>
+                                    {% if item.is_authorized %}
+                                    <span class="item-auth-badge item-auth-badge--authorized">
+                                        <svg width="7" height="7" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        AUTH
+                                    </span>
+                                    {% else %}
+                                    <span class="item-auth-badge item-auth-badge--restricted">
+                                        <svg width="7" height="7" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M6 2v4m0 2.5v.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+                                        RESTR
+                                    </span>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="ordpage-item-right">
@@ -264,6 +275,17 @@
                                         {% else %}
                                         <span class="ship-item-name">{{ oi.name }}</span>
                                         {% endif %}
+                                        {% if oi.is_authorized %}
+                                        <span class="item-auth-badge item-auth-badge--authorized">
+                                            <svg width="6" height="6" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            AUTH
+                                        </span>
+                                        {% else %}
+                                        <span class="item-auth-badge item-auth-badge--restricted">
+                                            <svg width="6" height="6" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M6 2v4m0 2.5v.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+                                            RESTR
+                                        </span>
+                                        {% endif %}
                                         <span class="ship-item-qty">× {{ oi.quantity }}</span>
                                         <span class="ship-item-price">
                                             {{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(oi.display_price * oi.quantity) }}
@@ -335,7 +357,9 @@
                                     <span class="hist-card-chips">
                                         {% if order.order_lines %}
                                         {% for oi in order.order_lines[:2] %}
-                                        <span class="hist-chip">{{ oi.name }} ×{{ oi.quantity }}</span>
+                                        <span class="hist-chip {% if not oi.is_authorized %}hist-chip--restricted{% endif %}">
+                                            {% if not oi.is_authorized %}<span style="color:#e07b4a;margin-right:2px">⚠</span>{% endif %}{{ oi.name }} ×{{ oi.quantity }}
+                                        </span>
                                         {% endfor %}
                                         {% if order.order_lines | length > 2 %}
                                         <span class="hist-chip hist-chip-more">+{{ order.order_lines | length - 2 }} more</span>
@@ -371,6 +395,17 @@
                                                class="hist-rate-item-name hist-rate-item-name-link">{{ oi.name }}</a>
                                             {% else %}
                                             <span class="hist-rate-item-name">{{ oi.name }}</span>
+                                            {% endif %}
+                                            {% if oi.is_authorized %}
+                                            <span class="item-auth-badge item-auth-badge--authorized">
+                                                <svg width="6" height="6" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                AUTH
+                                            </span>
+                                            {% else %}
+                                            <span class="item-auth-badge item-auth-badge--restricted">
+                                                <svg width="6" height="6" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M6 2v4m0 2.5v.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+                                                RESTR
+                                            </span>
                                             {% endif %}
                                             <span class="hist-rate-item-qty">× {{ oi.quantity }}</span>
                                         </div>

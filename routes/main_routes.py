@@ -128,7 +128,11 @@ def orders():
             CASE
                 WHEN ci.item_type = 'product' THEN p.slug
                 WHEN ci.item_type = 'service' THEN s.slug
-            END AS slug
+            END AS slug,
+            CASE
+                WHEN ci.item_type = 'product' THEN p.is_authorized
+                WHEN ci.item_type = 'service' THEN s.is_authorized
+            END AS is_authorized
         FROM cart_items ci
         LEFT JOIN products p ON ci.item_type = 'product' AND ci.item_id = p.id
         LEFT JOIN services s ON ci.item_type = 'service' AND ci.item_id = s.id
@@ -170,7 +174,11 @@ def orders():
                    CASE
                        WHEN oi.item_type = 'product' THEN p.slug
                        WHEN oi.item_type = 'service' THEN s.slug
-                   END AS slug
+                   END AS slug,
+                   CASE
+                       WHEN oi.item_type = 'product' THEN p.is_authorized
+                       WHEN oi.item_type = 'service' THEN s.is_authorized
+                   END AS is_authorized
             FROM order_items oi
             LEFT JOIN products p ON oi.item_type = 'product' AND oi.item_id = p.id
             LEFT JOIN services s ON oi.item_type = 'service' AND oi.item_id = s.id
@@ -226,7 +234,11 @@ def orders():
                    CASE
                        WHEN oi.item_type = 'product' THEN p.slug
                        WHEN oi.item_type = 'service' THEN s.slug
-                   END AS slug
+                   END AS slug,
+                   CASE
+                       WHEN oi.item_type = 'product' THEN p.is_authorized
+                       WHEN oi.item_type = 'service' THEN s.is_authorized
+                   END AS is_authorized
             FROM order_items oi
             LEFT JOIN products p ON oi.item_type = 'product' AND oi.item_id = p.id
             LEFT JOIN services s ON oi.item_type = 'service' AND oi.item_id = s.id
