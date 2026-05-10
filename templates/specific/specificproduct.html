@@ -79,13 +79,7 @@
                     {% endfor %}
                 {% endif %}
 
-                {# Fill remaining slots as empty placeholders up to 5 total #}
-                {% set filled = 1 + (product_images | length if product_images else 0) %}
-                {% for i in range(5 - filled) %}
-                <div class="sp-thumb empty" data-img="" onclick="spSetActive(this)">
-                    <span>—</span>
-                </div>
-                {% endfor %}
+
             </div>
 
             <!-- Active (large) image -->
