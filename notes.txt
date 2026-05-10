@@ -33,20 +33,19 @@ GLOBAL
     [/] Blinker -- Secure Connection Indicator
     [/] Language Change
     [/] Currency Change
-    [/] About
-    [/] Contacts
-    [/] Legal
+    [ ] About
+    [ ] Contacts
+    [ ] Legal
 
   NavBar
     [/] Logo | Title
     [/] Products
     [/] Services
     [ ] Tools
-    [ ] Community
     [ ] Updates
     [ ] PopUps
           [ ] Search Bar
-          [ ] Cart
+          [/] Cart
           [/] Account
     [/] Coordinates
 
@@ -95,8 +94,10 @@ GLOBAL
   ACCOUNT PAGES
   -------------
     [ ] Admin Dashboard
-    [ ] User Dashboard
-    [ ] Cart Page
+    [ ] User Pages 
+      [ ] Account Page
+      [ ] Orders Page
+      [ ] Checkout Page
 
   STATIC PAGES
   ------------
@@ -116,7 +117,7 @@ GLOBAL
 
 
 ================================================================================
-  DATABASE TABLES
+  BRANDS AND CATEGORIES
 ================================================================================
 
 BRANDS
