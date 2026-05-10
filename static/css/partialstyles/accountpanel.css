@@ -30,6 +30,7 @@
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1200;
   overflow: hidden;
+  height: 875px;
 }
 /* Right accent bar */
 .account-sidebar::before {
