@@ -238,7 +238,7 @@ def settings_account_save():
                 username=?, email=?, contact_number=?, bio=?, country=?,
                 delivery_address=?, payment_method=?, wallet_balance=?,
                 social_link_1=?, social_link_2=?, social_link_3=?, social_link_4=?,
-                profile_image=?
+                profile_image=?, updated_at=datetime('now')
                WHERE id=?''',
             (username, email, contact_number, bio, country,
              delivery_address, payment_method, wallet_balance,
@@ -250,7 +250,8 @@ def settings_account_save():
             '''UPDATE users SET
                 username=?, email=?, contact_number=?, bio=?, country=?,
                 delivery_address=?, payment_method=?, wallet_balance=?,
-                social_link_1=?, social_link_2=?, social_link_3=?, social_link_4=?
+                social_link_1=?, social_link_2=?, social_link_3=?, social_link_4=?,
+                updated_at=datetime('now')
                WHERE id=?''',
             (username, email, contact_number, bio, country,
              delivery_address, payment_method, wallet_balance,
