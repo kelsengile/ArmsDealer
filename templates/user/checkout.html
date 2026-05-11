@@ -751,8 +751,8 @@
 
 <script>
 (function () {
-    const CART_TOTAL = {{ cart_total | float }};
-    const WALLET_BAL = {{ wallet_bal }};
+    const CART_TOTAL = parseFloat("{{ cart_total | default(0) | float }}") || 0;
+    const WALLET_BAL = parseFloat("{{ wallet_bal | default(0) | float }}") || 0;
     const SYM = "{{ currency.symbol if currency else '₱' }}";
 
     const radios      = document.querySelectorAll('input[name="payment_method"]');
@@ -765,6 +765,12 @@
     const remainRow   = document.getElementById('chk-wallet-remain-row');
     const remainVal   = document.getElementById('chk-wallet-remain-val');
     const totalFinal  = document.getElementById('chk-total-final-val');
+
+    // Exit early if checkout elements are not present (e.g. empty cart state)
+    if (!hiddenInput || !submitBtn || !warnEl || !walletTag ||
+        !deductRow || !deductVal || !remainRow || !remainVal || !totalFinal) {
+        return;
+    }
 
     function fmt(n) {
         return SYM + n.toLocaleString('en-PH', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
