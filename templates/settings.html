@@ -1122,18 +1122,35 @@ document.addEventListener('DOMContentLoaded', function () {
     const navItems = document.querySelectorAll('.setpage-nav-item');
     const panels   = document.querySelectorAll('.setpage-panel');
 
+    function activateSection(section) {
+        navItems.forEach(b => b.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+
+        if (section) {
+            const btn   = document.querySelector(`.setpage-nav-item[data-section="${section}"]`);
+            const panel = document.getElementById('setpanel-' + section);
+            if (btn)   btn.classList.add('active');
+            if (panel) { panel.classList.add('active'); return; }
+        }
+        // Fallback — show default placeholder
+        const def = document.getElementById('setpanel-default');
+        if (def) def.classList.add('active');
+    }
+
     navItems.forEach(function (btn) {
         btn.addEventListener('click', function () {
             const target = btn.dataset.section;
-
-            navItems.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            panels.forEach(p => p.classList.remove('active'));
-            const panel = document.getElementById('setpanel-' + target);
-            if (panel) panel.classList.add('active');
+            activateSection(target);
+            // Keep the URL in sync so back/forward and sharing work
+            const url = new URL(window.location);
+            url.searchParams.set('section', target);
+            window.history.replaceState({}, '', url);
         });
     });
+
+    // ── On page load: honour ?section= param from any inbound link ──
+    const initSection = new URLSearchParams(window.location.search).get('section');
+    activateSection(initSection);
 });
 
 // ── Generic save (non-account panels) ────────────────────────
@@ -1149,13 +1166,63 @@ function saveSettings(section) {
 }
 
 // ── Account save ──────────────────────────────────────────────
-function saveAccountSettings() {
-    const name = (document.getElementById('displayNameInput') || {}).value || '';
-    if (!name.trim()) {
+async function saveAccountSettings() {
+    const username = (document.getElementById('displayNameInput')?.value || '').trim();
+    if (!username) {
         showToast('Display name cannot be empty.', 'danger');
         return;
     }
-    showToast('Account settings saved.', 'success');
+
+    const imageInput = document.getElementById('profileImageInput');
+    const hasImage   = imageInput && imageInput.files && imageInput.files[0];
+
+    const fd = new FormData();
+    fd.append('username',         username);
+    fd.append('email',            (document.getElementById('emailInput')?.value            || '').trim());
+    fd.append('contact_number',   (document.getElementById('phoneInput')?.value            || '').trim());
+    fd.append('bio',              (document.getElementById('bioInput')?.value              || '').trim());
+    fd.append('country',          document.getElementById('countrySelect')?.value          || '');
+    fd.append('delivery_address', (document.getElementById('deliveryAddressInput')?.value  || '').trim());
+    fd.append('social_link_1',    (document.getElementById('socialLink1')?.value           || '').trim());
+    fd.append('social_link_2',    (document.getElementById('socialLink2')?.value           || '').trim());
+    fd.append('social_link_3',    (document.getElementById('socialLink3')?.value           || '').trim());
+    fd.append('social_link_4',    (document.getElementById('socialLink4')?.value           || '').trim());
+
+    const paymentRadio = document.querySelector('input[name="paymentMethod"]:checked');
+    fd.append('payment_method', paymentRadio ? paymentRadio.value : 'cash_on_delivery');
+
+    /* Convert displayed wallet value back to PHP before saving.
+       The input carries a data-rate attribute holding the current currency's
+       rate relative to PHP. Dividing by that rate gives the PHP amount the
+       DB always stores. */
+    const walletInput      = document.getElementById('walletBalanceInput');
+    const displayedWallet  = parseFloat(walletInput?.value)        || 0;
+    const activeRate       = parseFloat(walletInput?.dataset.rate) || 1;
+    const walletInPhp      = activeRate !== 0 ? displayedWallet / activeRate : displayedWallet;
+    fd.append('wallet_balance', walletInPhp.toFixed(2));
+
+    if (hasImage) fd.append('profile_image', imageInput.files[0]);
+
+    try {
+        const res  = await fetch('/api/settings/account', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.ok) {
+            showToast('Account settings saved.', 'success');
+            if (data.profile_image) {
+                const photo = document.getElementById('avatarPhoto');
+                if (photo) {
+                    photo.src          = '/static/assets/images/userimages/' + data.profile_image;
+                    photo.style.display = 'block';
+                    const initialsEl   = document.getElementById('avatarInitials');
+                    if (initialsEl) initialsEl.style.display = 'none';
+                }
+            }
+        } else {
+            showToast(data.error || 'Save failed.', 'danger');
+        }
+    } catch (err) {
+        showToast('Network error — could not save.', 'danger');
+    }
 }
 
 // ── Reset section ─────────────────────────────────────────────
@@ -1264,10 +1331,29 @@ function toggleQuietHours(checkbox) {
     if (cfg) cfg.style.display = checkbox.checked ? 'block' : 'none';
 }
 
-// ── Currency preference ───────────────────────────────────────
+// ── Currency preference — persists via server cookie ─────────
 function saveCurrencyPreference(code) {
-    showToast('Currency changed to ' + code + '. Reload to see updated prices.', 'info');
-    // Actual persistence goes via your normal AJAX / form submit flow
+    fetch('/set-currency', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ currency: code })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+        if (!data.ok) { showToast('Could not change currency.', 'danger'); return; }
+        const sym = document.getElementById('settingsWalletSymbol');
+        if (sym) sym.textContent = data.symbol;
+        const walletInput = document.getElementById('walletBalanceInput');
+        if (walletInput && data.rate != null) {
+            const oldRate        = parseFloat(walletInput.dataset.rate) || 1;
+            const currentDisplay = parseFloat(walletInput.value)        || 0;
+            const phpAmount      = oldRate !== 0 ? currentDisplay / oldRate : currentDisplay;
+            walletInput.value        = (phpAmount * data.rate).toFixed(2);
+            walletInput.dataset.rate = data.rate;
+        }
+        showToast('Currency changed to ' + code + '.', 'success');
+    })
+    .catch(function () { showToast('Network error — currency not saved.', 'danger'); });
 }
 
 // ── Support ticket ────────────────────────────────────────────
