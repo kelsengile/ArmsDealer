@@ -168,7 +168,17 @@
         fd.append('bio', (document.getElementById('bioInput')?.value || '').trim());
         fd.append('country', document.getElementById('countrySelect')?.value || '');
         fd.append('delivery_address', (document.getElementById('deliveryAddressInput')?.value || '').trim());
-        fd.append('wallet_balance', document.getElementById('walletBalanceInput')?.value || '0');
+        /* Convert the displayed wallet value back to PHP before saving.
+           The input carries a data-rate attribute (set server-side and kept in
+           sync by saveCurrencyPreference) that holds the current currency's
+           rate relative to PHP.  Dividing by that rate gives the PHP amount
+           the DB should always store.
+           e.g. displayed 25000 USD  ÷  rate 0.0175  ≈  1,428,571 PHP  */
+        const walletInput = document.getElementById('walletBalanceInput');
+        const displayedWallet = parseFloat(walletInput?.value) || 0;
+        const activeRate = parseFloat(walletInput?.dataset.rate) || 1;
+        const walletInPhp = activeRate !== 0 ? displayedWallet / activeRate : displayedWallet;
+        fd.append('wallet_balance', walletInPhp.toFixed(2));
         const paymentRadio = document.querySelector('input[name="paymentMethod"]:checked');
         fd.append('payment_method', paymentRadio ? paymentRadio.value : 'cash_on_delivery');
         fd.append('social_link_1', (document.getElementById('socialLink1')?.value || '').trim());
