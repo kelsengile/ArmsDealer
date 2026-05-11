@@ -110,7 +110,7 @@ from routes.api_routes import api_bp        # noqa: E402
 app.register_blueprint(auth_bp)
 app.register_blueprint(main_bp)
 app.register_blueprint(cart_bp)
-app.register_blueprint(api_bp)
+app.register_blueprint(api_bp, url_prefix='/api')
 
 # ─────────────────────────────────────────
 # RUN
