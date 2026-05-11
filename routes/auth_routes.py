@@ -77,18 +77,46 @@ def admin_required(f):
 
 
 def _populate_session(user):
-    """Write user fields into the Flask session."""
+    """Write all user fields into the Flask session.
+
+    Pulls a fresh cart_count from the DB so the panel badge is accurate
+    immediately after login / registration.
+    """
     session.permanent = True
+    # ── Identity ──────────────────────────────────────────────────────
     session['user_id'] = user['id']
     session['username'] = user['username']
     session['email'] = user['email']
     session['role'] = user['role']
-    session['created_at'] = user['created_at']
-    session['profile_image'] = user['profile_image'] if user['profile_image'] else None
-    # cart_count: update this whenever cart changes;
-    # here we just initialise to 0 if not already set
-    if 'cart_count' not in session:
-        session['cart_count'] = 0
+    session['created_at'] = user['created_at'] if user['created_at'] else None
+    session['profile_image'] = user['profile_image'] or None
+    # ── Extended profile fields (shown in panel / settings) ───────────
+    session['contact_number'] = user['contact_number'] if 'contact_number' in user.keys() else None
+    session['bio'] = user['bio'] if 'bio' in user.keys() else None
+    session['country'] = user['country'] if 'country' in user.keys() else None
+    session['delivery_address'] = user['delivery_address'] if 'delivery_address' in user.keys() else None
+    session['payment_method'] = user['payment_method'] if 'payment_method' in user.keys(
+    ) else 'cash_on_delivery'
+    session['wallet_balance'] = user['wallet_balance'] if 'wallet_balance' in user.keys() else 0
+    session['social_link_1'] = user['social_link_1'] if 'social_link_1' in user.keys(
+    ) else None
+    session['social_link_2'] = user['social_link_2'] if 'social_link_2' in user.keys(
+    ) else None
+    session['social_link_3'] = user['social_link_3'] if 'social_link_3' in user.keys(
+    ) else None
+    session['social_link_4'] = user['social_link_4'] if 'social_link_4' in user.keys(
+    ) else None
+    # ── Live cart count ───────────────────────────────────────────────
+    try:
+        db = get_db()
+        row = db.execute(
+            'SELECT COALESCE(SUM(quantity), 0) AS cnt FROM cart_items WHERE user_id = ?',
+            (user['id'],)
+        ).fetchone()
+        session['cart_count'] = int(row['cnt']) if row else 0
+    except Exception:
+        if 'cart_count' not in session:
+            session['cart_count'] = 0
 # ─── LOGIN ────────────────────────────────────────────────────────
 
 

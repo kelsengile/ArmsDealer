@@ -62,7 +62,16 @@ def contacts():
 
 @main_bp.route('/settings')
 def settings():
-    return render_template('settings.html')
+    user = None
+    if session.get('user_id'):
+        db = get_db()
+        user = db.execute(
+            'SELECT * FROM users WHERE id = ?', (session['user_id'],)
+        ).fetchone()
+        if not user:
+            session.clear()
+            return redirect(url_for('auth.login'))
+    return render_template('settings.html', user=user)
 
 
 @main_bp.route('/legal')

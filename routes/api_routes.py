@@ -3,6 +3,11 @@
 # ──────────────────────────────────────────────────────────────────────────────────
 from flask import Blueprint, request, jsonify, render_template, session
 from db_helpers import get_db, get_locale, get_currency
+import os
+import uuid
+from werkzeug.utils import secure_filename
+from flask import Blueprint, request, jsonify, session
+from db_helpers import get_db
 
 api_bp = Blueprint('api', __name__)
 
@@ -335,3 +340,154 @@ def api_rate():
 
     db.commit()
     return jsonify(ok=True, new_rating=new_rating)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ADD THIS ROUTE TO api_routes.py (or a new settings_routes.py blueprint)
+# ─────────────────────────────────────────────────────────────────────────────
+# Required imports at top of file:
+#
+# Also add this route to the api_bp (or a new settings_bp) blueprint.
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+
+
+def _allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@api_bp.route('/api/settings/account', methods=['POST'])
+def api_settings_account():
+    """Save account profile settings. Accepts multipart/form-data (may include profile image).
+
+    Form fields:
+        username, email, contact_number, bio,
+        country, delivery_address,
+        wallet_balance, payment_method,
+        social_link_1..4,
+        profile_image  (file, optional)
+
+    Returns:
+        { "ok": true, "profile_image": "<filename or null>" }
+        { "ok": false, "error": "..." }
+    """
+    if not session.get('user_id'):
+        return jsonify(ok=False, error='Not authenticated'), 401
+
+    db = get_db()
+    user_id = session['user_id']
+
+    # ── Collect text fields ───────────────────────────────────────────────
+    username = request.form.get('username', '').strip()
+    email = request.form.get('email', '').strip()
+    contact_number = request.form.get('contact_number', '').strip() or None
+    bio = request.form.get('bio', '').strip() or None
+    country = request.form.get('country', '').strip() or None
+    delivery_address = request.form.get('delivery_address', '').strip() or None
+    payment_method = request.form.get(
+        'payment_method', 'cash_on_delivery').strip()
+    social_link_1 = request.form.get('social_link_1', '').strip() or None
+    social_link_2 = request.form.get('social_link_2', '').strip() or None
+    social_link_3 = request.form.get('social_link_3', '').strip() or None
+    social_link_4 = request.form.get('social_link_4', '').strip() or None
+
+    try:
+        wallet_balance = float(request.form.get('wallet_balance', 0))
+        if wallet_balance < 0:
+            wallet_balance = 0.0
+    except (TypeError, ValueError):
+        wallet_balance = 0.0
+
+    # Validate required fields
+    if not username:
+        return jsonify(ok=False, error='Display name is required'), 400
+    if not email:
+        return jsonify(ok=False, error='Email is required'), 400
+    if payment_method not in ('ewallet', 'cash_on_delivery'):
+        payment_method = 'cash_on_delivery'
+
+    # ── Check for duplicate username / email (exclude self) ──────────────
+    conflict = db.execute(
+        'SELECT id FROM users WHERE username = ? AND id != ?', (
+            username, user_id)
+    ).fetchone()
+    if conflict:
+        return jsonify(ok=False, error='Username already taken'), 409
+
+    conflict = db.execute(
+        'SELECT id FROM users WHERE email = ? AND id != ?', (email, user_id)
+    ).fetchone()
+    if conflict:
+        return jsonify(ok=False, error='Email already in use'), 409
+
+    # ── Handle profile image upload ───────────────────────────────────────
+    new_image_filename = None
+    file = request.files.get('profile_image')
+    if file and file.filename and _allowed_file(file.filename):
+        import os
+        import uuid
+        from werkzeug.utils import secure_filename
+        from flask import current_app
+
+        ext = file.filename.rsplit('.', 1)[1].lower()
+        safe_name = f"user_{user_id}_{uuid.uuid4().hex[:8]}.{ext}"
+        save_dir = os.path.join(current_app.root_path,
+                                'static', 'assets', 'images', 'userimages')
+        os.makedirs(save_dir, exist_ok=True)
+        file.save(os.path.join(save_dir, safe_name))
+        new_image_filename = safe_name
+
+    # ── Persist to database ───────────────────────────────────────────────
+    if new_image_filename:
+        db.execute("""
+            UPDATE users SET
+                username         = ?,
+                email            = ?,
+                contact_number   = ?,
+                bio              = ?,
+                country          = ?,
+                delivery_address = ?,
+                wallet_balance   = ?,
+                payment_method   = ?,
+                social_link_1    = ?,
+                social_link_2    = ?,
+                social_link_3    = ?,
+                social_link_4    = ?,
+                profile_image    = ?,
+                updated_at       = datetime('now')
+            WHERE id = ?
+        """, (username, email, contact_number, bio, country, delivery_address,
+              wallet_balance, payment_method,
+              social_link_1, social_link_2, social_link_3, social_link_4,
+              new_image_filename, user_id))
+        # Keep session in sync
+        session['profile_image'] = new_image_filename
+    else:
+        db.execute("""
+            UPDATE users SET
+                username         = ?,
+                email            = ?,
+                contact_number   = ?,
+                bio              = ?,
+                country          = ?,
+                delivery_address = ?,
+                wallet_balance   = ?,
+                payment_method   = ?,
+                social_link_1    = ?,
+                social_link_2    = ?,
+                social_link_3    = ?,
+                social_link_4    = ?,
+                updated_at       = datetime('now')
+            WHERE id = ?
+        """, (username, email, contact_number, bio, country, delivery_address,
+              wallet_balance, payment_method,
+              social_link_1, social_link_2, social_link_3, social_link_4,
+              user_id))
+
+    db.commit()
+
+    # Also update session username if changed
+    session['username'] = username
+
+    return jsonify(ok=True, profile_image=new_image_filename)
