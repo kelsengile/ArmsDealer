@@ -998,5 +998,324 @@
     </div>
 </div>
 
-<script src="{{ url_for('static', filename='js/pagefunctions/settingsfunctions.js') }}"></script>
+{% include 'partials/toast.html' %}
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   TOAST SYSTEM
+   Works in two modes:
+   1. Flask flash messages – picked up from #toast-flash-data on DOMContentLoaded
+   2. Direct JS calls      – showToast(message, type)
+      type: 'success' | 'danger' | 'warning' | 'info'
+═══════════════════════════════════════════════════════════════ */
+(function () {
+    const ICONS = {
+        success: '✔',
+        danger:  '✖',
+        warning: '⚠',
+        info:    'ℹ',
+    };
+
+    // Inject the toast container once
+    function getContainer() {
+        let c = document.getElementById('toast-container');
+        if (!c) {
+            c = document.createElement('div');
+            c.id = 'toast-container';
+            c.style.cssText = [
+                'position:fixed',
+                'bottom:24px',
+                'right:24px',
+                'z-index:9999',
+                'display:flex',
+                'flex-direction:column-reverse',
+                'gap:10px',
+                'pointer-events:none',
+            ].join(';');
+            document.body.appendChild(c);
+        }
+        return c;
+    }
+
+    window.showToast = function (message, type) {
+        type = ['success','danger','warning','info'].includes(type) ? type : 'info';
+
+        const COLORS = {
+            success: { bg: 'rgba(20,36,16,0.97)', border: '#5a7a3a', accent: '#8aaa6a', label: 'SUCCESS' },
+            danger:  { bg: 'rgba(36,16,16,0.97)', border: '#7a3a3a', accent: '#c05050', label: 'ALERT'   },
+            warning: { bg: 'rgba(36,30,10,0.97)', border: '#7a6020', accent: '#c09040', label: 'WARNING' },
+            info:    { bg: 'rgba(12,28,36,0.97)', border: '#2a5a7a', accent: '#4a8aaa', label: 'NOTICE'  },
+        };
+        const C = COLORS[type];
+
+        const toast = document.createElement('div');
+        toast.style.cssText = [
+            'pointer-events:auto',
+            'min-width:280px',
+            'max-width:380px',
+            `background:${C.bg}`,
+            `border:1px solid ${C.border}`,
+            `border-left:3px solid ${C.accent}`,
+            'padding:12px 14px',
+            'font-family:var(--font-mono, "Share Tech Mono", monospace)',
+            'font-size:11px',
+            'letter-spacing:0.06em',
+            'color:var(--mil-text, #c8d8b0)',
+            'display:flex',
+            'align-items:flex-start',
+            'gap:10px',
+            'cursor:pointer',
+            'opacity:0',
+            'transform:translateX(20px)',
+            'transition:opacity .22s ease, transform .22s ease',
+            'box-shadow:0 4px 20px rgba(0,0,0,0.55)',
+        ].join(';');
+
+        toast.innerHTML = `
+            <span style="color:${C.accent};font-size:13px;line-height:1;margin-top:1px;flex-shrink:0;">${ICONS[type]}</span>
+            <div style="flex:1;line-height:1.5;">
+                <div style="color:${C.accent};font-size:9px;letter-spacing:0.15em;margin-bottom:3px;">${C.label}</div>
+                <div>${message}</div>
+            </div>
+            <span style="color:var(--mil-muted,#6a7a5a);font-size:11px;margin-top:1px;flex-shrink:0;" title="Dismiss">✕</span>
+        `;
+
+        const container = getContainer();
+        container.appendChild(toast);
+
+        // Animate in
+        requestAnimationFrame(() => {
+            toast.style.opacity  = '1';
+            toast.style.transform = 'translateX(0)';
+        });
+
+        // Auto-dismiss
+        let timer = setTimeout(dismiss, type === 'danger' ? 6000 : 4000);
+
+        function dismiss() {
+            clearTimeout(timer);
+            toast.style.opacity   = '0';
+            toast.style.transform = 'translateX(20px)';
+            setTimeout(() => toast.remove(), 240);
+        }
+
+        toast.addEventListener('click', dismiss);
+    };
+
+    // Pick up Flask flash messages rendered by partials/toast.html
+    document.addEventListener('DOMContentLoaded', function () {
+        const container = document.getElementById('toast-flash-data');
+        if (!container) return;
+        container.querySelectorAll('[data-toast]').forEach(function (el) {
+            window.showToast(el.dataset.message, el.dataset.type);
+        });
+    });
+})();
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SETTINGS PAGE FUNCTIONS
+═══════════════════════════════════════════════════════════════ */
+
+// ── Nav panel switching ────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function () {
+    const navItems = document.querySelectorAll('.setpage-nav-item');
+    const panels   = document.querySelectorAll('.setpage-panel');
+
+    navItems.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const target = btn.dataset.section;
+
+            navItems.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            panels.forEach(p => p.classList.remove('active'));
+            const panel = document.getElementById('setpanel-' + target);
+            if (panel) panel.classList.add('active');
+        });
+    });
+});
+
+// ── Generic save (non-account panels) ────────────────────────
+function saveSettings(section) {
+    const labels = {
+        privacy:       'Privacy & Security',
+        appearance:    'Appearance',
+        notifications: 'Notification preferences',
+        language:      'Language & Region',
+    };
+    const label = labels[section] || 'Settings';
+    showToast(label + ' saved successfully.', 'success');
+}
+
+// ── Account save ──────────────────────────────────────────────
+function saveAccountSettings() {
+    const name = (document.getElementById('displayNameInput') || {}).value || '';
+    if (!name.trim()) {
+        showToast('Display name cannot be empty.', 'danger');
+        return;
+    }
+    showToast('Account settings saved.', 'success');
+}
+
+// ── Reset section ─────────────────────────────────────────────
+function resetSection(section) {
+    showToast('Changes discarded.', 'info');
+}
+
+// ── Avatar / photo preview ────────────────────────────────────
+function previewProfileImage(input) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const photo    = document.getElementById('avatarPhoto');
+        const initials = document.getElementById('avatarInitials');
+        if (photo)    { photo.src = e.target.result; photo.style.display = 'block'; }
+        if (initials) { initials.style.display = 'none'; }
+        const fn = document.getElementById('photoFilename');
+        if (fn) { fn.textContent = file.name; fn.style.display = 'block'; }
+        showToast('Photo ready — save changes to apply.', 'info');
+    };
+    reader.readAsDataURL(file);
+}
+
+// ── Display name live preview ─────────────────────────────────
+(function () {
+    document.addEventListener('DOMContentLoaded', function () {
+        const input   = document.getElementById('displayNameInput');
+        const preview = document.getElementById('displayNamePreview');
+        if (!input || !preview) return;
+        input.addEventListener('input', function () {
+            preview.textContent = input.value || '—';
+        });
+    });
+})();
+
+// ── Password strength bar ─────────────────────────────────────
+function updatePasswordStrength(val) {
+    const bar   = document.getElementById('pwStrengthBar');
+    const label = document.getElementById('pwStrengthLabel');
+    if (!bar || !label) return;
+
+    let score = 0;
+    if (val.length >= 8)                     score++;
+    if (val.length >= 12)                    score++;
+    if (/[A-Z]/.test(val))                   score++;
+    if (/[0-9]/.test(val))                   score++;
+    if (/[^A-Za-z0-9]/.test(val))            score++;
+
+    const levels = [
+        { w:'0%',   c:'var(--mil-redbright,#c05050)',   t:'ENTER PASSWORD TO CHECK STRENGTH' },
+        { w:'20%',  c:'var(--mil-redbright,#c05050)',   t:'VERY WEAK' },
+        { w:'40%',  c:'#c09040',                        t:'WEAK' },
+        { w:'60%',  c:'#c0c040',                        t:'MODERATE' },
+        { w:'80%',  c:'#8aaa6a',                        t:'STRONG' },
+        { w:'100%', c:'var(--mil-bright,#b8d890)',      t:'VERY STRONG' },
+    ];
+    const l = val.length === 0 ? levels[0] : levels[Math.min(score, 5)];
+    bar.style.width      = l.w;
+    bar.style.background = l.c;
+    label.textContent    = l.t;
+}
+
+// ── 2FA toggle ────────────────────────────────────────────────
+function toggle2FA(checkbox) {
+    const setup = document.getElementById('twoFaSetup');
+    const tag   = document.getElementById('twoFaTag');
+    if (checkbox.checked) {
+        if (setup) setup.style.display = 'block';
+        if (tag)   { tag.textContent = 'ENABLED'; tag.className = 'set-tag set-tag--on'; }
+        showToast('Scan the QR code with your authenticator app.', 'info');
+    } else {
+        if (setup) setup.style.display = 'none';
+        if (tag)   { tag.textContent = 'DISABLED'; tag.className = 'set-tag set-tag--off'; }
+        showToast('Two-factor authentication disabled.', 'warning');
+    }
+}
+
+// ── QR grid (decorative) ──────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function () {
+    const grid = document.getElementById('qrGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    for (let i = 0; i < 64; i++) {
+        const cell = document.createElement('div');
+        cell.style.cssText = [
+            'width:6px', 'height:6px',
+            'background:' + (Math.random() > 0.5 ? 'var(--mil-bright,#b8d890)' : 'transparent'),
+        ].join(';');
+        grid.appendChild(cell);
+    }
+});
+
+// ── Payment option selector ───────────────────────────────────
+function selectPaymentOpt(radio) {
+    document.querySelectorAll('.set-payment-opt').forEach(function (el) {
+        el.classList.remove('active');
+    });
+    const label = radio.closest('.set-payment-opt');
+    if (label) label.classList.add('active');
+}
+
+// ── Quiet hours toggle ────────────────────────────────────────
+function toggleQuietHours(checkbox) {
+    const cfg = document.getElementById('quietHoursConfig');
+    if (cfg) cfg.style.display = checkbox.checked ? 'block' : 'none';
+}
+
+// ── Currency preference ───────────────────────────────────────
+function saveCurrencyPreference(code) {
+    showToast('Currency changed to ' + code + '. Reload to see updated prices.', 'info');
+    // Actual persistence goes via your normal AJAX / form submit flow
+}
+
+// ── Support ticket ────────────────────────────────────────────
+function submitSupport() {
+    showToast('Support ticket submitted. We\'ll respond within 24 hours.', 'success');
+}
+
+// ── Delete account modal ──────────────────────────────────────
+function openDeleteModal() {
+    const modal = document.getElementById('deleteModal');
+    if (modal) modal.classList.add('active');
+}
+function closeDeleteModal() {
+    const modal = document.getElementById('deleteModal');
+    if (modal) {
+        modal.classList.remove('active');
+        const input = document.getElementById('deleteConfirmInput');
+        const btn   = document.getElementById('confirmDeleteBtn');
+        if (input) input.value = '';
+        if (btn)   { btn.disabled = true; btn.style.opacity = '0.4'; btn.style.cursor = 'not-allowed'; }
+    }
+}
+function checkDeleteConfirm(val) {
+    const btn = document.getElementById('confirmDeleteBtn');
+    if (!btn) return;
+    const ok = val === 'DELETE MY ACCOUNT';
+    btn.disabled        = !ok;
+    btn.style.opacity   = ok ? '1'           : '0.4';
+    btn.style.cursor    = ok ? 'pointer'     : 'not-allowed';
+}
+// Close modal on backdrop click
+document.addEventListener('DOMContentLoaded', function () {
+    const backdrop = document.getElementById('deleteModal');
+    if (!backdrop) return;
+    backdrop.addEventListener('click', function (e) {
+        if (e.target === backdrop) closeDeleteModal();
+    });
+});
+
+// ── Color swatches (decorative) ───────────────────────────────
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.set-swatch').forEach(function (sw) {
+        sw.addEventListener('click', function () {
+            document.querySelectorAll('.set-swatch').forEach(s => s.classList.remove('active'));
+            sw.classList.add('active');
+            showToast('Accent color updated — save to apply.', 'info');
+        });
+    });
+});
+</script>
 {% endblock %}
