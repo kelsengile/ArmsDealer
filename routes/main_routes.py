@@ -1,7 +1,7 @@
 # ──────────────────────────────────────────────────────────────────────────────────
 # MAIN ROUTES
 # ──────────────────────────────────────────────────────────────────────────────────
-from flask import Blueprint, render_template, request, g, session, redirect, url_for
+from flask import Blueprint, render_template, request, g, session, redirect, url_for, jsonify, make_response, abort
 from db_helpers import get_db, get_locale, get_currency
 
 main_bp = Blueprint('main', __name__)
@@ -14,8 +14,7 @@ def homepage():
     lang = get_locale()
     currency = get_currency(db)
     product_rows = db.execute("""
-    SELECT p.id, p.slug, p.price, p.discount, p.image_file, p.tags,
-           p.rating, p.sales_count,
+    SELECT p.id, p.slug, p.price, p.discount, p.image_file, p.tags, p.rating, p.sales_count,
            COALESCE(pt.name, p.name)               AS name,
            COALESCE(pt.description, p.description) AS description
     FROM products p
@@ -45,6 +44,85 @@ def products():
     return render_template('products.html')
 
 
+@main_bp.route('/product/<slug>')
+def product_detail(slug):
+    db = get_db()
+    lang = get_locale()
+    currency = get_currency(db)
+
+    product = db.execute(
+        """
+        SELECT p.*, c.slug AS category_slug, c.name AS category_name,
+               sc.slug AS subcategory_slug, sc.name AS subcategory_name,
+               b.slug AS brand_slug, b.name AS brand_name, b.logo_file AS logo_file,
+               COALESCE(pt.name, p.name)               AS name,
+               COALESCE(pt.description, p.description) AS description
+        FROM products p
+        LEFT JOIN products_translations pt
+               ON pt.product_id = p.id AND pt.lang_code = ?
+        LEFT JOIN categories c ON c.id = p.category_id
+        LEFT JOIN subcategories sc ON sc.id = p.subcategory_id
+        LEFT JOIN brands b ON b.id = p.brand_id
+        WHERE p.slug = ?
+    """, (lang, slug)).fetchone()
+    if not product:
+        abort(404)
+
+    product_images = db.execute(
+        'SELECT image_file FROM product_images WHERE product_id = ? ORDER BY id ASC',
+        (product['id'],)
+    ).fetchall()
+    brand_product_count = 0
+    if product['brand_id']:
+        count_row = db.execute(
+            'SELECT COUNT(*) AS cnt FROM products WHERE brand_id = ?',
+            (product['brand_id'],)
+        ).fetchone()
+        brand_product_count = int(count_row['cnt']) if count_row else 0
+
+    related = []
+    if product['brand_id']:
+        related_rows = db.execute(
+            """
+            SELECT p.*, COALESCE(pt.name, p.name) AS name,
+                   COALESCE(pt.description, p.description) AS description
+            FROM products p
+            LEFT JOIN products_translations pt
+                   ON pt.product_id = p.id AND pt.lang_code = ?
+            WHERE p.brand_id = ?
+              AND p.id != ?
+              AND p.is_authorized = ?
+            ORDER BY p.sales_count DESC
+            LIMIT 8
+            """, (lang, product['brand_id'], product['id'], product['is_authorized'])).fetchall()
+        related = [dict(row) for row in related_rows]
+
+    if not related and product['category_id']:
+        related_rows = db.execute(
+            """
+            SELECT p.*, COALESCE(pt.name, p.name) AS name,
+                   COALESCE(pt.description, p.description) AS description
+            FROM products p
+            LEFT JOIN products_translations pt
+                   ON pt.product_id = p.id AND pt.lang_code = ?
+            WHERE p.category_id = ?
+              AND p.id != ?
+              AND p.is_authorized = ?
+            ORDER BY p.sales_count DESC
+            LIMIT 8
+            """, (lang, product['category_id'], product['id'], product['is_authorized'])).fetchall()
+        related = [dict(row) for row in related_rows]
+
+    return render_template(
+        'specific/specificproduct.html',
+        product=product,
+        product_images=[dict(img) for img in product_images],
+        brand_product_count=brand_product_count,
+        related=related,
+        currency=currency
+    )
+
+
 @main_bp.route('/services')
 def services():
     return render_template('services.html')
@@ -62,16 +140,21 @@ def contacts():
 
 @main_bp.route('/settings')
 def settings():
+    db = get_db()
+    currency = get_currency(db)
     user = None
     if session.get('user_id'):
-        db = get_db()
         user = db.execute(
             'SELECT * FROM users WHERE id = ?', (session['user_id'],)
         ).fetchone()
         if not user:
             session.clear()
             return redirect(url_for('auth.login'))
-    return render_template('settings.html', user=user)
+    rate = currency['rate_to_php'] if currency else 1.0
+    wallet_php = float(user['wallet_balance'] or 0) if user else 0.0
+    wallet_display = round(wallet_php * rate, 2)
+    return render_template('settings.html', user=user, currency=currency,
+                           wallet_display=wallet_display)
 
 
 @main_bp.route('/legal')
@@ -98,7 +181,12 @@ def account():
         session.clear()
         return redirect(url_for('auth.login'))
 
-    return render_template('user/account.html', user=user)
+    currency = get_currency(db)
+    rate = currency['rate_to_php'] if currency else 1.0
+    wallet_php = float(user['wallet_balance'] or 0)
+    wallet_display = wallet_php * rate
+    return render_template('user/account.html', user=user, currency=currency,
+                           wallet_display=wallet_display)
 
 
 # ─────────────────────────────────────────
@@ -420,3 +508,30 @@ def dashboard():
         revenue_by_day=revenue_by_day,
         revenue_labels=revenue_labels,
     )
+
+
+# ─────────────────────────────────────────
+# SET CURRENCY (POST) — saves cookie
+# ─────────────────────────────────────────
+
+@main_bp.route('/set-currency', methods=['POST'])
+def set_currency():
+    """Persist the chosen currency code as a cookie and return the symbol."""
+    data = request.get_json(silent=True) or {}
+    code = (data.get('currency') or '').strip().upper()
+
+    VALID_CODES = {'PHP', 'USD', 'EUR', 'GBP', 'SGD', 'JPY'}
+    if code not in VALID_CODES:
+        return jsonify({'ok': False, 'error': 'Invalid currency code'}), 400
+
+    db = get_db()
+    row = db.execute(
+        'SELECT symbol, rate_to_php FROM currencies WHERE code = ?', (code,)).fetchone()
+    symbol = row['symbol'] if row else '₱'
+    rate = row['rate_to_php'] if row else 1.0
+
+    resp = make_response(
+        jsonify({'ok': True, 'symbol': symbol, 'code': code, 'rate': rate}))
+    resp.set_cookie('currency', code, max_age=60 *
+                    60 * 24 * 365, samesite='Lax')
+    return resp

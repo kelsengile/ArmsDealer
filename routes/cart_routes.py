@@ -212,13 +212,29 @@ def checkout():
 
 @cart_bp.route('/checkout/place', methods=['POST'])
 def place_order():
-    """Convert cart to an order, clear cart, redirect to orders shipping tab."""
+    """Convert cart to an order, clear cart, redirect to orders shipping tab.
+
+    Supports two payment methods submitted via form field 'payment_method':
+        - 'cash_on_delivery'  — no balance change, order recorded as-is.
+        - 'wallet'            — deducts the PHP total from the user's
+                                wallet_balance. Returns 402 if insufficient.
+
+    The total stored on the order is always the raw PHP amount; currency
+    conversion is display-only and not persisted.
+    """
     if not session.get('user_id'):
         return redirect(url_for('auth.login'))
 
     db = get_db()
     user_id = session['user_id']
 
+    # ── Resolve payment method from form POST ──────────────────────────
+    payment_method = request.form.get(
+        'payment_method', 'cash_on_delivery').strip().lower()
+    if payment_method not in ('cash_on_delivery', 'wallet'):
+        payment_method = 'cash_on_delivery'
+
+    # ── Fetch cart rows (prices in PHP, no currency conversion here) ───
     cart_rows = db.execute("""
         SELECT
             ci.item_type,
@@ -239,15 +255,36 @@ def place_order():
 
     total = sum((row['price'] or 0) * row['quantity'] for row in cart_rows)
 
-    # Create the order with initial status 'order placed'
+    # ── Wallet payment: validate and deduct ───────────────────────────
+    if payment_method == 'wallet':
+        user_row = db.execute(
+            'SELECT wallet_balance FROM users WHERE id = ?', (user_id,)
+        ).fetchone()
+        current_balance = float(
+            user_row['wallet_balance'] or 0) if user_row else 0.0
+
+        if current_balance < total:
+            # Redirect back to checkout with an error flag rather than a 402
+            # so the JS warning already shown on the page stays consistent.
+            return redirect(url_for('cart.checkout') + '?error=insufficient_balance')
+
+        new_balance = current_balance - total
+        db.execute(
+            'UPDATE users SET wallet_balance = ? WHERE id = ?',
+            (new_balance, user_id)
+        )
+        # Keep session in sync immediately
+        session['wallet_balance'] = new_balance
+
+    # ── Create the order ───────────────────────────────────────────────
     cursor = db.execute(
-        "INSERT INTO orders (user_id, status, total) VALUES (?, 'order placed', ?)",
-        (user_id, total)
+        "INSERT INTO orders (user_id, status, total, notes) VALUES (?, 'order placed', ?, ?)",
+        (user_id, total, f'Payment: {payment_method}')
     )
     db.commit()
     order_id = cursor.lastrowid
 
-    # Insert order items
+    # ── Insert order items ─────────────────────────────────────────────
     for row in cart_rows:
         db.execute(
             """INSERT INTO order_items (order_id, item_type, item_id, quantity, unit_price)
@@ -256,19 +293,15 @@ def place_order():
              row['quantity'], row['price'] or 0)
         )
 
-    # Clear the cart
+    # ── Clear the cart ─────────────────────────────────────────────────
     db.execute('DELETE FROM cart_items WHERE user_id = ?', (user_id,))
     db.commit()
 
-    # ── Keep session in sync so every page reflects the empty cart ──
+    # Keep session in sync so every page reflects the empty cart
     session['cart_count'] = 0
 
     return redirect(url_for('main.orders') + '?tab=shipping')
 
-
-# ─────────────────────────────────────────
-# ADMIN — UPDATE ORDER STATUS (POST /admin/order/<id>/status)
-# ─────────────────────────────────────────
 
 # ─────────────────────────────────────────
 # CANCEL ORDER (POST /api/order/<id>/cancel)
@@ -279,6 +312,7 @@ def api_cancel_order(order_id):
     """Cancel an order if it is still in 'order placed' or 'packing' status.
 
     Only the owning user (or an admin) may cancel.
+    If the order was paid by wallet, the total is refunded to the user's balance.
     Deletes the order and its items from the database.
 
     Returns:
@@ -292,9 +326,10 @@ def api_cancel_order(order_id):
     user_id = session['user_id']
     role = session.get('role', 'customer')
 
-    # Fetch the order
+    # Fetch the order (include notes so we can check payment method)
     order = db.execute(
-        'SELECT id, user_id, status FROM orders WHERE id = ?', (order_id,)
+        'SELECT id, user_id, status, total, notes FROM orders WHERE id = ?', (
+            order_id,)
     ).fetchone()
 
     if not order:
@@ -309,6 +344,19 @@ def api_cancel_order(order_id):
     if order['status'].lower() not in cancellable:
         return jsonify(ok=False, error='Order cannot be cancelled at this stage'), 409
 
+    # ── Wallet refund if applicable ────────────────────────────────────
+    notes = (order['notes'] or '').lower()
+    if 'payment: wallet' in notes:
+        refund_amount = float(order['total'] or 0)
+        db.execute(
+            'UPDATE users SET wallet_balance = wallet_balance + ? WHERE id = ?',
+            (refund_amount, order['user_id'])
+        )
+        # Sync session balance if the cancelling user owns the order
+        if order['user_id'] == user_id:
+            new_bal = float(session.get('wallet_balance') or 0) + refund_amount
+            session['wallet_balance'] = new_bal
+
     # Delete order items first (FK constraint), then the order
     db.execute('DELETE FROM order_items WHERE order_id = ?', (order_id,))
     db.execute('DELETE FROM orders WHERE id = ?', (order_id,))
@@ -316,6 +364,10 @@ def api_cancel_order(order_id):
 
     return jsonify(ok=True)
 
+
+# ─────────────────────────────────────────
+# ADMIN — UPDATE ORDER STATUS
+# ─────────────────────────────────────────
 
 @cart_bp.route('/admin/order/<int:order_id>/status', methods=['POST'])
 def admin_update_order_status(order_id):
