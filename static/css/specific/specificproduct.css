@@ -590,6 +590,18 @@
     background: var(--sp-accent-dim);
     box-shadow: 0 0 20px var(--sp-accent-glow);
 }
+.sp-cart-btn.sold-out {
+    background: #ffd700; /* Yellow color */
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+.sp-cart-btn.sold-out:hover {
+    background: #ffd700;
+    box-shadow: none;
+}
+.sp-cart-btn.sold-out .sp-cart-label {
+    color: #000; /* Black text for contrast */
+}
 /* Qty rectangle on the LEFT side of the button */
 .sp-qty-group {
     display: flex;

@@ -82,8 +82,16 @@ if (spCartBtn) {
         if (e.target.classList.contains('sp-qty-btn')) return;
 
         const productId = parseInt(this.dataset.productId, 10);
+        const stock = parseInt(this.dataset.stock, 10) || 0;
+
         if (!productId) {
             spShowToast('Product ID missing', 'err');
+            return;
+        }
+
+        // Check if sold out
+        if (stock === 0) {
+            spShowToast('This product is sold out', 'err');
             return;
         }
 
