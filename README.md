@@ -8,9 +8,7 @@ ArmsDealer.com is a e-commerce platform for arms and related services, offering 
 
 ## Features
 
--
-
----
+- ***
 
 ## Tech Stack
 
@@ -32,7 +30,7 @@ python -m venv env
 # On Linux/macOS
 source env/bin/activate
 # On Windows (PowerShell)
-# .\env\Scripts\Activate.ps1
+.\env\Scripts\Activate.ps1
 
 # 3. Install dependencies
 pip install -r requirements.txt
