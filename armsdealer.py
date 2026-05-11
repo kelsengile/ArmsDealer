@@ -42,17 +42,59 @@ def close_db(error):
 
 
 @app.before_request
-def refresh_profile_image():
-    """Keep session profile_image in sync with the DB on every request."""
-    from flask import session
+def refresh_session_from_db():
+    """Keep the session in sync with the DB on every request.
+
+    Refreshes all user fields that the account panel and settings page
+    display — username, email, role, profile_image, and extended profile
+    fields — so changes saved in one tab are visible immediately in another,
+    and the panel always reflects the live database state.
+    """
+    from flask import session, request as _req
+    # Skip static file requests — no DB needed
+    if _req.endpoint == 'static':
+        return
     user_id = session.get('user_id')
-    if user_id:
+    if not user_id:
+        return
+    try:
         db = get_db()
         row = db.execute(
-            'SELECT profile_image FROM users WHERE id = ?', (user_id,)
+            '''SELECT id, username, email, role, profile_image, created_at,
+                      contact_number, bio, country, delivery_address,
+                      payment_method, wallet_balance,
+                      social_link_1, social_link_2, social_link_3, social_link_4
+               FROM users WHERE id = ?''',
+            (user_id,)
         ).fetchone()
-        if row:
-            session['profile_image'] = row['profile_image'] or None
+        if not row:
+            # User was deleted — clear stale session
+            session.clear()
+            return
+        # Sync all panel-visible fields
+        session['username'] = row['username']
+        session['email'] = row['email']
+        session['role'] = row['role']
+        session['profile_image'] = row['profile_image'] or None
+        session['created_at'] = row['created_at'] or None
+        session['contact_number'] = row['contact_number'] or None
+        session['bio'] = row['bio'] or None
+        session['country'] = row['country'] or None
+        session['delivery_address'] = row['delivery_address'] or None
+        session['payment_method'] = row['payment_method'] or 'cash_on_delivery'
+        session['wallet_balance'] = row['wallet_balance'] or 0
+        session['social_link_1'] = row['social_link_1'] or None
+        session['social_link_2'] = row['social_link_2'] or None
+        session['social_link_3'] = row['social_link_3'] or None
+        session['social_link_4'] = row['social_link_4'] or None
+        # Sync live cart count
+        cart_row = db.execute(
+            'SELECT COALESCE(SUM(quantity), 0) AS cnt FROM cart_items WHERE user_id = ?',
+            (user_id,)
+        ).fetchone()
+        session['cart_count'] = int(cart_row['cnt']) if cart_row else 0
+    except Exception:
+        pass  # Never crash a page load due to a session-sync error
 
 
 # ─────────────────────────────────────────

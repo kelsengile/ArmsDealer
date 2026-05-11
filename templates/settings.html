@@ -74,21 +74,52 @@
                     <h2 class="setpage-panel-title">ACCOUNT</h2>
                     <p class="setpage-panel-sub">Manage your profile information and credentials</p>
                 </div>
+
+                {% if user %}
+                {# ── LOGGED IN: show full profile form ─────────────────────── #}
                 <div class="setpage-panel-body">
 
-                    <!-- Avatar row -->
+                    <!-- ── Avatar / Photo Upload Row ── -->
                     <div class="set-avatar-row">
-                        <div class="set-avatar" id="avatarInitials">AD</div>
+                        <div class="set-avatar-photo-wrap" id="avatarPhotoWrap">
+                            {% if user.profile_image %}
+                                {% set _img = user.profile_image %}
+                                {% if _img.startswith('http') or _img.startswith('/') %}
+                                    <img src="{{ _img }}" class="set-avatar-photo" id="avatarPhoto" alt="Profile">
+                                {% else %}
+                                    <img src="{{ url_for('static', filename='assets/images/userimages/' ~ _img) }}"
+                                         class="set-avatar-photo" id="avatarPhoto" alt="Profile">
+                                {% endif %}
+                                <div class="set-avatar" id="avatarInitials" style="display:none;">
+                                    {{ (user.username[:2])|upper }}
+                                </div>
+                            {% else %}
+                                <div class="set-avatar" id="avatarInitials">
+                                    {{ (user.username[:2])|upper }}
+                                </div>
+                                <img src="" class="set-avatar-photo" id="avatarPhoto" alt="Profile" style="display:none;">
+                            {% endif %}
+                            <label class="set-avatar-overlay" for="profileImageInput" title="Change photo">
+                                <span>↑</span>
+                            </label>
+                        </div>
                         <div class="set-avatar-info">
-                            <div class="set-avatar-name" id="displayNamePreview">Arms Dealer</div>
-                            <div class="set-avatar-role">REGISTERED OPERATOR · TIER 2 CLEARANCE</div>
+                            <div class="set-avatar-name" id="displayNamePreview">{{ user.username }}</div>
+                            <div class="set-avatar-role">{{ user.role | upper }}</div>
                         </div>
                         <div class="set-avatar-upload">
-                            <button class="set-btn set-btn--muted" style="font-size:10px;padding:6px 14px;">↑ UPLOAD PHOTO</button>
+                            <label class="set-btn set-btn--muted" for="profileImageInput"
+                                   style="font-size:10px;padding:6px 14px;cursor:pointer;display:inline-block;">
+                                ↑ UPLOAD PHOTO
+                            </label>
+                            <input type="file" id="profileImageInput" accept="image/*"
+                                   style="display:none;" onchange="previewProfileImage(this)">
+                            <div id="photoFilename" style="font-family:var(--font-mono);font-size:9px;
+                                 color:var(--mil-muted);margin-top:4px;display:none;"></div>
                         </div>
                     </div>
 
-                    <!-- Profile -->
+                    <!-- ── Profile Information ── -->
                     <div class="set-group">
                         <div class="set-group-title">PROFILE INFORMATION</div>
                         <div class="set-row set-row--full">
@@ -97,7 +128,9 @@
                                 <div class="set-row-desc">Your public-facing operator designation</div>
                             </div>
                             <div class="set-row-control">
-                                <input class="set-input" type="text" id="displayNameInput" value="Arms Dealer" placeholder="Enter display name" maxlength="40">
+                                <input class="set-input" type="text" id="displayNameInput"
+                                       value="{{ user.username }}"
+                                       placeholder="Enter display name" maxlength="40">
                             </div>
                         </div>
                         <div class="set-row set-row--full">
@@ -106,7 +139,9 @@
                                 <div class="set-row-desc">Used for login and critical notifications</div>
                             </div>
                             <div class="set-row-control">
-                                <input class="set-input" type="email" id="emailInput" value="operator@armsdealer.io" placeholder="email@domain.com">
+                                <input class="set-input" type="email" id="emailInput"
+                                       value="{{ user.email }}"
+                                       placeholder="email@domain.com">
                             </div>
                         </div>
                         <div class="set-row set-row--full">
@@ -115,7 +150,9 @@
                                 <div class="set-row-desc">Optional — used for 2FA and recovery</div>
                             </div>
                             <div class="set-row-control">
-                                <input class="set-input" type="tel" value="+1 (555) 000-0000" placeholder="+1 (555) 000-0000">
+                                <input class="set-input" type="tel" id="phoneInput"
+                                       value="{{ user.contact_number or '' }}"
+                                       placeholder="+63 912 345 6789">
                             </div>
                         </div>
                         <div class="set-row set-row--full">
@@ -124,32 +161,146 @@
                                 <div class="set-row-desc">Short description visible on your profile (160 chars max)</div>
                             </div>
                             <div class="set-row-control">
-                                <textarea class="set-input" rows="3" maxlength="160" placeholder="Tell others about your operation..." style="resize:vertical;font-family:var(--font-mono);font-size:11px;line-height:1.5;"></textarea>
+                                <textarea class="set-input" id="bioInput" rows="3" maxlength="160"
+                                          placeholder="Tell others about your operation..."
+                                          style="resize:vertical;font-family:var(--font-mono);font-size:11px;line-height:1.5;">{{ user.bio or '' }}</textarea>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Account status -->
+                    <!-- ── Location ── -->
                     <div class="set-group">
-                        <div class="set-group-title">ACCOUNT STATUS</div>
-                        <div class="set-row">
+                        <div class="set-group-title">LOCATION</div>
+                        <div class="set-row set-row--full">
                             <div class="set-row-info">
-                                <div class="set-row-label">Membership Tier</div>
-                                <div class="set-row-desc">Current subscription level</div>
+                                <div class="set-row-label">Country</div>
+                                <div class="set-row-desc">Your country of residence</div>
                             </div>
                             <div class="set-row-control">
-                                <span class="set-tag set-tag--on">TIER 2 — OPERATOR</span>
+                                <select class="set-select" id="countrySelect" style="width:100%;">
+                                    <option value="">— Select Country —</option>
+                                    <option value="PH" {% if user.country == 'PH' %}selected{% endif %}>🇵🇭 Philippines</option>
+                                    <option value="US" {% if user.country == 'US' %}selected{% endif %}>🇺🇸 United States</option>
+                                    <option value="GB" {% if user.country == 'GB' %}selected{% endif %}>🇬🇧 United Kingdom</option>
+                                    <option value="SG" {% if user.country == 'SG' %}selected{% endif %}>🇸🇬 Singapore</option>
+                                    <option value="AU" {% if user.country == 'AU' %}selected{% endif %}>🇦🇺 Australia</option>
+                                    <option value="CA" {% if user.country == 'CA' %}selected{% endif %}>🇨🇦 Canada</option>
+                                    <option value="DE" {% if user.country == 'DE' %}selected{% endif %}>🇩🇪 Germany</option>
+                                    <option value="FR" {% if user.country == 'FR' %}selected{% endif %}>🇫🇷 France</option>
+                                    <option value="JP" {% if user.country == 'JP' %}selected{% endif %}>🇯🇵 Japan</option>
+                                    <option value="KR" {% if user.country == 'KR' %}selected{% endif %}>🇰🇷 South Korea</option>
+                                    <option value="AE" {% if user.country == 'AE' %}selected{% endif %}>🇦🇪 UAE</option>
+                                    <option value="SA" {% if user.country == 'SA' %}selected{% endif %}>🇸🇦 Saudi Arabia</option>
+                                    <option value="IN" {% if user.country == 'IN' %}selected{% endif %}>🇮🇳 India</option>
+                                    <option value="BR" {% if user.country == 'BR' %}selected{% endif %}>🇧🇷 Brazil</option>
+                                    <option value="MX" {% if user.country == 'MX' %}selected{% endif %}>🇲🇽 Mexico</option>
+                                    <option value="RU" {% if user.country == 'RU' %}selected{% endif %}>🇷🇺 Russia</option>
+                                    <option value="CN" {% if user.country == 'CN' %}selected{% endif %}>🇨🇳 China</option>
+                                    <option value="OTHER" {% if user.country == 'OTHER' %}selected{% endif %}>🌐 Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="set-row set-row--full">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Delivery Address</div>
+                                <div class="set-row-desc">Full address for order deliveries</div>
+                            </div>
+                            <div class="set-row-control">
+                                <textarea class="set-input" id="deliveryAddressInput" rows="3"
+                                          placeholder="Street, Barangay, City, Province, ZIP"
+                                          style="resize:vertical;font-family:var(--font-mono);font-size:11px;line-height:1.5;">{{ user.delivery_address or '' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Payment Info ── -->
+                    <div class="set-group">
+                        <div class="set-group-title">PAYMENT INFO</div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">E-Wallet Balance</div>
+                                <div class="set-row-desc">Philippine Peso — website credit balance</div>
+                            </div>
+                            <div class="set-row-control" style="display:flex;align-items:center;gap:8px;">
+                                <span style="font-family:var(--font-mono);font-size:13px;color:var(--mil-bright);letter-spacing:0.05em;">₱</span>
+                                <input class="set-input" type="number" id="walletBalanceInput"
+                                       min="0" step="0.01"
+                                       value="{{ '%.2f'|format(user.wallet_balance or 0) }}"
+                                       style="width:140px;font-family:var(--font-mono);font-size:13px;letter-spacing:0.05em;">
                             </div>
                         </div>
                         <div class="set-row">
                             <div class="set-row-info">
-                                <div class="set-row-label">Storage Used</div>
-                                <div class="set-row-desc">Attachment and media storage</div>
+                                <div class="set-row-label">Default Payment Method</div>
+                                <div class="set-row-desc">Used at checkout when placing orders</div>
                             </div>
-                            <div class="set-row-control" style="min-width:180px;">
-                                <div style="font-family:var(--font-mono);font-size:10px;color:var(--mil-text);margin-bottom:4px;">3.2 GB / 10 GB</div>
-                                <div class="set-progress-bar"><div class="set-progress-fill" style="width:32%"></div></div>
-                                <div class="set-progress-label">32% UTILIZED</div>
+                            <div class="set-row-control">
+                                <div class="set-payment-options">
+                                    <label class="set-payment-opt {% if user.payment_method == 'ewallet' %}active{% endif %}"
+                                           id="payopt-ewallet">
+                                        <input type="radio" name="paymentMethod" value="ewallet"
+                                               {% if user.payment_method == 'ewallet' %}checked{% endif %}
+                                               onchange="selectPaymentOpt(this)">
+                                        <span class="set-payment-icon">💳</span>
+                                        <span class="set-payment-label">E-WALLET</span>
+                                    </label>
+                                    <label class="set-payment-opt {% if not user.payment_method or user.payment_method == 'cash_on_delivery' %}active{% endif %}"
+                                           id="payopt-cash_on_delivery">
+                                        <input type="radio" name="paymentMethod" value="cash_on_delivery"
+                                               {% if not user.payment_method or user.payment_method == 'cash_on_delivery' %}checked{% endif %}
+                                               onchange="selectPaymentOpt(this)">
+                                        <span class="set-payment-icon">🚚</span>
+                                        <span class="set-payment-label">CASH ON DELIVERY</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Social Links ── -->
+                    <div class="set-group">
+                        <div class="set-group-title">SOCIAL LINKS</div>
+                        {% for i in range(1, 5) %}
+                        <div class="set-row set-row--full">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Link {{ i }}</div>
+                                <div class="set-row-desc">{% if i == 1 %}Primary social profile{% elif i == 2 %}Secondary profile{% elif i == 3 %}Third profile{% else %}Additional link{% endif %}</div>
+                            </div>
+                            <div class="set-row-control" style="display:flex;align-items:center;gap:8px;">
+                                <span style="font-family:var(--font-mono);font-size:11px;color:var(--mil-muted);white-space:nowrap;">🔗</span>
+                                <input class="set-input" type="url" id="socialLink{{ i }}"
+                                       value="{{ user['social_link_' ~ i] or '' }}"
+                                       placeholder="https://...">
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- ── Account Status ── -->
+                    <div class="set-group">
+                        <div class="set-group-title">ACCOUNT STATUS</div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Account Clearance</div>
+                                <div class="set-row-desc">Your permission level on the platform</div>
+                            </div>
+                            <div class="set-row-control">
+                                {% if user.role == 'admin' %}
+                                    <span class="set-tag set-tag--on">ADMINISTRATOR</span>
+                                {% else %}
+                                    <span class="set-tag" style="background:rgba(138,170,106,0.1);border:1px solid var(--mil-border);color:var(--mil-text);">CUSTOMER</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">User ID</div>
+                                <div class="set-row-desc">Unique platform identifier</div>
+                            </div>
+                            <div class="set-row-control">
+                                <span style="font-family:var(--font-mono);font-size:10px;color:var(--mil-muted);">
+                                    USR-{{ '%05d' % user.id }}
+                                </span>
                             </div>
                         </div>
                         <div class="set-row">
@@ -158,16 +309,52 @@
                                 <div class="set-row-desc">Registration timestamp</div>
                             </div>
                             <div class="set-row-control">
-                                <span style="font-family:var(--font-mono);font-size:10px;color:var(--mil-muted);">2023-04-12 · 09:41 UTC</span>
+                                <span style="font-family:var(--font-mono);font-size:10px;color:var(--mil-muted);">
+                                    {{ user.created_at or '—' }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Last Updated</div>
+                                <div class="set-row-desc">Most recent profile change</div>
+                            </div>
+                            <div class="set-row-control">
+                                <span style="font-family:var(--font-mono);font-size:10px;color:var(--mil-muted);">
+                                    {{ user.updated_at or '—' }}
+                                </span>
                             </div>
                         </div>
                     </div>
 
                     <div class="set-btn-row">
-                        <button class="set-btn set-btn--primary" onclick="saveSettings('account')">SAVE CHANGES</button>
+                        <button class="set-btn set-btn--primary" onclick="saveAccountSettings()">SAVE CHANGES</button>
                         <button class="set-btn set-btn--muted" onclick="resetSection('account')">DISCARD</button>
                     </div>
                 </div>
+
+                {% else %}
+                {# ── LOGGED OUT: auth gate matching the account panel style ── #}
+                <div class="setpage-panel-body">
+                    <div class="set-auth-gate">
+                        <div class="set-auth-gate-icon">◈</div>
+                        <div class="set-auth-gate-title">ACCESS RESTRICTED</div>
+                        <div class="set-auth-gate-sub">Authenticate to manage your account settings</div>
+                        <div class="set-auth-gate-actions">
+                            <a href="{{ url_for('auth.login') }}" class="set-btn set-btn--primary" style="text-decoration:none;display:inline-block;text-align:center;">
+                                ◉ &nbsp;LOGIN
+                            </a>
+                            <a href="{{ url_for('auth.register') }}" class="set-btn set-btn--muted" style="text-decoration:none;display:inline-block;text-align:center;">
+                                ◈ &nbsp;REGISTER
+                            </a>
+                            <a href="{{ url_for('auth.forgot_password') }}" class="set-btn set-btn--muted" style="text-decoration:none;display:inline-block;text-align:center;opacity:0.7;">
+                                ⊠ &nbsp;FORGOT PASSWORD
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
             </div>
 
             <!-- ════════════════ PRIVACY & SECURITY ════════════════ -->
@@ -176,6 +363,8 @@
                     <h2 class="setpage-panel-title">PRIVACY & SECURITY</h2>
                     <p class="setpage-panel-sub">Password, authentication, and data controls</p>
                 </div>
+
+                {% if user %}
                 <div class="setpage-panel-body">
 
                     <!-- Password -->
@@ -270,14 +459,6 @@
                             </div>
                             <button class="set-btn set-btn--danger" style="font-size:9px;padding:5px 10px;">REVOKE</button>
                         </div>
-                        <div class="set-session">
-                            <div class="set-session-icon">💻</div>
-                            <div class="set-session-info">
-                                <div class="set-session-name">Firefox — macOS</div>
-                                <div class="set-session-meta">Singapore, SG · Last active: 3 days ago</div>
-                            </div>
-                            <button class="set-btn set-btn--danger" style="font-size:9px;padding:5px 10px;">REVOKE</button>
-                        </div>
                     </div>
 
                     <!-- Privacy controls -->
@@ -327,6 +508,22 @@
                         <button class="set-btn set-btn--muted" onclick="resetSection('privacy')">DISCARD</button>
                     </div>
                 </div>
+
+                {% else %}
+                <div class="setpage-panel-body">
+                    <div class="set-auth-gate">
+                        <div class="set-auth-gate-icon">◈</div>
+                        <div class="set-auth-gate-title">ACCESS RESTRICTED</div>
+                        <div class="set-auth-gate-sub">Authenticate to manage security settings</div>
+                        <div class="set-auth-gate-actions">
+                            <a href="{{ url_for('auth.login') }}" class="set-btn set-btn--primary" style="text-decoration:none;display:inline-block;text-align:center;">◉ &nbsp;LOGIN</a>
+                            <a href="{{ url_for('auth.register') }}" class="set-btn set-btn--muted" style="text-decoration:none;display:inline-block;text-align:center;">◈ &nbsp;REGISTER</a>
+                            <a href="{{ url_for('auth.forgot_password') }}" class="set-btn set-btn--muted" style="text-decoration:none;display:inline-block;text-align:center;opacity:0.7;">⊠ &nbsp;FORGOT PASSWORD</a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
             </div>
 
             <!-- ════════════════ APPEARANCE ════════════════ -->
@@ -445,18 +642,6 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="set-row">
-                            <div class="set-row-info">
-                                <div class="set-row-label">Sticky Nav</div>
-                                <div class="set-row-desc">Keep settings nav fixed while scrolling</div>
-                            </div>
-                            <div class="set-row-control">
-                                <label class="set-toggle">
-                                    <input type="checkbox" checked>
-                                    <span class="set-toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="set-btn-row">
@@ -482,22 +667,7 @@
                                 <div class="set-row-desc">Receive alerts to your registered email address</div>
                             </div>
                             <div class="set-row-control">
-                                <label class="set-toggle">
-                                    <input type="checkbox" checked>
-                                    <span class="set-toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="set-row">
-                            <div class="set-row-info">
-                                <div class="set-row-label">Push Notifications</div>
-                                <div class="set-row-desc">Browser or mobile app push alerts</div>
-                            </div>
-                            <div class="set-row-control">
-                                <label class="set-toggle">
-                                    <input type="checkbox">
-                                    <span class="set-toggle-slider"></span>
-                                </label>
+                                <label class="set-toggle"><input type="checkbox" checked><span class="set-toggle-slider"></span></label>
                             </div>
                         </div>
                         <div class="set-row">
@@ -506,10 +676,7 @@
                                 <div class="set-row-desc">Toast and banner notifications while browsing</div>
                             </div>
                             <div class="set-row-control">
-                                <label class="set-toggle">
-                                    <input type="checkbox" checked>
-                                    <span class="set-toggle-slider"></span>
-                                </label>
+                                <label class="set-toggle"><input type="checkbox" checked><span class="set-toggle-slider"></span></label>
                             </div>
                         </div>
                     </div>
@@ -531,32 +698,6 @@
                         </div>
                         <div class="set-row">
                             <div class="set-row-info">
-                                <div class="set-row-label">Price Alerts</div>
-                                <div class="set-row-desc">Notify when watched items change in price</div>
-                            </div>
-                            <div class="set-row-control set-notif-freq">
-                                <select class="set-select" style="min-width:130px;">
-                                    <option>Immediately</option>
-                                    <option selected>Daily Digest</option>
-                                    <option>Never</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="set-row">
-                            <div class="set-row-info">
-                                <div class="set-row-label">New Inventory</div>
-                                <div class="set-row-desc">Listings matching your saved categories</div>
-                            </div>
-                            <div class="set-row-control set-notif-freq">
-                                <select class="set-select" style="min-width:130px;">
-                                    <option>Immediately</option>
-                                    <option selected>Daily Digest</option>
-                                    <option>Never</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="set-row">
-                            <div class="set-row-info">
                                 <div class="set-row-label">Security Alerts</div>
                                 <div class="set-row-desc">Login from new device or suspicious activity</div>
                             </div>
@@ -571,26 +712,13 @@
                         <div class="set-row">
                             <div class="set-row-info">
                                 <div class="set-row-label">Promotional & Offers</div>
-                                <div class="set-row-desc">Special deals, events, and announcements</div>
+                                <div class="set-row-desc">Special deals and announcements</div>
                             </div>
                             <div class="set-row-control set-notif-freq">
                                 <select class="set-select" style="min-width:130px;">
                                     <option>Immediately</option>
                                     <option>Daily Digest</option>
                                     <option selected>Never</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="set-row">
-                            <div class="set-row-info">
-                                <div class="set-row-label">Messages</div>
-                                <div class="set-row-desc">Direct messages from other operators</div>
-                            </div>
-                            <div class="set-row-control set-notif-freq">
-                                <select class="set-select" style="min-width:130px;">
-                                    <option selected>Immediately</option>
-                                    <option>Daily Digest</option>
-                                    <option>Never</option>
                                 </select>
                             </div>
                         </div>
@@ -612,17 +740,13 @@
                         </div>
                         <div id="quietHoursConfig" style="display:none;">
                             <div class="set-row">
-                                <div class="set-row-info">
-                                    <div class="set-row-label">From</div>
-                                </div>
+                                <div class="set-row-info"><div class="set-row-label">From</div></div>
                                 <div class="set-row-control">
                                     <input class="set-input" type="time" value="22:00" style="width:auto;color:var(--mil-text);">
                                 </div>
                             </div>
                             <div class="set-row">
-                                <div class="set-row-info">
-                                    <div class="set-row-label">Until</div>
-                                </div>
+                                <div class="set-row-info"><div class="set-row-label">Until</div></div>
                                 <div class="set-row-control">
                                     <input class="set-input" type="time" value="07:00" style="width:auto;color:var(--mil-text);">
                                 </div>
@@ -655,7 +779,6 @@
                             <div class="set-row-control">
                                 <select class="set-select">
                                     <option selected>English (US)</option>
-                                    <option>English (UK)</option>
                                     <option>Español</option>
                                     <option>Français</option>
                                     <option>Deutsch</option>
@@ -679,8 +802,6 @@
                                     <option selected>UTC+08:00 — Manila / Singapore</option>
                                     <option>UTC+09:00 — Tokyo</option>
                                     <option>UTC+01:00 — Paris / Berlin</option>
-                                    <option>UTC+03:00 — Moscow</option>
-                                    <option>UTC+05:30 — Mumbai</option>
                                 </select>
                             </div>
                         </div>
@@ -691,55 +812,12 @@
                             </div>
                             <div class="set-row-control">
                                 <select class="set-select">
-                                    <option selected>USD — US Dollar ($)</option>
+                                    <option selected>PHP — Philippine Peso (₱)</option>
+                                    <option>USD — US Dollar ($)</option>
                                     <option>EUR — Euro (€)</option>
                                     <option>GBP — British Pound (£)</option>
-                                    <option>PHP — Philippine Peso (₱)</option>
                                     <option>SGD — Singapore Dollar (S$)</option>
                                     <option>JPY — Japanese Yen (¥)</option>
-                                    <option>AED — UAE Dirham (د.إ)</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="set-group">
-                        <div class="set-group-title">DATE & NUMBER FORMAT</div>
-                        <div class="set-row">
-                            <div class="set-row-info">
-                                <div class="set-row-label">Date Format</div>
-                                <div class="set-row-desc">How dates are displayed throughout the app</div>
-                            </div>
-                            <div class="set-row-control">
-                                <select class="set-select">
-                                    <option selected>MM/DD/YYYY</option>
-                                    <option>DD/MM/YYYY</option>
-                                    <option>YYYY-MM-DD (ISO)</option>
-                                    <option>DD MMM YYYY</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="set-row">
-                            <div class="set-row-info">
-                                <div class="set-row-label">Time Format</div>
-                                <div class="set-row-desc">12-hour or 24-hour clock</div>
-                            </div>
-                            <div class="set-row-control">
-                                <select class="set-select">
-                                    <option selected>12-Hour (AM/PM)</option>
-                                    <option>24-Hour</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="set-row">
-                            <div class="set-row-info">
-                                <div class="set-row-label">Measurement Units</div>
-                                <div class="set-row-desc">Weight and dimension display units</div>
-                            </div>
-                            <div class="set-row-control">
-                                <select class="set-select">
-                                    <option selected>Metric (kg, cm)</option>
-                                    <option>Imperial (lb, in)</option>
                                 </select>
                             </div>
                         </div>
@@ -786,28 +864,17 @@
                             </div>
                             <div class="set-help-arrow">▶</div>
                         </a>
-                        <a class="set-help-card" href="#" onclick="return false;">
-                            <div class="set-help-icon">🔔</div>
-                            <div>
-                                <div class="set-help-title">Platform Status</div>
-                                <div class="set-help-desc">Real-time uptime status, incident reports, and scheduled maintenance windows.</div>
-                            </div>
-                            <div class="set-help-arrow">▶</div>
-                        </a>
                     </div>
 
                     <div class="set-group">
                         <div class="set-group-title">CONTACT SUPPORT</div>
                         <div class="set-row set-row--full">
-                            <div class="set-row-info">
-                                <div class="set-row-label">Subject</div>
-                            </div>
+                            <div class="set-row-info"><div class="set-row-label">Subject</div></div>
                             <div class="set-row-control">
                                 <select class="set-select" style="width:100%;">
                                     <option value="">— Select issue category —</option>
                                     <option>Account & Login</option>
                                     <option>Orders & Payments</option>
-                                    <option>Listings & Inventory</option>
                                     <option>Technical Problem</option>
                                     <option>Compliance Question</option>
                                     <option>Other</option>
@@ -815,11 +882,10 @@
                             </div>
                         </div>
                         <div class="set-row set-row--full">
-                            <div class="set-row-info">
-                                <div class="set-row-label">Message</div>
-                            </div>
+                            <div class="set-row-info"><div class="set-row-label">Message</div></div>
                             <div class="set-row-control">
-                                <textarea class="set-input" rows="5" placeholder="Describe your issue in detail..." style="resize:vertical;font-family:var(--font-mono);font-size:11px;line-height:1.5;"></textarea>
+                                <textarea class="set-input" rows="5" placeholder="Describe your issue in detail..."
+                                          style="resize:vertical;font-family:var(--font-mono);font-size:11px;line-height:1.5;"></textarea>
                             </div>
                         </div>
                         <div class="set-btn-row" style="margin-top:12px;border:none;padding:0;">
@@ -833,14 +899,6 @@
                             <div class="set-row-info"><div class="set-row-label">Platform Version</div></div>
                             <div class="set-row-control"><span style="font-family:var(--font-mono);font-size:10px;color:var(--mil-muted);">v2.4.1 · Build 20250510</span></div>
                         </div>
-                        <div class="set-row">
-                            <div class="set-row-info"><div class="set-row-label">API Version</div></div>
-                            <div class="set-row-control"><span style="font-family:var(--font-mono);font-size:10px;color:var(--mil-muted);">REST v3 · Stable</span></div>
-                        </div>
-                        <div class="set-row">
-                            <div class="set-row-info"><div class="set-row-label">Changelog</div></div>
-                            <div class="set-row-control"><a href="#" onclick="return false;" style="font-family:var(--font-mono);font-size:10px;color:var(--mil-bright);text-decoration:none;letter-spacing:0.08em;">VIEW RELEASE NOTES ▶</a></div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -851,6 +909,8 @@
                     <h2 class="setpage-panel-title">SYSTEM ACTIONS</h2>
                     <p class="setpage-panel-sub">Data management, export, and account lifecycle</p>
                 </div>
+
+                {% if user %}
                 <div class="setpage-panel-body">
 
                     <div class="set-group">
@@ -871,14 +931,6 @@
                             </div>
                             <button class="set-btn set-btn--muted" style="font-size:10px;padding:7px 14px;white-space:nowrap;">CLEAR</button>
                         </div>
-                        <div class="set-sys-action">
-                            <div class="set-sys-action-icon">🗂</div>
-                            <div class="set-sys-action-body">
-                                <div class="set-sys-action-title">Order History Archive</div>
-                                <div class="set-sys-action-desc">Generate a PDF report of all completed orders for record-keeping or compliance purposes.</div>
-                            </div>
-                            <button class="set-btn set-btn--muted" style="font-size:10px;padding:7px 14px;white-space:nowrap;">GENERATE</button>
-                        </div>
                     </div>
 
                     <div class="set-group">
@@ -890,14 +942,6 @@
                                 <div class="set-sys-action-desc">Temporarily hide your profile and suspend all listings. You can reactivate at any time.</div>
                             </div>
                             <button class="set-btn set-btn--muted" style="font-size:10px;padding:7px 14px;white-space:nowrap;">DEACTIVATE</button>
-                        </div>
-                        <div class="set-sys-action">
-                            <div class="set-sys-action-icon">📤</div>
-                            <div class="set-sys-action-body">
-                                <div class="set-sys-action-title">Transfer Ownership</div>
-                                <div class="set-sys-action-desc">Assign your account and all assets to another verified operator. Requires identity verification.</div>
-                            </div>
-                            <button class="set-btn set-btn--muted" style="font-size:10px;padding:7px 14px;white-space:nowrap;">INITIATE</button>
                         </div>
                     </div>
 
@@ -913,6 +957,22 @@
                     </div>
 
                 </div>
+
+                {% else %}
+                <div class="setpage-panel-body">
+                    <div class="set-auth-gate">
+                        <div class="set-auth-gate-icon">◈</div>
+                        <div class="set-auth-gate-title">ACCESS RESTRICTED</div>
+                        <div class="set-auth-gate-sub">Authenticate to access system actions</div>
+                        <div class="set-auth-gate-actions">
+                            <a href="{{ url_for('auth.login') }}" class="set-btn set-btn--primary" style="text-decoration:none;display:inline-block;text-align:center;">◉ &nbsp;LOGIN</a>
+                            <a href="{{ url_for('auth.register') }}" class="set-btn set-btn--muted" style="text-decoration:none;display:inline-block;text-align:center;">◈ &nbsp;REGISTER</a>
+                            <a href="{{ url_for('auth.forgot_password') }}" class="set-btn set-btn--muted" style="text-decoration:none;display:inline-block;text-align:center;opacity:0.7;">⊠ &nbsp;FORGOT PASSWORD</a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
             </div>
 
         </div><!-- /setpage-content -->
