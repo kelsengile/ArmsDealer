@@ -1,10 +1,25 @@
 # ──────────────────────────────────────────────────────────────────────────────────
 # API ROUTES
 # ──────────────────────────────────────────────────────────────────────────────────
+import os
 from flask import Blueprint, render_template, request, g, session, redirect, url_for, jsonify, make_response
+from werkzeug.utils import secure_filename
 from db_helpers import get_db, get_locale, get_currency
 
 api_bp = Blueprint('api', __name__)
+
+ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+# Resolves to  <project_root>/static/assets/images/userimages/
+# api_routes.py lives in  routes/  so we go one level up to reach project root.
+_ROUTES_DIR = os.path.dirname(os.path.abspath(__file__))
+_PROJECT_ROOT = os.path.dirname(_ROUTES_DIR)
+PROFILE_IMAGE_FOLDER = os.path.join(
+    _PROJECT_ROOT, 'static', 'assets', 'images', 'userimages'
+)
+
+
+def _allowed_image(filename: str) -> bool:
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
 
 
 @api_bp.route('/')
@@ -155,9 +170,99 @@ def settings():
                            wallet_display=wallet_display)
 
 
-@api_bp.route('/legal')
-def legal():
-    return render_template('legal.html')
+# ─────────────────────────────────────────
+# SETTINGS — SAVE ACCOUNT (POST)
+# ─────────────────────────────────────────
+
+@api_bp.route('/settings/account', methods=['POST'])
+def settings_account_save():
+    """Save account settings submitted from the settings page."""
+    if not session.get('user_id'):
+        return jsonify({'ok': False, 'error': 'Not logged in'}), 401
+
+    user_id = session['user_id']
+    db = get_db()
+
+    # ── Collect form fields ───────────────────────────────────────
+    username = (request.form.get('username') or '').strip()
+    email = (request.form.get('email') or '').strip()
+    contact_number = (request.form.get('contact_number') or '').strip()
+    bio = (request.form.get('bio') or '').strip()
+    country = (request.form.get('country') or '').strip()
+    delivery_address = (request.form.get('delivery_address') or '').strip()
+    payment_method = (request.form.get('payment_method')
+                      or 'cash_on_delivery').strip()
+    social_link_1 = (request.form.get('social_link_1') or '').strip()
+    social_link_2 = (request.form.get('social_link_2') or '').strip()
+    social_link_3 = (request.form.get('social_link_3') or '').strip()
+    social_link_4 = (request.form.get('social_link_4') or '').strip()
+
+    try:
+        wallet_balance = float(request.form.get('wallet_balance') or 0)
+    except ValueError:
+        wallet_balance = 0.0
+
+    # ── Basic validation ──────────────────────────────────────────
+    if not username:
+        return jsonify({'ok': False, 'error': 'Username is required'}), 400
+    if not email:
+        return jsonify({'ok': False, 'error': 'Email is required'}), 400
+
+    # ── Uniqueness checks (exclude current user) ──────────────────
+    conflict = db.execute(
+        'SELECT id FROM users WHERE username = ? AND id != ?', (
+            username, user_id)
+    ).fetchone()
+    if conflict:
+        return jsonify({'ok': False, 'error': 'Username already taken'}), 409
+
+    conflict = db.execute(
+        'SELECT id FROM users WHERE email = ? AND id != ?', (email, user_id)
+    ).fetchone()
+    if conflict:
+        return jsonify({'ok': False, 'error': 'Email already in use'}), 409
+
+    # ── Optional profile image upload ─────────────────────────────
+    profile_image = None
+    file = request.files.get('profile_image')
+    if file and file.filename and _allowed_image(file.filename):
+        filename = secure_filename(f"user_{user_id}_{file.filename}")
+        os.makedirs(PROFILE_IMAGE_FOLDER, exist_ok=True)
+        file.save(os.path.join(PROFILE_IMAGE_FOLDER, filename))
+        profile_image = filename
+
+    # ── Persist to DB ─────────────────────────────────────────────
+    if profile_image:
+        db.execute(
+            '''UPDATE users SET
+                username=?, email=?, contact_number=?, bio=?, country=?,
+                delivery_address=?, payment_method=?, wallet_balance=?,
+                social_link_1=?, social_link_2=?, social_link_3=?, social_link_4=?,
+                profile_image=?
+               WHERE id=?''',
+            (username, email, contact_number, bio, country,
+             delivery_address, payment_method, wallet_balance,
+             social_link_1, social_link_2, social_link_3, social_link_4,
+             profile_image, user_id)
+        )
+    else:
+        db.execute(
+            '''UPDATE users SET
+                username=?, email=?, contact_number=?, bio=?, country=?,
+                delivery_address=?, payment_method=?, wallet_balance=?,
+                social_link_1=?, social_link_2=?, social_link_3=?, social_link_4=?
+               WHERE id=?''',
+            (username, email, contact_number, bio, country,
+             delivery_address, payment_method, wallet_balance,
+             social_link_1, social_link_2, social_link_3, social_link_4,
+             user_id)
+        )
+    db.commit()
+
+    resp = {'ok': True}
+    if profile_image:
+        resp['profile_image'] = profile_image
+    return jsonify(resp)
 
 
 # ─────────────────────────────────────────
@@ -366,7 +471,6 @@ def orders():
 # ─────────────────────────────────────────
 # ADMIN DASHBOARD
 # ─────────────────────────────────────────
-
 @api_bp.route('/dashboard')
 def dashboard():
     """Admin dashboard. Requires admin role."""
