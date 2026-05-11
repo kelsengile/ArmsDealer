@@ -321,6 +321,90 @@
 }
 
 /* ══════════════════════════════════════════════════════════════════
+   WALLET & PAYMENT STRIP
+══════════════════════════════════════════════════════════════════ */
+.acctpage-wallet-strip {
+    background: var(--mil-dark, #131713);
+    border: 1px solid var(--mil-border, #2e3a2e);
+    border-left: 3px solid var(--mil-olive, #6b7c4e);
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.acctpage-wallet-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-right: 1px solid var(--mil-border, #2e3a2e);
+    padding-right: 28px;
+}
+
+.acctpage-wallet-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-left: 28px;
+}
+
+.acctpage-wallet-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-mono, "Share Tech Mono", monospace);
+    font-size: 9px;
+    letter-spacing: 0.24em;
+    color: var(--mil-olive, #6b7c4e);
+    text-transform: uppercase;
+}
+
+.acctpage-wallet-amount {
+    font-family: var(--font-stencil, "Oswald", sans-serif);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--mil-bright, #a8c47a);
+}
+
+.acctpage-payment-method {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-stencil, "Oswald", sans-serif);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mil-light, #e2ead4);
+}
+
+.acctpage-wallet-edit {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 24px;
+    padding: 7px 14px;
+    border: 1px solid var(--mil-border, #2e3a2e);
+    color: var(--mil-muted, #4a5e4a);
+    font-family: var(--font-stencil, "Oswald", sans-serif);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+.acctpage-wallet-edit:hover {
+    border-color: var(--mil-olive, #6b7c4e);
+    color: var(--mil-olive, #6b7c4e);
+}
+
+/* ══════════════════════════════════════════════════════════════════
    ORDERS STRIP
 ══════════════════════════════════════════════════════════════════ */
 .acctpage-orders-strip {
@@ -562,5 +646,27 @@
 
     .acctpage-username {
         font-size: 22px;
+    }
+
+    .acctpage-wallet-strip {
+        flex-wrap: wrap;
+        gap: 16px;
+        padding: 16px 20px;
+    }
+
+    .acctpage-wallet-left {
+        border-right: none;
+        border-bottom: 1px solid var(--mil-border, #2e3a2e);
+        padding-right: 0;
+        padding-bottom: 14px;
+        width: 100%;
+    }
+
+    .acctpage-wallet-right {
+        padding-left: 0;
+    }
+
+    .acctpage-wallet-edit {
+        margin-left: auto;
     }
 }
