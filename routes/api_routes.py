@@ -613,6 +613,110 @@ def dashboard():
 
 
 # ─────────────────────────────────────────
+# ADMIN ORDER STATUS UPDATE
+# ─────────────────────────────────────────
+
+@api_bp.route('/admin/order/<int:order_id>/status', methods=['POST'])
+def admin_update_order_status(order_id):
+    """Admin API to update order status. Returns JSON."""
+    if not session.get('user_id'):
+        return jsonify(ok=False, error='Not authenticated'), 401
+    if session.get('role') != 'admin':
+        return jsonify(ok=False, error='Forbidden'), 403
+
+    data = request.get_json(silent=True) or {}
+    new_status = data.get('status', '').strip().lower()
+    valid = {'order placed', 'packing', 'shipping', 'delivered', 'cancelled'}
+    if new_status not in valid:
+        return jsonify(ok=False, error='Invalid status'), 400
+
+    db = get_db()
+
+    # Get current order status
+    order_row = db.execute(
+        "SELECT status FROM orders WHERE id = ?", (order_id,)
+    ).fetchone()
+    if not order_row:
+        return jsonify(ok=False, error='Order not found'), 404
+
+    old_status = order_row['status'].lower()
+
+    # Update the order status
+    db.execute(
+        "UPDATE orders SET status = ?, updated_at = datetime('now') WHERE id = ?",
+        (new_status, order_id)
+    )
+
+    stock_updates = []
+
+    # If status changed to stock-deducting status and wasn't before, deduct stock
+    stock_deduct_statuses = {'shipping', 'delivered'}
+    if (new_status in stock_deduct_statuses and
+        old_status not in stock_deduct_statuses and
+            new_status != 'cancelled'):
+
+        # Get order items (only products have stock)
+        order_items = db.execute("""
+            SELECT oi.item_id, oi.quantity, p.stock
+            FROM order_items oi
+            JOIN products p ON oi.item_type = 'product' AND oi.item_id = p.id
+            WHERE oi.order_id = ?
+        """, (order_id,)).fetchall()
+
+        for item in order_items:
+            product_id = item['item_id']
+            quantity = item['quantity']
+            current_stock = item['stock'] or 0
+
+            new_stock = max(0, current_stock - quantity)  # Don't go below 0
+
+            db.execute(
+                "UPDATE products SET stock = ? WHERE id = ?",
+                (new_stock, product_id)
+            )
+
+            stock_updates.append({
+                'product_id': product_id,
+                'new_stock': new_stock
+            })
+
+    db.commit()
+
+    response = {'ok': True, 'status': new_status}
+    if stock_updates:
+        response['stock_updates'] = stock_updates
+
+    return jsonify(response)
+
+
+# ─────────────────────────────────────────
+# ADMIN INQUIRY STATUS UPDATE
+# ─────────────────────────────────────────
+
+@api_bp.route('/admin/inquiry/<int:inquiry_id>/status', methods=['POST'])
+def admin_update_inquiry_status(inquiry_id):
+    """Admin API to update inquiry status. Returns JSON."""
+    if not session.get('user_id'):
+        return jsonify(ok=False, error='Not authenticated'), 401
+    if session.get('role') != 'admin':
+        return jsonify(ok=False, error='Forbidden'), 403
+
+    data = request.get_json(silent=True) or {}
+    status = data.get('status', '').strip().lower()
+    valid = {'new', 'read', 'resolved'}
+    if status not in valid:
+        return jsonify(ok=False, error='Invalid status'), 400
+
+    db = get_db()
+    db.execute(
+        "UPDATE inquiries SET status = ? WHERE id = ?",
+        (status, inquiry_id)
+    )
+    db.commit()
+    return jsonify(ok=True, status=status)
+
+
+# ─────────────────────────────────────────
 # SET CURRENCY (POST) — saves cookie
 # ─────────────────────────────────────────
 
