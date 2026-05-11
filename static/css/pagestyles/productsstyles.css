@@ -1939,3 +1939,38 @@ main.products-page::before {
   0%, 100% { opacity: 0.4; }
   50%       { opacity: 1;   }
 }
+
+/* ── Sold-out ribbon ────────────────────────────────────────────────── */
+/* Dims the card slightly when stock = 0 */
+.fc-card--soldout {
+  opacity: 0.72;
+}
+
+/* Diagonal banner from bottom-left to top-right */
+.fc-soldout-ribbon {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.fc-soldout-ribbon span {
+  position: absolute;
+  /* Anchor at the bottom-left corner, rotate 45° up toward top-right */
+  bottom: 18px;
+  left: -38px;
+  width: 130px;
+  text-align: center;
+  background: #f5c800;
+  color: #1a1a0e;
+  font-family: var(--font-stencil, "Oswald", sans-serif);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 0;
+  transform: rotate(-45deg);
+  transform-origin: center center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.55);
+}

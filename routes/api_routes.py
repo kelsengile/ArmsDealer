@@ -73,7 +73,7 @@ def products_by_category(slug):
     product_rows = db.execute(
         """
         SELECT p.id, p.slug, p.price, p.discount, p.image_file, p.tags,
-               p.rating, p.sales_count,
+               p.rating, p.sales_count, p.stock,
                sc.slug AS subcategory_slug,
                COALESCE(pt.name, p.name)               AS name,
                COALESCE(pt.description, p.description) AS description
@@ -117,7 +117,7 @@ def brands_by_slug(slug):
     product_rows = db.execute(
         """
         SELECT p.id, p.slug, p.price, p.discount, p.image_file, p.tags,
-               p.rating, p.sales_count,
+               p.rating, p.sales_count, p.stock,
                COALESCE(pt.name, p.name)               AS name,
                COALESCE(pt.description, p.description) AS description
         FROM products p

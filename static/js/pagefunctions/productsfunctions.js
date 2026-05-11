@@ -269,10 +269,17 @@ document.addEventListener("DOMContentLoaded", () => {
             ? `/static/assets/images/productsimages/${p.image_file}`
             : "";
 
+        const isSoldOut = (p.stock !== undefined && p.stock !== null)
+            ? Number(p.stock) === 0
+            : false;
+
+        if (isSoldOut) card.classList.add("fc-card--soldout");
+
         card.innerHTML = `
             <div class="fc-card-bg" ${imgPath ? `style="background-image:url('${imgPath}')"` : ""}>
                 <div class="fc-overlay"></div>
             </div>
+            ${isSoldOut ? `<div class="fc-soldout-ribbon"><span>SOLDOUT</span></div>` : ""}
             <div class="fc-content">
                 <div class="fc-name large">${p.name}</div>
                 <div class="fc-pricing">
