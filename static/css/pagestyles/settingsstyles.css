@@ -921,3 +921,140 @@
     cursor: pointer;
     border-radius: 0;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SETTINGS PAGE — ADDITIONS
+   Append these rules to static/css/pagestyles/settingsstyles.css
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Avatar photo (circle image) ─────────────────────────────────────────── */
+.set-avatar-photo-wrap {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+}
+
+.set-avatar-photo {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--mil-bright);
+}
+
+/* Overlay label (camera icon hover) */
+.set-avatar-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.18s;
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--mil-bright);
+}
+
+.set-avatar-photo-wrap:hover .set-avatar-overlay {
+    opacity: 1;
+}
+
+/* ── Payment option pills ─────────────────────────────────────────────────── */
+.set-payment-options {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.set-payment-opt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 1px solid var(--mil-border);
+    background: transparent;
+    cursor: pointer;
+    font-family: var(--font-stencil, monospace);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--mil-muted);
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    user-select: none;
+}
+
+.set-payment-opt input[type="radio"] {
+    display: none;
+}
+
+.set-payment-opt.active,
+.set-payment-opt:hover {
+    border-color: var(--mil-bright);
+    color: var(--mil-bright);
+    background: rgba(138, 170, 106, 0.07);
+}
+
+.set-payment-icon {
+    font-size: 14px;
+}
+
+.set-payment-label {
+    white-space: nowrap;
+}
+
+/* ── Social links icon cell ───────────────────────────────────────────────── */
+.set-row-control .set-social-prefix {
+    font-family: var(--font-mono, monospace);
+    font-size: 11px;
+    color: var(--mil-muted);
+    white-space: nowrap;
+    padding-right: 4px;
+}
+/* ── Auth gate (shown on account-gated panels when logged out) ─────────────── */
+.set-auth-gate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    text-align: center;
+    gap: 12px;
+}
+
+.set-auth-gate-icon {
+    font-size: 32px;
+    color: var(--mil-muted);
+    margin-bottom: 4px;
+    opacity: 0.5;
+}
+
+.set-auth-gate-title {
+    font-family: var(--font-stencil, monospace);
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--mil-bright);
+}
+
+.set-auth-gate-sub {
+    font-family: var(--font-mono, monospace);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--mil-muted);
+    margin-bottom: 8px;
+}
+
+.set-auth-gate-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 260px;
+}
+
+.set-auth-gate-actions .set-btn {
+    width: 100%;
+    justify-content: center;
+}

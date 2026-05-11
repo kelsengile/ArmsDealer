@@ -36,9 +36,40 @@
             const val = this.value.trim() || 'AD';
             document.getElementById('displayNamePreview').textContent = val || 'Arms Dealer';
             const initials = val.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) || 'AD';
-            document.getElementById('avatarInitials').textContent = initials;
+            const initialsEl = document.getElementById('avatarInitials');
+            if (initialsEl) initialsEl.textContent = initials;
         });
     }
+
+    /* ── Profile image preview ───────────────────────────────── */
+    window.previewProfileImage = function (input) {
+        if (!input.files || !input.files[0]) return;
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const photo = document.getElementById('avatarPhoto');
+            const initials = document.getElementById('avatarInitials');
+            if (photo) {
+                photo.src = e.target.result;
+                photo.style.display = 'block';
+            }
+            if (initials) initials.style.display = 'none';
+
+            const nameEl = document.getElementById('photoFilename');
+            if (nameEl) {
+                nameEl.textContent = '✓ ' + file.name;
+                nameEl.style.display = 'block';
+            }
+        };
+        reader.readAsDataURL(file);
+    };
+
+    /* ── Payment option selection ────────────────────────────── */
+    window.selectPaymentOpt = function (radio) {
+        document.querySelectorAll('.set-payment-opt').forEach(el => el.classList.remove('active'));
+        const label = radio.closest('.set-payment-opt');
+        if (label) label.classList.add('active');
+    };
 
     /* ── Password strength ───────────────────────────────────── */
     window.updatePasswordStrength = function (pw) {
@@ -117,11 +148,64 @@
         btn.style.opacity = ok ? '1' : '0.4';
         btn.style.cursor = ok ? 'pointer' : 'not-allowed';
     };
-    document.getElementById('deleteModal').addEventListener('click', function (e) {
-        if (e.target === this) closeDeleteModal();
-    });
+    const deleteModal = document.getElementById('deleteModal');
+    if (deleteModal) {
+        deleteModal.addEventListener('click', function (e) {
+            if (e.target === this) closeDeleteModal();
+        });
+    }
 
-    /* ── Save / toast feedback ───────────────────────────────── */
+    /* ── Save Account Settings (with optional image upload) ──── */
+    window.saveAccountSettings = async function () {
+        const imageInput = document.getElementById('profileImageInput');
+        const hasImage = imageInput && imageInput.files && imageInput.files[0];
+
+        /* Build FormData so we can include the file if present */
+        const fd = new FormData();
+        fd.append('username', (document.getElementById('displayNameInput')?.value || '').trim());
+        fd.append('email', (document.getElementById('emailInput')?.value || '').trim());
+        fd.append('contact_number', (document.getElementById('phoneInput')?.value || '').trim());
+        fd.append('bio', (document.getElementById('bioInput')?.value || '').trim());
+        fd.append('country', document.getElementById('countrySelect')?.value || '');
+        fd.append('delivery_address', (document.getElementById('deliveryAddressInput')?.value || '').trim());
+        fd.append('wallet_balance', document.getElementById('walletBalanceInput')?.value || '0');
+        const paymentRadio = document.querySelector('input[name="paymentMethod"]:checked');
+        fd.append('payment_method', paymentRadio ? paymentRadio.value : 'cash_on_delivery');
+        fd.append('social_link_1', (document.getElementById('socialLink1')?.value || '').trim());
+        fd.append('social_link_2', (document.getElementById('socialLink2')?.value || '').trim());
+        fd.append('social_link_3', (document.getElementById('socialLink3')?.value || '').trim());
+        fd.append('social_link_4', (document.getElementById('socialLink4')?.value || '').trim());
+        if (hasImage) {
+            fd.append('profile_image', imageInput.files[0]);
+        }
+
+        try {
+            const res = await fetch('/api/settings/account', {
+                method: 'POST',
+                body: fd
+            });
+            const data = await res.json();
+            if (data.ok) {
+                showToast('Settings saved', 'success');
+                /* If server returned a new image filename, update the avatar src */
+                if (data.profile_image) {
+                    const photo = document.getElementById('avatarPhoto');
+                    if (photo) {
+                        photo.src = '/static/assets/images/userimages/' + data.profile_image;
+                        photo.style.display = 'block';
+                        const initialsEl = document.getElementById('avatarInitials');
+                        if (initialsEl) initialsEl.style.display = 'none';
+                    }
+                }
+            } else {
+                showToast(data.error || 'Save failed', 'danger');
+            }
+        } catch (err) {
+            showToast('Network error — could not save', 'danger');
+        }
+    };
+
+    /* ── Generic save / toast ────────────────────────────────── */
     window.saveSettings = function (section) {
         if (typeof showToast === 'function') {
             showToast('Settings saved', 'success');
