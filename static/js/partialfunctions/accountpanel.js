@@ -112,13 +112,9 @@
 
     /* ── Initialise badge from the panel's server-rendered count ─── */
     (function initCartBadge() {
-        if (!navCartBadge) return;
         if (panelCartCount && panelCartCount.classList.contains("acct-cart-count")) {
             const initialCount = parseInt(panelCartCount.textContent, 10) || 0;
-            if (initialCount > 0) {
-                navCartBadge.textContent = initialCount;
-                navCartBadge.classList.add("visible");
-            }
+            window.updateCartCount(initialCount);
         }
     })();
 

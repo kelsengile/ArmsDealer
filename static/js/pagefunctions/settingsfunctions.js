@@ -229,4 +229,36 @@
             alert('Support ticket submitted.');
         }
     };
+
+    /* ── Currency preference — saves cookie via server endpoint ─── */
+    window.saveCurrencyPreference = function (code) {
+        fetch('/set-currency', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ currency: code })
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (!data.ok) return;
+
+                /* Update symbol span */
+                const sym = document.getElementById('settingsWalletSymbol');
+                if (sym) sym.textContent = data.symbol;
+
+                /* Re-convert the wallet balance input to the new currency.
+                   The input currently shows the value in the OLD currency.
+                   We know the old rate (data-rate attr) and the new rate.
+                   Flow: displayed_old / old_rate = PHP → PHP * new_rate = displayed_new */
+                const walletInput = document.getElementById('walletBalanceInput');
+                if (walletInput && data.rate != null) {
+                    const oldRate = parseFloat(walletInput.dataset.rate) || 1;
+                    const currentDisplayed = parseFloat(walletInput.value) || 0;
+                    const phpAmount = oldRate !== 0 ? currentDisplayed / oldRate : currentDisplayed;
+                    const newDisplayed = phpAmount * data.rate;
+                    walletInput.value = newDisplayed.toFixed(2);
+                    walletInput.dataset.rate = data.rate;
+                }
+            })
+            .catch(() => { });
+    };
 })();
