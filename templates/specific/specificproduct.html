@@ -246,7 +246,19 @@
             <div class="sp-action-row">
 
                 <!-- Add to Cart Button -->
-                <div class="sp-cart-btn" id="sp-add-cart-btn" data-product-id="{{ product.id }}">
+                {% if product.stock is not none and product.stock == 0 %}
+                <div class="sp-cart-btn sold-out" id="sp-add-cart-btn" data-product-id="{{ product.id }}" data-stock="{{ product.stock }}">
+                    <span class="sp-cart-label">
+                        <svg width="14" height="14" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 1h2l2.4 8.4a1 1 0 0 0 1 .6h5.2a1 1 0 0 0 .97-.76L14 5H4" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="6.5" cy="13" r="1" fill="currentColor"/>
+                            <circle cx="11.5" cy="13" r="1" fill="currentColor"/>
+                        </svg>
+                        Sold Out
+                    </span>
+                </div>
+                {% else %}
+                <div class="sp-cart-btn" id="sp-add-cart-btn" data-product-id="{{ product.id }}" data-stock="{{ product.stock }}">
                     <div class="sp-qty-group" id="sp-qty-group">
                         <button class="sp-qty-btn" id="sp-qty-minus" type="button">−</button>
                         <span class="sp-qty-val" id="sp-qty-display">1</span>
@@ -261,6 +273,7 @@
                         Add to Cart
                     </span>
                 </div>
+                {% endif %}
 
             </div><!-- /.sp-action-row -->
 
