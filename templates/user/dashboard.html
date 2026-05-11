@@ -1430,7 +1430,7 @@
                                             <span class="adm-sparkline-val">{{ p.sales_count }}</span>
                                         </div>
                                         <div class="adm-bar-track">
-                                            <div class="adm-bar-fill" style="width:{{ (p.sales_count / max_sales * 100)|int }}%"></div>
+                                            <div class="adm-bar-fill" data-pct="{{ (p.sales_count / max_sales * 100)|int }}"></div>
                                         </div>
                                     </div>
                                     {% endfor %}
@@ -1674,8 +1674,12 @@
                             </thead>
                             <tbody id="inventoryTableBody">
                                 {% for p in products %}
-                                {% set stock_pct = [[(p.stock / 100 * 100)|int, 100]|min, 0]|max %}
-                                <tr data-name="{{ p.name | lower }}" data-stock="{{ p.stock }}">
+                                <tr data-name="{{ p.name | lower }}"
+                                    data-stock="{{ p.stock }}"
+                                    data-stock-pct="{{ [p.stock * 2, 100]|min }}"
+                                    data-edit-href="{{ url_for('admin.edit_product', id=p.id) if admin is defined else '#' }}"
+                                    data-delete-href="{{ url_for('admin.delete_product', id=p.id) if admin is defined else '#' }}"
+                                    data-product-name="{{ p.name | e }}">
                                     <td><span class="adm-table-id" style="font-size:11px;">{{ p.id }}</span></td>
                                     <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ p.name }}</td>
                                     <td style="font-size:10px;color:var(--mil-muted);">{{ p.category_name if p.category_name is defined else '—' }}</td>
@@ -1684,13 +1688,9 @@
                                     <td>
                                         <div class="adm-stock-bar">
                                             <div class="adm-stock-track">
-                                                <div class="adm-stock-fill {% if p.stock == 0 %}low{% elif p.stock <= 5 %}med{% endif %}"
-                                                     style="width:{{ [p.stock * 2, 100]|min }}%"></div>
+                                                <div class="adm-stock-fill"></div>
                                             </div>
-                                            <span class="adm-stock-num {% if p.stock == 0 %}{% elif p.stock <= 5 %}{% endif %}"
-                                                  style="{% if p.stock == 0 %}color:#c0392b{% elif p.stock <= 5 %}color:var(--mil-gold){% endif %}">
-                                                {{ p.stock }}
-                                            </span>
+                                            <span class="adm-stock-num">{{ p.stock }}</span>
                                         </div>
                                     </td>
                                     <td>
@@ -1706,9 +1706,8 @@
                                     </td>
                                     <td>
                                         <div style="display:flex;gap:4px;">
-                                            <a href="{{ url_for('admin.edit_product', id=p.id) if admin is defined else '#' }}" class="adm-icon-btn" title="Edit">✎</a>
-                                            <button class="adm-icon-btn danger" title="Delete"
-                                                    onclick="if(confirm('Delete {{ p.name }}?'))window.location.href='{{ url_for('admin.delete_product', id=p.id) if admin is defined else '#' }}'">✕</button>
+                                            <a class="adm-icon-btn adm-edit-btn" title="Edit">✎</a>
+                                            <button class="adm-icon-btn danger adm-delete-btn" title="Delete">✕</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -1969,6 +1968,28 @@
 <!-- Toast -->
 <div class="adm-toast" id="admToast"></div>
 
+<script type="application/json" id="dashboardData">
+{
+    "revenueData":     {{ revenue_by_day | tojson }},
+    "revenueLabels":   {{ revenue_labels | tojson }},
+    "pendingOrders":   {{ stats.pending_orders or 0 }},
+    "deliveredOrders": {{ stats.delivered_orders or 0 }},
+    "totalOrders":     {{ stats.total_orders or 0 }}
+}
+</script>
+<script>
+    (function () {
+        var _d = JSON.parse(document.getElementById('dashboardData').textContent);
+        window.revenueData     = _d.revenueData;
+        window.revenueLabels   = _d.revenueLabels;
+        window.orderStatusData = {
+            'Order Placed': _d.pendingOrders,
+            'Delivered':    _d.deliveredOrders,
+            'Other':        Math.max(0, _d.totalOrders - _d.pendingOrders - _d.deliveredOrders)
+        };
+    })();
+</script>
+
 <script>
 (function () {
     'use strict';
@@ -2145,9 +2166,8 @@
         const svg = document.getElementById('revenueChart');
         if (!svg) return;
 
-        // Pull from template if available, else mock sparkline data
-        const raw = (typeof revenueData !== 'undefined') ? revenueData : [0,0,0,0,0,0,0];
-        const labels = (typeof revenueLabels !== 'undefined') ? revenueLabels : ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+        const raw    = revenueData;
+        const labels = revenueLabels;
         const max = Math.max(...raw, 1);
         const W = 520, H = 140, pad = { t:10, b:28, l:10, r:10 };
         const cw = W - pad.l - pad.r;
@@ -2205,11 +2225,7 @@
         const legend = document.getElementById('donutLegend');
         if (!svg || !legend) return;
 
-        const data = (typeof orderStatusData !== 'undefined') ? orderStatusData : {
-            'Order Placed': {{ stats.pending_orders or 0 }},
-            'Delivered':    {{ stats.delivered_orders or 0 }},
-            'Other':        Math.max(0, {{ stats.total_orders or 0 }} - {{ stats.pending_orders or 0 }} - {{ stats.delivered_orders or 0 }})
-        };
+        const data = orderStatusData;
 
         const colors  = ['#96b562','#5090c0','#c0922a','#c0392b','#3d523d'];
         const cx = 55, cy = 55, r = 40, ir = 26;
@@ -2262,8 +2278,8 @@
         const labels = document.getElementById('miniRevLabels');
         if (!wrap) return;
 
-        const raw    = (typeof revenueData !== 'undefined') ? revenueData : [0,0,0,0,0,0,0];
-        const lbls   = (typeof revenueLabels !== 'undefined') ? revenueLabels : ['M','T','W','T','F','S','S'];
+        const raw  = revenueData;
+        const lbls = revenueLabels;
         const max    = Math.max(...raw, 1);
 
         wrap.innerHTML = raw.map((v, i) => {
@@ -2287,12 +2303,49 @@
 </script>
 
 <script>
-    const revenueData   = {{ revenue_by_day | tojson }};
-    const revenueLabels = {{ revenue_labels | tojson }};
-    const orderStatusData = {
-        'Order Placed': {{ stats.pending_orders or 0 }},
-        'Delivered':    {{ stats.delivered_orders or 0 }},
-        'Other':        {{ [stats.total_orders - stats.pending_orders - stats.delivered_orders, 0] | max }}
-    };
+    /* Apply data-* driven styles — keeps all Jinja2 expressions out of JS/style attributes */
+    (function () {
+
+        /* ── Top-products bar widths ─────────────────── */
+        document.querySelectorAll('.adm-bar-fill[data-pct]').forEach(function (el) {
+            el.style.width = el.dataset.pct + '%';
+        });
+
+        /* ── Inventory table: stock bars, colours, buttons ── */
+        document.querySelectorAll('#inventoryTableBody tr[data-stock]').forEach(function (row) {
+            var stock    = parseInt(row.dataset.stock, 10);
+            var stockPct = parseInt(row.dataset.stockPct, 10);
+            var fill     = row.querySelector('.adm-stock-fill');
+            var num      = row.querySelector('.adm-stock-num');
+
+            if (fill) {
+                fill.style.width = stockPct + '%';
+                if (stock === 0)      { fill.classList.add('low'); }
+                else if (stock <= 5)  { fill.classList.add('med'); }
+            }
+            if (num) {
+                if (stock === 0)      { num.style.color = '#c0392b'; }
+                else if (stock <= 5)  { num.style.color = 'var(--mil-gold)'; }
+            }
+
+            /* Edit button href */
+            var editBtn = row.querySelector('.adm-edit-btn');
+            if (editBtn) { editBtn.href = row.dataset.editHref || '#'; }
+
+            /* Delete button — safe confirm dialog (no inline Jinja2 in onclick) */
+            var delBtn = row.querySelector('.adm-delete-btn');
+            if (delBtn) {
+                delBtn.addEventListener('click', function () {
+                    var name = row.dataset.productName || 'this product';
+                    var href = row.dataset.deleteHref   || '#';
+                    if (confirm('Delete ' + name + '?')) {
+                        window.location.href = href;
+                    }
+                });
+            }
+        });
+
+    })();
 </script>
+
 {% endblock %}
