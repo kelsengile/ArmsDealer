@@ -63,7 +63,6 @@
 .chk-receipt-inner {
     padding: 36px 40px 40px;
     position: relative;
-    /* subtle noise texture */
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
 }
 
@@ -116,6 +115,48 @@
     color: #7a7060;
     text-transform: uppercase;
     margin-bottom: 10px;
+}
+
+/* ── Delivery info block ──────────────────────────────────── */
+.chk-delivery-block {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed #b0a890;
+}
+
+.chk-delivery-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 5px 0;
+}
+
+.chk-delivery-icon {
+    color: #4a5e2a;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.chk-delivery-text {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    color: #3a3628;
+    line-height: 1.5;
+}
+
+.chk-delivery-text strong {
+    font-weight: 700;
+    color: #1a1f1a;
+}
+
+.chk-delivery-warn {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    color: #a06030;
+    padding: 8px 10px;
+    background: rgba(160, 96, 48, 0.08);
+    border-left: 2px solid #a06030;
+    margin-top: 6px;
 }
 
 /* ── Items ────────────────────────────────────────────────── */
@@ -196,7 +237,7 @@
 .chk-totals-block {
     border-top: 2px solid #1a1f1a;
     padding-top: 14px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .chk-totals-row {
@@ -219,6 +260,16 @@
 }
 
 .chk-totals-val.chk-free {
+    color: #4a5e2a;
+    font-weight: 700;
+}
+
+.chk-totals-val.chk-debit {
+    color: #c0392b;
+    font-weight: 700;
+}
+
+.chk-totals-val.chk-ok {
     color: #4a5e2a;
     font-weight: 700;
 }
@@ -250,6 +301,88 @@
     font-size: 18px;
     font-weight: 700;
     color: #1a1f1a;
+}
+
+/* ── Payment method selector ──────────────────────────────── */
+.chk-payment-block {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed #b0a890;
+}
+
+.chk-payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.chk-payment-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border: 1.5px solid #c8bfa8;
+    background: #ede8de;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.chk-payment-option input[type="radio"] {
+    accent-color: #4a5e2a;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.chk-payment-option:has(input:checked) {
+    border-color: #4a5e2a;
+    background: rgba(74, 94, 42, 0.07);
+}
+
+.chk-payment-option-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #1a1f1a;
+    flex: 1;
+    cursor: pointer;
+}
+
+.chk-payment-option-sub {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    color: #5a5040;
+    margin-top: 2px;
+}
+
+.chk-wallet-balance-tag {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: #4a5e2a;
+    background: rgba(74, 94, 42, 0.12);
+    padding: 2px 7px;
+    flex-shrink: 0;
+}
+
+.chk-wallet-insufficient {
+    color: #c0392b;
+    background: rgba(192, 57, 43, 0.08);
+}
+
+.chk-wallet-warn {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    color: #c0392b;
+    padding: 8px 10px;
+    background: rgba(192, 57, 43, 0.07);
+    border-left: 2px solid #c0392b;
+    margin-top: 6px;
+    display: none;
 }
 
 /* ── Barcode decoration ───────────────────────────────────── */
@@ -309,6 +442,15 @@
     overflow: hidden;
 }
 
+.chk-place-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.chk-place-btn:disabled::before {
+    display: none;
+}
+
 .chk-place-btn::before {
     content: '';
     position: absolute;
@@ -319,7 +461,7 @@
     transition: transform 0.22s ease;
 }
 
-.chk-place-btn:hover::before {
+.chk-place-btn:hover:not(:disabled)::before {
     transform: scaleX(1);
 }
 
@@ -395,10 +537,37 @@
     background: #1a1f1a;
     color: #f5f0e8;
 }
+
+/* Auth badge */
+.chk-auth-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    padding: 1px 5px;
+    margin-left: 4px;
+}
+
+.chk-auth-badge--authorized {
+    color: #4a5e2a;
+    border: 1px solid #4a5e2a;
+}
+
+.chk-auth-badge--restricted {
+    color: #a06030;
+    border: 1px solid #a06030;
+}
 </style>
 {% endblock %}
 
 {% block main %}
+{# ─── Pass balance / payment data to JS ─────────────────────── #}
+{% set wallet_bal_php = session.get('wallet_balance') | float %}
+{% set wallet_bal = (wallet_bal_php * (currency.rate_to_php if currency else 1)) | round(2) %}
+{% set default_method = session.get('payment_method', 'cash_on_delivery') %}
 <main class="chk-main">
     <div class="chk-container">
 
@@ -406,7 +575,7 @@
         <div class="chk-receipt">
             <div class="chk-receipt-inner">
 
-                <!-- Store header -->
+                {# ── Store header ───────────────────────────────────── #}
                 <div class="chk-store-header">
                     <div class="chk-store-logo">ARMS <span>DEALER</span></div>
                     <div class="chk-store-tagline">Tactical Equipment & Services</div>
@@ -416,7 +585,28 @@
                     </div>
                 </div>
 
-                <!-- Items -->
+                {# ── Delivery address block ─────────────────────────── #}
+                <div class="chk-delivery-block">
+                    <div class="chk-receipt-section-label">DELIVERY INFORMATION</div>
+                    {% if session.get('delivery_address') %}
+                    <div class="chk-delivery-row">
+                        <svg class="chk-delivery-icon" width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 1C5.2 1 3 3.2 3 6c0 4 5 9 5 9s5-5 5-9c0-2.8-2.2-5-5-5z" stroke="currentColor" stroke-width="1.4" fill="none"/><circle cx="8" cy="6" r="1.5" fill="currentColor"/></svg>
+                        <span class="chk-delivery-text">{{ session.get('delivery_address') }}</span>
+                    </div>
+                    {% if session.get('contact_number') %}
+                    <div class="chk-delivery-row">
+                        <svg class="chk-delivery-icon" width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M3 1h3l1.5 4-2 1.2c.9 2 2.3 3.4 4.3 4.3L11 8.5l4 1.5v3c0 1.1-.9 2-2 2C5.4 15 1 10.6 1 3c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" fill="none"/></svg>
+                        <span class="chk-delivery-text">{{ session.get('contact_number') }}</span>
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <div class="chk-delivery-warn">
+                        ⚠ No delivery address set. <a href="{{ url_for('main.settings') }}?section=account" style="color:#a06030;text-decoration:underline;">Add one in Settings</a> before placing your order.
+                    </div>
+                    {% endif %}
+                </div>
+
+                {# ── Items ─────────────────────────────────────────── #}
                 <div class="chk-items-block">
                     <div class="chk-receipt-section-label">ORDER ITEMS</div>
                     <div class="chk-items-header">
@@ -451,7 +641,36 @@
                     {% endfor %}
                 </div>
 
-                <!-- Totals -->
+                {# ── Payment method selector ────────────────────────── #}
+                <div class="chk-payment-block">
+                    <div class="chk-receipt-section-label">PAYMENT METHOD</div>
+                    <div class="chk-payment-options" id="chk-payment-options">
+                        <label class="chk-payment-option">
+                            <input type="radio" name="payment_method" value="cash_on_delivery"
+                                {% if default_method != 'wallet' %}checked{% endif %}>
+                            <div>
+                                <div class="chk-payment-option-label">Cash on Delivery</div>
+                                <div class="chk-payment-option-sub">Pay upon receipt of your order</div>
+                            </div>
+                        </label>
+                        <label class="chk-payment-option">
+                            <input type="radio" name="payment_method" value="wallet"
+                                {% if default_method == 'wallet' %}checked{% endif %}>
+                            <div style="flex:1">
+                                <div class="chk-payment-option-label">Wallet Balance</div>
+                                <div class="chk-payment-option-sub">Instant deduction from your balance</div>
+                            </div>
+                            <span class="chk-wallet-balance-tag" id="chk-wallet-tag">
+                                {{ currency.symbol if currency else '₱' }}{{ '{:,.2f}'.format(wallet_bal) }}
+                            </span>
+                        </label>
+                    </div>
+                    <div class="chk-wallet-warn" id="chk-wallet-warn">
+                        ✕ Insufficient wallet balance for this order.
+                    </div>
+                </div>
+
+                {# ── Totals ────────────────────────────────────────── #}
                 <div class="chk-totals-block">
                     <div class="chk-totals-row">
                         <span class="chk-totals-label">Subtotal</span>
@@ -465,14 +684,24 @@
                         <span class="chk-totals-label">Tax (0%)</span>
                         <span class="chk-totals-val">{{ currency.symbol if currency else '₱' }}0</span>
                     </div>
+                    {# Wallet deduction row — shown only when wallet selected #}
+                    <div class="chk-totals-row" id="chk-wallet-deduct-row" style="display:none">
+                        <span class="chk-totals-label">Wallet Deduction</span>
+                        <span class="chk-totals-val chk-debit" id="chk-wallet-deduct-val">−{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(cart_total) }}</span>
+                    </div>
                     <div class="chk-totals-divider"></div>
                     <div class="chk-total-final-row">
                         <span class="chk-total-final-label">TOTAL DUE</span>
-                        <span class="chk-total-final-val">{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(cart_total) }}</span>
+                        <span class="chk-total-final-val" id="chk-total-final-val">{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(cart_total) }}</span>
+                    </div>
+                    {# After-wallet remaining row #}
+                    <div class="chk-totals-row" id="chk-wallet-remain-row" style="display:none">
+                        <span class="chk-totals-label" style="font-size:10px;color:#4a5e2a">Remaining Balance</span>
+                        <span class="chk-totals-val chk-ok" id="chk-wallet-remain-val"></span>
                     </div>
                 </div>
 
-                <!-- Barcode decoration -->
+                {# ── Barcode decoration ────────────────────────────── #}
                 <div class="chk-barcode">
                     <div class="chk-barcode-bars">
                         <span style="--w:1px;--h:38px"></span><span style="--w:3px;--h:38px"></span><span style="--w:1px;--h:28px"></span><span style="--w:2px;--h:38px"></span><span style="--w:1px;--h:32px"></span><span style="--w:3px;--h:38px"></span><span style="--w:1px;--h:24px"></span><span style="--w:2px;--h:38px"></span><span style="--w:1px;--h:38px"></span><span style="--w:3px;--h:30px"></span><span style="--w:1px;--h:38px"></span><span style="--w:2px;--h:38px"></span><span style="--w:1px;--h:22px"></span><span style="--w:3px;--h:38px"></span><span style="--w:1px;--h:38px"></span><span style="--w:2px;--h:34px"></span><span style="--w:1px;--h:38px"></span><span style="--w:1px;--h:26px"></span><span style="--w:3px;--h:38px"></span><span style="--w:1px;--h:38px"></span><span style="--w:2px;--h:38px"></span><span style="--w:1px;--h:20px"></span><span style="--w:3px;--h:38px"></span><span style="--w:1px;--h:38px"></span><span style="--w:2px;--h:30px"></span><span style="--w:1px;--h:38px"></span><span style="--w:3px;--h:38px"></span><span style="--w:1px;--h:24px"></span><span style="--w:2px;--h:38px"></span><span style="--w:1px;--h:38px"></span>
@@ -480,11 +709,12 @@
                     <div class="chk-barcode-num">ARM-{{ range(1000000,9999999) | random if range else '4821659' }}</div>
                 </div>
 
-                <!-- Actions -->
+                {# ── Actions ───────────────────────────────────────── #}
                 <div class="chk-actions">
-                    <form method="POST" action="{{ url_for('cart.place_order') }}">
+                    <form method="POST" action="{{ url_for('cart.place_order') }}" id="chk-form">
                         <input type="hidden" name="csrf_token" value="{{ session.get('_csrf_token', '') }}">
-                        <button type="submit" class="chk-place-btn">
+                        <input type="hidden" name="payment_method" id="chk-payment-hidden" value="{{ default_method }}">
+                        <button type="submit" class="chk-place-btn" id="chk-submit-btn">
                             <span>▶ CONFIRM & PLACE ORDER</span>
                         </button>
                     </form>
@@ -518,4 +748,72 @@
 
     </div>
 </main>
+
+<script>
+(function () {
+    const CART_TOTAL = {{ cart_total | float }};
+    const WALLET_BAL = {{ wallet_bal }};
+    const SYM = "{{ currency.symbol if currency else '₱' }}";
+
+    const radios      = document.querySelectorAll('input[name="payment_method"]');
+    const hiddenInput = document.getElementById('chk-payment-hidden');
+    const submitBtn   = document.getElementById('chk-submit-btn');
+    const warnEl      = document.getElementById('chk-wallet-warn');
+    const walletTag   = document.getElementById('chk-wallet-tag');
+    const deductRow   = document.getElementById('chk-wallet-deduct-row');
+    const deductVal   = document.getElementById('chk-wallet-deduct-val');
+    const remainRow   = document.getElementById('chk-wallet-remain-row');
+    const remainVal   = document.getElementById('chk-wallet-remain-val');
+    const totalFinal  = document.getElementById('chk-total-final-val');
+
+    function fmt(n) {
+        return SYM + n.toLocaleString('en-PH', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
+
+    function update() {
+        const chosen = document.querySelector('input[name="payment_method"]:checked');
+        if (!chosen) return;
+
+        hiddenInput.value = chosen.value;
+
+        if (chosen.value === 'wallet') {
+            const canAfford = WALLET_BAL >= CART_TOTAL;
+            const remaining = WALLET_BAL - CART_TOTAL;
+
+            // Deduct row
+            deductRow.style.display = '';
+            deductVal.textContent = '−' + fmt(CART_TOTAL);
+
+            // Remaining row
+            remainRow.style.display = '';
+            remainVal.textContent = fmt(Math.max(0, remaining));
+
+            // Total due becomes 0 if wallet covers it
+            totalFinal.textContent = canAfford ? (SYM + '0') : fmt(CART_TOTAL);
+
+            // Warning & button state
+            if (!canAfford) {
+                warnEl.style.display = '';
+                walletTag.classList.add('chk-wallet-insufficient');
+                submitBtn.disabled = true;
+            } else {
+                warnEl.style.display = 'none';
+                walletTag.classList.remove('chk-wallet-insufficient');
+                submitBtn.disabled = false;
+            }
+        } else {
+            // Cash on delivery
+            deductRow.style.display = 'none';
+            remainRow.style.display = 'none';
+            totalFinal.textContent = fmt(CART_TOTAL);
+            warnEl.style.display = 'none';
+            walletTag.classList.remove('chk-wallet-insufficient');
+            submitBtn.disabled = false;
+        }
+    }
+
+    radios.forEach(r => r.addEventListener('change', update));
+    update(); // run on load to reflect default_method
+})();
+</script>
 {% endblock %}

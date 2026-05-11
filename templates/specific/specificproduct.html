@@ -279,9 +279,11 @@
         <h2 class="sp-related-title">Related Products</h2>
         <div class="sp-related-grid fc-grid">
             {% for r in related %}
-            {% set r_disc = r.price - (r.price * (r.discount / 100)) %}
+            {% set r_price = r.price or 0 %}
+            {% set r_discount = r.discount or 0 %}
+            {% set r_disc = r_price - (r_price * (r_discount / 100)) %}
             {% set r_new  = (r_disc * currency.rate_to_php) | round | int %}
-            {% set r_old  = (r.price * currency.rate_to_php) | round | int %}
+            {% set r_old  = (r_price * currency.rate_to_php) | round | int %}
             <div class="fc-card" style="cursor:pointer;"
                  onclick="window.location.href='/product/{{ r.slug }}'">
                 <div class="fc-card-bg"
@@ -292,8 +294,8 @@
                     <div class="fc-name large">{{ r.name }}</div>
                     <div class="fc-pricing">
                         <div class="fc-pricing-row fc-pricing-row--price">
-                            {% if r.discount and r.discount > 0 %}
-                            <span class="fc-discount">&#8211;{{ r.discount | int }}%</span>
+                            {% if r_discount > 0 %}
+                            <span class="fc-discount">&#8211;{{ r_discount | int }}%</span>
                             <span class="fc-prices">
                                 <span class="fc-old">{{ currency.symbol }}{{ "{:,}".format(r_old) }}</span>
                                 <span class="fc-new large">{{ currency.symbol }}{{ "{:,}".format(r_new) }}</span>
@@ -312,7 +314,7 @@
                             </span>
                             <span class="fc-sold">
                                 <svg class="fc-cart-icon" width="9" height="9" viewBox="0 0 16 16"><path d="M1 1h2l2.4 8.4a1 1 0 0 0 1 .6h5.2a1 1 0 0 0 .97-.76L14 5H4" stroke="rgba(168,196,154,0.55)" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="13" r="1" fill="rgba(168,196,154,0.55)"/><circle cx="11.5" cy="13" r="1" fill="rgba(168,196,154,0.55)"/></svg>
-                                <span class="fc-sold-count">{{ "{:,}".format(r.sales_count) }}</span>
+                                <span class="fc-sold-count">{{ "{:,}".format(r.sales_count or 0) }}</span>
                             </span>
                         </div>
                     </div>

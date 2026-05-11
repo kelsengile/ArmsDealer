@@ -219,13 +219,14 @@
                         <div class="set-row">
                             <div class="set-row-info">
                                 <div class="set-row-label">E-Wallet Balance</div>
-                                <div class="set-row-desc">Philippine Peso — website credit balance</div>
+                                <div class="set-row-desc">{{ currency.name if currency else 'Philippine Peso' }} — website credit balance</div>
                             </div>
                             <div class="set-row-control" style="display:flex;align-items:center;gap:8px;">
-                                <span style="font-family:var(--font-mono);font-size:13px;color:var(--mil-bright);letter-spacing:0.05em;">₱</span>
+                                <span id="settingsWalletSymbol" style="font-family:var(--font-mono);font-size:13px;color:var(--mil-bright);letter-spacing:0.05em;">{{ currency.symbol if currency else '₱' }}</span>
                                 <input class="set-input" type="number" id="walletBalanceInput"
                                        min="0" step="0.01"
-                                       value="{{ '%.2f'|format(user.wallet_balance or 0) }}"
+                                       value="{{ '%.2f'|format(wallet_display) }}"
+                                       data-rate="{{ currency.rate_to_php if currency else 1 }}"
                                        style="width:140px;font-family:var(--font-mono);font-size:13px;letter-spacing:0.05em;">
                             </div>
                         </div>
@@ -811,13 +812,13 @@
                                 <div class="set-row-desc">Currency shown on product listings and orders</div>
                             </div>
                             <div class="set-row-control">
-                                <select class="set-select">
-                                    <option selected>PHP — Philippine Peso (₱)</option>
-                                    <option>USD — US Dollar ($)</option>
-                                    <option>EUR — Euro (€)</option>
-                                    <option>GBP — British Pound (£)</option>
-                                    <option>SGD — Singapore Dollar (S$)</option>
-                                    <option>JPY — Japanese Yen (¥)</option>
+                                <select class="set-select" id="currencySelect" onchange="saveCurrencyPreference(this.value)">
+                                    <option value="PHP" {% if not currency or currency.code == 'PHP' %}selected{% endif %}>PHP — Philippine Peso (₱)</option>
+                                    <option value="USD" {% if currency and currency.code == 'USD' %}selected{% endif %}>USD — US Dollar ($)</option>
+                                    <option value="EUR" {% if currency and currency.code == 'EUR' %}selected{% endif %}>EUR — Euro (€)</option>
+                                    <option value="GBP" {% if currency and currency.code == 'GBP' %}selected{% endif %}>GBP — British Pound (£)</option>
+                                    <option value="SGD" {% if currency and currency.code == 'SGD' %}selected{% endif %}>SGD — Singapore Dollar (S$)</option>
+                                    <option value="JPY" {% if currency and currency.code == 'JPY' %}selected{% endif %}>JPY — Japanese Yen (¥)</option>
                                 </select>
                             </div>
                         </div>

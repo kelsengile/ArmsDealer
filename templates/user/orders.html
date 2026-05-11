@@ -130,7 +130,7 @@
                         {% for item in cart_items %}
                         <div class="ordpage-item-row" data-item-type="{{ item.item_type }}" data-item-id="{{ item.item_id }}">
                             {# Clickable image → product page #}
-                            <a href="{{ url_for('api.product_detail', slug=item.slug) if item.item_type == 'product' and item.slug is defined else '#' }}"
+                            <a href="{{ url_for('main.product_detail', slug=item.slug) if item.item_type == 'product' and item.slug is defined else '#' }}"
                                class="ordpage-item-img-wrap ordpage-item-img-link"
                                title="View {{ item.name }}">
                                 {% if item.image_file %}
@@ -152,7 +152,7 @@
                                 </div>
                             </a>
                             <div class="ordpage-item-info">
-                                <a href="{{ url_for('api.product_detail', slug=item.slug) if item.item_type == 'product' and item.slug is defined else '#' }}"
+                                <a href="{{ url_for('main.product_detail', slug=item.slug) if item.item_type == 'product' and item.slug is defined else '#' }}"
                                    class="ordpage-item-name ordpage-item-name-link">{{ item.name }}</a>
                                 <div class="ordpage-item-meta">
                                     <span class="ordpage-item-type">{{ item.item_type | upper }}</span>
@@ -270,7 +270,7 @@
                                     <div class="ship-item-row">
                                         {# Clickable name — only if slug available and item is a product #}
                                         {% if oi.slug and oi.item_type == 'product' %}
-                                        <a href="{{ url_for('api.product_detail', slug=oi.slug) }}"
+                                        <a href="{{ url_for('main.product_detail', slug=oi.slug) }}"
                                            class="ship-item-name ship-item-name-link">{{ oi.name }}</a>
                                         {% else %}
                                         <span class="ship-item-name">{{ oi.name }}</span>
@@ -391,7 +391,7 @@
                                         <div class="hist-rate-item-info">
                                             {# Clickable item name in history #}
                                             {% if oi.slug and oi.item_type == 'product' %}
-                                            <a href="{{ url_for('api.product_detail', slug=oi.slug) }}"
+                                            <a href="{{ url_for('main.product_detail', slug=oi.slug) }}"
                                                class="hist-rate-item-name hist-rate-item-name-link">{{ oi.name }}</a>
                                             {% else %}
                                             <span class="hist-rate-item-name">{{ oi.name }}</span>
