@@ -132,9 +132,9 @@
                 const restricted = (!isGuest && p.is_authorized === 0)
                     ? `<span class="search-restricted-tag">RESTRICTED</span>` : '';
                 const price = `${esc(p.currency_symbol)}${(p.new_price || 0).toLocaleString()}`;
-
-                // ── FIX: route to /product/<slug> (specific product page) ──
-                const href = p.slug ? `/product/${esc(p.slug)}` : '/products';
+                const href = p.category_slug
+                    ? `/products/${esc(p.category_slug)}#${esc(p.slug)}`
+                    : '/products';
 
                 html += `
                 <a class="search-result-row" href="${href}">
@@ -188,7 +188,7 @@
                     ? `<span class="search-restricted-tag">RESTRICTED</span>` : '';
 
                 html += `
-                <a class="search-result-row brand-row" href="/products?brand=${encodeURIComponent(b.slug)}">
+                <a class="search-result-row brand-row" href="/products" data-brand-slug="${esc(b.slug)}">
                   <span class="search-result-icon">
                     <svg width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M8 1l2 4.5h4.5L10.7 8.7l1.5 4.8L8 11l-4.2 2.5 1.5-4.8L1.5 5.5H6z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
@@ -210,9 +210,25 @@
 
         body.innerHTML = html;
 
-        // Close panel when a result is clicked
+        // Close panel when a result is clicked.
+        // Brand rows additionally write sessionStorage so products.html
+        // opens the correct brand section — same pattern as spGoToBrand
+        // in specificproduct.html.
         body.querySelectorAll('a').forEach((a) => {
-            a.addEventListener('click', () => closeSearch());
+            a.addEventListener('click', (e) => {
+                const brandSlug = a.dataset.brandSlug;
+                if (brandSlug) {
+                    e.preventDefault();
+                    sessionStorage.setItem('sp_open_brand', brandSlug);
+                    sessionStorage.setItem('sp_open_nav', 'brands');
+                    sessionStorage.removeItem('sp_open_category');
+                    sessionStorage.removeItem('sp_open_subcategory');
+                    closeSearch();
+                    window.location.href = '/products';
+                    return;
+                }
+                closeSearch();
+            });
         });
     }
 
