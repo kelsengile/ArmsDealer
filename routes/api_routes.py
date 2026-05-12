@@ -742,3 +742,75 @@ def set_currency():
     resp.set_cookie('currency', code, max_age=60 *
                     60 * 24 * 365, samesite='Lax')
     return resp
+
+
+@api_bp.route('/search')
+def search():
+    q = (request.args.get('q') or '').strip()
+    if len(q) < 2:
+        return jsonify(products=[], brands=[], is_guest=True)
+
+    db = get_db()
+    lang = get_locale()
+    currency = get_currency(db)
+    rate = currency['rate_to_php'] if currency else 1.0
+    symbol = currency['symbol'] if currency else '₱'
+
+    is_logged_in = bool(session.get('user_id'))
+    auth_clause = '' if is_logged_in else 'AND p.is_authorized = 1'
+    brand_clause = '' if is_logged_in else 'AND b.is_authorized = 1'
+
+    like = f'%{q}%'
+
+    # ── Products ────────────────────────────────────────────────────
+    product_rows = db.execute(f"""
+        SELECT p.id, p.slug, p.price, p.discount, p.is_authorized,
+               c.slug  AS category_slug,
+               b.name  AS brand_name,
+               COALESCE(pt.name,        p.name)        AS name,
+               COALESCE(pt.description, p.description) AS description
+        FROM products p
+        LEFT JOIN products_translations pt
+               ON pt.product_id = p.id AND pt.lang_code = ?
+        LEFT JOIN categories c ON c.id = p.category_id
+        LEFT JOIN brands     b ON b.id = p.brand_id
+        WHERE (
+              COALESCE(pt.name, p.name)        LIKE ?
+           OR COALESCE(pt.description, p.description) LIKE ?
+           OR p.tags  LIKE ?
+           OR b.name  LIKE ?
+           OR c.name  LIKE ?
+        )
+        {auth_clause}
+        ORDER BY p.sales_count DESC
+        LIMIT 10
+    """, (lang, like, like, like, like, like)).fetchall()
+
+    products = []
+    for row in product_rows:
+        p = dict(row)
+        price = p.get('price') or 0
+        discount = p.get('discount') or 0
+        p['currency_symbol'] = symbol
+        p['old_price'] = round(price * rate)
+        p['new_price'] = round(price * (1 - discount / 100.0) * rate)
+        products.append(p)
+
+    # ── Brands ──────────────────────────────────────────────────────
+    brand_rows = db.execute(f"""
+        SELECT b.id, b.name, b.slug, b.is_authorized,
+               COUNT(p.id) AS product_count
+        FROM brands b
+        LEFT JOIN products p
+               ON p.brand_id = b.id
+              {'AND p.is_authorized = 1' if not is_logged_in else ''}
+        WHERE b.name LIKE ?
+        {brand_clause}
+        GROUP BY b.id
+        ORDER BY b.name
+        LIMIT 6
+    """, (like,)).fetchall()
+
+    brands = [dict(row) for row in brand_rows]
+
+    return jsonify(products=products, brands=brands, is_guest=not is_logged_in)
