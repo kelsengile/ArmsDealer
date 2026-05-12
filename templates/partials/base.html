@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/globalstyles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navbarstyles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/partialstyles/accountpanel.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/partialstyles/searchpanel.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/partialstyles/settingspanel.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/toast.css') }}">
     {% block styles %} {% endblock %}
@@ -19,6 +20,7 @@
 <body>
     {% include 'partials/settingspanel.html' %}
     {% include 'partials/accountpanel.html' %}
+    {% include 'partials/searchpanel.html' %}
     <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- STICKY HEADER WRAPPER                                        -->
     <!-- ═══════════════════════════════════════════════════════════ -->
@@ -122,6 +124,7 @@
     <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
     <script src="{{ url_for('static', filename='js/navbarfunctions.js') }}"></script>
     <script src="{{ url_for('static', filename='js/partialfunctions/accountpanel.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/partialfunctions/searchpanel.js') }}"></script>
     <script src="{{ url_for('static', filename='js/partialfunctions/settingspanel.js') }}"></script>
 
     <script>

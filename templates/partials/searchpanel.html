@@ -1,0 +1,53 @@
+{# ═══════════════════════════════════════════════════════════════ #}
+{# SEARCH PANEL OVERLAY + SIDEBAR                                   #}
+{# Include this partial inside base.html, alongside accountpanel    #}
+{# e.g. {% include 'partials/searchpanel.html' %}                   #}
+{# ═══════════════════════════════════════════════════════════════ #}
+<div class="search-overlay" id="searchOverlay"></div>
+<aside class="search-sidebar" id="searchSidebar" aria-label="Search Panel">
+
+    <div class="search-header">
+        <span class="search-header-title">Search</span>
+        <button class="acct-close" id="searchClose" aria-label="Close search panel">✕</button>
+    </div>
+
+    <div class="search-input-wrap">
+        <svg class="search-input-icon" width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input
+            class="search-input"
+            id="searchInput"
+            type="text"
+            placeholder="TYPE TO SEARCH..."
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+            maxlength="80"
+            aria-label="Search"
+        />
+        <button class="search-input-clear" id="searchInputClear" aria-label="Clear search" tabindex="-1">✕</button>
+    </div>
+
+    <div class="search-body" id="searchBody">
+        <div class="search-idle-msg" id="searchIdleMsg">
+            <span>⍝</span> AWAITING INPUT
+        </div>
+    </div>
+
+    <div class="search-footer">
+        <div class="acct-session-info">
+            {% if session.get('user_id') %}
+            <span class="acct-session-dot"></span>
+            AUTHORIZED ACCESS &nbsp;·&nbsp; FULL CATALOGUE
+            {% else %}
+            <span class="acct-session-dot offline"></span>
+            CIVILIAN ACCESS &nbsp;·&nbsp;
+            <a href="{{ url_for('auth.login') }}" style="color:var(--mil-olive);text-decoration:none;">SIGN IN</a>
+            FOR FULL ACCESS
+            {% endif %}
+        </div>
+    </div>
+
+</aside>
