@@ -1,0 +1,332 @@
+/* ============================================================================================================================
+    SEARCH PANEL
+    Mirrors accountpanel.css structure exactly.
+    Save as: static/css/partialstyles/searchpanel.css
+    Link in base.html alongside accountpanel.css
+   ============================================================================================================================ */
+
+/* ── Panel overlay ──────────────────────────────────────────────── */
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+  z-index: 1100;
+}
+.search-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ── Sidebar panel ──────────────────────────────────────────────── */
+.search-sidebar {
+  position: fixed;
+  top: 120px;
+  right: 0;
+  bottom: 0;
+  width: var(--set-width, 320px);
+  background: var(--mil-dark);
+  border-left: 1px solid var(--mil-border);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1200;
+  overflow: hidden;
+  height: 875px;
+}
+/* Right accent bar */
+.search-sidebar::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg,
+      var(--mil-bright),
+      var(--mil-olive) 60%,
+      transparent);
+  z-index: 1;
+}
+/* Scanline texture */
+.search-sidebar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg,
+      transparent,
+      transparent 3px,
+      rgba(0, 0, 0, 0.06) 3px,
+      rgba(0, 0, 0, 0.06) 4px);
+  pointer-events: none;
+}
+.search-sidebar.open {
+  transform: translateX(0);
+}
+
+/* ── Panel header ───────────────────────────────────────────────── */
+.search-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 0 20px;
+  height: 52px;
+  border-bottom: 1px solid var(--mil-border);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+.search-header-title {
+  font-family: var(--font-stencil);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mil-bright);
+}
+.search-header-title::before {
+  content: "⍝ ";
+  opacity: 0.7;
+  font-size: 11px;
+}
+
+/* ── Search input row ───────────────────────────────────────────── */
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px 0 20px;
+  height: 52px;
+  border-bottom: 2px solid var(--mil-olive);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  background: rgba(138, 170, 106, 0.03);
+}
+.search-input-icon {
+  color: var(--mil-olive);
+  flex-shrink: 0;
+}
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--mil-light);
+  caret-color: var(--mil-bright);
+  text-transform: uppercase;
+  min-width: 0;
+}
+.search-input::placeholder {
+  color: var(--mil-muted);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+.search-input-clear {
+  background: none;
+  border: none;
+  color: var(--mil-muted);
+  cursor: pointer;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  padding: 2px 4px;
+  flex-shrink: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s, color 0.15s;
+}
+.search-input-clear.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+.search-input-clear:hover {
+  color: var(--mil-bright);
+}
+
+/* ── Panel body ─────────────────────────────────────────────────── */
+.search-body {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  z-index: 2;
+  scrollbar-width: thin;
+  scrollbar-color: var(--mil-border) transparent;
+}
+.search-body::-webkit-scrollbar { width: 4px; }
+.search-body::-webkit-scrollbar-thumb { background: var(--mil-border); }
+
+/* ── Idle / loading / empty states ─────────────────────────────── */
+.search-idle-msg,
+.search-empty-msg,
+.search-loading-msg {
+  padding: 32px 20px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--mil-muted);
+  text-transform: uppercase;
+  text-align: center;
+}
+.search-idle-msg span {
+  display: block;
+  font-size: 20px;
+  margin-bottom: 10px;
+  opacity: 0.2;
+}
+
+/* ── Section labels ─────────────────────────────────────────────── */
+.search-section-label {
+  padding: 12px 18px 3px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mil-muted);
+}
+
+/* ── Divider ────────────────────────────────────────────────────── */
+.search-divider {
+  height: 1px;
+  background: var(--mil-border);
+  margin: 6px 16px;
+}
+
+/* ── Result rows (shared style) ─────────────────────────────────── */
+.search-result-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 20px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid rgba(46, 58, 46, 0.5);
+  font-family: var(--font-stencil);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  text-align: left;
+  text-decoration: none;
+  color: var(--mil-text);
+  position: relative;
+}
+.search-result-row:hover {
+  background: rgba(138, 170, 106, 0.05);
+  color: var(--mil-bright);
+}
+
+/* Result icon slot (mirrors .acct-btn-icon) */
+.search-result-icon {
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+  color: var(--mil-olive);
+  opacity: 0.65;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Result text block */
+.search-result-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.search-result-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--mil-text);
+  transition: color 0.15s;
+}
+.search-result-row:hover .search-result-name {
+  color: var(--mil-bright);
+}
+.search-result-meta {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--mil-muted);
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+/* Arrow (mirrors .acct-btn-arrow) */
+.search-result-arrow {
+  color: var(--mil-bright);
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.search-result-row:hover .search-result-arrow {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+/* ── Restricted badge ────────────────────────────────────────────── */
+.search-restricted-tag {
+  font-family: var(--font-mono);
+  font-size: 7.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #e07070;
+  border: 1px solid rgba(200, 80, 80, 0.35);
+  padding: 1px 5px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ── Brand sub-label color override ─────────────────────────────── */
+.search-result-row.brand-row .search-result-icon {
+  color: var(--mil-green);
+}
+
+/* ── "View all" footer link ──────────────────────────────────────── */
+.search-view-all-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  font-family: var(--font-stencil);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mil-olive);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(46, 58, 46, 0.5);
+  transition: background 0.15s, color 0.15s;
+  cursor: pointer;
+}
+.search-view-all-link:hover {
+  background: rgba(138, 170, 106, 0.05);
+  color: var(--mil-bright);
+}
+.search-view-all-link .search-result-arrow {
+  opacity: 0.4;
+}
+.search-view-all-link:hover .search-result-arrow {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+/* ── Panel footer ───────────────────────────────────────────────── */
+.search-footer {
+  padding: 10px 20px 14px;
+  border-top: 1px solid var(--mil-border);
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}

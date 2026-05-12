@@ -150,3 +150,6 @@
         });
     });
 })();
+
+
+/* ── Search button clicks are handled by searchpanel.js ── */
