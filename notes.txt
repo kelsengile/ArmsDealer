@@ -44,7 +44,7 @@ GLOBAL
     [ ] Tools
     [ ] Updates
     [ ] PopUps
-          [ ] Search Bar
+          [/] Search Bar
           [/] Cart
           [/] Account
     [/] Coordinates
@@ -63,7 +63,7 @@ GLOBAL
     [/] Why Choose Us?
     [/] Purchase Process
     [/] Call to Action
-    [ ] Footer
+    [/] Footer
 
   PRODUCTS PAGE
   -------------
@@ -93,11 +93,11 @@ GLOBAL
 
   ACCOUNT PAGES
   -------------
-    [ ] Admin Dashboard
-    [ ] User Pages 
-      [ ] Account Page
-      [ ] Orders Page
-      [ ] Checkout Page
+    [/] Admin Dashboard
+    [/] User Pages 
+      [/] Account Page
+      [/] Orders Page
+      [/] Checkout Page
 
   STATIC PAGES
   ------------
@@ -107,7 +107,7 @@ GLOBAL
 
   SETTINGS PAGES
   --------------
-    [ ] Account
+    [/] Account
     [ ] Appearance
     [ ] Notifications
     [ ] Privacy & Security
