@@ -744,6 +744,35 @@ def set_currency():
     return resp
 
 
+@api_bp.route('/product-price/<slug>')
+def product_price(slug):
+    """Return currency-converted prices for a single product.
+    Used by specificproduct.js to update prices live when the currency cookie changes."""
+    db = get_db()
+    currency = get_currency(db)
+    rate = currency['rate_to_php'] if currency else 1.0
+    symbol = currency['symbol'] if currency else '₱'
+
+    row = db.execute(
+        'SELECT price, discount FROM products WHERE slug = ?', (slug,)
+    ).fetchone()
+    if not row:
+        return jsonify({'ok': False, 'error': 'Not found'}), 404
+
+    price = row['price'] or 0
+    discount = row['discount'] or 0
+    old_price = round(price * rate)
+    new_price = round(price * (1 - discount / 100.0) * rate)
+
+    return jsonify({
+        'ok': True,
+        'symbol': symbol,
+        'old_price': old_price,
+        'new_price': new_price,
+        'discount': discount,
+    })
+
+
 @api_bp.route('/search')
 def search():
     q = (request.args.get('q') or '').strip()

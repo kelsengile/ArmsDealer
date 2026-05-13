@@ -81,7 +81,8 @@ def product_detail(slug):
         brand_product_count = int(count_row['cnt']) if count_row else 0
 
     related = []
-    if product['brand_id']:
+    if product['subcategory_id'] and product['brand_id']:
+        # Priority 1: same brand + same subcategory
         related_rows = db.execute(
             """
             SELECT p.*, COALESCE(pt.name, p.name) AS name,
@@ -90,28 +91,54 @@ def product_detail(slug):
             LEFT JOIN products_translations pt
                    ON pt.product_id = p.id AND pt.lang_code = ?
             WHERE p.brand_id = ?
+              AND p.subcategory_id = ?
               AND p.id != ?
               AND p.is_authorized = ?
             ORDER BY p.sales_count DESC
-            LIMIT 8
-            """, (lang, product['brand_id'], product['id'], product['is_authorized'])).fetchall()
+            LIMIT 6
+            """, (lang, product['brand_id'], product['subcategory_id'],
+                  product['id'], product['is_authorized'])).fetchall()
         related = [dict(row) for row in related_rows]
 
-    if not related and product['category_id']:
-        related_rows = db.execute(
-            """
+    if len(related) < 6 and product['subcategory_id']:
+        # Priority 2: same subcategory (any brand), fill up to 6
+        seen_ids = {r['id'] for r in related} | {product['id']}
+        placeholders = ','.join('?' for _ in seen_ids)
+        fill_rows = db.execute(
+            f"""
+            SELECT p.*, COALESCE(pt.name, p.name) AS name,
+                   COALESCE(pt.description, p.description) AS description
+            FROM products p
+            LEFT JOIN products_translations pt
+                   ON pt.product_id = p.id AND pt.lang_code = ?
+            WHERE p.subcategory_id = ?
+              AND p.id NOT IN ({placeholders})
+              AND p.is_authorized = ?
+            ORDER BY p.sales_count DESC
+            LIMIT ?
+            """, (lang, product['subcategory_id'], *seen_ids,
+                  product['is_authorized'], 6 - len(related))).fetchall()
+        related += [dict(row) for row in fill_rows]
+
+    if len(related) < 6 and product['category_id']:
+        # Priority 3: same category (any subcategory), fill up to 6
+        seen_ids = {r['id'] for r in related} | {product['id']}
+        placeholders = ','.join('?' for _ in seen_ids)
+        fill_rows = db.execute(
+            f"""
             SELECT p.*, COALESCE(pt.name, p.name) AS name,
                    COALESCE(pt.description, p.description) AS description
             FROM products p
             LEFT JOIN products_translations pt
                    ON pt.product_id = p.id AND pt.lang_code = ?
             WHERE p.category_id = ?
-              AND p.id != ?
+              AND p.id NOT IN ({placeholders})
               AND p.is_authorized = ?
             ORDER BY p.sales_count DESC
-            LIMIT 8
-            """, (lang, product['category_id'], product['id'], product['is_authorized'])).fetchall()
-        related = [dict(row) for row in related_rows]
+            LIMIT ?
+            """, (lang, product['category_id'], *seen_ids,
+                  product['is_authorized'], 6 - len(related))).fetchall()
+        related += [dict(row) for row in fill_rows]
 
     return render_template(
         'specific/specificproduct.html',
