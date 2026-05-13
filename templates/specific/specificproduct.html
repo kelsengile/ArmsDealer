@@ -229,14 +229,16 @@
             <div class="sp-pricing-block">
                 <div class="sp-pricing-row sp-pricing-row--price">
                     {% if product.discount and product.discount > 0 %}
-                    <span class="sp-discount-pill">&#8211;{{ product.discount | int }}%</span>
+                    <span class="sp-discount-pill sp-discount-badge">&#8211;{{ product.discount | int }}%</span>
                     <span class="sp-prices">
                         <span class="sp-price-old">{{ currency.symbol }}{{ "{:,}".format(old_price) }}</span>
                         <span class="sp-price-new">{{ currency.symbol }}{{ "{:,}".format(new_price) }}</span>
                     </span>
                     {% else %}
+                    <span class="sp-discount-badge" style="display:none"></span>
                     <span class="sp-prices sp-prices--nodiscount">
                         <span class="sp-price-new">{{ currency.symbol }}{{ "{:,}".format(new_price) }}</span>
+                        <span class="sp-price-old" style="display:none"></span>
                     </span>
                     {% endif %}
                 </div>
@@ -247,7 +249,7 @@
 
                 <!-- Add to Cart Button -->
                 {% if product.stock is not none and product.stock == 0 %}
-                <div class="sp-cart-btn sold-out" id="sp-add-cart-btn" data-product-id="{{ product.id }}" data-stock="{{ product.stock }}">
+                <div class="sp-cart-btn sold-out" id="sp-add-cart-btn" data-product-id="{{ product.id }}" data-stock="{{ product.stock }}" data-price-php="{{ product.price }}" data-discount="{{ product.discount or 0 }}">
                     <span class="sp-cart-label">
                         <svg width="14" height="14" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
                             <path d="M1 1h2l2.4 8.4a1 1 0 0 0 1 .6h5.2a1 1 0 0 0 .97-.76L14 5H4" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
@@ -258,7 +260,7 @@
                     </span>
                 </div>
                 {% else %}
-                <div class="sp-cart-btn" id="sp-add-cart-btn" data-product-id="{{ product.id }}" data-stock="{{ product.stock }}">
+                <div class="sp-cart-btn" id="sp-add-cart-btn" data-product-id="{{ product.id }}" data-stock="{{ product.stock }}" data-price-php="{{ product.price }}" data-discount="{{ product.discount or 0 }}">
                     <div class="sp-qty-group" id="sp-qty-group">
                         <button class="sp-qty-btn" id="sp-qty-minus" type="button">−</button>
                         <span class="sp-qty-val" id="sp-qty-display">1</span>
@@ -297,7 +299,9 @@
             {% set r_disc = r_price - (r_price * (r_discount / 100)) %}
             {% set r_new  = (r_disc * currency.rate_to_php) | round | int %}
             {% set r_old  = (r_price * currency.rate_to_php) | round | int %}
-            <div class="fc-card" style="cursor:pointer;"
+            <div class="fc-card sp-related-card" style="cursor:pointer;"
+                 data-price-php="{{ r_price }}"
+                 data-discount="{{ r_discount }}"
                  onclick="window.location.href='/product/{{ r.slug }}'">
                 <div class="fc-card-bg"
                      {% if r.image_file %}style="background-image:url('/static/assets/images/productsimages/{{ r.image_file }}')"{% endif %}>
@@ -308,14 +312,16 @@
                     <div class="fc-pricing">
                         <div class="fc-pricing-row fc-pricing-row--price">
                             {% if r_discount > 0 %}
-                            <span class="fc-discount">&#8211;{{ r_discount | int }}%</span>
+                            <span class="fc-discount sp-rel-discount">&#8211;{{ r_discount | int }}%</span>
                             <span class="fc-prices">
-                                <span class="fc-old">{{ currency.symbol }}{{ "{:,}".format(r_old) }}</span>
-                                <span class="fc-new large">{{ currency.symbol }}{{ "{:,}".format(r_new) }}</span>
+                                <span class="fc-old sp-rel-price-old">{{ currency.symbol }}{{ "{:,}".format(r_old) }}</span>
+                                <span class="fc-new large sp-rel-price-new">{{ currency.symbol }}{{ "{:,}".format(r_new) }}</span>
                             </span>
                             {% else %}
+                            <span class="fc-discount sp-rel-discount" style="display:none"></span>
                             <span class="fc-prices fc-prices--nodiscount">
-                                <span class="fc-new large">{{ currency.symbol }}{{ "{:,}".format(r_new) }}</span>
+                                <span class="fc-new large sp-rel-price-new">{{ currency.symbol }}{{ "{:,}".format(r_new) }}</span>
+                                <span class="fc-old sp-rel-price-old" style="display:none"></span>
                             </span>
                             {% endif %}
                         </div>
