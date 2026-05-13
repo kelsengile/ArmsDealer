@@ -801,8 +801,8 @@ INSERT INTO "category_translations" ("id","category_id","lang_code","name","desc
 INSERT INTO "currencies" ("code","symbol","label","rate_to_php","is_active","updated_at") VALUES ('PHP','₱','PHP (₱)',1.0,1,'2026-04-24 03:34:57'),
  ('USD','$','USD ($)',0.0175,1,'2026-04-24 03:34:57'),
  ('EUR','€','EUR (€)',0.0162,1,'2026-04-24 03:34:57'),
- ('JPY','¥','JPY (JP¥)',2.627,1,'2026-04-14 06:58:41'),
- ('CNY','¥','CNY (CN¥)',0.127,1,'2026-04-14 06:58:41');
+ ('JPY','JP¥','JPY (JP¥)',2.627,1,'2026-04-14 06:58:41'),
+ ('CNY','CN¥','CNY (CN¥)',0.127,1,'2026-04-14 06:58:41');
 INSERT INTO "languages" ("code","label","locale","is_active","sort_order") VALUES ('english','English','en',1,1),
  ('filipino','Filipino','fil',1,2),
  ('japanese','Japanese','ja',1,3),
@@ -2411,7 +2411,7 @@ INSERT INTO "subcategory_translations" ("id","subcategory_id","lang_code","name"
  (887,221,'mandarin','合资协议','合作经营'),
  (888,222,'mandarin','资助获取','资金支持');
 INSERT INTO "users" ("id","username","email","password_hash","role","created_at","updated_at","bio","country","contact_number","profile_image","social_link_1","social_link_2","social_link_3","social_link_4","delivery_address","wallet_balance","payment_method") VALUES (1,'spongebob','spongebob@bikini.bottom','scrypt:32768:8:1$SbTwSrAmCehypPz8$1fd49b243228a73c60f77f4fd51cf7f46d77f044b2576a24fe7de1800ca3dabe891e693f64f2276ef392437527659822711cb089f651944ef50073f5188a0c42','customer','2026-04-15 05:03:32','2026-04-15 05:03:32',NULL,NULL,NULL,'spongebob.png',NULL,NULL,NULL,NULL,NULL,0.0,'cash_on_delivery'),
- (2,'mrcrabs','eugene.crabs@thekrustykrab.com','scrypt:32768:8:1$83oDsOSmvXx89UZx$c0e15772d19273f1df094dffa5fb9846afa2be3bfa47bb50a89d3ec80c57032db06799f09fb4b4d51be28dfb33de4148c29c7b97396f1dbbaba90920d6b78dc3','admin','2026-04-15 05:03:32','2026-05-11 00:51:20','Money Money Money HeHeHehahaaa','US','+629026374889','mrkrabs.png','','','','','Bikini Bottom, Crusty Crab',2000000.0,'ewallet'),
+ (2,'mrcrabs','eugene.crabs@thekrustykrab.com','scrypt:32768:8:1$83oDsOSmvXx89UZx$c0e15772d19273f1df094dffa5fb9846afa2be3bfa47bb50a89d3ec80c57032db06799f09fb4b4d51be28dfb33de4148c29c7b97396f1dbbaba90920d6b78dc3','admin','2026-04-15 05:03:32','2026-05-11 08:57:32','Money Money Money HeHeHehahaaa','US','+629026374889','mrkrabs.png','','','','','Bikini Bottom, Crusty Crab',1000000.0,'ewallet'),
  (3,'KelsenGile','kelsengilesarmientoconel@gmail.com','scrypt:32768:8:1$XrzCLf0eixrrKiHF$94eee8816393d6c3fde4901ccd40f36f33d5fed9031cf15212b3a3acc91d25a7b11b7f9295ade278f201088b7c0e87f1242b859b5fc2008aaba577a9d9babdd2','customer','2026-04-15 07:00:44','2026-04-15 07:00:44',NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,0.0,'cash_on_delivery');
 DROP INDEX IF EXISTS "idx_order_items_order";
 CREATE INDEX idx_order_items_order  ON order_items   (order_id);
