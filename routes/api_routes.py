@@ -727,7 +727,7 @@ def set_currency():
     data = request.get_json(silent=True) or {}
     code = (data.get('currency') or '').strip().upper()
 
-    VALID_CODES = {'PHP', 'USD', 'EUR', 'GBP', 'SGD', 'JPY'}
+    VALID_CODES = {'PHP', 'USD', 'EUR', 'GBP', 'SGD', 'JPY', 'CNY'}
     if code not in VALID_CODES:
         return jsonify({'ok': False, 'error': 'Invalid currency code'}), 400
 
