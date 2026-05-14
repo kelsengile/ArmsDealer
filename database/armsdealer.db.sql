@@ -77,6 +77,15 @@ CREATE TABLE languages (
     is_active   INTEGER NOT NULL DEFAULT 1,
     sort_order  INTEGER NOT NULL DEFAULT 0
 );
+DROP TABLE IF EXISTS "login_history";
+CREATE TABLE login_history (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    ip_address  TEXT,
+    user_agent  TEXT,
+    success     INTEGER NOT NULL DEFAULT 1,   -- 1 = success, 0 = failed attempt
+    login_at    TEXT    NOT NULL DEFAULT (datetime('now'))
+);
 DROP TABLE IF EXISTS "order_items";
 CREATE TABLE order_items (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -808,6 +817,8 @@ INSERT INTO "languages" ("code","label","locale","is_active","sort_order") VALUE
  ('japanese','Japanese','ja',1,3),
  ('spanish','Spanish','es',1,4),
  ('mandarin','Mandarin','zh',1,5);
+INSERT INTO "login_history" ("id","user_id","ip_address","user_agent","success","login_at") VALUES (1,3,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',0,'2026-05-14 00:51:06'),
+ (2,3,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-14 00:51:20');
 INSERT INTO "product_images" ("id","product_id","image_file","sort_order","created_at") VALUES (1,1,'glock 19 gen5.png',1,'2026-05-03 12:48:09'),
  (2,1,'glock 43x.png',2,'2026-05-03 12:48:09'),
  (3,1,'glock 21 gen4.png',3,'2026-05-03 12:48:09'),
@@ -2411,8 +2422,11 @@ INSERT INTO "subcategory_translations" ("id","subcategory_id","lang_code","name"
  (887,221,'mandarin','合资协议','合作经营'),
  (888,222,'mandarin','资助获取','资金支持');
 INSERT INTO "users" ("id","username","email","password_hash","role","created_at","updated_at","bio","country","contact_number","profile_image","social_link_1","social_link_2","social_link_3","social_link_4","delivery_address","wallet_balance","payment_method") VALUES (1,'spongebob','spongebob@bikini.bottom','scrypt:32768:8:1$SbTwSrAmCehypPz8$1fd49b243228a73c60f77f4fd51cf7f46d77f044b2576a24fe7de1800ca3dabe891e693f64f2276ef392437527659822711cb089f651944ef50073f5188a0c42','customer','2026-04-15 05:03:32','2026-04-15 05:03:32',NULL,NULL,NULL,'spongebob.png',NULL,NULL,NULL,NULL,NULL,0.0,'cash_on_delivery'),
- (2,'mrcrabs','eugene.crabs@thekrustykrab.com','scrypt:32768:8:1$83oDsOSmvXx89UZx$c0e15772d19273f1df094dffa5fb9846afa2be3bfa47bb50a89d3ec80c57032db06799f09fb4b4d51be28dfb33de4148c29c7b97396f1dbbaba90920d6b78dc3','admin','2026-04-15 05:03:32','2026-05-11 08:57:32','Money Money Money HeHeHehahaaa','US','+629026374889','mrkrabs.png','','','','','Bikini Bottom, Crusty Crab',1000000.0,'ewallet'),
- (3,'KelsenGile','kelsengilesarmientoconel@gmail.com','scrypt:32768:8:1$XrzCLf0eixrrKiHF$94eee8816393d6c3fde4901ccd40f36f33d5fed9031cf15212b3a3acc91d25a7b11b7f9295ade278f201088b7c0e87f1242b859b5fc2008aaba577a9d9babdd2','customer','2026-04-15 07:00:44','2026-04-15 07:00:44',NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,0.0,'cash_on_delivery');
+ (2,'mrcrabs','eugene.crabs@thekrustykrab.com','scrypt:32768:8:1$83oDsOSmvXx89UZx$c0e15772d19273f1df094dffa5fb9846afa2be3bfa47bb50a89d3ec80c57032db06799f09fb4b4d51be28dfb33de4148c29c7b97396f1dbbaba90920d6b78dc3','admin','2026-04-15 05:03:32','2026-05-14 00:22:31','Money Money Money HeHeHehaha','US','+629026374889','mrkrabs.png','','','','','Bikini Bottom, Crusty Crab',1000000.0,'ewallet'),
+ (3,'KelsenGile','kelsengilesarmientoconel@gmail.com','scrypt:32768:8:1$71j0V7GmzlX9ac9y$8ae885d15fe260337cdbc6f9c7a45cfd4bbb6da5c6d8adef5624b6c924549ffc3f6bf0cd1cc7c9b28b552a00e29393fe86c35e541c3a8031f90db1ffdcb6f842','customer','2026-04-15 07:00:44','2026-04-15 07:00:44',NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,0.0,'cash_on_delivery');
+DROP INDEX IF EXISTS "idx_login_history_user";
+CREATE INDEX idx_login_history_user
+    ON login_history (user_id, login_at DESC);
 DROP INDEX IF EXISTS "idx_order_items_order";
 CREATE INDEX idx_order_items_order  ON order_items   (order_id);
 DROP INDEX IF EXISTS "idx_orders_status";
