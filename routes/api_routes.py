@@ -1,6 +1,9 @@
 # ──────────────────────────────────────────────────────────────────────────────────
 # API ROUTES
 # ──────────────────────────────────────────────────────────────────────────────────
+import hashlib as _hashlib
+import string as _string
+import secrets as _secrets
 import os
 from flask import Blueprint, render_template, request, g, session, redirect, url_for, jsonify, make_response
 from werkzeug.utils import secure_filename
@@ -151,23 +154,28 @@ def contacts():
     return render_template('contacts.html')
 
 
-@api_bp.route('/settings')
-def settings():
+# ─────────────────────────────────────────
+# LOGIN HISTORY (GET) — returns JSON for the current user
+# ─────────────────────────────────────────
+
+@api_bp.route('/login-history')
+def login_history():
+    """Return the current user's login history as JSON (most-recent 50)."""
+    if not session.get('user_id'):
+        return jsonify({'ok': False, 'error': 'Not logged in'}), 401
     db = get_db()
-    currency = get_currency(db)
-    user = None
-    if session.get('user_id'):
-        user = db.execute(
-            'SELECT * FROM users WHERE id = ?', (session['user_id'],)
-        ).fetchone()
-        if not user:
-            session.clear()
-            return redirect(url_for('auth.login'))
-    rate = currency['rate_to_php'] if currency else 1.0
-    wallet_php = float(user['wallet_balance'] or 0) if user else 0.0
-    wallet_display = round(wallet_php * rate, 2)
-    return render_template('settings.html', user=user, currency=currency,
-                           wallet_display=wallet_display)
+    try:
+        rows = db.execute(
+            '''SELECT login_at, ip_address, user_agent, success
+               FROM login_history
+               WHERE user_id = ?
+               ORDER BY login_at DESC
+               LIMIT 50''',
+            (session['user_id'],)
+        ).fetchall()
+        return jsonify({'ok': True, 'history': [dict(r) for r in rows]})
+    except Exception as exc:
+        return jsonify({'ok': False, 'error': str(exc)}), 500
 
 
 # ─────────────────────────────────────────
@@ -843,3 +851,281 @@ def search():
     brands = [dict(row) for row in brand_rows]
 
     return jsonify(products=products, brands=brands, is_guest=not is_logged_in)
+
+
+# ─────────────────────────────────────────
+# TWO-FACTOR AUTHENTICATION
+# ─────────────────────────────────────────
+# Requires:  pip install pyotp
+
+
+def _get_or_create_2fa_row(db, user_id):
+    """Return the user_2fa row, creating the table + row if needed."""
+    db.execute('''
+        CREATE TABLE IF NOT EXISTS user_2fa (
+            user_id    INTEGER PRIMARY KEY REFERENCES users(id),
+            secret     TEXT,
+            enabled    INTEGER NOT NULL DEFAULT 0,
+            backup_codes TEXT,
+            created_at TEXT DEFAULT (datetime('now')),
+            updated_at TEXT DEFAULT (datetime('now'))
+        )
+    ''')
+    row = db.execute('SELECT * FROM user_2fa WHERE user_id = ?',
+                     (user_id,)).fetchone()
+    if not row:
+        db.execute(
+            'INSERT OR IGNORE INTO user_2fa (user_id) VALUES (?)', (user_id,))
+        db.commit()
+        row = db.execute(
+            'SELECT * FROM user_2fa WHERE user_id = ?', (user_id,)).fetchone()
+    return row
+
+
+def _generate_backup_codes(n=8):
+    import json
+    chars = _string.ascii_uppercase + _string.digits
+    codes = ['-'.join(''.join(_secrets.choice(chars)
+                      for _ in range(4)) for _ in range(2)) for _ in range(n)]
+    return codes
+
+
+@api_bp.route('/2fa/status')
+def twofa_status():
+    """Return whether 2FA is currently enabled for the session user."""
+    if not session.get('user_id'):
+        return jsonify({'ok': False, 'error': 'Not logged in'}), 401
+    db = get_db()
+    row = _get_or_create_2fa_row(db, session['user_id'])
+    return jsonify({'ok': True, 'enabled': bool(row['enabled'])})
+
+
+@api_bp.route('/2fa/setup', methods=['POST'])
+def twofa_setup():
+    """Generate (or regenerate) a TOTP secret and return the otpauth URL + secret."""
+    if not session.get('user_id'):
+        return jsonify({'ok': False, 'error': 'Not logged in'}), 401
+    try:
+        import pyotp
+    except ImportError:
+        return jsonify({'ok': False, 'error': 'pyotp not installed — run: pip install pyotp'}), 500
+
+    db = get_db()
+    user_id = session['user_id']
+    _get_or_create_2fa_row(db, user_id)
+
+    secret = pyotp.random_base32()
+    # Store secret but keep enabled=0 until verified
+    db.execute(
+        "UPDATE user_2fa SET secret=?, enabled=0, updated_at=datetime('now') WHERE user_id=?",
+        (secret, user_id)
+    )
+    db.commit()
+
+    # Build the otpauth:// URI for QR scanning
+    username = session.get('username', 'user')
+    totp = pyotp.TOTP(secret)
+    otpauth = totp.provisioning_uri(name=username, issuer_name='ArmsDealer')
+
+    return jsonify({'ok': True, 'secret': secret, 'otpauth_url': otpauth})
+
+
+@api_bp.route('/2fa/enable', methods=['POST'])
+def twofa_enable():
+    """Verify the user's TOTP code and mark 2FA as enabled; return backup codes."""
+    if not session.get('user_id'):
+        return jsonify({'ok': False, 'error': 'Not logged in'}), 401
+    try:
+        import pyotp
+        import json as _j
+    except ImportError:
+        return jsonify({'ok': False, 'error': 'pyotp not installed'}), 500
+
+    data = request.get_json(silent=True) or {}
+    code = (data.get('code') or '').strip()
+    if not code:
+        return jsonify({'ok': False, 'error': 'Code is required'}), 400
+
+    db = get_db()
+    user_id = session['user_id']
+    row = _get_or_create_2fa_row(db, user_id)
+    secret = row['secret']
+    if not secret:
+        return jsonify({'ok': False, 'error': 'No setup in progress — start setup first'}), 400
+
+    totp = pyotp.TOTP(secret)
+    if not totp.verify(code, valid_window=1):
+        return jsonify({'ok': False, 'error': 'Invalid code — check the time on your device and try again'}), 400
+
+    backup_codes = _generate_backup_codes()
+    import json as _j
+    db.execute(
+        "UPDATE user_2fa SET enabled=1, backup_codes=?, updated_at=datetime('now') WHERE user_id=?",
+        (_j.dumps(backup_codes), user_id)
+    )
+    db.commit()
+    return jsonify({'ok': True, 'backup_codes': backup_codes})
+
+
+@api_bp.route('/2fa/disable', methods=['POST'])
+def twofa_disable():
+    """Verify TOTP code and disable 2FA."""
+    if not session.get('user_id'):
+        return jsonify({'ok': False, 'error': 'Not logged in'}), 401
+    try:
+        import pyotp
+    except ImportError:
+        return jsonify({'ok': False, 'error': 'pyotp not installed'}), 500
+
+    data = request.get_json(silent=True) or {}
+    code = (data.get('code') or '').strip()
+    if not code:
+        return jsonify({'ok': False, 'error': 'Code is required'}), 400
+
+    db = get_db()
+    user_id = session['user_id']
+    row = _get_or_create_2fa_row(db, user_id)
+    if not row['enabled'] or not row['secret']:
+        return jsonify({'ok': False, 'error': '2FA is not currently enabled'}), 400
+
+    totp = pyotp.TOTP(row['secret'])
+    if not totp.verify(code, valid_window=1):
+        return jsonify({'ok': False, 'error': 'Invalid code — check the time on your device and try again'}), 400
+
+    db.execute(
+        "UPDATE user_2fa SET enabled=0, secret=NULL, backup_codes=NULL, updated_at=datetime('now') WHERE user_id=?",
+        (user_id,)
+    )
+    db.commit()
+    return jsonify({'ok': True})
+
+
+# ─────────────────────────────────────────
+# ACTIVE SESSIONS
+# ─────────────────────────────────────────
+
+
+def _ensure_sessions_table(db):
+    db.execute('''
+        CREATE TABLE IF NOT EXISTS user_sessions (
+            id          TEXT PRIMARY KEY,
+            user_id     INTEGER NOT NULL REFERENCES users(id),
+            ip_address  TEXT,
+            user_agent  TEXT,
+            device_label TEXT,
+            device_type  TEXT DEFAULT 'desktop',
+            created_at  TEXT DEFAULT (datetime('now')),
+            last_seen   TEXT DEFAULT (datetime('now')),
+            revoked     INTEGER NOT NULL DEFAULT 0
+        )
+    ''')
+    db.commit()
+
+
+def _current_session_id():
+    """Derive a stable session identifier from Flask's session cookie."""
+    from flask import session as _session
+    raw = str(_session.get('user_id', '')) + str(_session.get('_id', ''))
+    return _hashlib.sha256(raw.encode()).hexdigest()[:32]
+
+
+def _upsert_session(db, user_id):
+    """Create or refresh the current session row (call this at login / on requests)."""
+    _ensure_sessions_table(db)
+    sid = _current_session_id()
+    ip = request.remote_addr or '—'
+    ua = request.headers.get('User-Agent', '')
+    device_type = 'mobile' if any(k in ua.lower() for k in (
+        'mobile', 'android', 'iphone')) else 'desktop'
+    # Build a friendly label from the UA
+    import re as _re
+    label_parts = []
+    for pattern, name in [
+        (r'Chrome/(\d+)',  'Chrome'), (r'Firefox/(\d+)', 'Firefox'),
+        (r'Safari/(\d+)',  'Safari'), (r'Edg/(\d+)',      'Edge'),
+    ]:
+        m = _re.search(pattern, ua)
+        if m:
+            label_parts.append(f'{name} {m.group(1)}')
+            break
+    for platform, pname in [('Windows NT', 'Windows'), ('Macintosh', 'macOS'), ('Linux', 'Linux'), ('Android', 'Android'), ('iPhone', 'iPhone')]:
+        if platform in ua:
+            label_parts.append(pname)
+            break
+    device_label = ' · '.join(label_parts) or 'Unknown Device'
+
+    db.execute('''
+        INSERT INTO user_sessions (id, user_id, ip_address, user_agent, device_label, device_type)
+        VALUES (?, ?, ?, ?, ?, ?)
+        ON CONFLICT(id) DO UPDATE SET
+            last_seen=datetime('now'), ip_address=excluded.ip_address,
+            user_agent=excluded.user_agent, device_label=excluded.device_label
+    ''', (sid, user_id, ip, ua, device_label, device_type))
+    db.commit()
+
+
+@api_bp.route('/sessions')
+def list_sessions():
+    """Return all active (non-revoked) sessions for the current user."""
+    if not session.get('user_id'):
+        return jsonify({'ok': False, 'error': 'Not logged in'}), 401
+
+    db = get_db()
+    user_id = session['user_id']
+    _ensure_sessions_table(db)
+
+    # Register / refresh the current session so it always appears in the list
+    _upsert_session(db, user_id)
+
+    current_sid = _current_session_id()
+    rows = db.execute(
+        '''SELECT id, ip_address, user_agent, device_label, device_type, created_at, last_seen
+           FROM user_sessions
+           WHERE user_id=? AND revoked=0
+           ORDER BY last_seen DESC''',
+        (user_id,)
+    ).fetchall()
+
+    sessions_out = []
+    for r in rows:
+        s = dict(r)
+        s['is_current'] = (s['id'] == current_sid)
+        sessions_out.append(s)
+
+    return jsonify({'ok': True, 'sessions': sessions_out})
+
+
+@api_bp.route('/sessions/<session_id>/revoke', methods=['POST'])
+def revoke_session(session_id):
+    """Revoke a specific session (cannot revoke current one)."""
+    if not session.get('user_id'):
+        return jsonify({'ok': False, 'error': 'Not logged in'}), 401
+
+    if session_id == _current_session_id():
+        return jsonify({'ok': False, 'error': 'Cannot revoke your current session'}), 400
+
+    db = get_db()
+    _ensure_sessions_table(db)
+    db.execute(
+        "UPDATE user_sessions SET revoked=1 WHERE id=? AND user_id=?",
+        (session_id, session['user_id'])
+    )
+    db.commit()
+    return jsonify({'ok': True})
+
+
+@api_bp.route('/sessions/revoke-all', methods=['POST'])
+def revoke_all_sessions():
+    """Revoke all sessions except the current one."""
+    if not session.get('user_id'):
+        return jsonify({'ok': False, 'error': 'Not logged in'}), 401
+
+    current_sid = _current_session_id()
+    db = get_db()
+    _ensure_sessions_table(db)
+    db.execute(
+        "UPDATE user_sessions SET revoked=1 WHERE user_id=? AND id != ?",
+        (session['user_id'], current_sid)
+    )
+    db.commit()
+    return jsonify({'ok': True})

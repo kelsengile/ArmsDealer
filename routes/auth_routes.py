@@ -54,6 +54,24 @@ def _send_otp_email(email, code, purpose='registration'):
         return False
 
 
+def _log_login(user_id, success: bool):
+    """Insert a row into login_history. Silently ignores errors."""
+    try:
+        db = get_db()
+        ip = request.headers.get('X-Forwarded-For', request.remote_addr or '')
+        # Trim forwarded-for to first address only
+        ip = ip.split(',')[0].strip()[:45]
+        ua = (request.headers.get('User-Agent') or '')[:300]
+        db.execute(
+            '''INSERT INTO login_history (user_id, ip_address, user_agent, success, login_at)
+               VALUES (?, ?, ?, ?, datetime('now'))''',
+            (user_id, ip, ua, 1 if success else 0)
+        )
+        db.commit()
+    except Exception:
+        pass  # Never crash a login because of history logging
+
+
 def login_required(f):
     """Decorator — redirect to login if user is not in session."""
     @wraps(f)
@@ -138,17 +156,21 @@ def login():
             (identifier, identifier)
         ).fetchone()
         if user is None or not check_password_hash(user['password_hash'], password):
+            if user is not None:
+                _log_login(user['id'], success=False)
             flash('Invalid credentials. Try again.', 'danger')
             return render_template('auth/login.html')
         _populate_session(user)
+        _log_login(user['id'], success=True)
         flash(f'Welcome back, {user["username"]}.', 'success')
         return redirect(request.args.get('next') or url_for('main.homepage'))
     return render_template('auth/login.html')
 # ─── PASSWORD ──────────────────────────────────────────────
 
 
+@auth_bp.route('/change-password', methods=['GET', 'POST'])
 @auth_bp.route('/password', methods=['GET', 'POST'])
-def forgot_password():
+def change_password():
     change_password = bool(session.get('user_id'))
     show_forgot_password = request.args.get('mode') == 'forgot'
     forgot_password_action = request.form.get(
@@ -270,6 +292,16 @@ def forgot_password():
     if pending:
         return render_template('auth/changepassword.html', otp_sent=True, pending_email=pending['email'], show_forgot_password=True)
     return render_template('auth/changepassword.html', change_password=change_password, show_forgot_password=show_forgot_password)
+# ─── FORGOT PASSWORD ALIAS ────────────────────────────────────────
+# Keeps url_for('auth.forgot_password') working (used in templates).
+
+
+@auth_bp.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    from flask import current_app
+    return current_app.view_functions['auth.change_password']()
+
+
 # ─── REGISTER ─────────────────────────────────────────────────────
 
 

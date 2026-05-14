@@ -180,8 +180,40 @@ def settings():
     rate = currency['rate_to_php'] if currency else 1.0
     wallet_php = float(user['wallet_balance'] or 0) if user else 0.0
     wallet_display = round(wallet_php * rate, 2)
+
+    # ── Login history (most-recent 50 entries) ─────────────────────
+    login_history = []
+    if user:
+        try:
+            from datetime import datetime as _dt
+            rows = db.execute(
+                '''SELECT login_at, ip_address, user_agent, success
+                   FROM login_history
+                   WHERE user_id = ?
+                   ORDER BY login_at DESC
+                   LIMIT 50''',
+                (user['id'],)
+            ).fetchall()
+            parsed = []
+            for r in rows:
+                entry = dict(r)
+                raw = entry.get('login_at')
+                if isinstance(raw, str):
+                    # SQLite stores datetimes as strings; parse the two common formats
+                    for fmt in ('%Y-%m-%d %H:%M:%S', '%Y-%m-%dT%H:%M:%S', '%Y-%m-%d %H:%M:%S.%f'):
+                        try:
+                            entry['login_at'] = _dt.strptime(raw, fmt)
+                            break
+                        except ValueError:
+                            continue
+                parsed.append(entry)
+            login_history = parsed
+        except Exception:
+            pass  # Table may not exist on older DBs — fail gracefully
+
     return render_template('settings.html', user=user, currency=currency,
-                           wallet_display=wallet_display)
+                           wallet_display=wallet_display,
+                           login_history=login_history)
 
 
 @main_bp.route('/legal')
