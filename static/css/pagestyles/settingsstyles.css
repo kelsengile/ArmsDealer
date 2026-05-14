@@ -657,6 +657,44 @@
     color: #fff;
 }
 
+/* Background options */
+.set-bg-options {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.set-bg-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 8px;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    transition: border-color 0.15s, transform 0.1s;
+    background: rgba(255, 255, 255, 0.05);
+}
+.set-bg-option:hover { transform: scale(1.05); }
+.set-bg-option.active {
+    border-color: var(--mil-bright, #a8c47a);
+    background: rgba(168, 196, 122, 0.1);
+}
+.set-bg-preview {
+    width: 60px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 2px;
+    border: 1px solid var(--mil-border);
+}
+.set-bg-option span {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--mil-text);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
 /* Progress bar */
 .set-progress-bar {
     height: 4px;
