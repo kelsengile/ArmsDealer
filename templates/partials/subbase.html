@@ -14,6 +14,46 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/partialstyles/settingspanel.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/toast.css') }}">
     {% block styles %} {% endblock %}
+    <!-- Appearance: applied synchronously from localStorage before first paint — no flash, no race -->
+    <script>
+    (function () {
+        var DEFAULTS = {
+            colorMode: 'Dark (Default)', accentColor: 'olive', scanlines: true,
+            bgOpacity: 38, bgImage: 'camobackground', fontScale: 'Default (12px)',
+            monospaceBody: true, compactMode: false, animations: true
+        };
+        var ACCENT = { olive:'#a8c47a', steel:'#5b9bd5', red:'#c0392b', amber:'#e8b84b', violet:'#9b59b6' };
+        var FONTS  = { 'Small (10px)':'10px', 'Default (12px)':'12px', 'Large (14px)':'14px' };
+        try {
+            var s = JSON.parse(localStorage.getItem('armsdealer_appearance') || 'null') || {};
+            s = Object.assign({}, DEFAULTS, s);
+            var root = document.documentElement;
+            root.style.fontSize = FONTS[s.fontScale] || '12px';
+            var ac = ACCENT[s.accentColor] || ACCENT.olive;
+            root.style.setProperty('--mil-bright', ac);
+            root.style.setProperty('--mil-green',  ac);
+            if (!s.animations) {
+                root.style.setProperty('--transition-fast', '0s');
+                root.style.setProperty('--transition-base', '0s');
+                root.style.setProperty('--transition-slow', '0s');
+            }
+            var m = s.compactMode ? 0.7 : 1;
+            root.style.setProperty('--spacing-sm', (8  * m) + 'px');
+            root.style.setProperty('--spacing-md', (12 * m) + 'px');
+            root.style.setProperty('--spacing-lg', (15 * m) + 'px');
+            var op  = (s.bgOpacity != null ? s.bgOpacity : 38) / 100;
+            var dop = Math.min(1, op * 1.35).toFixed(3);
+            var bg  = s.bgImage || 'camobackground';
+            var url = '/static/assets/images/pageimages/globalmages/' + bg + '.png';
+            var css = 'body{background:linear-gradient(rgba(0,0,0,' + op + '),rgba(2,15,4,' + dop + ')),url("' + url + '")!important;background-size:cover!important;background-position:center!important;background-repeat:repeat!important;background-attachment:fixed!important;}';
+            if (s.scanlines) root.classList.add('scanlines-pending');
+            var st = document.createElement('style');
+            st.id = 'appearance-inline';
+            st.textContent = css;
+            document.currentScript.parentNode.insertBefore(st, document.currentScript.nextSibling);
+        } catch (e) {}
+    })();
+    </script>
 </head>
 <body>
 
@@ -55,10 +95,17 @@
 
     <script src="{{ url_for('static', filename='js/translations.js') }}"></script>
     <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/appearance.js') }}"></script>
     <script src="{{ url_for('static', filename='js/partialfunctions/accountpanel.js') }}"></script>
     <script src="{{ url_for('static', filename='js/partialfunctions/settingspanel.js') }}"></script>
 
     <script>
+        // ── Transfer scanlines class from <html> to <body> now that body exists ──
+        if (document.documentElement.classList.contains('scanlines-pending')) {
+            document.documentElement.classList.remove('scanlines-pending');
+            document.body.classList.add('scanlines');
+        }
+
         // ── EXIT button — always performs a hard navigation so the target
         //    page is fetched fresh from the server (never a stale bfcache
         //    snapshot).  This ensures cart counts, order lists, and account

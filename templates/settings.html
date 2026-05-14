@@ -598,7 +598,7 @@
                                 <div class="set-row-desc">Overall brightness of the interface</div>
                             </div>
                             <div class="set-row-control">
-                                <select class="set-select">
+                                <select class="set-select" id="colorModeSelect">
                                     <option selected>Dark (Default)</option>
                                     <option>System</option>
                                 </select>
@@ -626,7 +626,7 @@
                             </div>
                             <div class="set-row-control">
                                 <label class="set-toggle">
-                                    <input type="checkbox" checked>
+                                    <input type="checkbox" checked id="scanlinesToggle">
                                     <span class="set-toggle-slider"></span>
                                 </label>
                             </div>
@@ -641,6 +641,28 @@
                                 <span id="bgOpacityVal" style="font-family:var(--font-mono);font-size:10px;color:var(--mil-text);min-width:32px;">38%</span>
                             </div>
                         </div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Background Image</div>
+                                <div class="set-row-desc">Choose the background theme</div>
+                            </div>
+                            <div class="set-row-control">
+                                <div class="set-bg-options">
+                                    <div class="set-bg-option active" data-bg="camobackground" title="Camo Background (Default)">
+                                        <img src="{{ url_for('static', filename='assets/images/pageimages/globalmages/camobackground.png') }}" alt="Camo" class="set-bg-preview">
+                                        <span>Camo</span>
+                                    </div>
+                                    <div class="set-bg-option" data-bg="battlefieldbackground" title="Battlefield Background">
+                                        <img src="{{ url_for('static', filename='assets/images/pageimages/globalmages/battlefieldbackground.png') }}" alt="Battlefield" class="set-bg-preview">
+                                        <span>Battlefield</span>
+                                    </div>
+                                    <div class="set-bg-option" data-bg="midevalwarbackground" title="Medieval War Background">
+                                        <img src="{{ url_for('static', filename='assets/images/pageimages/globalmages/midevalwarbackground.png') }}" alt="Medieval" class="set-bg-preview">
+                                        <span>Medieval</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="set-group">
@@ -651,7 +673,7 @@
                                 <div class="set-row-desc">Base text size across the interface</div>
                             </div>
                             <div class="set-row-control">
-                                <select class="set-select">
+                                <select class="set-select" id="fontScaleSelect">
                                     <option>Small (10px)</option>
                                     <option selected>Default (12px)</option>
                                     <option>Large (14px)</option>
@@ -665,7 +687,7 @@
                             </div>
                             <div class="set-row-control">
                                 <label class="set-toggle">
-                                    <input type="checkbox" checked>
+                                    <input type="checkbox" checked id="monospaceToggle">
                                     <span class="set-toggle-slider"></span>
                                 </label>
                             </div>
@@ -681,7 +703,7 @@
                             </div>
                             <div class="set-row-control">
                                 <label class="set-toggle">
-                                    <input type="checkbox">
+                                    <input type="checkbox" id="compactToggle">
                                     <span class="set-toggle-slider"></span>
                                 </label>
                             </div>
@@ -693,7 +715,7 @@
                             </div>
                             <div class="set-row-control">
                                 <label class="set-toggle">
-                                    <input type="checkbox" checked>
+                                    <input type="checkbox" checked id="animationsToggle">
                                     <span class="set-toggle-slider"></span>
                                 </label>
                             </div>
@@ -702,7 +724,7 @@
 
                     <div class="set-btn-row">
                         <button class="set-btn set-btn--primary" onclick="saveSettings('appearance')">APPLY</button>
-                        <button class="set-btn set-btn--muted">RESET TO DEFAULTS</button>
+                        <button class="set-btn set-btn--muted" onclick="resetAppearanceSettings()">RESET TO DEFAULTS</button>
                     </div>
                 </div>
             </div>
@@ -1055,701 +1077,6 @@
 
 {% include 'partials/toast.html' %}
 
-<script>
-/* ═══════════════════════════════════════════════════════════════
-   TOAST SYSTEM
-   Works in two modes:
-   1. Flask flash messages – picked up from #toast-flash-data on DOMContentLoaded
-   2. Direct JS calls      – showToast(message, type)
-      type: 'success' | 'danger' | 'warning' | 'info'
-═══════════════════════════════════════════════════════════════ */
-(function () {
-    const ICONS = {
-        success: '✔',
-        danger:  '✖',
-        warning: '⚠',
-        info:    'ℹ',
-    };
-
-    // Inject the toast container once
-    function getContainer() {
-        let c = document.getElementById('toast-container');
-        if (!c) {
-            c = document.createElement('div');
-            c.id = 'toast-container';
-            c.style.cssText = [
-                'position:fixed',
-                'bottom:24px',
-                'right:24px',
-                'z-index:9999',
-                'display:flex',
-                'flex-direction:column-reverse',
-                'gap:10px',
-                'pointer-events:none',
-            ].join(';');
-            document.body.appendChild(c);
-        }
-        return c;
-    }
-
-    window.showToast = function (message, type) {
-        type = ['success','danger','warning','info'].includes(type) ? type : 'info';
-
-        const COLORS = {
-            success: { bg: 'rgba(20,36,16,0.97)', border: '#5a7a3a', accent: '#8aaa6a', label: 'SUCCESS' },
-            danger:  { bg: 'rgba(36,16,16,0.97)', border: '#7a3a3a', accent: '#c05050', label: 'ALERT'   },
-            warning: { bg: 'rgba(36,30,10,0.97)', border: '#7a6020', accent: '#c09040', label: 'WARNING' },
-            info:    { bg: 'rgba(12,28,36,0.97)', border: '#2a5a7a', accent: '#4a8aaa', label: 'NOTICE'  },
-        };
-        const C = COLORS[type];
-
-        const toast = document.createElement('div');
-        toast.style.cssText = [
-            'pointer-events:auto',
-            'min-width:280px',
-            'max-width:380px',
-            `background:${C.bg}`,
-            `border:1px solid ${C.border}`,
-            `border-left:3px solid ${C.accent}`,
-            'padding:12px 14px',
-            'font-family:var(--font-mono, "Share Tech Mono", monospace)',
-            'font-size:11px',
-            'letter-spacing:0.06em',
-            'color:var(--mil-text, #c8d8b0)',
-            'display:flex',
-            'align-items:flex-start',
-            'gap:10px',
-            'cursor:pointer',
-            'opacity:0',
-            'transform:translateX(20px)',
-            'transition:opacity .22s ease, transform .22s ease',
-            'box-shadow:0 4px 20px rgba(0,0,0,0.55)',
-        ].join(';');
-
-        toast.innerHTML = `
-            <span style="color:${C.accent};font-size:13px;line-height:1;margin-top:1px;flex-shrink:0;">${ICONS[type]}</span>
-            <div style="flex:1;line-height:1.5;">
-                <div style="color:${C.accent};font-size:9px;letter-spacing:0.15em;margin-bottom:3px;">${C.label}</div>
-                <div>${message}</div>
-            </div>
-            <span style="color:var(--mil-muted,#6a7a5a);font-size:11px;margin-top:1px;flex-shrink:0;" title="Dismiss">✕</span>
-        `;
-
-        const container = getContainer();
-        container.appendChild(toast);
-
-        // Animate in
-        requestAnimationFrame(() => {
-            toast.style.opacity  = '1';
-            toast.style.transform = 'translateX(0)';
-        });
-
-        // Auto-dismiss
-        let timer = setTimeout(dismiss, type === 'danger' ? 6000 : 4000);
-
-        function dismiss() {
-            clearTimeout(timer);
-            toast.style.opacity   = '0';
-            toast.style.transform = 'translateX(20px)';
-            setTimeout(() => toast.remove(), 240);
-        }
-
-        toast.addEventListener('click', dismiss);
-    };
-
-    // Pick up Flask flash messages rendered by partials/toast.html
-    document.addEventListener('DOMContentLoaded', function () {
-        const container = document.getElementById('toast-flash-data');
-        if (!container) return;
-        container.querySelectorAll('[data-toast]').forEach(function (el) {
-            window.showToast(el.dataset.message, el.dataset.type);
-        });
-    });
-})();
-
-
-/* ═══════════════════════════════════════════════════════════════
-   SETTINGS PAGE FUNCTIONS
-═══════════════════════════════════════════════════════════════ */
-
-// ── Nav panel switching ────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function () {
-    const navItems = document.querySelectorAll('.setpage-nav-item');
-    const panels   = document.querySelectorAll('.setpage-panel');
-
-    function activateSection(section) {
-        navItems.forEach(b => b.classList.remove('active'));
-        panels.forEach(p => p.classList.remove('active'));
-
-        if (section) {
-            const btn   = document.querySelector(`.setpage-nav-item[data-section="${section}"]`);
-            const panel = document.getElementById('setpanel-' + section);
-            if (btn)   btn.classList.add('active');
-            if (panel) { panel.classList.add('active'); return; }
-        }
-        // Fallback — show default placeholder
-        const def = document.getElementById('setpanel-default');
-        if (def) def.classList.add('active');
-    }
-
-    navItems.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            const target = btn.dataset.section;
-            activateSection(target);
-            // Keep the URL in sync so back/forward and sharing work
-            const url = new URL(window.location);
-            url.searchParams.set('section', target);
-            window.history.replaceState({}, '', url);
-        });
-    });
-
-    // ── On page load: honour ?section= param from any inbound link ──
-    const initSection = new URLSearchParams(window.location.search).get('section');
-    activateSection(initSection);
-});
-
-// ── Generic save (non-account panels) ────────────────────────
-function saveSettings(section) {
-    const labels = {
-        privacy:       'Privacy & Security',
-        appearance:    'Appearance',
-        notifications: 'Notification preferences',
-        language:      'Language & Region',
-    };
-    const label = labels[section] || 'Settings';
-    showToast(label + ' saved successfully.', 'success');
-}
-
-// ── Account save ──────────────────────────────────────────────
-async function saveAccountSettings() {
-    const username = (document.getElementById('displayNameInput')?.value || '').trim();
-    if (!username) {
-        showToast('Display name cannot be empty.', 'danger');
-        return;
-    }
-
-    const imageInput = document.getElementById('profileImageInput');
-    const hasImage   = imageInput && imageInput.files && imageInput.files[0];
-
-    const fd = new FormData();
-    fd.append('username',         username);
-    fd.append('email',            (document.getElementById('emailInput')?.value            || '').trim());
-    fd.append('contact_number',   (document.getElementById('phoneInput')?.value            || '').trim());
-    fd.append('bio',              (document.getElementById('bioInput')?.value              || '').trim());
-    fd.append('country',          document.getElementById('countrySelect')?.value          || '');
-    fd.append('delivery_address', (document.getElementById('deliveryAddressInput')?.value  || '').trim());
-    fd.append('social_link_1',    (document.getElementById('socialLink1')?.value           || '').trim());
-    fd.append('social_link_2',    (document.getElementById('socialLink2')?.value           || '').trim());
-    fd.append('social_link_3',    (document.getElementById('socialLink3')?.value           || '').trim());
-    fd.append('social_link_4',    (document.getElementById('socialLink4')?.value           || '').trim());
-
-    const paymentRadio = document.querySelector('input[name="paymentMethod"]:checked');
-    fd.append('payment_method', paymentRadio ? paymentRadio.value : 'cash_on_delivery');
-
-    /* Convert displayed wallet value back to PHP before saving.
-       The input carries a data-rate attribute holding the current currency's
-       rate relative to PHP. Dividing by that rate gives the PHP amount the
-       DB always stores. */
-    const walletInput      = document.getElementById('walletBalanceInput');
-    const displayedWallet  = parseFloat(walletInput?.value)        || 0;
-    const activeRate       = parseFloat(walletInput?.dataset.rate) || 1;
-    const walletInPhp      = activeRate !== 0 ? displayedWallet / activeRate : displayedWallet;
-    fd.append('wallet_balance', walletInPhp.toFixed(2));
-
-    if (hasImage) fd.append('profile_image', imageInput.files[0]);
-
-    try {
-        const res  = await fetch('/api/settings/account', { method: 'POST', body: fd });
-        const data = await res.json();
-        if (data.ok) {
-            showToast('Account settings saved.', 'success');
-            if (data.profile_image) {
-                const photo = document.getElementById('avatarPhoto');
-                if (photo) {
-                    photo.src          = '/static/assets/images/userimages/' + data.profile_image;
-                    photo.style.display = 'block';
-                    const initialsEl   = document.getElementById('avatarInitials');
-                    if (initialsEl) initialsEl.style.display = 'none';
-                }
-            }
-        } else {
-            showToast(data.error || 'Save failed.', 'danger');
-        }
-    } catch (err) {
-        showToast('Network error — could not save.', 'danger');
-    }
-}
-
-// ── Reset section ─────────────────────────────────────────────
-function resetSection(section) {
-    showToast('Changes discarded.', 'info');
-}
-
-// ── Avatar / photo preview ────────────────────────────────────
-function previewProfileImage(input) {
-    if (!input.files || !input.files[0]) return;
-    const file = input.files[0];
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        const photo    = document.getElementById('avatarPhoto');
-        const initials = document.getElementById('avatarInitials');
-        if (photo)    { photo.src = e.target.result; photo.style.display = 'block'; }
-        if (initials) { initials.style.display = 'none'; }
-        const fn = document.getElementById('photoFilename');
-        if (fn) { fn.textContent = file.name; fn.style.display = 'block'; }
-        showToast('Photo ready — save changes to apply.', 'info');
-    };
-    reader.readAsDataURL(file);
-}
-
-// ── Display name live preview ─────────────────────────────────
-(function () {
-    document.addEventListener('DOMContentLoaded', function () {
-        const input   = document.getElementById('displayNameInput');
-        const preview = document.getElementById('displayNamePreview');
-        if (!input || !preview) return;
-        input.addEventListener('input', function () {
-            preview.textContent = input.value || '—';
-        });
-    });
-})();
-
-// ── Password strength bar ─────────────────────────────────────
-function updatePasswordStrength(val) {
-    const bar   = document.getElementById('pwStrengthBar');
-    const label = document.getElementById('pwStrengthLabel');
-    if (!bar || !label) return;
-
-    let score = 0;
-    if (val.length >= 8)                     score++;
-    if (val.length >= 12)                    score++;
-    if (/[A-Z]/.test(val))                   score++;
-    if (/[0-9]/.test(val))                   score++;
-    if (/[^A-Za-z0-9]/.test(val))            score++;
-
-    const levels = [
-        { w:'0%',   c:'var(--mil-redbright,#c05050)',   t:'ENTER PASSWORD TO CHECK STRENGTH' },
-        { w:'20%',  c:'var(--mil-redbright,#c05050)',   t:'VERY WEAK' },
-        { w:'40%',  c:'#c09040',                        t:'WEAK' },
-        { w:'60%',  c:'#c0c040',                        t:'MODERATE' },
-        { w:'80%',  c:'#8aaa6a',                        t:'STRONG' },
-        { w:'100%', c:'var(--mil-bright,#b8d890)',      t:'VERY STRONG' },
-    ];
-    const l = val.length === 0 ? levels[0] : levels[Math.min(score, 5)];
-    bar.style.width      = l.w;
-    bar.style.background = l.c;
-    label.textContent    = l.t;
-}
-
-// ── 2FA toggle ────────────────────────────────────────────────
-function toggle2FA(checkbox) {
-    const setup = document.getElementById('twoFaSetup');
-    const tag   = document.getElementById('twoFaTag');
-    if (checkbox.checked) {
-        if (setup) setup.style.display = 'block';
-        if (tag)   { tag.textContent = 'ENABLED'; tag.className = 'set-tag set-tag--on'; }
-        showToast('Copy the secret key into your authenticator app.', 'info');
-    } else {
-        if (setup) setup.style.display = 'none';
-        if (tag)   { tag.textContent = 'DISABLED'; tag.className = 'set-tag set-tag--off'; }
-        showToast('Two-factor authentication disabled.', 'warning');
-    }
-}
-
-// ── QR grid (decorative) ──────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function () {
-    const grid = document.getElementById('qrGrid');
-    if (!grid) return;
-    grid.innerHTML = '';
-    for (let i = 0; i < 64; i++) {
-        const cell = document.createElement('div');
-        cell.style.cssText = [
-            'width:6px', 'height:6px',
-            'background:' + (Math.random() > 0.5 ? 'var(--mil-bright,#b8d890)' : 'transparent'),
-        ].join(';');
-        grid.appendChild(cell);
-    }
-});
-
-// ── Payment option selector ───────────────────────────────────
-function selectPaymentOpt(radio) {
-    document.querySelectorAll('.set-payment-opt').forEach(function (el) {
-        el.classList.remove('active');
-    });
-    const label = radio.closest('.set-payment-opt');
-    if (label) label.classList.add('active');
-}
-
-// ── Login history toggle ──────────────────────────────────────
-function toggleLoginHistory(checkbox) {
-    const table = document.getElementById('loginHistoryTable');
-    const tag   = document.getElementById('loginHistoryTag');
-    if (checkbox.checked) {
-        if (table) table.style.display = 'block';
-        if (tag)   { tag.textContent = 'VISIBLE'; tag.className = 'set-tag set-tag--on'; }
-    } else {
-        if (table) table.style.display = 'none';
-        if (tag)   { tag.textContent = 'HIDDEN'; tag.className = 'set-tag set-tag--off'; }
-    }
-}
-
-// ── Quiet hours toggle ────────────────────────────────────────
-function toggleQuietHours(checkbox) {
-    const cfg = document.getElementById('quietHoursConfig');
-    if (cfg) cfg.style.display = checkbox.checked ? 'block' : 'none';
-}
-
-// ── Currency preference — persists via server cookie ─────────
-function saveCurrencyPreference(code) {
-    fetch('/set-currency', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ currency: code })
-    })
-    .then(function (r) { return r.json(); })
-    .then(function (data) {
-        if (!data.ok) { showToast('Could not change currency.', 'danger'); return; }
-        const sym = document.getElementById('settingsWalletSymbol');
-        if (sym) sym.textContent = data.symbol;
-        const walletInput = document.getElementById('walletBalanceInput');
-        if (walletInput && data.rate != null) {
-            const oldRate        = parseFloat(walletInput.dataset.rate) || 1;
-            const currentDisplay = parseFloat(walletInput.value)        || 0;
-            const phpAmount      = oldRate !== 0 ? currentDisplay / oldRate : currentDisplay;
-            walletInput.value        = (phpAmount * data.rate).toFixed(2);
-            walletInput.dataset.rate = data.rate;
-        }
-        showToast('Currency changed to ' + code + '.', 'success');
-    })
-    .catch(function () { showToast('Network error — currency not saved.', 'danger'); });
-}
-
-// ── Support ticket ────────────────────────────────────────────
-function submitSupport() {
-    showToast('Support ticket submitted. We\'ll respond within 24 hours.', 'success');
-}
-
-// ── Delete account modal ──────────────────────────────────────
-function openDeleteModal() {
-    const modal = document.getElementById('deleteModal');
-    if (modal) modal.classList.add('active');
-}
-function closeDeleteModal() {
-    const modal = document.getElementById('deleteModal');
-    if (modal) {
-        modal.classList.remove('active');
-        const input = document.getElementById('deleteConfirmInput');
-        const btn   = document.getElementById('confirmDeleteBtn');
-        if (input) input.value = '';
-        if (btn)   { btn.disabled = true; btn.style.opacity = '0.4'; btn.style.cursor = 'not-allowed'; }
-    }
-}
-function checkDeleteConfirm(val) {
-    const btn = document.getElementById('confirmDeleteBtn');
-    if (!btn) return;
-    const ok = val === 'DELETE MY ACCOUNT';
-    btn.disabled        = !ok;
-    btn.style.opacity   = ok ? '1'           : '0.4';
-    btn.style.cursor    = ok ? 'pointer'     : 'not-allowed';
-}
-// Close modal on backdrop click
-document.addEventListener('DOMContentLoaded', function () {
-    const backdrop = document.getElementById('deleteModal');
-    if (!backdrop) return;
-    backdrop.addEventListener('click', function (e) {
-        if (e.target === backdrop) closeDeleteModal();
-    });
-});
-
-// ── Color swatches (decorative) ───────────────────────────────
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.set-swatch').forEach(function (sw) {
-        sw.addEventListener('click', function () {
-            document.querySelectorAll('.set-swatch').forEach(s => s.classList.remove('active'));
-            sw.classList.add('active');
-            showToast('Accent color updated — save to apply.', 'info');
-        });
-    });
-});
-
-/* ═══════════════════════════════════════════════════════════════
-   TWO-FACTOR AUTHENTICATION
-═══════════════════════════════════════════════════════════════ */
-
-// State held in memory for the current setup flow
-let _2fa = { secret: null, backupCodes: [] };
-
-// Called when the toggle is flipped
-async function handle2FAToggle(cb) {
-    if (cb.checked) {
-        // Begin enable flow — fetch a new secret from server
-        cb.disabled = true;
-        try {
-            const res  = await fetch('/api/2fa/setup', { method: 'POST' });
-            const data = await res.json();
-            if (!data.ok) throw new Error(data.error || 'Server error');
-            _2fa.secret = data.secret;
-            document.getElementById('twoFaSecretDisplay').textContent = data.secret;
-            // Render QR code via the tiny qrcode-generator lib loaded below
-            _renderQR(data.otpauth_url);
-            document.getElementById('twoFaSetupBlock').style.display  = 'block';
-            document.getElementById('twoFaDisableBlock').style.display = 'none';
-            document.getElementById('twoFaBackupBlock').style.display  = 'none';
-            document.getElementById('twoFaVerifyInput').value = '';
-            document.getElementById('twoFaVerifyError').style.display = 'none';
-        } catch (err) {
-            showToast('Could not start 2FA setup: ' + err.message, 'danger');
-            cb.checked  = false;   // revert toggle
-        } finally {
-            cb.disabled = false;
-        }
-    } else {
-        // Begin disable flow
-        document.getElementById('twoFaSetupBlock').style.display  = 'none';
-        document.getElementById('twoFaBackupBlock').style.display  = 'none';
-        document.getElementById('twoFaDisableBlock').style.display = 'block';
-        document.getElementById('twoFaDisableInput').value = '';
-        document.getElementById('twoFaDisableError').style.display = 'none';
-    }
-}
-
-function _renderQR(otpauthUrl) {
-    // QR display removed — secret is shown as copyable text above
-}
-
-async function confirm2FASetup() {
-    const code  = (document.getElementById('twoFaVerifyInput').value || '').trim();
-    const errEl = document.getElementById('twoFaVerifyError');
-    if (code.length !== 6) {
-        errEl.textContent = '⚠ Enter the 6-digit code from your authenticator app.';
-        errEl.style.display = 'block';
-        return;
-    }
-    errEl.style.display = 'none';
-    try {
-        const res  = await fetch('/api/2fa/enable', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify({ code }),
-        });
-        const data = await res.json();
-        if (!data.ok) {
-            errEl.textContent = '⚠ ' + (data.error || 'Verification failed — check the code and try again.');
-            errEl.style.display = 'block';
-            return;
-        }
-        // Success
-        _2fa.backupCodes = data.backup_codes || [];
-        _setTwoFaUI(true);
-        _renderBackupCodes(data.backup_codes);
-        document.getElementById('twoFaSetupBlock').style.display  = 'none';
-        document.getElementById('twoFaBackupBlock').style.display  = 'block';
-        showToast('Two-factor authentication enabled.', 'success');
-    } catch (err) {
-        errEl.textContent = '⚠ Network error — please try again.';
-        errEl.style.display = 'block';
-    }
-}
-
-async function disable2FA() {
-    const code  = (document.getElementById('twoFaDisableInput').value || '').trim();
-    const errEl = document.getElementById('twoFaDisableError');
-    if (code.length !== 6) {
-        errEl.textContent = '⚠ Enter the 6-digit code from your authenticator app.';
-        errEl.style.display = 'block';
-        return;
-    }
-    errEl.style.display = 'none';
-    try {
-        const res  = await fetch('/api/2fa/disable', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify({ code }),
-        });
-        const data = await res.json();
-        if (!data.ok) {
-            errEl.textContent = '⚠ ' + (data.error || 'Verification failed — check the code and try again.');
-            errEl.style.display = 'block';
-            return;
-        }
-        _setTwoFaUI(false);
-        document.getElementById('twoFaDisableBlock').style.display = 'none';
-        document.getElementById('twoFaBackupBlock').style.display  = 'none';
-        showToast('Two-factor authentication disabled.', 'warning');
-    } catch (err) {
-        errEl.textContent = '⚠ Network error — please try again.';
-        errEl.style.display = 'block';
-    }
-}
-
-function _setTwoFaUI(enabled) {
-    const tag    = document.getElementById('twoFaStatusTag');
-    const toggle = document.getElementById('twoFaToggle');
-    if (enabled) {
-        tag.textContent  = 'ENABLED';
-        tag.className    = 'set-tag set-tag--on';
-        toggle.checked   = true;
-    } else {
-        tag.textContent  = 'DISABLED';
-        tag.className    = 'set-tag set-tag--off';
-        toggle.checked   = false;
-    }
-}
-
-function _renderBackupCodes(codes) {
-    const list = document.getElementById('twoFaBackupList');
-    list.innerHTML = (codes || []).map(c =>
-        `<div style="background:rgba(138,170,106,0.07);border:1px solid var(--mil-border);padding:6px 10px;letter-spacing:0.18em;">${c}</div>`
-    ).join('');
-}
-
-function copyBackupCodes() {
-    if (!_2fa.backupCodes.length) return;
-    navigator.clipboard.writeText(_2fa.backupCodes.join('\n'))
-        .then(() => showToast('Backup codes copied to clipboard.', 'success'))
-        .catch(() => showToast('Could not copy — please copy manually.', 'warning'));
-}
-
-// On page load: check 2FA status from server and sync UI
-document.addEventListener('DOMContentLoaded', async function () {
-    const toggle = document.getElementById('twoFaToggle');
-    if (!toggle) return;   // not logged in
-    try {
-        const res  = await fetch('/api/2fa/status');
-        const data = await res.json();
-        if (data.ok && data.enabled) _setTwoFaUI(true);
-    } catch (_) { /* ignore */ }
-});
-
-
-/* ═══════════════════════════════════════════════════════════════
-   ACTIVE SESSIONS
-═══════════════════════════════════════════════════════════════ */
-
-// Load sessions whenever the sessions panel becomes visible
-(function () {
-    let _loaded = false;
-
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.setpage-nav-item').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                if (btn.dataset.section === 'privacy' && !_loaded) {
-                    _loaded = true;
-                    loadSessions();
-                }
-            });
-        });
-        // Auto-load if arriving directly via ?section=privacy
-        if (new URLSearchParams(window.location.search).get('section') === 'privacy') {
-            _loaded = true;
-            loadSessions();
-        }
-    });
-})();
-
-async function loadSessions() {
-    const loading = document.getElementById('sessionsLoadingRow');
-    const list    = document.getElementById('sessionsList');
-    const empty   = document.getElementById('sessionsEmptyRow');
-    if (!list) return;
-
-    try {
-        const res  = await fetch('/api/sessions');
-        const data = await res.json();
-        if (loading) loading.style.display = 'none';
-
-        if (!data.ok || !data.sessions || !data.sessions.length) {
-            if (empty) empty.style.display = 'block';
-            return;
-        }
-
-        list.innerHTML = data.sessions.map(function (s) {
-            const isCurrent = s.is_current;
-            return `
-            <div class="set-session-row" id="sess-${s.id}" style="
-                display:flex;align-items:flex-start;gap:14px;
-                padding:14px 20px;border-bottom:1px solid rgba(138,170,106,0.1);
-                ${isCurrent ? 'background:rgba(138,170,106,0.04);' : ''}
-            ">
-                <div style="font-size:20px;margin-top:2px;flex-shrink:0;">
-                    ${s.device_type === 'mobile' ? '📱' : '🖥'}
-                </div>
-                <div style="flex:1;min-width:0;">
-                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
-                        <span style="font-family:var(--font-stencil);font-size:12px;letter-spacing:0.14em;color:var(--mil-bright);">
-                            ${_escHtml(s.device_label || 'Unknown Device')}
-                        </span>
-                        ${isCurrent ? '<span class="set-tag set-tag--on" style="font-size:8px;padding:2px 7px;">CURRENT</span>' : ''}
-                    </div>
-                    <div style="font-family:var(--font-mono);font-size:9px;color:var(--mil-muted);letter-spacing:0.06em;line-height:1.8;">
-                        <span>IP: ${_escHtml(s.ip_address || '—')}</span> &nbsp;·&nbsp;
-                        <span>Started: ${_escHtml(s.created_at || '—')}</span> &nbsp;·&nbsp;
-                        <span>Last active: ${_escHtml(s.last_seen || '—')}</span>
-                    </div>
-                    <div style="font-family:var(--font-mono);font-size:9px;color:var(--mil-muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                        ${_escHtml(s.user_agent || '')}
-                    </div>
-                </div>
-                ${!isCurrent ? `
-                <button class="set-btn set-btn--danger" style="font-size:9px;padding:4px 12px;white-space:nowrap;flex-shrink:0;"
-                        onclick="revokeSession('${s.id}')">
-                    ⊠ REVOKE
-                </button>` : `
-                <div style="font-family:var(--font-mono);font-size:9px;color:var(--mil-muted);white-space:nowrap;padding-top:4px;">THIS DEVICE</div>`}
-            </div>`;
-        }).join('');
-        list.style.display = 'block';
-    } catch (err) {
-        if (loading) loading.textContent = 'FAILED TO LOAD SESSIONS';
-    }
-}
-
-async function revokeSession(sessionId) {
-    try {
-        const res  = await fetch('/api/sessions/' + sessionId + '/revoke', { method: 'POST' });
-        const data = await res.json();
-        if (data.ok) {
-            const row = document.getElementById('sess-' + sessionId);
-            if (row) {
-                row.style.transition = 'opacity 0.3s';
-                row.style.opacity    = '0';
-                setTimeout(() => row.remove(), 320);
-            }
-            showToast('Session revoked.', 'success');
-        } else {
-            showToast(data.error || 'Could not revoke session.', 'danger');
-        }
-    } catch (_) {
-        showToast('Network error — could not revoke session.', 'danger');
-    }
-}
-
-async function revokeAllSessions() {
-    if (!confirm('Revoke all sessions except this one? You will need to log in again on other devices.')) return;
-    try {
-        const res  = await fetch('/api/sessions/revoke-all', { method: 'POST' });
-        const data = await res.json();
-        if (data.ok) {
-            showToast('All other sessions revoked.', 'success');
-            // Reload the session list
-            document.getElementById('sessionsList').innerHTML  = '';
-            document.getElementById('sessionsEmptyRow').style.display  = 'none';
-            document.getElementById('sessionsLoadingRow').style.display = 'block';
-            document.getElementById('sessionsLoadingRow').textContent  = 'LOADING SESSIONS…';
-            await loadSessions();
-        } else {
-            showToast(data.error || 'Could not revoke sessions.', 'danger');
-        }
-    } catch (_) {
-        showToast('Network error — could not revoke sessions.', 'danger');
-    }
-}
-
-function _escHtml(str) {
-    return String(str)
-        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-</script>
+<script src="{{ url_for('static', filename='js/pagefunctions/settingsfunctions.js') }}"></script>
 
 {% endblock %}

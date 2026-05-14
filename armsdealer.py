@@ -98,6 +98,95 @@ def refresh_session_from_db():
 
 
 # ─────────────────────────────────────────
+# APPEARANCE CONTEXT PROCESSOR
+# Parses the appearance cookie once per request and exposes a clean
+# `appearance` dict to every template, so both base.html and subbase.html
+# can inject server-side CSS without any JavaScript race conditions.
+# ─────────────────────────────────────────
+
+_ACCENT_HEX = {
+    'olive':  '#a8c47a',
+    'steel':  '#5b9bd5',
+    'red':    '#c0392b',
+    'amber':  '#e8b84b',
+    'violet': '#9b59b6',
+}
+_FONT_PX = {
+    'Small (10px)':   '10px',
+    'Default (12px)': '12px',
+    'Large (14px)':   '14px',
+}
+_APPEARANCE_DEFAULTS = {
+    'colorMode':     'Dark (Default)',
+    'accentColor':   'olive',
+    'bgImage':       'camobackground',
+    'bgOpacity':     38,
+    'fontScale':     'Default (12px)',
+    'scanlines':     True,
+    'monospaceBody': True,
+    'compactMode':   False,
+    'animations':    True,
+}
+
+
+@app.context_processor
+def inject_appearance():
+    """Make `appearance` and `appearance_css` available in every template."""
+    import json as _json
+    raw = request.cookies.get('armsdealer_appearance')
+    try:
+        saved = _json.loads(raw) if raw else {}
+    except Exception:
+        saved = {}
+
+    # Merge saved values over defaults so missing keys are always filled
+    s = dict(_APPEARANCE_DEFAULTS)
+    s.update(saved)
+
+    accent = _ACCENT_HEX.get(s['accentColor'], _ACCENT_HEX['olive'])
+    font_size = _FONT_PX.get(s['fontScale'], '12px')
+    opacity = max(0, min(100, int(s['bgOpacity']))) / 100
+    dark_op = round(opacity * 1.35, 3)
+    bg_img = s['bgImage'] or 'camobackground'
+    bg_url = f"/static/assets/images/pageimages/globalmages/{bg_img}.png"
+    spacing_mul = 0.7 if s['compactMode'] else 1
+    # None means use stylesheet default
+    trans = '0s' if not s['animations'] else None
+
+    # Build the <style> block that gets injected into <head>
+    lines = [
+        ':root {',
+        f'  --mil-bright: {accent};',
+        f'  --mil-green: {accent};',
+        f'  font-size: {font_size};',
+        f'  --spacing-sm: {round(8 * spacing_mul, 1)}px;',
+        f'  --spacing-md: {round(12 * spacing_mul, 1)}px;',
+        f'  --spacing-lg: {round(15 * spacing_mul, 1)}px;',
+    ]
+    if trans:
+        lines += [
+            f'  --transition-fast: {trans};',
+            f'  --transition-base: {trans};',
+            f'  --transition-slow: {trans};',
+        ]
+    lines.append('}')
+    lines.append(
+        f'body {{ background: linear-gradient(rgba(0,0,0,{opacity}),rgba(2,15,4,{dark_op})),'
+        f' url("{bg_url}") center/cover repeat fixed; }}'
+    )
+    if s['scanlines']:
+        lines.append('body { background-image: repeating-linear-gradient('
+                     '0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px),'
+                     f' url("{bg_url}"); }}')
+        # Simpler: just keep the scanlines class logic via JS; inject the class state instead
+        # Reset — the scanlines CSS class already exists, just signal it server-side
+        lines[-1] = ''  # Remove duplicate bg rule
+
+    appearance_css = '\n'.join(l for l in lines if l)
+    return dict(appearance=s, appearance_css=appearance_css, appearance_scanlines=s['scanlines'])
+
+
+# ─────────────────────────────────────────
 # REGISTER BLUEPRINTS
 # ─────────────────────────────────────────
 
