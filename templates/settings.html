@@ -368,146 +368,201 @@
                 {% if user %}
                 <div class="setpage-panel-body">
 
-                    <!-- Password -->
+                    <!-- ── Password ── -->
                     <div class="set-group">
                         <div class="set-group-title">PASSWORD</div>
-                        <div class="set-row set-row--full">
+                        <div class="set-row">
                             <div class="set-row-info">
-                                <div class="set-row-label">Current Password</div>
+                                <div class="set-row-label">Change Password</div>
+                                <div class="set-row-desc">Update your login credentials on the change password page</div>
                             </div>
                             <div class="set-row-control">
-                                <input class="set-input" type="password" placeholder="Enter current password">
-                            </div>
-                        </div>
-                        <div class="set-row set-row--full">
-                            <div class="set-row-info">
-                                <div class="set-row-label">New Password</div>
-                            </div>
-                            <div class="set-row-control">
-                                <input class="set-input" type="password" id="newPasswordInput" placeholder="Min. 12 characters" oninput="updatePasswordStrength(this.value)">
-                                <div class="set-progress-bar" style="margin-top:8px;"><div class="set-progress-fill" id="pwStrengthBar" style="width:0%;background:var(--mil-redbright)"></div></div>
-                                <div class="set-progress-label" id="pwStrengthLabel">ENTER PASSWORD TO CHECK STRENGTH</div>
-                            </div>
-                        </div>
-                        <div class="set-row set-row--full">
-                            <div class="set-row-info">
-                                <div class="set-row-label">Confirm New Password</div>
-                            </div>
-                            <div class="set-row-control">
-                                <input class="set-input" type="password" placeholder="Repeat new password">
+                                <a href="{{ url_for('auth.change_password') }}"
+                                   class="set-btn set-btn--primary"
+                                   style="text-decoration:none;display:inline-block;text-align:center;font-size:10px;padding:7px 18px;">
+                                    ⊠ &nbsp;CHANGE PASSWORD
+                                </a>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 2FA -->
+                    <!-- ── Login History ── -->
+                    <div class="set-group">
+                        <div class="set-group-title">LOGIN HISTORY</div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Show Login History</div>
+                                <div class="set-row-desc">View a record of recent account access events</div>
+                            </div>
+                            <div class="set-row-control" style="display:flex;align-items:center;gap:12px;">
+                                <span class="set-tag set-tag--off" id="loginHistoryTag">HIDDEN</span>
+                                <label class="set-toggle">
+                                    <input type="checkbox" id="loginHistoryToggle" onchange="toggleLoginHistory(this)">
+                                    <span class="set-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="loginHistoryTable" style="display:none;margin-top:12px;">
+                            <div style="overflow-x:auto;">
+                                <table style="width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:10px;letter-spacing:0.06em;">
+                                    <thead>
+                                        <tr style="border-bottom:1px solid var(--mil-border);">
+                                            <th style="text-align:left;padding:8px 10px;color:var(--mil-muted);font-weight:normal;text-transform:uppercase;white-space:nowrap;">#</th>
+                                            <th style="text-align:left;padding:8px 10px;color:var(--mil-muted);font-weight:normal;text-transform:uppercase;white-space:nowrap;">Date &amp; Time</th>
+                                            <th style="text-align:left;padding:8px 10px;color:var(--mil-muted);font-weight:normal;text-transform:uppercase;white-space:nowrap;">IP Address</th>
+                                            <th style="text-align:left;padding:8px 10px;color:var(--mil-muted);font-weight:normal;text-transform:uppercase;white-space:nowrap;">Device / Browser</th>
+                                            <th style="text-align:left;padding:8px 10px;color:var(--mil-muted);font-weight:normal;text-transform:uppercase;white-space:nowrap;">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="loginHistoryBody">
+                                        {% if login_history %}
+                                            {% for entry in login_history %}
+                                            <tr style="border-bottom:1px solid rgba(138,170,106,0.07);">
+                                                <td style="padding:8px 10px;color:var(--mil-muted);">{{ loop.index }}</td>
+                                                <td style="padding:8px 10px;color:var(--mil-text);white-space:nowrap;">{{ entry.login_at.strftime('%Y-%m-%d %H:%M') if entry.login_at else '—' }}</td>
+                                                <td style="padding:8px 10px;color:var(--mil-text);">{{ entry.ip_address or '—' }}</td>
+                                                <td style="padding:8px 10px;color:var(--mil-text);">{{ entry.user_agent or '—' }}</td>
+                                                <td style="padding:8px 10px;">
+                                                    {% if entry.success %}
+                                                        <span class="set-tag set-tag--on" style="font-size:8px;padding:2px 7px;">SUCCESS</span>
+                                                    {% else %}
+                                                        <span class="set-tag set-tag--off" style="font-size:8px;padding:2px 7px;">FAILED</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            <tr>
+                                                <td colspan="5" style="padding:20px 10px;text-align:center;color:var(--mil-muted);">NO LOGIN RECORDS FOUND</td>
+                                            </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Two-Factor Auth ── -->
                     <div class="set-group">
                         <div class="set-group-title">TWO-FACTOR AUTHENTICATION</div>
                         <div class="set-row">
                             <div class="set-row-info">
-                                <div class="set-row-label">2FA Status</div>
-                                <div class="set-row-desc">Adds a second layer of verification at login</div>
+                                <div class="set-row-label">Two-Factor Authentication</div>
+                                <div class="set-row-desc">Require a 6-digit code from your authenticator app at every login</div>
                             </div>
                             <div class="set-row-control" style="display:flex;align-items:center;gap:12px;">
-                                <span class="set-tag set-tag--off" id="twoFaTag">DISABLED</span>
+                                <span class="set-tag set-tag--off" id="twoFaStatusTag">DISABLED</span>
                                 <label class="set-toggle">
-                                    <input type="checkbox" id="twoFaToggle" onchange="toggle2FA(this)">
+                                    <input type="checkbox" id="twoFaToggle" onchange="handle2FAToggle(this)">
                                     <span class="set-toggle-slider"></span>
                                 </label>
                             </div>
                         </div>
-                        <div id="twoFaSetup" style="display:none;padding:16px;border:1px solid var(--mil-border);background:rgba(138,170,106,0.03);margin-top:8px;">
-                            <div style="display:flex;gap:20px;align-items:flex-start;">
-                                <div class="set-qr-placeholder">
-                                    <div class="set-qr-grid" id="qrGrid"></div>
-                                    <div style="font-size:8px;letter-spacing:0.08em;margin-top:4px;">SCAN QR</div>
-                                </div>
-                                <div style="flex:1;">
-                                    <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.08em;color:var(--mil-muted);margin-bottom:8px;">SCAN WITH YOUR AUTHENTICATOR APP THEN ENTER THE CODE BELOW</div>
-                                    <input class="set-input" type="text" placeholder="000 000" maxlength="7" style="letter-spacing:0.3em;text-align:center;font-size:16px;width:140px;">
-                                    <div style="margin-top:10px;">
-                                        <button class="set-btn set-btn--primary" style="font-size:10px;padding:6px 14px;">VERIFY & ENABLE</button>
-                                    </div>
+
+                        <!-- Setup (shown when enabling) -->
+                        <div id="twoFaSetupBlock" style="display:none;">
+                            <div class="set-group-title" style="margin-top:16px;">SETUP — STEP 1 OF 2</div>
+                            <div class="set-row">
+                                <div class="set-row-info">
+                                    <div class="set-row-label">Add to Authenticator App</div>
+                                    <div class="set-row-desc">Open Google Authenticator, Authy, or any TOTP app and add a new entry manually using the key below</div>
                                 </div>
                             </div>
+                            <div style="padding:12px 20px 16px;">
+                                <div style="font-family:var(--font-mono);font-size:9px;color:var(--mil-muted);letter-spacing:0.1em;margin-bottom:8px;">SECRET KEY — copy into your authenticator app</div>
+                                <div style="display:flex;align-items:center;gap:10px;">
+                                    <div id="twoFaSecretDisplay" style="flex:1;font-family:var(--font-mono);font-size:13px;color:var(--mil-bright);letter-spacing:0.28em;word-break:break-all;background:rgba(138,170,106,0.06);border:1px solid var(--mil-border);padding:10px 14px;"></div>
+                                    <button class="set-btn set-btn--muted" style="font-size:10px;padding:7px 12px;white-space:nowrap;flex-shrink:0;" onclick="navigator.clipboard.writeText(document.getElementById('twoFaSecretDisplay').textContent).then(()=>showToast('Secret key copied.','success'))">⧉ COPY</button>
+                                </div>
+                                <div style="font-family:var(--font-mono);font-size:9px;color:var(--mil-muted);letter-spacing:0.06em;margin-top:10px;line-height:1.6;">
+                                    In your app choose <span style="color:var(--mil-text);">Enter a setup key</span> → paste the key above → set type to <span style="color:var(--mil-text);">Time based</span>.
+                                </div>
+                            </div>
+                            <div class="set-group-title" style="margin-top:16px;">SETUP — STEP 2 OF 2</div>
+                            <div class="set-row set-row--full">
+                                <div class="set-row-info">
+                                    <div class="set-row-label">Verify Code</div>
+                                    <div class="set-row-desc">Enter the 6-digit code shown in your authenticator app to confirm setup</div>
+                                </div>
+                                <div class="set-row-control" style="display:flex;align-items:center;gap:10px;">
+                                    <input class="set-input" type="text" id="twoFaVerifyInput"
+                                           maxlength="6" placeholder="000000"
+                                           style="width:120px;font-family:var(--font-mono);font-size:16px;letter-spacing:0.3em;text-align:center;"
+                                           oninput="this.value=this.value.replace(/\D/g,'')">
+                                    <button class="set-btn set-btn--primary" style="font-size:10px;padding:7px 16px;white-space:nowrap;" onclick="confirm2FASetup()">
+                                        ✔ VERIFY &amp; ENABLE
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="twoFaVerifyError" style="display:none;padding:8px 20px;font-family:var(--font-mono);font-size:10px;color:#c05050;letter-spacing:0.06em;"></div>
                         </div>
-                        <div class="set-row">
-                            <div class="set-row-info">
-                                <div class="set-row-label">Backup Codes</div>
-                                <div class="set-row-desc">One-time recovery codes — store securely</div>
+
+                        <!-- Disable block -->
+                        <div id="twoFaDisableBlock" style="display:none;">
+                            <div class="set-group-title" style="margin-top:16px;">DISABLE 2FA</div>
+                            <div class="set-row set-row--full">
+                                <div class="set-row-info">
+                                    <div class="set-row-label">Confirm with current code</div>
+                                    <div class="set-row-desc">Enter your authenticator code to disable two-factor authentication</div>
+                                </div>
+                                <div class="set-row-control" style="display:flex;align-items:center;gap:10px;">
+                                    <input class="set-input" type="text" id="twoFaDisableInput"
+                                           maxlength="6" placeholder="000000"
+                                           style="width:120px;font-family:var(--font-mono);font-size:16px;letter-spacing:0.3em;text-align:center;"
+                                           oninput="this.value=this.value.replace(/\D/g,'')">
+                                    <button class="set-btn set-btn--danger" style="font-size:10px;padding:7px 16px;white-space:nowrap;" onclick="disable2FA()">
+                                        ⊠ DISABLE 2FA
+                                    </button>
+                                </div>
                             </div>
-                            <div class="set-row-control">
-                                <button class="set-btn set-btn--muted" style="font-size:10px;padding:6px 14px;">GENERATE CODES</button>
+                            <div id="twoFaDisableError" style="display:none;padding:8px 20px;font-family:var(--font-mono);font-size:10px;color:#c05050;letter-spacing:0.06em;"></div>
+                        </div>
+
+                        <!-- Backup codes -->
+                        <div id="twoFaBackupBlock" style="display:none;">
+                            <div class="set-group-title" style="margin-top:16px;">BACKUP CODES</div>
+                            <div class="set-row">
+                                <div class="set-row-info">
+                                    <div class="set-row-label">Emergency Recovery</div>
+                                    <div class="set-row-desc">Save these one-time codes somewhere safe — each can be used once if you lose your authenticator</div>
+                                </div>
+                            </div>
+                            <div id="twoFaBackupList" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:12px 20px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.14em;color:var(--mil-bright);"></div>
+                            <div style="padding:0 20px 16px;">
+                                <button class="set-btn set-btn--muted" style="font-size:10px;padding:6px 14px;" onclick="copyBackupCodes()">⧉ COPY ALL</button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Sessions -->
+                    <!-- ── Active Sessions ── -->
                     <div class="set-group">
                         <div class="set-group-title">ACTIVE SESSIONS</div>
-                        <div class="set-session">
-                            <div class="set-session-icon">🖥</div>
-                            <div class="set-session-info">
-                                <div class="set-session-name">Chrome — Windows 11</div>
-                                <div class="set-session-meta">Manila, PH · Last active: now</div>
+                        <div class="set-row">
+                            <div class="set-row-info">
+                                <div class="set-row-label">Connected Devices</div>
+                                <div class="set-row-desc">Devices currently logged into your account</div>
                             </div>
-                            <div class="set-session-current">CURRENT</div>
+                            <div class="set-row-control">
+                                <button class="set-btn set-btn--danger" style="font-size:9px;padding:4px 12px;" onclick="revokeAllSessions()">⊠ REVOKE ALL OTHER</button>
+                            </div>
                         </div>
-                        <div class="set-session">
-                            <div class="set-session-icon">📱</div>
-                            <div class="set-session-info">
-                                <div class="set-session-name">Mobile App — iOS 17</div>
-                                <div class="set-session-meta">Manila, PH · Last active: 2 hrs ago</div>
-                            </div>
-                            <button class="set-btn set-btn--danger" style="font-size:9px;padding:5px 10px;">REVOKE</button>
+                        <div id="sessionsLoadingRow" style="padding:24px 20px;text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--mil-muted);letter-spacing:0.1em;">
+                            LOADING SESSIONS…
+                        </div>
+                        <div id="sessionsList" style="display:none;"></div>
+                        <div id="sessionsEmptyRow" style="display:none;padding:24px 20px;text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--mil-muted);letter-spacing:0.1em;">
+                            NO ACTIVE SESSIONS FOUND
                         </div>
                     </div>
 
-                    <!-- Privacy controls -->
                     <div class="set-group">
-                        <div class="set-group-title">PRIVACY CONTROLS</div>
-                        <div class="set-row">
-                            <div class="set-row-info">
-                                <div class="set-row-label">Profile Visibility</div>
-                                <div class="set-row-desc">Who can view your operator profile</div>
-                            </div>
-                            <div class="set-row-control">
-                                <select class="set-select">
-                                    <option>Public</option>
-                                    <option selected>Verified Operators Only</option>
-                                    <option>Private</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="set-row">
-                            <div class="set-row-info">
-                                <div class="set-row-label">Show Online Status</div>
-                                <div class="set-row-desc">Display when you are actively browsing</div>
-                            </div>
-                            <div class="set-row-control">
-                                <label class="set-toggle">
-                                    <input type="checkbox" checked>
-                                    <span class="set-toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="set-row">
-                            <div class="set-row-info">
-                                <div class="set-row-label">Activity Tracking</div>
-                                <div class="set-row-desc">Allow usage data to improve services</div>
-                            </div>
-                            <div class="set-row-control">
-                                <label class="set-toggle">
-                                    <input type="checkbox">
-                                    <span class="set-toggle-slider"></span>
-                                </label>
-                            </div>
+                        <div class="set-group-title">SECURITY NOTE</div>
+                        <div style="padding:12px 20px;font-family:var(--font-mono);font-size:10px;color:var(--mil-muted);line-height:1.7;letter-spacing:0.04em;">
+                            If you see a session you don't recognise, revoke it immediately and change your password. Sessions expire automatically after 30 days of inactivity.
                         </div>
                     </div>
 
-                    <div class="set-btn-row">
-                        <button class="set-btn set-btn--primary" onclick="saveSettings('privacy')">SAVE CHANGES</button>
-                        <button class="set-btn set-btn--muted" onclick="resetSection('privacy')">DISCARD</button>
-                    </div>
                 </div>
 
                 {% else %}
@@ -1293,7 +1348,7 @@ function toggle2FA(checkbox) {
     if (checkbox.checked) {
         if (setup) setup.style.display = 'block';
         if (tag)   { tag.textContent = 'ENABLED'; tag.className = 'set-tag set-tag--on'; }
-        showToast('Scan the QR code with your authenticator app.', 'info');
+        showToast('Copy the secret key into your authenticator app.', 'info');
     } else {
         if (setup) setup.style.display = 'none';
         if (tag)   { tag.textContent = 'DISABLED'; tag.className = 'set-tag set-tag--off'; }
@@ -1323,6 +1378,19 @@ function selectPaymentOpt(radio) {
     });
     const label = radio.closest('.set-payment-opt');
     if (label) label.classList.add('active');
+}
+
+// ── Login history toggle ──────────────────────────────────────
+function toggleLoginHistory(checkbox) {
+    const table = document.getElementById('loginHistoryTable');
+    const tag   = document.getElementById('loginHistoryTag');
+    if (checkbox.checked) {
+        if (table) table.style.display = 'block';
+        if (tag)   { tag.textContent = 'VISIBLE'; tag.className = 'set-tag set-tag--on'; }
+    } else {
+        if (table) table.style.display = 'none';
+        if (tag)   { tag.textContent = 'HIDDEN'; tag.className = 'set-tag set-tag--off'; }
+    }
 }
 
 // ── Quiet hours toggle ────────────────────────────────────────
@@ -1403,5 +1471,285 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+/* ═══════════════════════════════════════════════════════════════
+   TWO-FACTOR AUTHENTICATION
+═══════════════════════════════════════════════════════════════ */
+
+// State held in memory for the current setup flow
+let _2fa = { secret: null, backupCodes: [] };
+
+// Called when the toggle is flipped
+async function handle2FAToggle(cb) {
+    if (cb.checked) {
+        // Begin enable flow — fetch a new secret from server
+        cb.disabled = true;
+        try {
+            const res  = await fetch('/api/2fa/setup', { method: 'POST' });
+            const data = await res.json();
+            if (!data.ok) throw new Error(data.error || 'Server error');
+            _2fa.secret = data.secret;
+            document.getElementById('twoFaSecretDisplay').textContent = data.secret;
+            // Render QR code via the tiny qrcode-generator lib loaded below
+            _renderQR(data.otpauth_url);
+            document.getElementById('twoFaSetupBlock').style.display  = 'block';
+            document.getElementById('twoFaDisableBlock').style.display = 'none';
+            document.getElementById('twoFaBackupBlock').style.display  = 'none';
+            document.getElementById('twoFaVerifyInput').value = '';
+            document.getElementById('twoFaVerifyError').style.display = 'none';
+        } catch (err) {
+            showToast('Could not start 2FA setup: ' + err.message, 'danger');
+            cb.checked  = false;   // revert toggle
+        } finally {
+            cb.disabled = false;
+        }
+    } else {
+        // Begin disable flow
+        document.getElementById('twoFaSetupBlock').style.display  = 'none';
+        document.getElementById('twoFaBackupBlock').style.display  = 'none';
+        document.getElementById('twoFaDisableBlock').style.display = 'block';
+        document.getElementById('twoFaDisableInput').value = '';
+        document.getElementById('twoFaDisableError').style.display = 'none';
+    }
+}
+
+function _renderQR(otpauthUrl) {
+    // QR display removed — secret is shown as copyable text above
+}
+
+async function confirm2FASetup() {
+    const code  = (document.getElementById('twoFaVerifyInput').value || '').trim();
+    const errEl = document.getElementById('twoFaVerifyError');
+    if (code.length !== 6) {
+        errEl.textContent = '⚠ Enter the 6-digit code from your authenticator app.';
+        errEl.style.display = 'block';
+        return;
+    }
+    errEl.style.display = 'none';
+    try {
+        const res  = await fetch('/api/2fa/enable', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ code }),
+        });
+        const data = await res.json();
+        if (!data.ok) {
+            errEl.textContent = '⚠ ' + (data.error || 'Verification failed — check the code and try again.');
+            errEl.style.display = 'block';
+            return;
+        }
+        // Success
+        _2fa.backupCodes = data.backup_codes || [];
+        _setTwoFaUI(true);
+        _renderBackupCodes(data.backup_codes);
+        document.getElementById('twoFaSetupBlock').style.display  = 'none';
+        document.getElementById('twoFaBackupBlock').style.display  = 'block';
+        showToast('Two-factor authentication enabled.', 'success');
+    } catch (err) {
+        errEl.textContent = '⚠ Network error — please try again.';
+        errEl.style.display = 'block';
+    }
+}
+
+async function disable2FA() {
+    const code  = (document.getElementById('twoFaDisableInput').value || '').trim();
+    const errEl = document.getElementById('twoFaDisableError');
+    if (code.length !== 6) {
+        errEl.textContent = '⚠ Enter the 6-digit code from your authenticator app.';
+        errEl.style.display = 'block';
+        return;
+    }
+    errEl.style.display = 'none';
+    try {
+        const res  = await fetch('/api/2fa/disable', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ code }),
+        });
+        const data = await res.json();
+        if (!data.ok) {
+            errEl.textContent = '⚠ ' + (data.error || 'Verification failed — check the code and try again.');
+            errEl.style.display = 'block';
+            return;
+        }
+        _setTwoFaUI(false);
+        document.getElementById('twoFaDisableBlock').style.display = 'none';
+        document.getElementById('twoFaBackupBlock').style.display  = 'none';
+        showToast('Two-factor authentication disabled.', 'warning');
+    } catch (err) {
+        errEl.textContent = '⚠ Network error — please try again.';
+        errEl.style.display = 'block';
+    }
+}
+
+function _setTwoFaUI(enabled) {
+    const tag    = document.getElementById('twoFaStatusTag');
+    const toggle = document.getElementById('twoFaToggle');
+    if (enabled) {
+        tag.textContent  = 'ENABLED';
+        tag.className    = 'set-tag set-tag--on';
+        toggle.checked   = true;
+    } else {
+        tag.textContent  = 'DISABLED';
+        tag.className    = 'set-tag set-tag--off';
+        toggle.checked   = false;
+    }
+}
+
+function _renderBackupCodes(codes) {
+    const list = document.getElementById('twoFaBackupList');
+    list.innerHTML = (codes || []).map(c =>
+        `<div style="background:rgba(138,170,106,0.07);border:1px solid var(--mil-border);padding:6px 10px;letter-spacing:0.18em;">${c}</div>`
+    ).join('');
+}
+
+function copyBackupCodes() {
+    if (!_2fa.backupCodes.length) return;
+    navigator.clipboard.writeText(_2fa.backupCodes.join('\n'))
+        .then(() => showToast('Backup codes copied to clipboard.', 'success'))
+        .catch(() => showToast('Could not copy — please copy manually.', 'warning'));
+}
+
+// On page load: check 2FA status from server and sync UI
+document.addEventListener('DOMContentLoaded', async function () {
+    const toggle = document.getElementById('twoFaToggle');
+    if (!toggle) return;   // not logged in
+    try {
+        const res  = await fetch('/api/2fa/status');
+        const data = await res.json();
+        if (data.ok && data.enabled) _setTwoFaUI(true);
+    } catch (_) { /* ignore */ }
+});
+
+
+/* ═══════════════════════════════════════════════════════════════
+   ACTIVE SESSIONS
+═══════════════════════════════════════════════════════════════ */
+
+// Load sessions whenever the sessions panel becomes visible
+(function () {
+    let _loaded = false;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.setpage-nav-item').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                if (btn.dataset.section === 'privacy' && !_loaded) {
+                    _loaded = true;
+                    loadSessions();
+                }
+            });
+        });
+        // Auto-load if arriving directly via ?section=privacy
+        if (new URLSearchParams(window.location.search).get('section') === 'privacy') {
+            _loaded = true;
+            loadSessions();
+        }
+    });
+})();
+
+async function loadSessions() {
+    const loading = document.getElementById('sessionsLoadingRow');
+    const list    = document.getElementById('sessionsList');
+    const empty   = document.getElementById('sessionsEmptyRow');
+    if (!list) return;
+
+    try {
+        const res  = await fetch('/api/sessions');
+        const data = await res.json();
+        if (loading) loading.style.display = 'none';
+
+        if (!data.ok || !data.sessions || !data.sessions.length) {
+            if (empty) empty.style.display = 'block';
+            return;
+        }
+
+        list.innerHTML = data.sessions.map(function (s) {
+            const isCurrent = s.is_current;
+            return `
+            <div class="set-session-row" id="sess-${s.id}" style="
+                display:flex;align-items:flex-start;gap:14px;
+                padding:14px 20px;border-bottom:1px solid rgba(138,170,106,0.1);
+                ${isCurrent ? 'background:rgba(138,170,106,0.04);' : ''}
+            ">
+                <div style="font-size:20px;margin-top:2px;flex-shrink:0;">
+                    ${s.device_type === 'mobile' ? '📱' : '🖥'}
+                </div>
+                <div style="flex:1;min-width:0;">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+                        <span style="font-family:var(--font-stencil);font-size:12px;letter-spacing:0.14em;color:var(--mil-bright);">
+                            ${_escHtml(s.device_label || 'Unknown Device')}
+                        </span>
+                        ${isCurrent ? '<span class="set-tag set-tag--on" style="font-size:8px;padding:2px 7px;">CURRENT</span>' : ''}
+                    </div>
+                    <div style="font-family:var(--font-mono);font-size:9px;color:var(--mil-muted);letter-spacing:0.06em;line-height:1.8;">
+                        <span>IP: ${_escHtml(s.ip_address || '—')}</span> &nbsp;·&nbsp;
+                        <span>Started: ${_escHtml(s.created_at || '—')}</span> &nbsp;·&nbsp;
+                        <span>Last active: ${_escHtml(s.last_seen || '—')}</span>
+                    </div>
+                    <div style="font-family:var(--font-mono);font-size:9px;color:var(--mil-muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                        ${_escHtml(s.user_agent || '')}
+                    </div>
+                </div>
+                ${!isCurrent ? `
+                <button class="set-btn set-btn--danger" style="font-size:9px;padding:4px 12px;white-space:nowrap;flex-shrink:0;"
+                        onclick="revokeSession('${s.id}')">
+                    ⊠ REVOKE
+                </button>` : `
+                <div style="font-family:var(--font-mono);font-size:9px;color:var(--mil-muted);white-space:nowrap;padding-top:4px;">THIS DEVICE</div>`}
+            </div>`;
+        }).join('');
+        list.style.display = 'block';
+    } catch (err) {
+        if (loading) loading.textContent = 'FAILED TO LOAD SESSIONS';
+    }
+}
+
+async function revokeSession(sessionId) {
+    try {
+        const res  = await fetch('/api/sessions/' + sessionId + '/revoke', { method: 'POST' });
+        const data = await res.json();
+        if (data.ok) {
+            const row = document.getElementById('sess-' + sessionId);
+            if (row) {
+                row.style.transition = 'opacity 0.3s';
+                row.style.opacity    = '0';
+                setTimeout(() => row.remove(), 320);
+            }
+            showToast('Session revoked.', 'success');
+        } else {
+            showToast(data.error || 'Could not revoke session.', 'danger');
+        }
+    } catch (_) {
+        showToast('Network error — could not revoke session.', 'danger');
+    }
+}
+
+async function revokeAllSessions() {
+    if (!confirm('Revoke all sessions except this one? You will need to log in again on other devices.')) return;
+    try {
+        const res  = await fetch('/api/sessions/revoke-all', { method: 'POST' });
+        const data = await res.json();
+        if (data.ok) {
+            showToast('All other sessions revoked.', 'success');
+            // Reload the session list
+            document.getElementById('sessionsList').innerHTML  = '';
+            document.getElementById('sessionsEmptyRow').style.display  = 'none';
+            document.getElementById('sessionsLoadingRow').style.display = 'block';
+            document.getElementById('sessionsLoadingRow').textContent  = 'LOADING SESSIONS…';
+            await loadSessions();
+        } else {
+            showToast(data.error || 'Could not revoke sessions.', 'danger');
+        }
+    } catch (_) {
+        showToast('Network error — could not revoke sessions.', 'danger');
+    }
+}
+
+function _escHtml(str) {
+    return String(str)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 </script>
+
 {% endblock %}

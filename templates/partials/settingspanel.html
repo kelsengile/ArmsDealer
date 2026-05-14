@@ -10,28 +10,28 @@
     <nav class="set-nav">
         <div class="set-section-label" data-translate="navbarpreferences"></div>
         <a href="{{ url_for('main.settings', section='account') }}"
-            class="set-item {% if request.endpoint == 'main.settings' and request.args.get('section') == 'account' %}nav-active{% endif %}"
+            class="set-item {% if request.endpoint == 'main.settings' and request.args.get('section') == 'account' %}active{% endif %}"
             data-section="account">
             <span class="set-icon">◉</span>
             <span data-translate="navbaraccount"></span>
             <span class="set-arrow">▶</span>
         </a>
         <a href="{{ url_for('main.settings', section='privacy') }}"
-            class="set-item {% if request.endpoint == 'main.settings' and request.args.get('section') == 'privacy' %}nav-active{% endif %}"
+            class="set-item {% if request.endpoint == 'main.settings' and request.args.get('section') == 'privacy' %}active{% endif %}"
             data-section="privacy">
             <span class="set-icon">◉</span>
             <span data-translate="navbarprivacy_security"></span>
             <span class="set-arrow">▶</span>
         </a>
         <a href="{{ url_for('main.settings', section='appearance') }}"
-            class="set-item {% if request.endpoint == 'main.settings' and request.args.get('section') == 'appearance' %}nav-active{% endif %}"
+            class="set-item {% if request.endpoint == 'main.settings' and request.args.get('section') == 'appearance' %}active{% endif %}"
             data-section="appearance">
             <span class="set-icon">◉</span>
             <span data-translate="navbarappearance"></span>
             <span class="set-arrow">▶</span>
         </a>
         <a href="{{ url_for('main.settings', section='notifications') }}"
-            class="set-item {% if request.endpoint == 'main.settings' and request.args.get('section') == 'notifications' %}nav-active{% endif %}"
+            class="set-item {% if request.endpoint == 'main.settings' and request.args.get('section') == 'notifications' %}active{% endif %}"
             data-section="notifications">
             <span class="set-icon">◉</span>
             <span data-translate="navbarnotifications"></span>
@@ -40,14 +40,14 @@
         <div class="set-divider"></div>
         <div class="set-section-label" data-translate="navbargeneral"></div>
         <a href="{{ url_for('main.settings', section='language') }}"
-            class="set-item {% if request.endpoint == 'main.settings' and request.args.get('section') == 'language' %}nav-active{% endif %}"
+            class="set-item {% if request.endpoint == 'main.settings' and request.args.get('section') == 'language' %}active{% endif %}"
             data-section="language">
             <span class="set-icon">◉</span>
             <span data-translate="navbarlanguage_region"></span>
             <span class="set-arrow">▶</span>
         </a>
         <a href="{{ url_for('main.settings', section='help') }}"
-            class="set-item {% if request.endpoint == 'main.settings' and request.args.get('section') == 'help' %}nav-active{% endif %}"
+            class="set-item {% if request.endpoint == 'main.settings' and request.args.get('section') == 'help' %}active{% endif %}"
             data-section="help">
             <span class="set-icon">◉</span>
             <span data-translate="navbarhelp_support"></span>
@@ -56,7 +56,7 @@
         <div class="set-divider"></div>
         <div class="set-section-label" data-translate="navbaradvanced"></div>
         <a href="{{ url_for('main.settings', section='system') }}"
-            class="set-item {% if request.endpoint == 'main.settings' and request.args.get('section') == 'system' %}nav-active{% endif %}"
+            class="set-item {% if request.endpoint == 'main.settings' and request.args.get('section') == 'system' %}active{% endif %}"
             data-section="system">
             <span class="set-icon">◉</span>
             <span data-translate="navbarsystem_actions"></span>
