@@ -8,34 +8,42 @@ const sidebar = document.getElementById("settingsSidebar");
 const closeBtn = document.getElementById("settingsClose");
 const openBtn = document.getElementById("settingsOpenBtn");
 
-/* ── Open / close ───────────────────────────────────────────── */
-function openSettings() {
-    overlay.classList.add("active");
-    sidebar.classList.add("open");
-}
+// Guard: exit silently if the settings panel isn't present on this page.
+if (!overlay || !sidebar || !closeBtn || !openBtn) {
+    // Nothing to wire up — panel HTML not included on this page.
+} else {
 
-function closeSettings() {
-    overlay.classList.remove("active");
-    sidebar.classList.remove("open");
-}
+    /* ── Open / close ───────────────────────────────────────────── */
+    function openSettings() {
+        overlay.classList.add("active");
+        sidebar.classList.add("open");
+    }
 
-openBtn.addEventListener("click", openSettings);
-closeBtn.addEventListener("click", closeSettings);
-overlay.addEventListener("click", closeSettings);
+    function closeSettings() {
+        overlay.classList.remove("active");
+        sidebar.classList.remove("open");
+    }
 
-/* ── Escape key ─────────────────────────────────────────────── */
-document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeSettings();
-});
+    openBtn.addEventListener("click", openSettings);
+    closeBtn.addEventListener("click", closeSettings);
+    overlay.addEventListener("click", closeSettings);
 
-/* ── Nav item clicks — navigate to settings page with section ── */
-sidebar.querySelectorAll(".set-item[data-section]").forEach(link => {
-    link.addEventListener("click", function (e) {
-        // The href already carries ?section=..., so let normal navigation happen.
-        // This handler just closes the sidebar first for a clean UX if you ever
-        // want to intercept (e.g. same-page SPA behaviour). Remove the two lines
-        // below if you prefer a full page navigation without closing first.
-        closeSettings();
-        // Allow the <a> href to navigate normally — do NOT call e.preventDefault().
+    /* ── Escape key ─────────────────────────────────────────────── */
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeSettings();
     });
-});
+
+    /* ── Nav item clicks — close panel, then follow the href ────── */
+    sidebar.querySelectorAll(".set-item[data-section]").forEach(link => {
+        link.addEventListener("click", function (e) {
+            // Only intercept real anchor clicks (not middle-click / ctrl-click).
+            if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+            e.preventDefault();
+            const dest = this.href;   // use the server-rendered url_for() href exactly
+            closeSettings();
+            // Small delay lets the close CSS transition play before navigating.
+            setTimeout(() => { window.location.href = dest; }, 180);
+        });
+    });
+
+} // end guard block

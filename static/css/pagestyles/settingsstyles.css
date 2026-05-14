@@ -335,6 +335,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    justify-content: flex-start;
 }
 .set-group-title::before {
     content: "";
