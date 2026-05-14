@@ -573,6 +573,47 @@ def dashboard():
 # SET CURRENCY (POST) — saves cookie
 # ─────────────────────────────────────────
 
+# ─────────────────────────────────────────
+# SET APPEARANCE (POST) — saves cookie
+# ─────────────────────────────────────────
+
+@main_bp.route('/set-appearance', methods=['POST'])
+def set_appearance():
+    """Persist chosen appearance settings as a cookie so every page load
+    can inject the right CSS directly from the server — no JS race."""
+    import json as _json
+    data = request.get_json(silent=True) or {}
+
+    VALID_COLORS = {'olive', 'steel', 'red', 'amber', 'violet'}
+    VALID_MODES = {'Dark (Default)', 'Light', 'High Contrast'}
+    VALID_FONTS = {'Small (10px)', 'Default (12px)', 'Large (14px)'}
+
+    settings = {
+        'colorMode':     data.get('colorMode',     'Dark (Default)') if data.get('colorMode') in VALID_MODES else 'Dark (Default)',
+        'accentColor':   data.get('accentColor',   'olive') if data.get('accentColor') in VALID_COLORS else 'olive',
+        'bgImage':       data.get('bgImage',       'camobackground'),
+        'bgOpacity':     max(0, min(100, int(data.get('bgOpacity', 38)))),
+        'fontScale':     data.get('fontScale',     'Default (12px)') if data.get('fontScale') in VALID_FONTS else 'Default (12px)',
+        'scanlines':     bool(data.get('scanlines',     True)),
+        'monospaceBody': bool(data.get('monospaceBody', True)),
+        'compactMode':   bool(data.get('compactMode',   False)),
+        'animations':    bool(data.get('animations',    True)),
+    }
+
+    resp = make_response(jsonify({'ok': True}))
+    resp.set_cookie(
+        'armsdealer_appearance',
+        _json.dumps(settings, separators=(',', ':')),
+        max_age=60 * 60 * 24 * 365,
+        samesite='Lax'
+    )
+    return resp
+
+
+# ─────────────────────────────────────────
+# SET CURRENCY (POST) — saves cookie
+# ─────────────────────────────────────────
+
 @main_bp.route('/set-currency', methods=['POST'])
 def set_currency():
     """Persist the chosen currency code as a cookie and return the symbol."""
