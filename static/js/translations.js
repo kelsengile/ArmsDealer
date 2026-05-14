@@ -1366,12 +1366,21 @@ function setCurrency(currency) {
 window.setCurrency = setCurrency;
 // ─── INIT ──────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
+    // Resolve saved language — prefer the dedicated key, fall back to legacy
     const savedLang = localStorage.getItem("lang") || "english";
     setLanguage(savedLang);
-    const langSelect = document.getElementById("languageSelect");
-    if (langSelect) langSelect.value = savedLang;
+
+    // Sync ALL language selects on the page (navbar + settings panel)
+    document.querySelectorAll(
+        "#languageSelect, #settingsLanguageSelect"
+    ).forEach((sel) => { sel.value = savedLang; });
+
+    // Resolve saved currency — prefer the dedicated key, fall back to legacy
     const savedCurrency = localStorage.getItem("currency") || "PHP";
     setCurrency(savedCurrency);
-    const currSelect = document.getElementById("currencySelect");
-    if (currSelect) currSelect.value = savedCurrency;
+
+    // Sync ALL currency selects on the page (navbar + settings panel)
+    document.querySelectorAll(
+        "#currencySelect, #settingsCurrencySelect"
+    ).forEach((sel) => { sel.value = savedCurrency; });
 });

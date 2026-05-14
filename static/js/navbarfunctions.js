@@ -149,6 +149,128 @@
             window.location.href = btn.dataset.href;
         });
     });
+
+    /* ═══════════════════════════════════════════════════════════════
+       REGION PERSISTENCE
+       ─────────────────────────────────────────────────────────────
+       On every page load, read 'armsdealer_region' from localStorage
+       (written by the Settings > Language & Region panel) and apply:
+
+         • language  → sync the top-bar #languageSelect and call setLanguage()
+         • currency  → sync the top-bar #currencySelect and call setCurrency()
+         • lat / lng → update the .nav-coord decorative readout so it always
+                       reflects the user's chosen timezone city coordinates,
+                       shown as LAT / LNG in the navbar.
+
+       The .nav-coord element is decorative (aria-hidden="true") so no
+       accessibility impact from updating it here.
+    ═══════════════════════════════════════════════════════════════ */
+    (function applyRegionToNavbar() {
+        var region;
+        try {
+            region = JSON.parse(localStorage.getItem('armsdealer_region') || 'null');
+        } catch (e) { region = null; }
+        if (!region) return;
+
+        /* ── 1. Language ─────────────────────────────────────────── */
+        // The navbar <select id="languageSelect"> carries:
+        //   english | filipino | japanese | spanish | mandarin
+        // The settings panel may store values outside that set; we map
+        // them to the closest navbar value (same table as RegionSettings).
+        var LANG_NAVBAR_MAP = {
+            english: 'english',
+            spanish: 'spanish',
+            french: 'english',
+            german: 'english',
+            japanese: 'japanese',
+            mandarin: 'mandarin',
+            russian: 'english',
+            arabic: 'english',
+            filipino: 'filipino'
+        };
+        if (region.language) {
+            var navbarLang = LANG_NAVBAR_MAP[region.language] || 'english';
+            var langSel = document.getElementById('languageSelect');
+            if (langSel && langSel.value !== navbarLang) {
+                langSel.value = navbarLang;
+            }
+            // setLanguage() is defined in translations.js, which loads before
+            // this script. Call it to apply the correct translations immediately.
+            if (typeof setLanguage === 'function') {
+                setLanguage(navbarLang);
+            }
+        }
+
+        /* ── 2. Currency ─────────────────────────────────────────── */
+        // The navbar <select id="currencySelect"> carries:
+        //   PHP | USD | EUR | JPY | CNY
+        var CURRENCY_NAVBAR_MAP = {
+            PHP: 'PHP',
+            USD: 'USD',
+            EUR: 'EUR',
+            GBP: 'USD',
+            SGD: 'USD',
+            JPY: 'JPY',
+            CNY: 'CNY'
+        };
+        if (region.currency) {
+            var navbarCur = CURRENCY_NAVBAR_MAP[region.currency] || region.currency;
+            var curSel = document.getElementById('currencySelect');
+            if (curSel && curSel.value !== navbarCur) {
+                curSel.value = navbarCur;
+            }
+            // setCurrency() is defined in translations.js / currency.js.
+            // Only call if it exists so we don't break pages where it isn't loaded.
+            if (typeof setCurrency === 'function') {
+                setCurrency(navbarCur);
+            }
+        }
+
+        /* ── 3. Nav coordinates (timezone-derived) ───────────────── */
+        // The .nav-coord element looks like:
+        //   <div class="nav-coord" aria-hidden="true">
+        //     <div><span>LAT</span> 14.5995° N</div>
+        //     <div><span>LNG</span> 120.9842° E</div>
+        //   </div>
+        // We replace the text node that follows each <span> with the
+        // stored city coordinates, keeping the <span> label intact.
+        if (region.lat && region.lng) {
+            var coordEl = document.querySelector('.nav-coord');
+            if (coordEl) {
+                var divs = coordEl.querySelectorAll('div');
+
+                // Update LAT row
+                if (divs[0]) {
+                    var spanLat = divs[0].querySelector('span');
+                    if (spanLat) {
+                        // Remove stale text nodes after the span
+                        var node = spanLat.nextSibling;
+                        while (node) {
+                            var next = node.nextSibling;
+                            if (node.nodeType === Node.TEXT_NODE) spanLat.parentNode.removeChild(node);
+                            node = next;
+                        }
+                        spanLat.parentNode.appendChild(document.createTextNode(' ' + region.lat));
+                    }
+                }
+
+                // Update LNG row
+                if (divs[1]) {
+                    var spanLng = divs[1].querySelector('span');
+                    if (spanLng) {
+                        var node2 = spanLng.nextSibling;
+                        while (node2) {
+                            var next2 = node2.nextSibling;
+                            if (node2.nodeType === Node.TEXT_NODE) spanLng.parentNode.removeChild(node2);
+                            node2 = next2;
+                        }
+                        spanLng.parentNode.appendChild(document.createTextNode(' ' + region.lng));
+                    }
+                }
+            }
+        }
+    })();
+
 })();
 
 

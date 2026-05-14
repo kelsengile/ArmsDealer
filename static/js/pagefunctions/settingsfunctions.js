@@ -651,4 +651,218 @@
         }
     };
 
+    /* ═══════════════════════════════════════════════════════════════
+       LANGUAGE & REGION SETTINGS
+       ─────────────────────────────────────────────────────────────
+       Storage key: 'armsdealer_region'
+       Shape: { language, timezone, timezoneLabel, lat, lng, currency }
+
+       Language values must match the navbar <select id="languageSelect">
+       option values so setLanguage() works when called from either side.
+
+       Timezone changes update the .nav-coord readout in the navbar
+       immediately on this page (the element exists on subbase.html too),
+       and on every other page via the stored lat/lng pair read by
+       navbarfunctions.js at load time.
+    ═══════════════════════════════════════════════════════════════ */
+
+    /* ── Mapping: language values not carried by the navbar select ──
+       The navbar only knows: english | filipino | japanese | spanish | mandarin
+       For extras we fall back to the closest supported navbar value. */
+    var LANG_NAVBAR_MAP = {
+        english: 'english',
+        spanish: 'spanish',
+        french: 'english',   // navbar has no French — keep English as fallback
+        german: 'english',   // same
+        japanese: 'japanese',
+        mandarin: 'mandarin',
+        russian: 'english',
+        arabic: 'english',
+        filipino: 'filipino'
+    };
+
+    /* ── Mapping: currency values → navbar option values ──
+       navbar currencySelect options: PHP | USD | EUR | JPY | CNY
+       Settings panel adds GBP and SGD which the navbar doesn't carry. */
+    var CURRENCY_NAVBAR_MAP = {
+        PHP: 'PHP',
+        USD: 'USD',
+        EUR: 'EUR',
+        GBP: 'USD',   // navbar has no GBP — closest is USD
+        SGD: 'USD',   // same
+        JPY: 'JPY',
+        CNY: 'CNY'
+    };
+
+    /* ── Load saved region settings into the settings panel selects ── */
+    function _loadRegionIntoUI() {
+        try {
+            var saved = JSON.parse(localStorage.getItem('armsdealer_region') || 'null');
+            if (!saved) return;
+
+            // Language
+            var langSel = document.getElementById('settingsLanguageSelect');
+            if (langSel && saved.language) {
+                langSel.value = saved.language;
+            }
+
+            // Timezone
+            var tzSel = document.getElementById('settingsTimezoneSelect');
+            if (tzSel && saved.timezone) {
+                // Match by value attribute
+                var matched = false;
+                for (var i = 0; i < tzSel.options.length; i++) {
+                    if (tzSel.options[i].value === saved.timezone) {
+                        tzSel.selectedIndex = i;
+                        matched = true;
+                        break;
+                    }
+                }
+                // Update coord preview to stored values
+                if (matched && saved.lat && saved.lng) {
+                    _updateCoordPreview(saved.lat, saved.lng);
+                }
+            }
+
+            // Currency
+            var curSel = document.getElementById('settingsCurrencySelect');
+            if (curSel && saved.currency) {
+                curSel.value = saved.currency;
+            }
+        } catch (e) { /* ignore */ }
+    }
+
+    /* ── Update the live coord preview row on the settings page ── */
+    function _updateCoordPreview(lat, lng) {
+        var latEl = document.getElementById('coordPreviewLat');
+        var lngEl = document.getElementById('coordPreviewLng');
+        if (latEl) latEl.textContent = lat;
+        if (lngEl) lngEl.textContent = lng;
+    }
+
+    /* ── Update the live .nav-coord readout in the navbar (if present on this page) ── */
+    function _updateNavCoord(lat, lng) {
+        // The navbar .nav-coord contains two child <div>s:
+        //   <div><span>LAT</span> 14.5995° N</div>
+        //   <div><span>LNG</span> 120.9842° E</div>
+        // We replace the text node after each <span>.
+        var coordEl = document.querySelector('.nav-coord');
+        if (!coordEl) return;
+        var divs = coordEl.querySelectorAll('div');
+        if (divs[0]) {
+            var span0 = divs[0].querySelector('span');
+            if (span0) {
+                // Clear existing text nodes then append new one
+                while (span0.nextSibling) span0.parentNode.removeChild(span0.nextSibling);
+                divs[0].appendChild(document.createTextNode(' ' + lat));
+            }
+        }
+        if (divs[1]) {
+            var span1 = divs[1].querySelector('span');
+            if (span1) {
+                while (span1.nextSibling) span1.parentNode.removeChild(span1.nextSibling);
+                divs[1].appendChild(document.createTextNode(' ' + lng));
+            }
+        }
+    }
+
+    /* ── Called on language select change (live, before save) ── */
+    window.RegionSettings = window.RegionSettings || {};
+
+    window.RegionSettings.onLanguageChange = function (value) {
+        // Live-sync the navbar language select if it's on the same page
+        // (subbase pages include the full navbar)
+        var navLangSel = document.getElementById('languageSelect');
+        var navbarVal = LANG_NAVBAR_MAP[value] || 'english';
+        if (navLangSel && navLangSel.value !== navbarVal) {
+            navLangSel.value = navbarVal;
+            // Fire the navbar's onchange so setLanguage() runs and translations update
+            if (typeof setLanguage === 'function') setLanguage(navbarVal);
+        }
+    };
+
+    /* ── Called on timezone select change (live, before save) ── */
+    window.RegionSettings.onTimezoneChange = function (value, selectedOption) {
+        var lat = selectedOption.dataset.lat || '';
+        var lng = selectedOption.dataset.lng || '';
+        // Update the preview row immediately
+        _updateCoordPreview(lat, lng);
+        // Also live-update the navbar coord readout on this page
+        _updateNavCoord(lat, lng);
+    };
+
+    /* ── Called on currency select change (live, before save) ── */
+    window.RegionSettings.onCurrencyChange = function (value) {
+        // Sync navbar currency select if present
+        var navCurSel = document.getElementById('currencySelect');
+        var navbarVal = CURRENCY_NAVBAR_MAP[value] || value;
+        if (navCurSel && navCurSel.value !== navbarVal) {
+            navCurSel.value = navbarVal;
+            // Fire the navbar's onchange handler
+            if (typeof setCurrency === 'function') setCurrency(navbarVal);
+        }
+        // Also call the existing server-side currency save
+        window.saveCurrencyPreference(value);
+    };
+
+    /* ── SAVE: persist to localStorage and sync navbar ── */
+    window.RegionSettings.save = function () {
+        var langSel = document.getElementById('settingsLanguageSelect');
+        var tzSel = document.getElementById('settingsTimezoneSelect');
+        var curSel = document.getElementById('settingsCurrencySelect');
+
+        var language = langSel ? langSel.value : 'english';
+        var timezone = tzSel ? tzSel.value : 'UTC+08:00';
+        var currency = curSel ? curSel.value : 'PHP';
+
+        // Pull lat/lng from the selected option's data attributes
+        var lat = 'N/A', lng = 'N/A', tzLabel = timezone;
+        if (tzSel && tzSel.selectedIndex >= 0) {
+            var opt = tzSel.options[tzSel.selectedIndex];
+            lat = opt.dataset.lat || lat;
+            lng = opt.dataset.lng || lng;
+            tzLabel = opt.text.trim() || tzLabel;
+        }
+
+        // Persist region bundle
+        var region = { language: language, timezone: timezone, timezoneLabel: tzLabel, lat: lat, lng: lng, currency: currency };
+        localStorage.setItem('armsdealer_region', JSON.stringify(region));
+
+        // Sync navbar language (in case user changed it without triggering onchange)
+        var navbarLang = LANG_NAVBAR_MAP[language] || 'english';
+        var navLangSel = document.getElementById('languageSelect');
+        if (navLangSel) navLangSel.value = navbarLang;
+        if (typeof setLanguage === 'function') setLanguage(navbarLang);
+
+        // Sync navbar currency
+        var navbarCur = CURRENCY_NAVBAR_MAP[currency] || currency;
+        var navCurSel = document.getElementById('currencySelect');
+        if (navCurSel) navCurSel.value = navbarCur;
+        if (typeof setCurrency === 'function') setCurrency(navbarCur);
+
+        // Apply coords to navbar readout
+        _updateNavCoord(lat, lng);
+
+        typeof showToast === 'function' && showToast('Language & Region saved.', 'success');
+    };
+
+    /* ── DISCARD: reload stored values back into the UI ── */
+    window.RegionSettings.discard = function () {
+        _loadRegionIntoUI();
+        typeof showToast === 'function' && showToast('Changes discarded.', 'info');
+    };
+
+    // Bootstrap: load saved region into UI on page load
+    _loadRegionIntoUI();
+
+    // Also wire the timezone select's onchange in case the inline attribute isn't present
+    (function () {
+        var tzSel = document.getElementById('settingsTimezoneSelect');
+        if (tzSel) {
+            // Sync coord preview to the initial selected option on load
+            var opt = tzSel.options[tzSel.selectedIndex];
+            if (opt) _updateCoordPreview(opt.dataset.lat || '', opt.dataset.lng || '');
+        }
+    })();
+
 })();
