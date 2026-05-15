@@ -856,56 +856,122 @@
 
                     <div class="set-group">
                         <div class="set-group-title">RESOURCES</div>
-                        <a class="set-help-card" href="#" onclick="return false;">
+
+                        <!-- ── Operator Handbook (dropdown + button) ── -->
+                        <div class="set-help-card set-help-dropdown-card" id="handbookCard"
+                             onclick="toggleHelpDropdown('handbookCard')">
                             <div class="set-help-icon">📋</div>
-                            <div>
+                            <div style="flex:1;">
                                 <div class="set-help-title">Operator Handbook</div>
                                 <div class="set-help-desc">Full documentation on how to use the Arms Dealer platform — listings, orders, escrow, and compliance.</div>
                             </div>
-                            <div class="set-help-arrow">▶</div>
-                        </a>
-                        <a class="set-help-card" href="#" onclick="return false;">
+                            <div class="set-help-arrow" id="handbookArrow">▶</div>
+                        </div>
+                        <div class="set-help-dropdown-body" id="handbookBody" style="display:none;">
+                            <p style="font-family:var(--font-mono);font-size:11px;color:var(--mil-muted);line-height:1.7;margin:0 0 12px;">
+                                The Operator Handbook is the official reference for all Arms Dealer platform features — account setup, product listings, order management, escrow, compliance, and more. It is maintained on GitHub and updated with every release.
+                            </p>
+                            <a href="https://github.com/kelsengile/ArmsDealer" target="_blank" rel="noopener"
+                               class="set-btn set-btn--primary"
+                               style="text-decoration:none;display:inline-block;font-size:10px;">
+                                ↗ OPEN OPERATOR HANDBOOK
+                            </a>
+                        </div>
+
+                        <!-- ── FAQ (dropdown of Q&A) ── -->
+                        <div class="set-help-card set-help-dropdown-card" id="faqCard"
+                             onclick="toggleHelpDropdown('faqCard')">
                             <div class="set-help-icon">❓</div>
-                            <div>
+                            <div style="flex:1;">
                                 <div class="set-help-title">Frequently Asked Questions</div>
                                 <div class="set-help-desc">Answers to the most common issues around account, payments, and listings.</div>
                             </div>
-                            <div class="set-help-arrow">▶</div>
-                        </a>
-                        <a class="set-help-card" href="#" onclick="return false;">
+                            <div class="set-help-arrow" id="faqArrow">▶</div>
+                        </div>
+                        <div class="set-help-dropdown-body" id="faqBody" style="display:none;">
+                            <div class="set-faq-list">
+                                <div class="set-faq-item">
+                                    <div class="set-faq-q" onclick="toggleFaq(this)">
+                                        <span>How do I create a product listing?</span><span class="set-faq-chevron">▼</span>
+                                    </div>
+                                    <div class="set-faq-a">Navigate to your Dashboard → Inventory → Add New Product. Fill in the product name, category, price, description, and upload images. Products marked <em>Authorized</em> are visible to all users; unmarked listings are guest-restricted.</div>
+                                </div>
+                                <div class="set-faq-item">
+                                    <div class="set-faq-q" onclick="toggleFaq(this)">
+                                        <span>How does the escrow / payment system work?</span><span class="set-faq-chevron">▼</span>
+                                    </div>
+                                    <div class="set-faq-a">Funds from a buyer are held in escrow until the seller marks the order as shipped and the buyer confirms receipt, or until the order status moves to <em>Delivered</em>. Disputes can be raised through the Contact Support form.</div>
+                                </div>
+                                <div class="set-faq-item">
+                                    <div class="set-faq-q" onclick="toggleFaq(this)">
+                                        <span>Why is my account showing as restricted?</span><span class="set-faq-chevron">▼</span>
+                                    </div>
+                                    <div class="set-faq-a">Restricted accounts have limited listing visibility. This happens when compliance verification is incomplete or when an admin has flagged the account for review. Submit a support ticket below for assistance.</div>
+                                </div>
+                                <div class="set-faq-item">
+                                    <div class="set-faq-q" onclick="toggleFaq(this)">
+                                        <span>How do I change my currency or language?</span><span class="set-faq-chevron">▼</span>
+                                    </div>
+                                    <div class="set-faq-a">Go to Settings → Language & Region. You can set your display language, timezone, and preferred currency. Changes take effect immediately and are saved per session.</div>
+                                </div>
+                                <div class="set-faq-item">
+                                    <div class="set-faq-q" onclick="toggleFaq(this)">
+                                        <span>How do I enable two-factor authentication?</span><span class="set-faq-chevron">▼</span>
+                                    </div>
+                                    <div class="set-faq-a">Go to Settings → Privacy & Security → Two-Factor Authentication and toggle it on. You will need an authenticator app (e.g. Google Authenticator or Authy). Scan the QR/secret key and enter the 6-digit code to confirm.</div>
+                                </div>
+                                <div class="set-faq-item">
+                                    <div class="set-faq-q" onclick="toggleFaq(this)">
+                                        <span>Can I recover a deleted account?</span><span class="set-faq-chevron">▼</span>
+                                    </div>
+                                    <div class="set-faq-a">No. Account deletion is permanent and irreversible. All data including listings, orders, and messages are permanently erased. If you need a break, use <em>Deactivate Account</em> instead — you can reactivate any time.</div>
+                                </div>
+                                <div class="set-faq-item">
+                                    <div class="set-faq-q" onclick="toggleFaq(this)">
+                                        <span>How long does support take to respond?</span><span class="set-faq-chevron">▼</span>
+                                    </div>
+                                    <div class="set-faq-a">Support tickets are reviewed by the admin team during operating hours. You will receive a reply to your registered email address within 24–48 hours. For urgent issues, mark your ticket as <em>Technical Problem</em>.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ── Compliance & Legal ── -->
+                        <a class="set-help-card" href="{{ url_for('main.legal') }}" target="_blank" rel="noopener">
                             <div class="set-help-icon">📜</div>
-                            <div>
+                            <div style="flex:1;">
                                 <div class="set-help-title">Compliance & Legal</div>
                                 <div class="set-help-desc">Terms of service, export regulations, and permitted use guidelines for all operators.</div>
                             </div>
-                            <div class="set-help-arrow">▶</div>
+                            <div class="set-help-arrow">↗</div>
                         </a>
                     </div>
 
+                    <!-- ── Contact Support ── -->
                     <div class="set-group">
                         <div class="set-group-title">CONTACT SUPPORT</div>
                         <div class="set-row set-row--full">
                             <div class="set-row-info"><div class="set-row-label">Subject</div></div>
                             <div class="set-row-control">
-                                <select class="set-select" style="width:100%;">
+                                <select class="set-select" id="supportSubject" style="width:100%;">
                                     <option value="">— Select issue category —</option>
-                                    <option>Account & Login</option>
-                                    <option>Orders & Payments</option>
-                                    <option>Technical Problem</option>
-                                    <option>Compliance Question</option>
-                                    <option>Other</option>
+                                    <option value="Account &amp; Login">Account &amp; Login</option>
+                                    <option value="Orders &amp; Payments">Orders &amp; Payments</option>
+                                    <option value="Technical Problem">Technical Problem</option>
+                                    <option value="Compliance Question">Compliance Question</option>
+                                    <option value="Other">Other</option>
                                 </select>
                             </div>
                         </div>
                         <div class="set-row set-row--full">
                             <div class="set-row-info"><div class="set-row-label">Message</div></div>
                             <div class="set-row-control">
-                                <textarea class="set-input" rows="5" placeholder="Describe your issue in detail..."
+                                <textarea class="set-input" id="supportMessage" rows="5"
+                                          placeholder="Describe your issue in detail..."
                                           style="resize:vertical;font-family:var(--font-mono);font-size:11px;line-height:1.5;"></textarea>
                             </div>
                         </div>
                         <div class="set-btn-row" style="margin-top:12px;border:none;padding:0;">
-                            <button class="set-btn set-btn--primary" onclick="submitSupport()">SUBMIT TICKET</button>
+                            <button class="set-btn set-btn--primary" id="supportSubmitBtn" onclick="submitSupport()">SUBMIT TICKET</button>
                         </div>
                     </div>
 
@@ -935,9 +1001,18 @@
                             <div class="set-sys-action-icon">📦</div>
                             <div class="set-sys-action-body">
                                 <div class="set-sys-action-title">Export Account Data</div>
-                                <div class="set-sys-action-desc">Download a full archive of your orders, listings, messages, and profile in JSON or CSV format.</div>
+                                <div class="set-sys-action-desc">Download a full archive of your orders, listings, messages, and profile as a text file.</div>
                             </div>
-                            <button class="set-btn set-btn--muted" style="font-size:10px;padding:7px 14px;white-space:nowrap;">↓ EXPORT</button>
+                            <button class="set-btn set-btn--muted" style="font-size:10px;padding:7px 14px;white-space:nowrap;"
+                                    onclick="exportAccountData()">↓ EXPORT</button>
+                        </div>
+                        <div class="set-sys-action">
+                            <div class="set-sys-action-icon">✉</div>
+                            <div class="set-sys-action-body">
+                                <div class="set-sys-action-title">Email My Data</div>
+                                <div class="set-sys-action-desc">Send a complete export of your profile, orders, inquiries, ratings, and cart to your registered email address.</div>
+                            </div>
+                            <button id="emailExportBtn" class="set-btn set-btn--muted" style="font-size:10px;padding:7px 14px;white-space:nowrap;" onclick="emailAccountData()">EMAIL MY DATA</button>
                         </div>
                         <div class="set-sys-action">
                             <div class="set-sys-action-icon">🔄</div>
@@ -945,7 +1020,8 @@
                                 <div class="set-sys-action-title">Clear Cache & Local Data</div>
                                 <div class="set-sys-action-desc">Remove locally stored preferences, cached images, and session tokens. You will be logged out.</div>
                             </div>
-                            <button class="set-btn set-btn--muted" style="font-size:10px;padding:7px 14px;white-space:nowrap;">CLEAR</button>
+                            <button class="set-btn set-btn--muted" style="font-size:10px;padding:7px 14px;white-space:nowrap;"
+                                    onclick="clearCacheAndReset()">CLEAR</button>
                         </div>
                     </div>
 
@@ -955,9 +1031,10 @@
                             <div class="set-sys-action-icon">⏸</div>
                             <div class="set-sys-action-body">
                                 <div class="set-sys-action-title">Deactivate Account</div>
-                                <div class="set-sys-action-desc">Temporarily hide your profile and suspend all listings. You can reactivate at any time.</div>
+                                <div class="set-sys-action-desc">Temporarily hide your profile and suspend all listings. You can reactivate at any time by logging back in.</div>
                             </div>
-                            <button class="set-btn set-btn--muted" style="font-size:10px;padding:7px 14px;white-space:nowrap;">DEACTIVATE</button>
+                            <button class="set-btn set-btn--muted" style="font-size:10px;padding:7px 14px;white-space:nowrap;"
+                                    onclick="openDeactivateModal()">DEACTIVATE</button>
                         </div>
                     </div>
 
@@ -995,6 +1072,52 @@
     </div>
 </main>
 
+<!-- ── DEACTIVATE ACCOUNT MODAL ──────────────────────────────── -->
+<div class="set-modal-backdrop" id="deactivateModal">
+    <div class="set-modal">
+        <div class="set-modal-title">⏸ DEACTIVATE ACCOUNT</div>
+        <div class="set-modal-body">
+            Your profile will be hidden and all listings suspended. You can reactivate your account at any time by simply logging back in. Orders in progress will not be affected.
+        </div>
+        <div class="set-modal-actions">
+            <button class="set-btn set-btn--muted" onclick="closeDeactivateModal()">CANCEL</button>
+            <button class="set-btn set-btn--danger" onclick="confirmDeactivate()">CONFIRM DEACTIVATE</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── HELP DROPDOWN + FAQ STYLES ───────────────────────────── -->
+<style>
+.set-help-dropdown-card { cursor:pointer; user-select:none; }
+.set-help-dropdown-card .set-help-arrow { transition: transform 0.2s; }
+.set-help-dropdown-card.open .set-help-arrow { transform: rotate(90deg); }
+.set-help-dropdown-body {
+    background: rgba(0,0,0,0.18);
+    border: 1px solid var(--mil-border);
+    border-top: none;
+    padding: 14px 16px;
+    margin-bottom: 2px;
+}
+.set-faq-list { display:flex; flex-direction:column; gap:2px; }
+.set-faq-item { border:1px solid var(--mil-border); }
+.set-faq-q {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 14px; cursor:pointer;
+    font-family:var(--font-mono); font-size:10px; font-weight:600;
+    color:var(--mil-text); letter-spacing:0.04em;
+    background:rgba(138,170,106,0.04);
+}
+.set-faq-q:hover { background:rgba(138,170,106,0.09); }
+.set-faq-chevron { transition:transform 0.2s; font-size:9px; color:var(--mil-muted); }
+.set-faq-item.open .set-faq-chevron { transform:rotate(180deg); }
+.set-faq-a {
+    display:none; padding:10px 14px 12px;
+    font-family:var(--font-mono); font-size:10px; color:var(--mil-muted);
+    line-height:1.7; border-top:1px solid var(--mil-border);
+}
+.set-faq-item.open .set-faq-a { display:block; }
+</style>
+
 <!-- ── DELETE ACCOUNT MODAL ─────────────────────────────────── -->
 <div class="set-modal-backdrop" id="deleteModal">
     <div class="set-modal">
@@ -1008,7 +1131,7 @@
         </div>
         <div class="set-modal-actions">
             <button class="set-btn set-btn--muted" onclick="closeDeleteModal()">CANCEL</button>
-            <button class="set-btn set-btn--danger" id="confirmDeleteBtn" disabled style="opacity:0.4;cursor:not-allowed;">CONFIRM DELETE</button>
+            <button class="set-btn set-btn--danger" id="confirmDeleteBtn" disabled style="opacity:0.4;cursor:not-allowed;" onclick="confirmDeleteAccount()">CONFIRM DELETE</button>
         </div>
     </div>
 </div>

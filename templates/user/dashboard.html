@@ -1954,6 +1954,16 @@
                 <span class="adm-modal-field-label">Date</span>
                 <div class="adm-modal-field-val" id="modalInqDate"></div>
             </div>
+            <!-- ── Admin Reply Section ── -->
+            <div class="adm-modal-field" id="adminReplySection" style="margin-top:12px;flex-direction:column;gap:6px;">
+                <span class="adm-modal-field-label" style="margin-bottom:4px;">Reply to User</span>
+                <textarea id="adminReplyMessage" rows="4"
+                    style="width:100%;padding:8px 10px;background:rgba(0,0,0,0.3);border:1px solid var(--adm-border);color:var(--adm-text);font-family:var(--adm-mono);font-size:11px;resize:vertical;box-sizing:border-box;"
+                    placeholder="Type your reply to the user here. It will be sent to their registered email address."></textarea>
+                <button class="adm-btn primary" id="adminSendReplyBtn" onclick="adminSendReply()" style="align-self:flex-start;margin-top:4px;">
+                    ✉ SEND REPLY EMAIL
+                </button>
+            </div>
         </div>
         <div class="adm-modal-footer">
             <button class="adm-btn danger" id="modalMarkNew">Mark New</button>
@@ -2037,7 +2047,7 @@
         btn.textContent = '...';
         btn.disabled = true;
 
-        fetch('/admin/order/' + orderId + '/status', {
+        fetch('/api/admin/order/' + orderId + '/status', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status: newStatus })
@@ -2132,7 +2142,7 @@
 
     function updateInquiryStatus(newStatus) {
         if (!activeInqId) return;
-        fetch('/admin/inquiry/' + activeInqId + '/status', {
+        fetch('/api/admin/inquiry/' + activeInqId + '/status', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status: newStatus })
@@ -2158,6 +2168,53 @@
         const btn = document.getElementById(id);
         if (btn) btn.addEventListener('click', () => updateInquiryStatus(['new','read','resolved'][i]));
     });
+
+    /* ── Admin Reply Email ──────────────────────────── */
+    window.adminSendReply = function () {
+        if (!activeInqId) return;
+        const replyMsg = (document.getElementById('adminReplyMessage')?.value || '').trim();
+        if (!replyMsg) { showToast('Reply message cannot be empty', 'err'); return; }
+
+        const btn = document.getElementById('adminSendReplyBtn');
+        if (btn) { btn.disabled = true; btn.textContent = 'SENDING…'; }
+
+        fetch('/api/admin/inquiry/' + activeInqId + '/reply', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: replyMsg })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok) {
+                // Show confirmation with the recipient address from the server response
+                const recipient = data.sent_to || document.getElementById('modalInqEmail').textContent;
+                showToast('✉ Reply sent to ' + recipient);
+
+                // Clear the textarea
+                const ta = document.getElementById('adminReplyMessage');
+                if (ta) ta.value = '';
+
+                // Update the row status pill inline — no extra fetch needed
+                // (backend already set status=resolved)
+                const pill = document.getElementById('inq-status-' + activeInqId);
+                if (pill) {
+                    pill.textContent = 'RESOLVED';
+                    pill.className = 'adm-status-pill adm-status-resolved';
+                }
+                const row = document.querySelector('[data-id="' + activeInqId + '"]');
+                if (row) row.dataset.status = 'resolved';
+
+                // Close the modal after a short delay so the toast is visible
+                setTimeout(() => modal.classList.remove('open'), 1400);
+            } else {
+                showToast('⚠ ' + (data.error || 'Failed to send reply'), 'err');
+            }
+        })
+        .catch(err => showToast('Network error — could not reach server', 'err'))
+        .finally(() => {
+            if (btn) { btn.disabled = false; btn.textContent = '✉ SEND REPLY EMAIL'; }
+        });
+    };
 
     /* ── Revenue bar chart (SVG) ────────────────────── */
     function buildRevenueChart() {
