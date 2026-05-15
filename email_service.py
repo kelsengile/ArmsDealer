@@ -19,7 +19,7 @@ from datetime import datetime
 def _get_smtp_config():
     return {
         'host':     os.environ.get('SMTP_HOST', 'smtp.gmail.com'),
-        'port':     int(os.environ.get('SMTP_PORT', 587)),
+        'port':     int(os.environ.get('SMTP_PORT', 0)),   # 0 = auto-select
         'user':     os.environ.get('SMTP_USER', ''),
         'password': os.environ.get('SMTP_PASS', ''),
         'from':     os.environ.get('MAIL_FROM', os.environ.get('SMTP_USER', '')),
@@ -28,7 +28,14 @@ def _get_smtp_config():
 
 
 def _send(to_email: str, subject: str, html_body: str) -> bool:
-    """Send a single email. Returns True on success, False on failure."""
+    """Send a single email. Returns True on success, False on failure.
+
+    Port strategy (in priority order):
+      443 — Gmail accepts SMTP here; works even when 587/465 are firewall-blocked
+      465 — SMTP over SSL (implicit TLS)
+      587 — STARTTLS (original default; kept as last resort)
+    If SMTP_PORT is explicitly set in .env (non-zero), only that port is tried.
+    """
     cfg = _get_smtp_config()
     if not cfg['user'] or not cfg['password']:
         # No SMTP credentials configured — skip silently
@@ -36,21 +43,46 @@ def _send(to_email: str, subject: str, html_body: str) -> bool:
 
     msg = MIMEMultipart('alternative')
     msg['Subject'] = subject
-    msg['From']    = cfg['from']
-    msg['To']      = to_email
+    msg['From'] = cfg['from']
+    msg['To'] = to_email
     msg.attach(MIMEText(html_body, 'html'))
 
-    try:
-        with smtplib.SMTP(cfg['host'], cfg['port'], timeout=10) as server:
-            if cfg['use_tls']:
-                server.starttls()
-            server.login(cfg['user'], cfg['password'])
-            server.sendmail(cfg['from'], to_email, msg.as_string())
-        return True
-    except Exception as exc:
-        # Log but never crash the request
-        print(f'[EmailService] Failed to send to {to_email}: {exc}')
-        return False
+    host = cfg['host']
+    explicit_port = cfg['port']
+
+    # Build ordered list of (port, use_ssl) attempts
+    if explicit_port:
+        # Honour whatever is in .env
+        use_ssl = explicit_port in (443, 465)
+        attempts = [(explicit_port, use_ssl)]
+    else:
+        # Auto-select: try 443 first (punches through most firewalls),
+        # then 465 (SSL), then 587 (STARTTLS)
+        attempts = [(443, True), (465, True), (587, False)]
+
+    last_exc = None
+    for port, use_ssl in attempts:
+        try:
+            if use_ssl:
+                with smtplib.SMTP_SSL(host, port, timeout=10) as server:
+                    server.login(cfg['user'], cfg['password'])
+                    server.sendmail(cfg['from'], to_email, msg.as_string())
+            else:
+                with smtplib.SMTP(host, port, timeout=10) as server:
+                    server.ehlo()
+                    server.starttls()
+                    server.ehlo()
+                    server.login(cfg['user'], cfg['password'])
+                    server.sendmail(cfg['from'], to_email, msg.as_string())
+            print(f'[EmailService] Sent to {to_email} via port {port}')
+            return True
+        except Exception as exc:
+            print(f'[EmailService] Port {port} failed: {exc}')
+            last_exc = exc
+
+    # All ports exhausted
+    print(f'[EmailService] Failed to send to {to_email}: {last_exc}')
+    return False
 
 
 # ─────────────────────────────────────────
@@ -89,9 +121,10 @@ def _is_quiet_hours(prefs: dict) -> bool:
         now_str = datetime.now().strftime('%H:%M')
         now_h, now_m = map(int, now_str.split(':'))
         from_h, from_m = map(int, prefs.get('quiet_from', '22:00').split(':'))
-        until_h, until_m = map(int, prefs.get('quiet_until', '07:00').split(':'))
-        now_mins   = now_h   * 60 + now_m
-        from_mins  = from_h  * 60 + from_m
+        until_h, until_m = map(int, prefs.get(
+            'quiet_until', '07:00').split(':'))
+        now_mins = now_h * 60 + now_m
+        from_mins = from_h * 60 + from_m
         until_mins = until_h * 60 + until_m
         if from_mins <= until_mins:
             return from_mins <= now_mins < until_mins
@@ -143,6 +176,7 @@ _BASE_STYLE = """
     .divider { border:none; border-top:1px solid #1e2e1e; margin:20px 0; }
 """
 
+
 def _html_wrap(content: str) -> str:
     return f"""<!DOCTYPE html>
 <html>
@@ -166,16 +200,16 @@ def _html_wrap(content: str) -> str:
 # ─────────────────────────────────────────
 
 def send_order_confirmation(db, user_id: int, order_id: int, order_items: list,
-                             total: float, payment_method: str, user_email: str,
-                             username: str) -> bool:
+                            total: float, payment_method: str, user_email: str,
+                            username: str) -> bool:
     """Send checkout confirmation email to the user."""
     if not _should_send_email(db, user_id, 'order_updates'):
         return False
 
     rows_html = ''.join(
-        f"<tr><td>{item.get('name','—')}</td>"
+        f"<tr><td>{item.get('name', '—')}</td>"
         f"<td>{item.get('quantity', 1)}</td>"
-        f"<td>₱{float(item.get('price',0) * item.get('quantity',1)):,.2f}</td></tr>"
+        f"<td>₱{float(item.get('price', 0) * item.get('quantity', 1)):,.2f}</td></tr>"
         for item in order_items
     )
 
@@ -201,7 +235,7 @@ def send_order_confirmation(db, user_id: int, order_id: int, order_items: list,
 
 
 def send_order_status_update(db, user_id: int, order_id: int, new_status: str,
-                              user_email: str, username: str) -> bool:
+                             user_email: str, username: str) -> bool:
     """Send order status change email (packing / shipping / delivered)."""
     if not _should_send_email(db, user_id, 'order_updates'):
         return False
@@ -235,7 +269,7 @@ def send_order_status_update(db, user_id: int, order_id: int, new_status: str,
 
 
 def send_login_notification(db, user_id: int, user_email: str, username: str,
-                             ip_address: str = None) -> bool:
+                            ip_address: str = None) -> bool:
     """Send security login notification email."""
     if not _should_send_email(db, user_id, 'security_alerts'):
         return False
