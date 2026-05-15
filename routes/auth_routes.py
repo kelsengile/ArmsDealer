@@ -19,13 +19,14 @@ auth_bp = Blueprint('auth', __name__)
 
 
 def _send_otp_email(email, code, purpose='registration'):
-    smtp_host = os.environ.get('SMTP_HOST')
+    smtp_host = os.environ.get('SMTP_HOST', '').strip()
     if not smtp_host:
         return False
     smtp_port = int(os.environ.get('SMTP_PORT', 587))
-    smtp_user = os.environ.get('SMTP_USER')
-    smtp_pass = os.environ.get('SMTP_PASS')
-    smtp_from = os.environ.get('MAIL_FROM', 'no-reply@armsdealer.com')
+    smtp_user = os.environ.get('SMTP_USER', '').strip()
+    smtp_pass = os.environ.get('SMTP_PASS', '').replace(' ', '').strip()
+    smtp_from = os.environ.get(
+        'MAIL_FROM', smtp_user or 'no-reply@armsdealer.com').strip()
     subject = 'Your ArmsDealer verification code'
     body = (
         f'Your ArmsDealer registration OTP is {code}.\n\n'
@@ -44,13 +45,16 @@ def _send_otp_email(email, code, purpose='registration'):
     msg.set_content(body)
     try:
         with smtplib.SMTP(smtp_host, smtp_port, timeout=10) as smtp:
+            smtp.ehlo()
             if os.environ.get('SMTP_USE_TLS', 'true').lower() != 'false':
                 smtp.starttls()
+                smtp.ehlo()
             if smtp_user and smtp_pass:
                 smtp.login(smtp_user, smtp_pass)
             smtp.send_message(msg)
         return True
-    except Exception:
+    except Exception as exc:
+        print(f"SMTP send failed: {exc}")
         return False
 
 
