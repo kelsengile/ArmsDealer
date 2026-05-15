@@ -415,10 +415,199 @@
     };
 
     /* ═══════════════════════════════════════════════════════════════
-       SUPPORT TICKET
+       SUPPORT TICKET — submits to /api/settings/support (db inquiry)
     ═══════════════════════════════════════════════════════════════ */
-    window.submitSupport = function () {
-        typeof showToast === 'function' && showToast('Support ticket submitted. We\'ll respond within 24 hours.', 'success');
+    window.submitSupport = async function () {
+        var subjectEl = document.getElementById('supportSubject');
+        var messageEl = document.getElementById('supportMessage');
+        var btn = document.getElementById('supportSubmitBtn');
+
+        var subject = subjectEl ? subjectEl.value.trim() : '';
+        var message = messageEl ? messageEl.value.trim() : '';
+
+        if (!subject) {
+            typeof showToast === 'function' && showToast('Please select an issue category.', 'danger');
+            return;
+        }
+        if (!message || message.length < 10) {
+            typeof showToast === 'function' && showToast('Please describe your issue (at least 10 characters).', 'danger');
+            return;
+        }
+
+        if (btn) { btn.disabled = true; btn.textContent = 'SUBMITTING…'; }
+
+        try {
+            var res = await fetch('/api/settings/support', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ subject: subject, message: message })
+            });
+            var data = await res.json();
+            if (data.ok) {
+                typeof showToast === 'function' && showToast('Support ticket submitted. We\'ll reply to your email within 24–48 hours.', 'success');
+                if (subjectEl) subjectEl.value = '';
+                if (messageEl) messageEl.value = '';
+            } else {
+                typeof showToast === 'function' && showToast(data.error || 'Failed to submit ticket.', 'danger');
+            }
+        } catch (err) {
+            typeof showToast === 'function' && showToast('Network error — could not submit ticket.', 'danger');
+        } finally {
+            if (btn) { btn.disabled = false; btn.textContent = 'SUBMIT TICKET'; }
+        }
+    };
+
+    /* ═══════════════════════════════════════════════════════════════
+       HELP DROPDOWNS (Handbook & FAQ cards)
+    ═══════════════════════════════════════════════════════════════ */
+    window.toggleHelpDropdown = function (cardId) {
+        var card = document.getElementById(cardId);
+        var bodyId = cardId.replace('Card', 'Body');
+        var body = document.getElementById(bodyId);
+        if (!card || !body) return;
+        var isOpen = card.classList.contains('open');
+        // Close all dropdowns first
+        document.querySelectorAll('.set-help-dropdown-card').forEach(function (c) {
+            c.classList.remove('open');
+            var bId = c.id.replace('Card', 'Body');
+            var b = document.getElementById(bId);
+            if (b) b.style.display = 'none';
+        });
+        if (!isOpen) {
+            card.classList.add('open');
+            body.style.display = 'block';
+        }
+    };
+
+    /* ═══════════════════════════════════════════════════════════════
+       FAQ ACCORDION
+    ═══════════════════════════════════════════════════════════════ */
+    window.toggleFaq = function (questionEl) {
+        var item = questionEl.closest('.set-faq-item');
+        if (!item) return;
+        var isOpen = item.classList.contains('open');
+        // Close all FAQs
+        document.querySelectorAll('.set-faq-item').forEach(function (i) { i.classList.remove('open'); });
+        if (!isOpen) item.classList.add('open');
+    };
+
+    /* ═══════════════════════════════════════════════════════════════
+       EXPORT ACCOUNT DATA — downloads a .txt file
+    ═══════════════════════════════════════════════════════════════ */
+    window.exportAccountData = async function () {
+        typeof showToast === 'function' && showToast('Preparing export…', 'info');
+        try {
+            var res = await fetch('/api/settings/export');
+            if (!res.ok) throw new Error('Server error');
+            var blob = await res.blob();
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'armsdealer_account_export.txt';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1000);
+            typeof showToast === 'function' && showToast('Account data downloaded.', 'success');
+        } catch (err) {
+            typeof showToast === 'function' && showToast('Export failed — please try again.', 'danger');
+        }
+    };
+
+    /* ═══════════════════════════════════════════════════════════════
+       EMAIL ACCOUNT DATA — sends full export to registered email
+    ═══════════════════════════════════════════════════════════════ */
+    window.emailAccountData = async function () {
+        var btn = document.getElementById('emailExportBtn');
+        if (btn) { btn.disabled = true; btn.textContent = 'SENDING…'; }
+        typeof showToast === 'function' && showToast('Sending export to your email…', 'info');
+        try {
+            var res = await fetch('/api/settings/export-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            var data = await res.json();
+            if (data.ok) {
+                typeof showToast === 'function' && showToast('✉ Export sent to ' + data.sent_to, 'success');
+            } else {
+                typeof showToast === 'function' && showToast('⚠ ' + (data.error || 'Failed to send export'), 'err');
+            }
+        } catch (err) {
+            typeof showToast === 'function' && showToast('Email export failed — please try again.', 'danger');
+        } finally {
+            if (btn) { btn.disabled = false; btn.textContent = 'EMAIL MY DATA'; }
+        }
+    };
+
+    /* ═══════════════════════════════════════════════════════════════
+       CLEAR CACHE & LOCAL DATA — wipes localStorage then logs out
+    ═══════════════════════════════════════════════════════════════ */
+    window.clearCacheAndReset = function () {
+        try { localStorage.clear(); } catch (e) { }
+        try { sessionStorage.clear(); } catch (e) { }
+        // Clear all cookies
+        document.cookie.split(';').forEach(function (c) {
+            document.cookie = c.trim().split('=')[0] + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/';
+        });
+        typeof showToast === 'function' && showToast('Cache cleared. Logging out…', 'info');
+        setTimeout(function () {
+            window.location.href = '/logout';
+        }, 1200);
+    };
+
+    /* ═══════════════════════════════════════════════════════════════
+       DEACTIVATE ACCOUNT MODAL
+    ═══════════════════════════════════════════════════════════════ */
+    window.openDeactivateModal = function () {
+        var modal = document.getElementById('deactivateModal');
+        if (modal) modal.classList.add('active');
+    };
+    window.closeDeactivateModal = function () {
+        var modal = document.getElementById('deactivateModal');
+        if (modal) modal.classList.remove('active');
+    };
+    window.confirmDeactivate = async function () {
+        try {
+            var res = await fetch('/api/settings/deactivate', { method: 'POST' });
+            var data = await res.json();
+            if (data.ok) {
+                closeDeactivateModal();
+                typeof showToast === 'function' && showToast('Account deactivated. Redirecting…', 'warning');
+                setTimeout(function () { window.location.href = '/logout'; }, 1800);
+            } else {
+                typeof showToast === 'function' && showToast(data.error || 'Deactivation failed.', 'danger');
+            }
+        } catch (err) {
+            typeof showToast === 'function' && showToast('Network error — please try again.', 'danger');
+        }
+    };
+    var deactivateModal = document.getElementById('deactivateModal');
+    if (deactivateModal) {
+        deactivateModal.addEventListener('click', function (e) {
+            if (e.target === deactivateModal) window.closeDeactivateModal();
+        });
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       CONFIRM DELETE ACCOUNT — calls API then redirects
+    ═══════════════════════════════════════════════════════════════ */
+    window.confirmDeleteAccount = async function () {
+        var btn = document.getElementById('confirmDeleteBtn');
+        if (btn && btn.disabled) return;
+        if (btn) { btn.disabled = true; btn.textContent = 'DELETING…'; btn.style.opacity = '0.6'; }
+        try {
+            var res = await fetch('/api/settings/delete-account', { method: 'POST' });
+            var data = await res.json();
+            if (data.ok) {
+                typeof showToast === 'function' && showToast('Account permanently deleted. Goodbye.', 'danger');
+                setTimeout(function () { window.location.href = '/'; }, 2000);
+            } else {
+                typeof showToast === 'function' && showToast(data.error || 'Deletion failed.', 'danger');
+                if (btn) { btn.disabled = false; btn.textContent = 'CONFIRM DELETE'; btn.style.opacity = '1'; }
+            }
+        } catch (err) {
+            typeof showToast === 'function' && showToast('Network error — could not delete account.', 'danger');
+            if (btn) { btn.disabled = false; btn.textContent = 'CONFIRM DELETE'; btn.style.opacity = '1'; }
+        }
     };
 
     /* ═══════════════════════════════════════════════════════════════
