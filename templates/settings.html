@@ -633,6 +633,7 @@
                 </div>
                 <div class="setpage-panel-body">
 
+                    <!-- ── DELIVERY CHANNELS ── -->
                     <div class="set-group">
                         <div class="set-group-title">DELIVERY CHANNELS</div>
                         <div class="set-row">
@@ -641,63 +642,68 @@
                                 <div class="set-row-desc">Receive alerts to your registered email address</div>
                             </div>
                             <div class="set-row-control">
-                                <label class="set-toggle"><input type="checkbox" checked><span class="set-toggle-slider"></span></label>
+                                <label class="set-toggle">
+                                    <input type="checkbox" id="emailNotifsToggle" checked onchange="onEmailNotifsChange(this)">
+                                    <span class="set-toggle-slider"></span>
+                                </label>
                             </div>
                         </div>
                         <div class="set-row">
                             <div class="set-row-info">
                                 <div class="set-row-label">In-App Alerts</div>
-                                <div class="set-row-desc">Toast and banner notifications while browsing</div>
+                                <div class="set-row-desc">Toast popup notifications while browsing</div>
                             </div>
                             <div class="set-row-control">
-                                <label class="set-toggle"><input type="checkbox" checked><span class="set-toggle-slider"></span></label>
+                                <label class="set-toggle">
+                                    <input type="checkbox" id="inAppNotifsToggle" checked>
+                                    <span class="set-toggle-slider"></span>
+                                </label>
                             </div>
                         </div>
                     </div>
 
-                    <div class="set-group">
+                    <!-- ── EVENT TYPES ── -->
+                    <div class="set-group" id="eventTypesGroup">
                         <div class="set-group-title">EVENT TYPES</div>
                         <div class="set-row">
                             <div class="set-row-info">
                                 <div class="set-row-label">Order Updates</div>
                                 <div class="set-row-desc">Confirmations, shipments, and status changes</div>
                             </div>
-                            <div class="set-row-control set-notif-freq">
-                                <select class="set-select" style="min-width:130px;">
-                                    <option>Immediately</option>
-                                    <option>Daily Digest</option>
-                                    <option>Never</option>
-                                </select>
+                            <div class="set-row-control">
+                                <label class="set-toggle">
+                                    <input type="checkbox" id="orderUpdatesToggle" checked>
+                                    <span class="set-toggle-slider"></span>
+                                </label>
                             </div>
                         </div>
                         <div class="set-row">
                             <div class="set-row-info">
                                 <div class="set-row-label">Security Alerts</div>
-                                <div class="set-row-desc">Login from new device or suspicious activity</div>
+                                <div class="set-row-desc">Login activity and account security events</div>
                             </div>
-                            <div class="set-row-control set-notif-freq">
-                                <select class="set-select" style="min-width:130px;">
-                                    <option selected>Immediately</option>
-                                    <option>Daily Digest</option>
-                                    <option disabled>Never</option>
-                                </select>
+                            <div class="set-row-control">
+                                <label class="set-toggle">
+                                    <input type="checkbox" id="securityAlertsToggle" checked>
+                                    <span class="set-toggle-slider"></span>
+                                </label>
                             </div>
                         </div>
                         <div class="set-row">
                             <div class="set-row-info">
-                                <div class="set-row-label">Promotional & Offers</div>
+                                <div class="set-row-label">Promotional &amp; Offers</div>
                                 <div class="set-row-desc">Special deals and announcements</div>
                             </div>
-                            <div class="set-row-control set-notif-freq">
-                                <select class="set-select" style="min-width:130px;">
-                                    <option>Immediately</option>
-                                    <option>Daily Digest</option>
-                                    <option selected>Never</option>
-                                </select>
+                            <div class="set-row-control">
+                                <label class="set-toggle">
+                                    <input type="checkbox" id="promoOffersToggle">
+                                    <span class="set-toggle-slider"></span>
+                                </label>
                             </div>
                         </div>
                     </div>
 
+                    <!-- ── QUIET HOURS ── -->
                     <div class="set-group">
                         <div class="set-group-title">QUIET HOURS</div>
                         <div class="set-row">
@@ -716,13 +722,13 @@
                             <div class="set-row">
                                 <div class="set-row-info"><div class="set-row-label">From</div></div>
                                 <div class="set-row-control">
-                                    <input class="set-input" type="time" value="22:00" style="width:auto;color:var(--mil-text);">
+                                    <input class="set-input" type="time" id="quietFromInput" value="22:00" style="width:auto;color:var(--mil-text);">
                                 </div>
                             </div>
                             <div class="set-row">
                                 <div class="set-row-info"><div class="set-row-label">Until</div></div>
                                 <div class="set-row-control">
-                                    <input class="set-input" type="time" value="07:00" style="width:auto;color:var(--mil-text);">
+                                    <input class="set-input" type="time" id="quietUntilInput" value="07:00" style="width:auto;color:var(--mil-text);">
                                 </div>
                             </div>
                         </div>
@@ -730,7 +736,7 @@
 
                     <div class="set-btn-row">
                         <button class="set-btn set-btn--primary" onclick="saveSettings('notifications')">SAVE PREFERENCES</button>
-                        <button class="set-btn set-btn--muted">UNSUBSCRIBE ALL</button>
+                        <button class="set-btn set-btn--muted" onclick="unsubscribeAllNotifs()">UNSUBSCRIBE ALL</button>
                     </div>
                 </div>
             </div>
