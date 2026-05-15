@@ -151,6 +151,56 @@
     });
 
     /* ═══════════════════════════════════════════════════════════════
+       NAVBAR LANGUAGE SELECT — write-through to armsdealer_region
+       ─────────────────────────────────────────────────────────────
+       The inline onchange="setLanguage(this.value)" in base.html calls
+       setLanguage() which saves to localStorage['lang'] but NOT to the
+       'armsdealer_region' bundle. On the next page load applyRegionToNavbar()
+       reads armsdealer_region and overwrites the select, undoing the change.
+
+       Fix: listen here (after the inline handler fires) and patch
+       armsdealer_region.language so the two stores stay in sync.
+       The navbar only has the five mapped values (english | filipino |
+       japanese | spanish | mandarin) so we store them directly as-is —
+       they are all valid keys in the settings panel's LANG_NAVBAR_MAP too.
+    ═══════════════════════════════════════════════════════════════ */
+    (function wireNavbarRegionSync() {
+        var langSel = document.getElementById('languageSelect');
+        if (langSel) {
+            langSel.addEventListener('change', function () {
+                var chosen = this.value; // e.g. 'filipino'
+                try {
+                    var region = JSON.parse(localStorage.getItem('armsdealer_region') || 'null') || {};
+                    region.language = chosen;
+                    localStorage.setItem('armsdealer_region', JSON.stringify(region));
+                } catch (e) { /* storage unavailable — ignore */ }
+                // Also keep the standalone 'lang' key in sync (used by translations.js DOMContentLoaded init)
+                try { localStorage.setItem('lang', chosen); } catch (e) { }
+                // Sync settings panel select if it happens to be on the same page
+                var settingsLangSel = document.getElementById('settingsLanguageSelect');
+                if (settingsLangSel) settingsLangSel.value = chosen;
+            });
+        }
+
+        /* ── NAVBAR CURRENCY SELECT — same write-through pattern ── */
+        var curSel = document.getElementById('currencySelect');
+        if (curSel) {
+            curSel.addEventListener('change', function () {
+                var chosen = this.value; // e.g. 'USD'
+                try {
+                    var region = JSON.parse(localStorage.getItem('armsdealer_region') || 'null') || {};
+                    region.currency = chosen;
+                    localStorage.setItem('armsdealer_region', JSON.stringify(region));
+                } catch (e) { }
+                try { localStorage.setItem('currency', chosen); } catch (e) { }
+                // Sync settings panel select if present
+                var settingsCurSel = document.getElementById('settingsCurrencySelect');
+                if (settingsCurSel) settingsCurSel.value = chosen;
+            });
+        }
+    })();
+
+    /* ═══════════════════════════════════════════════════════════════
        REGION PERSISTENCE
        ─────────────────────────────────────────────────────────────
        On every page load, read 'armsdealer_region' from localStorage
@@ -190,6 +240,23 @@
         };
         if (region.language) {
             var navbarLang = LANG_NAVBAR_MAP[region.language] || 'english';
+
+            // Guard: if localStorage.lang disagrees with armsdealer_region.language
+            // it means the user changed the navbar select on a previous page (which
+            // writes to localStorage.lang but not yet to armsdealer_region).
+            // In that case, trust localStorage.lang and patch armsdealer_region to
+            // match so the two stores converge instead of fighting each other.
+            var standaloneLang = null;
+            try { standaloneLang = localStorage.getItem('lang'); } catch (e) { }
+            if (standaloneLang && standaloneLang !== navbarLang) {
+                // Navbar-driven change wins — update region bundle to match
+                try {
+                    region.language = standaloneLang;
+                    localStorage.setItem('armsdealer_region', JSON.stringify(region));
+                } catch (e) { }
+                navbarLang = standaloneLang;
+            }
+
             var langSel = document.getElementById('languageSelect');
             if (langSel && langSel.value !== navbarLang) {
                 langSel.value = navbarLang;
