@@ -200,15 +200,96 @@
 
             window.saveAppearanceSettings(settings);
             typeof showToast === 'function' && showToast('Appearance settings saved.', 'success');
+
+        } else if (section === 'notifications') {
+            // ── Read all notification toggle states ────────────────
+            function _checked(id, def) {
+                var el = document.getElementById(id);
+                return el ? el.checked : def;
+            }
+            function _val(id, def) {
+                var el = document.getElementById(id);
+                return el ? el.value : def;
+            }
+
+            var prefs = {
+                email_enabled: _checked('emailNotifsToggle', true),
+                in_app_enabled: _checked('inAppNotifsToggle', true),
+                order_updates: _checked('orderUpdatesToggle', true),
+                security_alerts: _checked('securityAlertsToggle', true),
+                promotional_offers: _checked('promoOffersToggle', false),
+                quiet_hours_enabled: _checked('quietHoursToggle', false),
+                quiet_from: _val('quietFromInput', '22:00'),
+                quiet_until: _val('quietUntilInput', '07:00'),
+            };
+
+            // ── Persist to localStorage (for client-side toast gating) ──
+            try {
+                localStorage.setItem('armsdealer_notif_prefs', JSON.stringify(prefs));
+            } catch (e) { /* quota exceeded — ignore */ }
+
+            // ── Persist to server (for email gating) ──────────────
+            fetch('/api/settings/notifications', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(prefs)
+            })
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.ok) {
+                        typeof showToast === 'function' && showToast('Notification preferences saved.', 'success');
+                    } else {
+                        typeof showToast === 'function' && showToast('Failed to save preferences.', 'danger');
+                    }
+                })
+                .catch(function () {
+                    // Still saved locally — let user know
+                    typeof showToast === 'function' && showToast('Saved locally. Server sync failed.', 'warning');
+                });
+
         } else {
             var labels = {
                 privacy: 'Privacy & Security',
-                notifications: 'Notification preferences',
                 language: 'Language & Region'
             };
             var label = labels[section] || 'Settings';
             typeof showToast === 'function' && showToast(label + ' saved successfully.', 'success');
         }
+    };
+
+    /* ── Disable/enable event type toggles when email master is off ── */
+    window.onEmailNotifsChange = function (checkbox) {
+        var eventGroup = document.getElementById('eventTypesGroup');
+        if (!eventGroup) return;
+        var toggles = eventGroup.querySelectorAll('input[type="checkbox"]');
+        toggles.forEach(function (t) {
+            t.disabled = !checkbox.checked;
+            t.closest('label') && (t.closest('label').style.opacity = checkbox.checked ? '' : '0.4');
+        });
+    };
+
+    /* ── Unsubscribe all — turns off every toggle ─────────────────── */
+    window.unsubscribeAllNotifs = function () {
+        var ids = [
+            'emailNotifsToggle', 'inAppNotifsToggle',
+            'orderUpdatesToggle', 'securityAlertsToggle', 'promoOffersToggle',
+            'quietHoursToggle'
+        ];
+        ids.forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) el.checked = false;
+        });
+        var qcfg = document.getElementById('quietHoursConfig');
+        if (qcfg) qcfg.style.display = 'none';
+        // Re-enable event toggles (they may have been greyed out)
+        var eventGroup = document.getElementById('eventTypesGroup');
+        if (eventGroup) {
+            eventGroup.querySelectorAll('input[type="checkbox"]').forEach(function (t) {
+                t.disabled = false;
+                t.closest('label') && (t.closest('label').style.opacity = '');
+            });
+        }
+        typeof showToast === 'function' && showToast('All notifications disabled. Click Save to confirm.', 'warning');
     };
 
     window.resetAppearanceSettings = function () {
@@ -863,6 +944,65 @@
             var opt = tzSel.options[tzSel.selectedIndex];
             if (opt) _updateCoordPreview(opt.dataset.lat || '', opt.dataset.lng || '');
         }
+    })();
+
+    /* ═══════════════════════════════════════════════════════════════
+       NOTIFICATION PREFERENCES — Load saved prefs into UI on init
+    ═══════════════════════════════════════════════════════════════ */
+    (function () {
+        var PREFS_KEY = 'armsdealer_notif_prefs';
+
+        function _setCheck(id, val) {
+            var el = document.getElementById(id);
+            if (el) el.checked = !!val;
+        }
+        function _setVal(id, val) {
+            var el = document.getElementById(id);
+            if (el) el.value = val;
+        }
+
+        function applyPrefsToUI(prefs) {
+            _setCheck('emailNotifsToggle', prefs.email_enabled !== false);
+            _setCheck('inAppNotifsToggle', prefs.in_app_enabled !== false);
+            _setCheck('orderUpdatesToggle', prefs.order_updates !== false);
+            _setCheck('securityAlertsToggle', prefs.security_alerts !== false);
+            _setCheck('promoOffersToggle', !!prefs.promotional_offers);
+            _setCheck('quietHoursToggle', !!prefs.quiet_hours_enabled);
+            _setVal('quietFromInput', prefs.quiet_from || '22:00');
+            _setVal('quietUntilInput', prefs.quiet_until || '07:00');
+
+            // Show quiet hours config if enabled
+            var qcfg = document.getElementById('quietHoursConfig');
+            if (qcfg) qcfg.style.display = prefs.quiet_hours_enabled ? 'block' : 'none';
+
+            // Grey out event toggles if email master is off
+            var emailToggle = document.getElementById('emailNotifsToggle');
+            if (emailToggle && !emailToggle.checked) {
+                window.onEmailNotifsChange && window.onEmailNotifsChange(emailToggle);
+            }
+        }
+
+        // 1. Apply from localStorage immediately (fast, no flicker)
+        var local = {};
+        try {
+            var raw = localStorage.getItem(PREFS_KEY);
+            if (raw) local = JSON.parse(raw);
+        } catch (e) { }
+        if (Object.keys(local).length) applyPrefsToUI(local);
+
+        // 2. Fetch from server to sync (server is source of truth)
+        fetch('/api/settings/notifications')
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data.ok && data.prefs) {
+                    applyPrefsToUI(data.prefs);
+                    // Keep localStorage in sync with server
+                    try {
+                        localStorage.setItem(PREFS_KEY, JSON.stringify(data.prefs));
+                    } catch (e) { }
+                }
+            })
+            .catch(function () { /* network error — UI already set from localStorage */ });
     })();
 
 })();
