@@ -606,6 +606,61 @@ def dashboard():
         revenue_by_day.append(float(row[0]) if row else 0.0)
         revenue_labels.append(day.strftime('%a').upper())
 
+    # ── Currency for dashboard display ─────────────────────────────
+    currency = get_currency(db)
+    rate = currency['rate_to_php'] if currency else 1.0
+    symbol = currency['symbol'] if currency else '₱'
+
+    # Apply currency rate to revenue data and stats
+    revenue_by_day_converted = [round(v * rate) for v in revenue_by_day]
+    stats['total_revenue_converted'] = round(stats['total_revenue'] * rate)
+    stats['currency_symbol'] = symbol
+
+    # ── Order status breakdown for more detailed analytics ──────────
+    status_breakdown = {}
+    try:
+        status_rows = db.execute(
+            "SELECT status, COUNT(*) as cnt FROM orders GROUP BY status"
+        ).fetchall()
+        for row in status_rows:
+            status_breakdown[row['status']] = row['cnt']
+    except Exception:
+        pass
+
+    # ── Top products by revenue ──────────────────────────────────────
+    top_revenue_rows = db.execute("""
+        SELECT p.name, COALESCE(SUM(oi.quantity * oi.unit_price), 0) AS revenue,
+               p.sales_count
+        FROM products p
+        LEFT JOIN order_items oi ON oi.item_type = 'product' AND oi.item_id = p.id
+        LEFT JOIN orders o ON o.id = oi.order_id AND o.status = 'delivered'
+        GROUP BY p.id
+        ORDER BY revenue DESC
+        LIMIT 6
+    """).fetchall()
+    top_revenue_products = [dict(row) for row in top_revenue_rows]
+
+    # ── Recent users (last 5 registered) ───────────────────────────
+    recent_users = db.execute(
+        "SELECT id, username, email, role, created_at FROM users ORDER BY id DESC LIMIT 5"
+    ).fetchall()
+    recent_users = [dict(r) for r in recent_users]
+
+    # ── Low stock products (stock <= 5) ────────────────────────────
+    low_stock_rows = db.execute(
+        "SELECT id, name, stock FROM products WHERE stock <= 5 ORDER BY stock ASC LIMIT 10"
+    ).fetchall()
+    low_stock_products = [dict(r) for r in low_stock_rows]
+
+    # ── Categories with product counts ─────────────────────────────
+    category_stats = db.execute("""
+        SELECT c.name, COUNT(p.id) as product_count
+        FROM categories c
+        LEFT JOIN products p ON p.category_id = c.id
+        GROUP BY c.id ORDER BY product_count DESC LIMIT 8
+    """).fetchall()
+    category_stats = [dict(r) for r in category_stats]
+
     return render_template(
         'user/dashboard.html',
         stats=stats,
@@ -616,8 +671,16 @@ def dashboard():
         brands=brands,
         users=users,
         top_products=top_products,
-        revenue_by_day=revenue_by_day,
+        top_revenue_products=top_revenue_products,
+        revenue_by_day=revenue_by_day_converted,
         revenue_labels=revenue_labels,
+        currency=currency,
+        currency_rate=rate,
+        currency_symbol=symbol,
+        status_breakdown=status_breakdown,
+        recent_users=recent_users,
+        low_stock_products=low_stock_products,
+        category_stats=category_stats,
     )
 
 
@@ -1753,3 +1816,279 @@ def settings_delete_account():
 
     session.clear()
     return jsonify({'ok': True})
+
+
+# ─────────────────────────────────────────
+# ADMIN PRODUCT CRUD
+# ─────────────────────────────────────────
+
+_PRODUCT_IMAGE_FOLDER = os.path.join(
+    _PROJECT_ROOT, 'static', 'assets', 'images', 'productimages'
+)
+_SERVICE_IMAGE_FOLDER = os.path.join(
+    _PROJECT_ROOT, 'static', 'assets', 'images', 'serviceimages'
+)
+_BRAND_IMAGE_FOLDER = os.path.join(
+    _PROJECT_ROOT, 'static', 'assets', 'images', 'brandimages'
+)
+
+
+def _admin_required():
+    if not session.get('user_id'):
+        return jsonify(ok=False, error='Not authenticated'), 401
+    if session.get('role') != 'admin':
+        return jsonify(ok=False, error='Forbidden'), 403
+    return None
+
+
+@api_bp.route('/admin/product/add', methods=['POST'])
+def admin_add_product():
+    err = _admin_required()
+    if err:
+        return err
+    db = get_db()
+    name = (request.form.get('name') or '').strip()
+    if not name:
+        return jsonify(ok=False, error='Name is required'), 400
+    try:
+        price = float(request.form.get('price') or 0)
+        stock = int(request.form.get('stock') or 0)
+        discount = float(request.form.get('discount') or 0)
+        category_id = request.form.get('category_id') or None
+        brand_id = request.form.get('brand_id') or None
+        description = (request.form.get('description') or '').strip()
+        is_authorized = int(request.form.get('is_authorized') or 1)
+        slug = name.lower().replace(' ', '-').replace('/', '-')
+        # Ensure slug uniqueness
+        existing = db.execute(
+            'SELECT id FROM products WHERE slug = ?', (slug,)).fetchone()
+        if existing:
+            import time
+            slug = slug + '-' + str(int(time.time()))[-4:]
+        image_file = None
+        file = request.files.get('image_file')
+        if file and file.filename and _allowed_image(file.filename):
+            fname = secure_filename(f"prod_{slug}_{file.filename}")
+            os.makedirs(_PRODUCT_IMAGE_FOLDER, exist_ok=True)
+            file.save(os.path.join(_PRODUCT_IMAGE_FOLDER, fname))
+            image_file = fname
+        cur = db.execute(
+            '''INSERT INTO products (name, slug, price, stock, discount, description,
+               category_id, brand_id, is_authorized, image_file, rating, sales_count)
+               VALUES (?,?,?,?,?,?,?,?,?,?,0,0)''',
+            (name, slug, price, stock, discount, description,
+             category_id, brand_id, is_authorized, image_file)
+        )
+        db.commit()
+        return jsonify(ok=True, id=cur.lastrowid, slug=slug)
+    except Exception as e:
+        return jsonify(ok=False, error=str(e)), 500
+
+
+@api_bp.route('/admin/product/<int:pid>/edit', methods=['POST'])
+def admin_edit_product(pid):
+    err = _admin_required()
+    if err:
+        return err
+    db = get_db()
+    row = db.execute('SELECT * FROM products WHERE id = ?', (pid,)).fetchone()
+    if not row:
+        return jsonify(ok=False, error='Product not found'), 404
+    try:
+        name = (request.form.get('name') or row['name']).strip()
+        price = float(request.form.get('price') or row['price'])
+        stock = int(request.form.get('stock') or row['stock'])
+        discount = float(request.form.get('discount') or row['discount'] or 0)
+        category_id = request.form.get('category_id') or row['category_id']
+        brand_id = request.form.get('brand_id') or row['brand_id']
+        description = (request.form.get('description')
+                       or row['description'] or '').strip()
+        is_authorized = int(request.form.get('is_authorized') if request.form.get(
+            'is_authorized') is not None else row['is_authorized'])
+        image_file = row['image_file']
+        file = request.files.get('image_file')
+        if file and file.filename and _allowed_image(file.filename):
+            slug = row['slug']
+            fname = secure_filename(f"prod_{slug}_{file.filename}")
+            os.makedirs(_PRODUCT_IMAGE_FOLDER, exist_ok=True)
+            file.save(os.path.join(_PRODUCT_IMAGE_FOLDER, fname))
+            image_file = fname
+        db.execute(
+            '''UPDATE products SET name=?, price=?, stock=?, discount=?, description=?,
+               category_id=?, brand_id=?, is_authorized=?, image_file=?
+               WHERE id=?''',
+            (name, price, stock, discount, description,
+             category_id, brand_id, is_authorized, image_file, pid)
+        )
+        db.commit()
+        return jsonify(ok=True)
+    except Exception as e:
+        return jsonify(ok=False, error=str(e)), 500
+
+
+@api_bp.route('/admin/product/<int:pid>/delete', methods=['POST'])
+def admin_delete_product(pid):
+    err = _admin_required()
+    if err:
+        return err
+    db = get_db()
+    db.execute('DELETE FROM products WHERE id = ?', (pid,))
+    db.commit()
+    return jsonify(ok=True)
+
+
+# ─────────────────────────────────────────
+# ADMIN SERVICE CRUD
+# ─────────────────────────────────────────
+
+@api_bp.route('/admin/service/add', methods=['POST'])
+def admin_add_service():
+    err = _admin_required()
+    if err:
+        return err
+    db = get_db()
+    name = (request.form.get('name') or '').strip()
+    if not name:
+        return jsonify(ok=False, error='Name is required'), 400
+    try:
+        price = float(request.form.get('price') or 0)
+        discount = float(request.form.get('discount') or 0)
+        category_id = request.form.get('category_id') or None
+        description = (request.form.get('description') or '').strip()
+        is_authorized = int(request.form.get('is_authorized') or 1)
+        slug = name.lower().replace(' ', '-').replace('/', '-')
+        existing = db.execute(
+            'SELECT id FROM services WHERE slug = ?', (slug,)).fetchone()
+        if existing:
+            import time
+            slug = slug + '-' + str(int(time.time()))[-4:]
+        image_file = None
+        file = request.files.get('image_file')
+        if file and file.filename and _allowed_image(file.filename):
+            fname = secure_filename(f"svc_{slug}_{file.filename}")
+            os.makedirs(_SERVICE_IMAGE_FOLDER, exist_ok=True)
+            file.save(os.path.join(_SERVICE_IMAGE_FOLDER, fname))
+            image_file = fname
+        cur = db.execute(
+            '''INSERT INTO services (name, slug, price, discount, description,
+               category_id, is_authorized, image_file, rating, sales_count)
+               VALUES (?,?,?,?,?,?,?,?,0,0)''',
+            (name, slug, price, discount, description,
+             category_id, is_authorized, image_file)
+        )
+        db.commit()
+        return jsonify(ok=True, id=cur.lastrowid, slug=slug)
+    except Exception as e:
+        return jsonify(ok=False, error=str(e)), 500
+
+
+@api_bp.route('/admin/service/<int:sid>/edit', methods=['POST'])
+def admin_edit_service(sid):
+    err = _admin_required()
+    if err:
+        return err
+    db = get_db()
+    row = db.execute('SELECT * FROM services WHERE id = ?', (sid,)).fetchone()
+    if not row:
+        return jsonify(ok=False, error='Service not found'), 404
+    try:
+        name = (request.form.get('name') or row['name']).strip()
+        price = float(request.form.get('price') or row['price'])
+        discount = float(request.form.get('discount') or row['discount'] or 0)
+        category_id = request.form.get('category_id') or row['category_id']
+        description = (request.form.get('description')
+                       or row['description'] or '').strip()
+        is_authorized = int(request.form.get('is_authorized') if request.form.get(
+            'is_authorized') is not None else row['is_authorized'])
+        image_file = row['image_file']
+        file = request.files.get('image_file')
+        if file and file.filename and _allowed_image(file.filename):
+            slug = row['slug']
+            fname = secure_filename(f"svc_{slug}_{file.filename}")
+            os.makedirs(_SERVICE_IMAGE_FOLDER, exist_ok=True)
+            file.save(os.path.join(_SERVICE_IMAGE_FOLDER, fname))
+            image_file = fname
+        db.execute(
+            '''UPDATE services SET name=?, price=?, discount=?, description=?,
+               category_id=?, is_authorized=?, image_file=? WHERE id=?''',
+            (name, price, discount, description,
+             category_id, is_authorized, image_file, sid)
+        )
+        db.commit()
+        return jsonify(ok=True)
+    except Exception as e:
+        return jsonify(ok=False, error=str(e)), 500
+
+
+@api_bp.route('/admin/service/<int:sid>/delete', methods=['POST'])
+def admin_delete_service(sid):
+    err = _admin_required()
+    if err:
+        return err
+    db = get_db()
+    db.execute('DELETE FROM services WHERE id = ?', (sid,))
+    db.commit()
+    return jsonify(ok=True)
+
+
+# ─────────────────────────────────────────
+# ADMIN USER MANAGEMENT
+# ─────────────────────────────────────────
+
+@api_bp.route('/admin/user/<int:uid>/role', methods=['POST'])
+def admin_update_user_role(uid):
+    err = _admin_required()
+    if err:
+        return err
+    data = request.get_json(silent=True) or {}
+    role = (data.get('role') or '').strip().lower()
+    if role not in ('admin', 'customer'):
+        return jsonify(ok=False, error='Invalid role'), 400
+    db = get_db()
+    db.execute("UPDATE users SET role=? WHERE id=?", (role, uid))
+    db.commit()
+    return jsonify(ok=True, role=role)
+
+
+@api_bp.route('/admin/user/<int:uid>/delete', methods=['POST'])
+def admin_delete_user(uid):
+    err = _admin_required()
+    if err:
+        return err
+    if uid == session.get('user_id'):
+        return jsonify(ok=False, error='Cannot delete your own account'), 400
+    db = get_db()
+    db.execute('DELETE FROM cart_items WHERE user_id = ?', (uid,))
+    order_ids = [r[0] for r in db.execute(
+        'SELECT id FROM orders WHERE user_id = ?', (uid,)).fetchall()]
+    for oid in order_ids:
+        db.execute('DELETE FROM order_items WHERE order_id = ?', (oid,))
+    db.execute('DELETE FROM orders WHERE user_id = ?', (uid,))
+    db.execute('DELETE FROM users WHERE id = ?', (uid,))
+    db.commit()
+    return jsonify(ok=True)
+
+
+# ─────────────────────────────────────────
+# ADMIN CATEGORIES (for product/service add forms)
+# ─────────────────────────────────────────
+
+@api_bp.route('/admin/categories')
+def admin_get_categories():
+    err = _admin_required()
+    if err:
+        return err
+    db = get_db()
+    rows = db.execute(
+        'SELECT id, name, type FROM categories ORDER BY name').fetchall()
+    return jsonify(ok=True, categories=[dict(r) for r in rows])
+
+
+@api_bp.route('/admin/brands-list')
+def admin_get_brands():
+    err = _admin_required()
+    if err:
+        return err
+    db = get_db()
+    rows = db.execute('SELECT id, name FROM brands ORDER BY name').fetchall()
+    return jsonify(ok=True, brands=[dict(r) for r in rows])
