@@ -1129,3 +1129,43 @@ def revoke_all_sessions():
     )
     db.commit()
     return jsonify({'ok': True})
+
+
+# ─────────────────────────────────────────
+# NOTIFICATION PREFERENCES
+# ─────────────────────────────────────────
+
+@api_bp.route('/settings/notifications', methods=['GET', 'POST'])
+def settings_notifications():
+    """GET: return current notification prefs.
+       POST: save notification prefs JSON to users.notification_prefs column.
+       Auto-creates the column if it doesn't yet exist (migration-safe).
+    """
+    if not session.get('user_id'):
+        return jsonify({'ok': False, 'error': 'Not logged in'}), 401
+
+    import json as _json
+    user_id = session['user_id']
+    db = get_db()
+
+    # Ensure the column exists (safe no-op if it already does)
+    try:
+        db.execute("ALTER TABLE users ADD COLUMN notification_prefs TEXT")
+        db.commit()
+    except Exception:
+        pass  # Column already exists — ignore
+
+    if request.method == 'GET':
+        from email_service import _get_notif_prefs
+        prefs = _get_notif_prefs(db, user_id)
+        return jsonify({'ok': True, 'prefs': prefs})
+
+    # POST — save
+    data = request.get_json(silent=True) or {}
+    prefs_json = _json.dumps(data)
+    db.execute(
+        "UPDATE users SET notification_prefs = ? WHERE id = ?",
+        (prefs_json, user_id)
+    )
+    db.commit()
+    return jsonify({'ok': True})

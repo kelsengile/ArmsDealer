@@ -3,6 +3,7 @@
 # ──────────────────────────────────────────────────────────────────────────────────
 from flask import Blueprint, render_template, session, redirect, url_for, request, jsonify
 from db_helpers import get_db, get_currency
+from email_service import send_order_confirmation, send_order_status_update
 
 cart_bp = Blueprint('cart', __name__)
 
@@ -300,6 +301,37 @@ def place_order():
     # Keep session in sync so every page reflects the empty cart
     session['cart_count'] = 0
 
+    # ── Send order confirmation email ───────────────────────────────────
+    try:
+        user_row = db.execute(
+            'SELECT email, username FROM users WHERE id = ?', (user_id,)
+        ).fetchone()
+        if user_row:
+            items_for_email = db.execute("""
+                SELECT
+                    oi.quantity, oi.unit_price AS price,
+                    CASE
+                        WHEN oi.item_type = 'product' THEN p.name
+                        WHEN oi.item_type = 'service' THEN s.name
+                    END AS name
+                FROM order_items oi
+                LEFT JOIN products p ON oi.item_type = 'product' AND oi.item_id = p.id
+                LEFT JOIN services s ON oi.item_type = 'service' AND oi.item_id = s.id
+                WHERE oi.order_id = ?
+            """, (order_id,)).fetchall()
+            send_order_confirmation(
+                db,
+                user_id=user_id,
+                order_id=order_id,
+                order_items=[dict(r) for r in items_for_email],
+                total=total,
+                payment_method=payment_method,
+                user_email=user_row['email'],
+                username=user_row['username'],
+            )
+    except Exception:
+        pass  # Never block the redirect on email failure
+
     return redirect(url_for('main.orders') + '?tab=shipping')
 
 
@@ -434,6 +466,27 @@ def admin_update_order_status(order_id):
             })
 
     db.commit()
+
+    # ── Send status-change email to the order owner ─────────────────────
+    email_statuses = {'packing', 'shipping', 'delivered', 'cancelled'}
+    if new_status in email_statuses:
+        try:
+            order_owner = db.execute(
+                'SELECT o.user_id, u.email, u.username '
+                'FROM orders o JOIN users u ON o.user_id = u.id '
+                'WHERE o.id = ?', (order_id,)
+            ).fetchone()
+            if order_owner:
+                send_order_status_update(
+                    db,
+                    user_id=order_owner['user_id'],
+                    order_id=order_id,
+                    new_status=new_status,
+                    user_email=order_owner['email'],
+                    username=order_owner['username'],
+                )
+        except Exception:
+            pass  # Never let email failure break the admin action
 
     response = {'ok': True, 'status': new_status}
     if stock_updates:

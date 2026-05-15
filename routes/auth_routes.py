@@ -14,6 +14,7 @@ from flask import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 from db_helpers import get_db
+from email_service import send_login_notification
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -166,6 +167,17 @@ def login():
             return render_template('auth/login.html')
         _populate_session(user)
         _log_login(user['id'], success=True)
+        # ── Security: send login notification email ─────────────
+        try:
+            send_login_notification(
+                db,
+                user_id=user['id'],
+                user_email=user['email'],
+                username=user['username'],
+                ip_address=request.remote_addr,
+            )
+        except Exception:
+            pass  # Never block login on email failure
         flash(f'Welcome back, {user["username"]}.', 'success')
         return redirect(request.args.get('next') or url_for('main.homepage'))
     return render_template('auth/login.html')
