@@ -1332,9 +1332,9 @@
                     <!-- Stat cards -->
                     <div class="adm-stats-grid">
                         <div class="adm-stat-card gold">
-                            <div class="adm-stat-icon">₱</div>
+                            <div class="adm-stat-icon">{{ currency.symbol if currency else '₱' }}</div>
                             <div class="adm-stat-label">Total Revenue</div>
-                            <div class="adm-stat-value">₱{{ '{:,.0f}'.format(stats.total_revenue) }}</div>
+                            <div class="adm-stat-value">{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(stats.total_revenue_converted if stats.total_revenue_converted is defined else stats.total_revenue) }}</div>
                             <div class="adm-stat-delta pos">▲ All time</div>
                         </div>
                         <div class="adm-stat-card highlight">
@@ -1452,6 +1452,141 @@
                         </div>
                     </div>
 
+                    <!-- Analytics Tables Row: Low Stock + Recent Users -->
+                    <div class="adm-charts-row" style="grid-template-columns: 1fr 1fr; margin-bottom: 28px;">
+                        <!-- Low Stock Alert Table -->
+                        <div class="adm-chart-card">
+                            <div class="adm-chart-header">
+                                <span class="adm-chart-title" style="color:#c0392b;">⚠ Low Stock Alert</span>
+                                <span class="adm-chart-meta">Stock ≤ 5</span>
+                            </div>
+                            <div class="adm-chart-body" style="padding:0;">
+                                {% if low_stock_products is defined and low_stock_products %}
+                                <table class="adm-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th style="text-align:right;">Stock</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for p in low_stock_products %}
+                                        <tr>
+                                            <td style="font-size:10px;">{{ p.name[:32] }}{% if p.name|length > 32 %}…{% endif %}</td>
+                                            <td style="text-align:right;">
+                                                <span style="font-family:var(--font-stencil);font-size:12px;font-weight:700;color:{% if p.stock == 0 %}#c0392b{% else %}var(--mil-gold){% endif %};">{{ p.stock }}</span>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% else %}
+                                <div class="adm-empty" style="min-height:100px;">
+                                    <div class="adm-empty-text" style="color:var(--mil-bright);">✓ All stocked</div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Recent Users Table -->
+                        <div class="adm-chart-card">
+                            <div class="adm-chart-header">
+                                <span class="adm-chart-title">Recent Registrations</span>
+                                <span class="adm-chart-meta">Last 5 users</span>
+                            </div>
+                            <div class="adm-chart-body" style="padding:0;">
+                                {% if recent_users is defined and recent_users %}
+                                <table class="adm-table">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Role</th>
+                                            <th>Joined</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for u in recent_users %}
+                                        <tr>
+                                            <td>
+                                                <div class="adm-user-cell">
+                                                    <div class="adm-user-avatar">{{ u.username[0].upper() }}</div>
+                                                    <span style="font-size:10px;">{{ u.username }}</span>
+                                                </div>
+                                            </td>
+                                            <td><span class="adm-role-pill adm-role-{{ u.role }}">{{ u.role|upper }}</span></td>
+                                            <td style="font-size:10px;color:var(--mil-muted);">{{ u.created_at[:10] if u.created_at else '—' }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% else %}
+                                <div class="adm-empty" style="min-height:100px;">
+                                    <div class="adm-empty-text">No users yet</div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Distribution + Top Revenue Products -->
+                    <div class="adm-charts-row" style="grid-template-columns: 1fr 1fr; margin-bottom: 28px;">
+                        <!-- Category Stats -->
+                        <div class="adm-chart-card">
+                            <div class="adm-chart-header">
+                                <span class="adm-chart-title">Categories</span>
+                                <span class="adm-chart-meta">Product count</span>
+                            </div>
+                            <div class="adm-chart-body">
+                                {% if category_stats is defined and category_stats %}
+                                {% set max_cat = category_stats[0].product_count if category_stats[0].product_count > 0 else 1 %}
+                                <div class="adm-sparkline-wrap">
+                                    {% for cat in category_stats %}
+                                    <div class="adm-sparkline-item">
+                                        <div class="adm-sparkline-label">
+                                            <span class="adm-sparkline-name">{{ cat.name[:24] }}</span>
+                                            <span class="adm-sparkline-val" style="color:var(--mil-blue);">{{ cat.product_count }}</span>
+                                        </div>
+                                        <div class="adm-bar-track">
+                                            <div class="adm-bar-fill" style="background:var(--mil-blue);width:{{ (cat.product_count / max_cat * 100)|int }}%;"></div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="adm-empty" style="min-height:100px;"><div class="adm-empty-text">No data</div></div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Top Revenue Products -->
+                        <div class="adm-chart-card">
+                            <div class="adm-chart-header">
+                                <span class="adm-chart-title">Top Products by Revenue</span>
+                                <span class="adm-chart-meta">Delivered orders</span>
+                            </div>
+                            <div class="adm-chart-body" style="padding:0;">
+                                {% if top_revenue_products is defined and top_revenue_products %}
+                                <table class="adm-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th style="text-align:right;">Revenue</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for p in top_revenue_products %}
+                                        <tr>
+                                            <td style="font-size:10px;">{{ p.name[:30] }}{% if p.name|length > 30 %}…{% endif %}</td>
+                                            <td style="text-align:right;font-family:var(--font-stencil);font-size:11px;font-weight:700;color:var(--mil-gold);">{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(p.revenue * (currency.rate_to_php if currency else 1)) }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% else %}
+                                <div class="adm-empty" style="min-height:100px;"><div class="adm-empty-text">No revenue data</div></div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </section>
 
@@ -1509,7 +1644,7 @@
                                     </td>
                                     <td>{{ order.created_at[:10] if order.created_at else '—' }}</td>
                                     <td>{{ order.item_count or 0 }}</td>
-                                    <td>₱{{ '{:,.0f}'.format(order.total) }}</td>
+                                    <td>{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(order.total * (currency.rate_to_php if currency else 1)) }}</td>
                                     <td>
                                         <span class="adm-status-pill adm-status-{{ order.status | lower | replace(' ', '-') }}"
                                               id="status-{{ order.id }}">
@@ -1637,7 +1772,7 @@
                         <span class="adm-section-sub">Products stock levels &amp; catalog</span>
                     </div>
                     <div class="adm-section-actions">
-                        <a href="{{ url_for('admin.add_product') if admin is defined else '#' }}" class="adm-btn primary">+ Add Product</a>
+                        <button class="adm-btn primary" onclick="openAddProductModal()">+ Add Product</button>
                     </div>
                 </div>
                 <div class="adm-section-body">
@@ -1675,14 +1810,19 @@
                                 <tr data-name="{{ p.name | lower }}"
                                     data-stock="{{ p.stock }}"
                                     data-stock-pct="{{ [p.stock * 2, 100]|min }}"
-                                    data-edit-href="{{ url_for('admin.edit_product', id=p.id) if admin is defined else '#' }}"
-                                    data-delete-href="{{ url_for('admin.delete_product', id=p.id) if admin is defined else '#' }}"
-                                    data-product-name="{{ p.name | e }}">
+                                    data-product-id="{{ p.id }}"
+                                    data-product-name="{{ p.name | e }}"
+                                    data-product-price="{{ p.price }}"
+                                    data-product-stock="{{ p.stock }}"
+                                    data-product-discount="{{ p.discount or 0 }}"
+                                    data-product-category="{{ p.category_name or '' }}"
+                                    data-product-brand="{{ p.brand_name or '' }}"
+                                    data-product-authorized="{{ p.is_authorized }}">
                                     <td><span class="adm-table-id" style="font-size:11px;">{{ p.id }}</span></td>
                                     <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ p.name }}</td>
                                     <td style="font-size:10px;color:var(--mil-muted);">{{ p.category_name if p.category_name is defined else '—' }}</td>
                                     <td style="font-size:10px;color:var(--mil-muted);">{{ p.brand_name if p.brand_name is defined else '—' }}</td>
-                                    <td>₱{{ '{:,.0f}'.format(p.price) }}</td>
+                                    <td>{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(p.price * (currency.rate_to_php if currency else 1)) }}</td>
                                     <td>
                                         <div class="adm-stock-bar">
                                             <div class="adm-stock-track">
@@ -1704,8 +1844,8 @@
                                     </td>
                                     <td>
                                         <div style="display:flex;gap:4px;">
-                                            <a class="adm-icon-btn adm-edit-btn" title="Edit">✎</a>
-                                            <button class="adm-icon-btn danger adm-delete-btn" title="Delete">✕</button>
+                                            <button class="adm-icon-btn adm-edit-product-btn" data-id="{{ p.id }}" title="Edit">✎</button>
+                                            <button class="adm-icon-btn danger adm-delete-product-btn" data-id="{{ p.id }}" data-name="{{ p.name | e }}" title="Delete">✕</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -1731,7 +1871,7 @@
                         <span class="adm-section-sub">Manage offered services</span>
                     </div>
                     <div class="adm-section-actions">
-                        <a href="{{ url_for('admin.add_service') if admin is defined else '#' }}" class="adm-btn primary">+ Add Service</a>
+                        <button class="adm-btn primary" onclick="openAddServiceModal()">+ Add Service</button>
                     </div>
                 </div>
                 <div class="adm-section-body">
@@ -1759,11 +1899,17 @@
                             </thead>
                             <tbody id="servicesTableBody">
                                 {% for s in services %}
-                                <tr data-name="{{ s.name | lower }}">
+                                <tr data-name="{{ s.name | lower }}"
+                                    data-service-id="{{ s.id }}"
+                                    data-service-name="{{ s.name | e }}"
+                                    data-service-price="{{ s.price }}"
+                                    data-service-discount="{{ s.discount or 0 }}"
+                                    data-service-category="{{ s.category_name or '' }}"
+                                    data-service-authorized="{{ s.is_authorized }}">
                                     <td><span class="adm-table-id" style="font-size:11px;">{{ s.id }}</span></td>
                                     <td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ s.name }}</td>
                                     <td style="font-size:10px;color:var(--mil-muted);">{{ s.category_name if s.category_name is defined else '—' }}</td>
-                                    <td>₱{{ '{:,.0f}'.format(s.price) }}</td>
+                                    <td>{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(s.price * (currency.rate_to_php if currency else 1)) }}</td>
                                     <td>{{ s.discount if s.discount else '—' }}{% if s.discount %}%{% endif %}</td>
                                     <td><span class="adm-rating">★ {{ '%.1f'|format(s.rating) }}</span></td>
                                     <td>{{ s.sales_count }}</td>
@@ -1776,8 +1922,8 @@
                                     </td>
                                     <td>
                                         <div style="display:flex;gap:4px;">
-                                            <a href="{{ url_for('admin.edit_service', id=s.id) if admin is defined else '#' }}" class="adm-icon-btn" title="Edit">✎</a>
-                                            <button class="adm-icon-btn danger" title="Delete">✕</button>
+                                            <button class="adm-icon-btn adm-edit-service-btn" data-id="{{ s.id }}" title="Edit">✎</button>
+                                            <button class="adm-icon-btn danger adm-delete-service-btn" data-id="{{ s.id }}" data-name="{{ s.name | e }}" title="Delete">✕</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -1813,7 +1959,8 @@
                         <div class="adm-brand-card">
                             <div class="adm-brand-logo">
                                 {% if b.logo_file %}
-                                <img src="{{ url_for('static', filename='img/brands/' + b.logo_file) }}" alt="{{ b.name }}">
+                                <img src="{{ url_for('static', filename='assets/icons/brandslogo/' + b.logo_file) }}" alt="{{ b.name }}"
+                                     onerror="this.style.display='none';this.parentElement.textContent='{{ b.name[0].upper() }}'">
                                 {% else %}
                                 {{ b.name[0].upper() }}
                                 {% endif %}
@@ -1826,7 +1973,7 @@
                                 </div>
                             </div>
                             <div style="display:flex;flex-direction:column;gap:4px;">
-                                <a href="{{ url_for('admin.edit_brand', id=b.id) if admin is defined else '#' }}" class="adm-icon-btn" title="Edit">✎</a>
+                                <button class="adm-icon-btn adm-edit-brand-btn" data-id="{{ b.id }}" data-name="{{ b.name | e }}" title="Edit">✎</button>
                             </div>
                         </div>
                         {% endfor %}
@@ -1879,13 +2026,15 @@
                                 {% for u in users %}
                                 <tr data-username="{{ u.username | lower }}"
                                     data-email="{{ u.email | lower }}"
-                                    data-role="{{ u.role | lower }}">
+                                    data-role="{{ u.role | lower }}"
+                                    data-user-id="{{ u.id }}">
                                     <td><span class="adm-table-id" style="font-size:11px;">{{ u.id }}</span></td>
                                     <td>
                                         <div class="adm-user-cell">
                                             <div class="adm-user-avatar">
                                                 {% if u.profile_image %}
-                                                <img src="{{ url_for('static', filename='img/profiles/' + u.profile_image) }}" alt="{{ u.username }}">
+                                                <img src="{{ url_for('static', filename='assets/images/userimages/' + u.profile_image) }}" alt="{{ u.username }}"
+                                                     onerror="this.style.display='none';this.parentElement.textContent='{{ u.username[0].upper() }}'">
                                                 {% else %}
                                                 {{ u.username[0].upper() }}
                                                 {% endif %}
@@ -1895,15 +2044,19 @@
                                     </td>
                                     <td style="font-size:10px;">{{ u.email }}</td>
                                     <td>
-                                        <span class="adm-role-pill adm-role-{{ u.role | lower }}">{{ u.role | upper }}</span>
+                                        <span class="adm-role-pill adm-role-{{ u.role | lower }}" id="user-role-{{ u.id }}">{{ u.role | upper }}</span>
                                     </td>
                                     <td style="font-size:10px;color:var(--mil-muted);">{{ u.country or '—' }}</td>
                                     <td style="font-size:10px;">{{ u.created_at[:10] if u.created_at else '—' }}</td>
                                     <td>
                                         <div style="display:flex;gap:4px;">
-                                            <a href="{{ url_for('admin.view_user', id=u.id) if admin is defined else '#' }}" class="adm-icon-btn" title="View">⊡</a>
                                             {% if u.role != 'admin' %}
-                                            <button class="adm-icon-btn danger" title="Ban/Delete">✕</button>
+                                            <button class="adm-icon-btn adm-promote-btn" data-id="{{ u.id }}" data-username="{{ u.username | e }}" title="Promote to Admin" style="color:var(--mil-gold);border-color:#5a4010;">★</button>
+                                            {% else %}
+                                            <button class="adm-icon-btn adm-demote-btn" data-id="{{ u.id }}" data-username="{{ u.username | e }}" title="Demote to Customer" style="font-size:9px;">▼</button>
+                                            {% endif %}
+                                            {% if u.role != 'admin' %}
+                                            <button class="adm-icon-btn danger adm-delete-user-btn" data-id="{{ u.id }}" data-username="{{ u.username | e }}" title="Delete User">✕</button>
                                             {% endif %}
                                         </div>
                                     </td>
@@ -1975,6 +2128,118 @@
 
 <!-- Toast -->
 <div class="adm-toast" id="admToast"></div>
+
+<!-- ─── PRODUCT ADD/EDIT MODAL ──────────────────────────────── -->
+<div class="adm-modal-overlay" id="productModal">
+    <div class="adm-modal" style="width:580px;">
+        <div class="adm-modal-header">
+            <span class="adm-modal-title" id="productModalTitle">Add Product</span>
+            <button class="adm-modal-close" onclick="document.getElementById('productModal').classList.remove('open')">✕</button>
+        </div>
+        <div class="adm-modal-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="adm-modal-field" style="grid-column:1/-1;">
+                    <span class="adm-modal-field-label">Product Name *</span>
+                    <input type="text" id="pName" class="adm-search-input" style="width:100%;padding:8px 10px;" placeholder="e.g. AR-15 Rifle">
+                </div>
+                <div class="adm-modal-field">
+                    <span class="adm-modal-field-label">Price (PHP) *</span>
+                    <input type="number" id="pPrice" class="adm-search-input" style="width:100%;padding:8px 10px;" placeholder="0">
+                </div>
+                <div class="adm-modal-field">
+                    <span class="adm-modal-field-label">Stock</span>
+                    <input type="number" id="pStock" class="adm-search-input" style="width:100%;padding:8px 10px;" placeholder="0">
+                </div>
+                <div class="adm-modal-field">
+                    <span class="adm-modal-field-label">Discount (%)</span>
+                    <input type="number" id="pDiscount" class="adm-search-input" style="width:100%;padding:8px 10px;" placeholder="0" min="0" max="100">
+                </div>
+                <div class="adm-modal-field">
+                    <span class="adm-modal-field-label">Authorized</span>
+                    <select id="pAuthorized" class="adm-filter-select" style="width:100%;padding:8px 10px;">
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                <div class="adm-modal-field">
+                    <span class="adm-modal-field-label">Category</span>
+                    <select id="pCategory" class="adm-filter-select" style="width:100%;padding:8px 10px;">
+                        <option value="">— Select —</option>
+                    </select>
+                </div>
+                <div class="adm-modal-field">
+                    <span class="adm-modal-field-label">Brand</span>
+                    <select id="pBrand" class="adm-filter-select" style="width:100%;padding:8px 10px;">
+                        <option value="">— Select —</option>
+                    </select>
+                </div>
+                <div class="adm-modal-field" style="grid-column:1/-1;">
+                    <span class="adm-modal-field-label">Description</span>
+                    <textarea id="pDescription" rows="3" style="width:100%;padding:8px 10px;background:var(--mil-panel);border:1px solid var(--mil-border);color:var(--mil-text);font-family:var(--font-mono);font-size:11px;resize:vertical;" placeholder="Product description..."></textarea>
+                </div>
+                <div class="adm-modal-field" style="grid-column:1/-1;">
+                    <span class="adm-modal-field-label">Image</span>
+                    <input type="file" id="pImage" accept="image/*" style="color:var(--mil-text);font-family:var(--font-mono);font-size:11px;">
+                </div>
+            </div>
+        </div>
+        <div class="adm-modal-footer">
+            <button class="adm-btn" onclick="document.getElementById('productModal').classList.remove('open')">Cancel</button>
+            <button class="adm-btn primary" id="productSaveBtn" onclick="saveProduct()">Save Product</button>
+        </div>
+    </div>
+</div>
+
+<!-- ─── SERVICE ADD/EDIT MODAL ──────────────────────────────── -->
+<div class="adm-modal-overlay" id="serviceModal">
+    <div class="adm-modal" style="width:520px;">
+        <div class="adm-modal-header">
+            <span class="adm-modal-title" id="serviceModalTitle">Add Service</span>
+            <button class="adm-modal-close" onclick="document.getElementById('serviceModal').classList.remove('open')">✕</button>
+        </div>
+        <div class="adm-modal-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="adm-modal-field" style="grid-column:1/-1;">
+                    <span class="adm-modal-field-label">Service Name *</span>
+                    <input type="text" id="sName" class="adm-search-input" style="width:100%;padding:8px 10px;" placeholder="e.g. Rifle Cleaning">
+                </div>
+                <div class="adm-modal-field">
+                    <span class="adm-modal-field-label">Price (PHP) *</span>
+                    <input type="number" id="sPrice" class="adm-search-input" style="width:100%;padding:8px 10px;" placeholder="0">
+                </div>
+                <div class="adm-modal-field">
+                    <span class="adm-modal-field-label">Discount (%)</span>
+                    <input type="number" id="sDiscount" class="adm-search-input" style="width:100%;padding:8px 10px;" placeholder="0" min="0" max="100">
+                </div>
+                <div class="adm-modal-field">
+                    <span class="adm-modal-field-label">Category</span>
+                    <select id="sCategory" class="adm-filter-select" style="width:100%;padding:8px 10px;">
+                        <option value="">— Select —</option>
+                    </select>
+                </div>
+                <div class="adm-modal-field">
+                    <span class="adm-modal-field-label">Authorized</span>
+                    <select id="sAuthorized" class="adm-filter-select" style="width:100%;padding:8px 10px;">
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                <div class="adm-modal-field" style="grid-column:1/-1;">
+                    <span class="adm-modal-field-label">Description</span>
+                    <textarea id="sDescription" rows="3" style="width:100%;padding:8px 10px;background:var(--mil-panel);border:1px solid var(--mil-border);color:var(--mil-text);font-family:var(--font-mono);font-size:11px;resize:vertical;" placeholder="Service description..."></textarea>
+                </div>
+                <div class="adm-modal-field" style="grid-column:1/-1;">
+                    <span class="adm-modal-field-label">Image</span>
+                    <input type="file" id="sImage" accept="image/*" style="color:var(--mil-text);font-family:var(--font-mono);font-size:11px;">
+                </div>
+            </div>
+        </div>
+        <div class="adm-modal-footer">
+            <button class="adm-btn" onclick="document.getElementById('serviceModal').classList.remove('open')">Cancel</button>
+            <button class="adm-btn primary" id="serviceSaveBtn" onclick="saveService()">Save Service</button>
+        </div>
+    </div>
+</div>
 
 <script type="application/json" id="dashboardData">
 {
@@ -2366,7 +2631,7 @@
             el.style.width = el.dataset.pct + '%';
         });
 
-        /* ── Inventory table: stock bars, colours, buttons ── */
+        /* ── Inventory table: stock bars, colours ────── */
         document.querySelectorAll('#inventoryTableBody tr[data-stock]').forEach(function (row) {
             var stock    = parseInt(row.dataset.stock, 10);
             var stockPct = parseInt(row.dataset.stockPct, 10);
@@ -2382,25 +2647,308 @@
                 if (stock === 0)      { num.style.color = '#c0392b'; }
                 else if (stock <= 5)  { num.style.color = 'var(--mil-gold)'; }
             }
-
-            /* Edit button href */
-            var editBtn = row.querySelector('.adm-edit-btn');
-            if (editBtn) { editBtn.href = row.dataset.editHref || '#'; }
-
-            /* Delete button — safe confirm dialog (no inline Jinja2 in onclick) */
-            var delBtn = row.querySelector('.adm-delete-btn');
-            if (delBtn) {
-                delBtn.addEventListener('click', function () {
-                    var name = row.dataset.productName || 'this product';
-                    var href = row.dataset.deleteHref   || '#';
-                    if (confirm('Delete ' + name + '?')) {
-                        window.location.href = href;
-                    }
-                });
-            }
         });
 
     })();
+</script>
+
+<script>
+(function () {
+    'use strict';
+
+    /* ─── Toast ──────────────────────────────────── */
+    function showToast(msg, type) {
+        const t = document.getElementById('admToast');
+        if (!t) return;
+        t.textContent = msg;
+        t.className = 'adm-toast' + (type === 'err' ? ' err' : '');
+        void t.offsetWidth;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3200);
+    }
+    window._showToast = showToast;
+
+    /* ─── Load categories & brands into selects ──── */
+    function loadCategoriesAndBrands() {
+        fetch('/api/admin/categories')
+            .then(r => r.json())
+            .then(data => {
+                if (!data.ok) return;
+                ['pCategory', 'sCategory'].forEach(id => {
+                    const sel = document.getElementById(id);
+                    if (!sel) return;
+                    data.categories.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.id;
+                        opt.textContent = c.name + (c.type ? ' [' + c.type + ']' : '');
+                        sel.appendChild(opt);
+                    });
+                });
+            })
+            .catch(() => {});
+
+        fetch('/api/admin/brands-list')
+            .then(r => r.json())
+            .then(data => {
+                if (!data.ok) return;
+                const sel = document.getElementById('pBrand');
+                if (!sel) return;
+                data.brands.forEach(b => {
+                    const opt = document.createElement('option');
+                    opt.value = b.id;
+                    opt.textContent = b.name;
+                    sel.appendChild(opt);
+                });
+            })
+            .catch(() => {});
+    }
+    loadCategoriesAndBrands();
+
+    /* ─── Product Modal ──────────────────────────── */
+    let _editProductId = null;
+
+    window.openAddProductModal = function () {
+        _editProductId = null;
+        document.getElementById('productModalTitle').textContent = 'Add Product';
+        document.getElementById('productSaveBtn').textContent = 'Save Product';
+        ['pName','pPrice','pStock','pDiscount','pDescription'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        document.getElementById('pAuthorized').value = '1';
+        document.getElementById('pCategory').value = '';
+        document.getElementById('pBrand').value = '';
+        document.getElementById('pImage').value = '';
+        document.getElementById('productModal').classList.add('open');
+    };
+
+    window.openEditProductModal = function (row) {
+        _editProductId = row.dataset.productId;
+        document.getElementById('productModalTitle').textContent = 'Edit Product — #' + _editProductId;
+        document.getElementById('productSaveBtn').textContent = 'Update Product';
+        document.getElementById('pName').value       = row.dataset.productName || '';
+        document.getElementById('pPrice').value      = row.dataset.productPrice || '';
+        document.getElementById('pStock').value      = row.dataset.productStock || '';
+        document.getElementById('pDiscount').value   = row.dataset.productDiscount || '';
+        document.getElementById('pAuthorized').value = row.dataset.productAuthorized || '1';
+        document.getElementById('pDescription').value = '';
+        document.getElementById('pImage').value = '';
+        document.getElementById('productModal').classList.add('open');
+    };
+
+    window.saveProduct = function () {
+        const name = document.getElementById('pName').value.trim();
+        if (!name) { showToast('Product name is required', 'err'); return; }
+
+        const fd = new FormData();
+        fd.append('name',         name);
+        fd.append('price',        document.getElementById('pPrice').value || '0');
+        fd.append('stock',        document.getElementById('pStock').value || '0');
+        fd.append('discount',     document.getElementById('pDiscount').value || '0');
+        fd.append('is_authorized',document.getElementById('pAuthorized').value);
+        fd.append('category_id',  document.getElementById('pCategory').value);
+        fd.append('brand_id',     document.getElementById('pBrand').value);
+        fd.append('description',  document.getElementById('pDescription').value);
+        const img = document.getElementById('pImage').files[0];
+        if (img) fd.append('image_file', img);
+
+        const url = _editProductId
+            ? '/api/admin/product/' + _editProductId + '/edit'
+            : '/api/admin/product/add';
+        const btn = document.getElementById('productSaveBtn');
+        btn.disabled = true; btn.textContent = 'Saving…';
+
+        fetch(url, { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(data => {
+                btn.disabled = false; btn.textContent = _editProductId ? 'Update Product' : 'Save Product';
+                if (data.ok) {
+                    showToast(_editProductId ? 'Product updated ✓' : 'Product added ✓');
+                    document.getElementById('productModal').classList.remove('open');
+                    setTimeout(() => location.reload(), 800);
+                } else {
+                    showToast(data.error || 'Save failed', 'err');
+                }
+            })
+            .catch(() => { btn.disabled = false; showToast('Network error', 'err'); });
+    };
+
+    /* ─── Service Modal ──────────────────────────── */
+    let _editServiceId = null;
+
+    window.openAddServiceModal = function () {
+        _editServiceId = null;
+        document.getElementById('serviceModalTitle').textContent = 'Add Service';
+        document.getElementById('serviceSaveBtn').textContent = 'Save Service';
+        ['sName','sPrice','sDiscount','sDescription'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        document.getElementById('sAuthorized').value = '1';
+        document.getElementById('sCategory').value = '';
+        document.getElementById('sImage').value = '';
+        document.getElementById('serviceModal').classList.add('open');
+    };
+
+    window.openEditServiceModal = function (row) {
+        _editServiceId = row.dataset.serviceId;
+        document.getElementById('serviceModalTitle').textContent = 'Edit Service — #' + _editServiceId;
+        document.getElementById('serviceSaveBtn').textContent = 'Update Service';
+        document.getElementById('sName').value       = row.dataset.serviceName || '';
+        document.getElementById('sPrice').value      = row.dataset.servicePrice || '';
+        document.getElementById('sDiscount').value   = row.dataset.serviceDiscount || '';
+        document.getElementById('sAuthorized').value = row.dataset.serviceAuthorized || '1';
+        document.getElementById('sDescription').value = '';
+        document.getElementById('sImage').value = '';
+        document.getElementById('serviceModal').classList.add('open');
+    };
+
+    window.saveService = function () {
+        const name = document.getElementById('sName').value.trim();
+        if (!name) { showToast('Service name is required', 'err'); return; }
+
+        const fd = new FormData();
+        fd.append('name',         name);
+        fd.append('price',        document.getElementById('sPrice').value || '0');
+        fd.append('discount',     document.getElementById('sDiscount').value || '0');
+        fd.append('is_authorized',document.getElementById('sAuthorized').value);
+        fd.append('category_id',  document.getElementById('sCategory').value);
+        fd.append('description',  document.getElementById('sDescription').value);
+        const img = document.getElementById('sImage').files[0];
+        if (img) fd.append('image_file', img);
+
+        const url = _editServiceId
+            ? '/api/admin/service/' + _editServiceId + '/edit'
+            : '/api/admin/service/add';
+        const btn = document.getElementById('serviceSaveBtn');
+        btn.disabled = true; btn.textContent = 'Saving…';
+
+        fetch(url, { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(data => {
+                btn.disabled = false; btn.textContent = _editServiceId ? 'Update Service' : 'Save Service';
+                if (data.ok) {
+                    showToast(_editServiceId ? 'Service updated ✓' : 'Service added ✓');
+                    document.getElementById('serviceModal').classList.remove('open');
+                    setTimeout(() => location.reload(), 800);
+                } else {
+                    showToast(data.error || 'Save failed', 'err');
+                }
+            })
+            .catch(() => { btn.disabled = false; showToast('Network error', 'err'); });
+    };
+
+    /* ─── Inventory action buttons ───────────────── */
+    document.addEventListener('click', function (e) {
+        // Edit product
+        const editPBtn = e.target.closest('.adm-edit-product-btn');
+        if (editPBtn) {
+            const row = editPBtn.closest('tr');
+            if (row) openEditProductModal(row);
+            return;
+        }
+
+        // Delete product
+        const delPBtn = e.target.closest('.adm-delete-product-btn');
+        if (delPBtn) {
+            const name = delPBtn.dataset.name || 'this product';
+            const id   = delPBtn.dataset.id;
+            if (!id || !confirm('Delete "' + name + '"? This cannot be undone.')) return;
+            fetch('/api/admin/product/' + id + '/delete', { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.ok) {
+                        showToast(name + ' deleted');
+                        const row = delPBtn.closest('tr');
+                        if (row) row.remove();
+                    } else { showToast(data.error || 'Delete failed', 'err'); }
+                })
+                .catch(() => showToast('Network error', 'err'));
+            return;
+        }
+
+        // Edit service
+        const editSBtn = e.target.closest('.adm-edit-service-btn');
+        if (editSBtn) {
+            const row = editSBtn.closest('tr');
+            if (row) openEditServiceModal(row);
+            return;
+        }
+
+        // Delete service
+        const delSBtn = e.target.closest('.adm-delete-service-btn');
+        if (delSBtn) {
+            const name = delSBtn.dataset.name || 'this service';
+            const id   = delSBtn.dataset.id;
+            if (!id || !confirm('Delete "' + name + '"? This cannot be undone.')) return;
+            fetch('/api/admin/service/' + id + '/delete', { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.ok) {
+                        showToast(name + ' deleted');
+                        const row = delSBtn.closest('tr');
+                        if (row) row.remove();
+                    } else { showToast(data.error || 'Delete failed', 'err'); }
+                })
+                .catch(() => showToast('Network error', 'err'));
+            return;
+        }
+
+        // Promote user to admin
+        const promoteBtn = e.target.closest('.adm-promote-btn');
+        if (promoteBtn) {
+            const id = promoteBtn.dataset.id;
+            const uname = promoteBtn.dataset.username;
+            if (!confirm('Promote ' + uname + ' to Admin?')) return;
+            fetch('/api/admin/user/' + id + '/role', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ role: 'admin' })
+            }).then(r => r.json()).then(data => {
+                if (data.ok) { showToast(uname + ' promoted to admin'); setTimeout(() => location.reload(), 800); }
+                else showToast(data.error || 'Failed', 'err');
+            }).catch(() => showToast('Network error', 'err'));
+            return;
+        }
+
+        // Demote user
+        const demoteBtn = e.target.closest('.adm-demote-btn');
+        if (demoteBtn) {
+            const id = demoteBtn.dataset.id;
+            const uname = demoteBtn.dataset.username;
+            if (!confirm('Demote ' + uname + ' to Customer?')) return;
+            fetch('/api/admin/user/' + id + '/role', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ role: 'customer' })
+            }).then(r => r.json()).then(data => {
+                if (data.ok) { showToast(uname + ' demoted to customer'); setTimeout(() => location.reload(), 800); }
+                else showToast(data.error || 'Failed', 'err');
+            }).catch(() => showToast('Network error', 'err'));
+            return;
+        }
+
+        // Delete user
+        const delUBtn = e.target.closest('.adm-delete-user-btn');
+        if (delUBtn) {
+            const id = delUBtn.dataset.id;
+            const uname = delUBtn.dataset.username;
+            if (!confirm('Permanently delete user "' + uname + '"? All their orders and data will be removed.')) return;
+            fetch('/api/admin/user/' + id + '/delete', { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.ok) {
+                        showToast(uname + ' deleted');
+                        const row = delUBtn.closest('tr');
+                        if (row) row.remove();
+                    } else showToast(data.error || 'Delete failed', 'err');
+                })
+                .catch(() => showToast('Network error', 'err'));
+            return;
+        }
+    });
+
+})();
 </script>
 
 {% endblock %}
