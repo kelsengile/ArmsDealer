@@ -726,6 +726,120 @@ def admin_update_inquiry_status(inquiry_id):
 
 
 # ─────────────────────────────────────────
+# ADMIN INQUIRY REPLY (email user)
+# ─────────────────────────────────────────
+
+@api_bp.route('/admin/inquiry/<int:inquiry_id>/reply', methods=['POST'])
+def admin_reply_inquiry(inquiry_id):
+    """Admin sends a reply email to the inquiry submitter.
+    Always sends from kelsengile.dev@gmail.com regardless of which admin is logged in.
+    """
+    if not session.get('user_id'):
+        return jsonify(ok=False, error='Not authenticated'), 401
+    if session.get('role') != 'admin':
+        return jsonify(ok=False, error='Forbidden'), 403
+
+    data = request.get_json(silent=True) or {}
+    reply_message = (data.get('message') or '').strip()
+    if not reply_message:
+        return jsonify(ok=False, error='Reply message is required'), 400
+
+    db = get_db()
+    inq = db.execute('SELECT * FROM inquiries WHERE id = ?',
+                     (inquiry_id,)).fetchone()
+    if not inq:
+        return jsonify(ok=False, error='Inquiry not found'), 404
+
+    # ── Build styled email using the shared template ──────────────────────
+    from email_service import _html_wrap
+
+    inq_name = inq['name'] or 'Operator'
+    inq_subject = inq['subject'] or 'Your Support Inquiry'
+    inq_message = (inq['message'] or '').replace('\n', '<br>')
+    reply_html = reply_message.replace('\n', '<br>')
+
+    content = f"""
+<h2>Support Reply</h2>
+<p>Hello <strong>{inq_name}</strong>,</p>
+<p>Thank you for reaching out to Arms Dealer Support.
+   Here is our response to your inquiry.</p>
+
+<table class="table">
+  <thead>
+    <tr><th>FIELD</th><th>DETAIL</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Subject</td><td>{inq_subject}</td></tr>
+    <tr><td>Inquiry&nbsp;ID</td><td>INQ-{str(inquiry_id).zfill(4)}</td></tr>
+  </tbody>
+</table>
+
+<hr class="divider">
+<p><strong>Your original message:</strong></p>
+<p style="background:#0d160d;padding:12px 16px;border-left:3px solid #3a5a3a;
+          font-size:12px;color:#8aaa80;line-height:1.7;">
+  {inq_message}
+</p>
+
+<hr class="divider">
+<p><strong>Our response:</strong></p>
+<p style="background:#0d1a0d;padding:12px 16px;border-left:3px solid #a8c47a;
+          font-size:12px;color:#c8d8c0;line-height:1.7;">
+  {reply_html}
+</p>
+
+<hr class="divider">
+<p style="font-size:11px;color:#5a7a5a;">
+  If you have further questions, submit a new ticket from
+  <em>Settings &rarr; Help &amp; Support</em>.<br>
+  Do not reply to this email &mdash; replies are not monitored.
+</p>
+"""
+
+    html_body = _html_wrap(content)
+    subject = f'[ArmsDealer] Re: {inq_subject}'
+
+    # ── Send via SMTP — always use the hardcoded platform address ─────────
+    import smtplib as _smtp
+    from email.mime.multipart import MIMEMultipart as _MIMEMulti
+    from email.mime.text import MIMEText as _MIMEText
+
+    SENDER = 'kelsengile.dev@gmail.com'
+    SMTP_PASS = os.environ.get('SMTP_PASS', '')
+
+    if not SMTP_PASS:
+        return jsonify(ok=False, error='SMTP credentials not configured (SMTP_PASS missing in .env)'), 500
+
+    try:
+        msg = _MIMEMulti('alternative')
+        msg['Subject'] = subject
+        msg['From'] = f'ArmsDealer Support <{SENDER}>'
+        msg['To'] = inq['email']
+        msg['Reply-To'] = SENDER
+        msg.attach(_MIMEText(html_body, 'html'))
+
+        with _smtp.SMTP('smtp.gmail.com', 587, timeout=15) as server:
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
+            server.login(SENDER, SMTP_PASS)
+            server.sendmail(SENDER, inq['email'], msg.as_string())
+
+    except _smtp.SMTPAuthenticationError:
+        return jsonify(ok=False, error='SMTP authentication failed — verify SMTP_PASS in .env is a valid Gmail App Password'), 500
+    except _smtp.SMTPRecipientsRefused:
+        return jsonify(ok=False, error=f'Recipient address rejected by server: {inq["email"]}'), 500
+    except Exception as exc:
+        return jsonify(ok=False, error=f'Email send failed: {exc}'), 500
+
+    # ── Mark inquiry as resolved ──────────────────────────────────────────
+    db.execute(
+        "UPDATE inquiries SET status = 'resolved' WHERE id = ?", (inquiry_id,))
+    db.commit()
+    return jsonify(ok=True, sent_to=inq['email'])
+
+
+# ─────────────────────────────────────────
 # SET CURRENCY (POST) — saves cookie
 # ─────────────────────────────────────────
 
@@ -1168,4 +1282,474 @@ def settings_notifications():
         (prefs_json, user_id)
     )
     db.commit()
+    return jsonify({'ok': True})
+
+
+# ─────────────────────────────────────────
+# SUPPORT TICKET SUBMISSION
+# ─────────────────────────────────────────
+
+@api_bp.route('/settings/support', methods=['POST'])
+def settings_support():
+    """Save a support inquiry from a logged-in user into the inquiries table."""
+    if not session.get('user_id'):
+        return jsonify({'ok': False, 'error': 'Not authenticated'}), 401
+
+    data = request.get_json(silent=True) or {}
+    subject = (data.get('subject') or '').strip()
+    message = (data.get('message') or '').strip()
+
+    if not subject or not message:
+        return jsonify({'ok': False, 'error': 'Subject and message are required'}), 400
+    if len(message) < 10:
+        return jsonify({'ok': False, 'error': 'Message too short'}), 400
+
+    db = get_db()
+    user = db.execute('SELECT username, email FROM users WHERE id = ?',
+                      (session['user_id'],)).fetchone()
+    if not user:
+        return jsonify({'ok': False, 'error': 'User not found'}), 404
+
+    db.execute(
+        'INSERT INTO inquiries (name, email, subject, message, status) VALUES (?, ?, ?, ?, ?)',
+        (user['username'], user['email'], subject, message, 'new')
+    )
+    db.commit()
+    return jsonify({'ok': True})
+
+
+# ─────────────────────────────────────────
+# EXPORT ACCOUNT DATA  (shared helper)
+# ─────────────────────────────────────────
+
+def _collect_export_data(db, user_id):
+    """Gather every piece of data tied to user_id. Returns a dict."""
+    import datetime as _dt
+
+    user = db.execute('SELECT * FROM users WHERE id = ?',
+                      (user_id,)).fetchone()
+    if not user:
+        return None
+
+    # ── Orders + items + resolved product/service names ──────────────
+    orders_raw = db.execute(
+        'SELECT id, status, total, notes, created_at, updated_at '
+        'FROM orders WHERE user_id = ? ORDER BY created_at DESC',
+        (user_id,)
+    ).fetchall()
+
+    orders = []
+    for o in orders_raw:
+        items_raw = db.execute(
+            '''SELECT oi.item_type, oi.item_id, oi.quantity, oi.unit_price,
+                      COALESCE(p.name, s.name, 'Unknown Item') AS item_name
+               FROM order_items oi
+               LEFT JOIN products p ON oi.item_type = 'product' AND p.id = oi.item_id
+               LEFT JOIN services s ON oi.item_type = 'service' AND s.id = oi.item_id
+               WHERE oi.order_id = ?''',
+            (o['id'],)
+        ).fetchall()
+        orders.append({'order': dict(o), 'items': [
+                      dict(i) for i in items_raw]})
+
+    # ── Inquiries submitted by this user (matched by email) ───────────
+    try:
+        inqs = db.execute(
+            'SELECT id, subject, message, status, created_at '
+            'FROM inquiries WHERE email = ? ORDER BY created_at DESC',
+            (user['email'],)
+        ).fetchall()
+        inquiries = [dict(r) for r in inqs]
+    except Exception:
+        inquiries = []
+
+    # ── Ratings submitted by this user ────────────────────────────────
+    try:
+        rat_rows = db.execute(
+            '''SELECT pr.item_type, pr.item_id, pr.rating,
+                      COALESCE(p.name, s.name, 'Unknown') AS item_name
+               FROM product_ratings pr
+               LEFT JOIN products p ON pr.item_type = 'product' AND p.id = pr.item_id
+               LEFT JOIN services s ON pr.item_type = 'service' AND s.id = pr.item_id
+               WHERE pr.user_id = ?
+               ORDER BY pr.item_id''',
+            (user_id,)
+        ).fetchall()
+        ratings = [dict(r) for r in rat_rows]
+    except Exception:
+        ratings = []
+
+    # ── Current cart ──────────────────────────────────────────────────
+    try:
+        cart_rows = db.execute(
+            '''SELECT ci.item_type, ci.item_id, ci.quantity, ci.added_at,
+                      COALESCE(p.name, s.name, 'Unknown') AS item_name
+               FROM cart_items ci
+               LEFT JOIN products p ON ci.item_type = 'product' AND p.id = ci.item_id
+               LEFT JOIN services s ON ci.item_type = 'service' AND s.id = ci.item_id
+               WHERE ci.user_id = ?''',
+            (user_id,)
+        ).fetchall()
+        cart = [dict(r) for r in cart_rows]
+    except Exception:
+        cart = []
+
+    # ── Notification prefs ────────────────────────────────────────────
+    try:
+        notif_raw = db.execute(
+            'SELECT notification_prefs FROM users WHERE id = ?', (user_id,)
+        ).fetchone()
+        import json as _json
+        notif_prefs = _json.loads(
+            notif_raw['notification_prefs']) if notif_raw and notif_raw['notification_prefs'] else {}
+    except Exception:
+        notif_prefs = {}
+
+    return {
+        'user': dict(user),
+        'orders': orders,
+        'inquiries': inquiries,
+        'ratings': ratings,
+        'cart': cart,
+        'notif_prefs': notif_prefs,
+        'generated_at': _dt.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC'),
+    }
+
+
+def _build_export_html(data):
+    """Turn the export data dict into a styled HTML email body."""
+    from email_service import _html_wrap
+
+    u = data['user']
+    orders = data['orders']
+    inquiries = data['inquiries']
+    ratings = data['ratings']
+    cart = data['cart']
+    notif = data['notif_prefs']
+    gen = data['generated_at']
+
+    # ── helper ───────────────────────────────────────────────────────
+    def v(val, fallback='—'):
+        return str(val) if val not in (None, '', 'None') else fallback
+
+    def yn(val):
+        return 'Yes' if val else 'No'
+
+    def stars(n):
+        try:
+            n = int(n)
+        except Exception:
+            n = 0
+        return ('★' * n + '☆' * (5 - n)) if 0 <= n <= 5 else v(n)
+
+    # ── Profile ──────────────────────────────────────────────────────
+    profile_rows = ''.join([
+        f'<tr><td>Username</td><td>{v(u.get("username"))}</td></tr>',
+        f'<tr><td>Email</td><td>{v(u.get("email"))}</td></tr>',
+        f'<tr><td>Role</td><td>{v(u.get("role"))}</td></tr>',
+        f'<tr><td>Country</td><td>{v(u.get("country"))}</td></tr>',
+        f'<tr><td>Contact</td><td>{v(u.get("contact_number"))}</td></tr>',
+        f'<tr><td>Bio</td><td>{v(u.get("bio"))}</td></tr>',
+        f'<tr><td>Delivery Address</td><td>{v(u.get("delivery_address"))}</td></tr>',
+        f'<tr><td>Payment Method</td><td>{v(u.get("payment_method"))}</td></tr>',
+        f'<tr><td>Wallet Balance</td><td>₱{float(u.get("wallet_balance") or 0):,.2f}</td></tr>',
+        f'<tr><td>Account Active</td><td>{yn(u.get("is_active", 1))}</td></tr>',
+        f'<tr><td>Member Since</td><td>{v(u.get("created_at"))}</td></tr>',
+        f'<tr><td>Last Updated</td><td>{v(u.get("updated_at"))}</td></tr>',
+    ])
+
+    # ── Orders ───────────────────────────────────────────────────────
+    if orders:
+        order_blocks = []
+        for entry in orders:
+            o = entry['order']
+            items_html = ''.join(
+                f'<tr><td>{v(i["item_name"])} ({i["item_type"]})</td>'
+                f'<td style="text-align:center">{i["quantity"]}</td>'
+                f'<td>₱{float(i["unit_price"]):,.2f}</td>'
+                f'<td>₱{float(i["unit_price"]) * int(i["quantity"]):,.2f}</td></tr>'
+                for i in entry['items']
+            ) or '<tr><td colspan="4" style="color:#5a7a5a">No items recorded</td></tr>'
+
+            order_blocks.append(f'''
+<p style="margin:16px 0 6px;font-size:12px;color:#a8c47a;letter-spacing:1px;">
+  ORDER #{o["id"]} &nbsp;·&nbsp;
+  <span style="color:#c8d8c0">{v(o["status"]).upper()}</span> &nbsp;·&nbsp;
+  ₱{float(o["total"]):,.2f} &nbsp;·&nbsp;
+  <span style="color:#5a7a5a">{v(o["created_at"])}</span>
+</p>
+<table class="table">
+  <thead><tr><th>ITEM</th><th>QTY</th><th>UNIT</th><th>SUBTOTAL</th></tr></thead>
+  <tbody>{items_html}</tbody>
+</table>
+{"<p style='font-size:11px;color:#5a7a5a'>Notes: " + v(o['notes']) + "</p>" if o.get('notes') else ""}
+''')
+        orders_section = ''.join(order_blocks)
+    else:
+        orders_section = '<p style="color:#5a7a5a">No orders on record.</p>'
+
+    # ── Inquiries ────────────────────────────────────────────────────
+    if inquiries:
+        inq_rows = ''.join(
+            f'<tr><td>INQ-{str(i["id"]).zfill(4)}</td>'
+            f'<td>{v(i["subject"])}</td>'
+            f'<td>{v(i["status"]).upper()}</td>'
+            f'<td>{v(i["created_at"])}</td>'
+            f'<td style="font-size:11px;color:#8aaa80">{v(i["message"])[:120]}{"…" if len(v(i["message"])) > 120 else ""}</td></tr>'
+            for i in inquiries
+        )
+        inquiries_section = f'''
+<table class="table">
+  <thead><tr><th>ID</th><th>SUBJECT</th><th>STATUS</th><th>DATE</th><th>MESSAGE</th></tr></thead>
+  <tbody>{inq_rows}</tbody>
+</table>'''
+    else:
+        inquiries_section = '<p style="color:#5a7a5a">No support inquiries on record.</p>'
+
+    # ── Ratings ──────────────────────────────────────────────────────
+    if ratings:
+        rat_rows = ''.join(
+            f'<tr><td>{v(r["item_name"])}</td>'
+            f'<td style="text-transform:capitalize">{v(r["item_type"])}</td>'
+            f'<td style="letter-spacing:2px;color:#e8b84b">{stars(r["rating"])}</td>'
+            f'<td>{v(r["rating"])}/5</td></tr>'
+            for r in ratings
+        )
+        ratings_section = f'''
+<table class="table">
+  <thead><tr><th>ITEM</th><th>TYPE</th><th>RATING</th><th>SCORE</th></tr></thead>
+  <tbody>{rat_rows}</tbody>
+</table>'''
+    else:
+        ratings_section = '<p style="color:#5a7a5a">No ratings submitted.</p>'
+
+    # ── Cart ─────────────────────────────────────────────────────────
+    if cart:
+        cart_rows = ''.join(
+            f'<tr><td>{v(c["item_name"])}</td>'
+            f'<td style="text-transform:capitalize">{v(c["item_type"])}</td>'
+            f'<td style="text-align:center">{v(c["quantity"])}</td>'
+            f'<td>{v(c["added_at"])}</td></tr>'
+            for c in cart
+        )
+        cart_section = f'''
+<table class="table">
+  <thead><tr><th>ITEM</th><th>TYPE</th><th>QTY</th><th>ADDED</th></tr></thead>
+  <tbody>{cart_rows}</tbody>
+</table>'''
+    else:
+        cart_section = '<p style="color:#5a7a5a">Cart is empty.</p>'
+
+    # ── Notification prefs ────────────────────────────────────────────
+    if notif:
+        notif_rows = ''.join(
+            f'<tr><td>{k.replace("_", " ").title()}</td><td>{yn(nv) if isinstance(nv, bool) else v(nv)}</td></tr>'
+            for k, nv in notif.items()
+        )
+        notif_section = f'''
+<table class="table">
+  <thead><tr><th>SETTING</th><th>VALUE</th></tr></thead>
+  <tbody>{notif_rows}</tbody>
+</table>'''
+    else:
+        notif_section = '<p style="color:#5a7a5a">Default notification preferences.</p>'
+
+    # ── Assemble full content ─────────────────────────────────────────
+    def section(title, count_label, body):
+        return f'''
+<h2 style="margin:28px 0 8px;font-size:13px;color:#a8c47a;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid #2a3a2a;padding-bottom:6px;">
+  {title} <span style="font-size:10px;color:#5a7a5a;font-weight:normal;">{count_label}</span>
+</h2>
+{body}'''
+
+    content = f'''
+<h2>Your Account Data Export</h2>
+<p>Hello <strong>{v(u.get("username"))}</strong>,</p>
+<p>As requested, here is a complete export of all data ArmsDealer holds for your account.
+   This export was generated on <strong>{gen}</strong>.</p>
+<hr class="divider">
+
+{section("Profile", "", f'<table class="table"><tbody>{profile_rows}</tbody></table>')}
+
+{section("Orders", f'— {len(orders)} total', orders_section)}
+
+{section("Support Inquiries", f'— {len(inquiries)} total', inquiries_section)}
+
+{section("Ratings &amp; Reviews", f'— {len(ratings)} submitted', ratings_section)}
+
+{section("Current Cart", f'— {len(cart)} item(s)', cart_section)}
+
+{section("Notification Preferences", "", notif_section)}
+
+<hr class="divider">
+<p style="font-size:11px;color:#5a7a5a;">
+  This is a complete record of your data as of the export date.
+  If you have questions, submit a ticket via Settings &rarr; Help &amp; Support.
+</p>
+'''
+    return _html_wrap(content)
+
+
+@api_bp.route('/settings/export', methods=['GET'])
+def settings_export():
+    """Download a plain-text export of the user's account data."""
+    if not session.get('user_id'):
+        return jsonify({'ok': False, 'error': 'Not authenticated'}), 401
+
+    import io as _io
+
+    db = get_db()
+    data = _collect_export_data(db, session['user_id'])
+    if not data:
+        return jsonify({'ok': False, 'error': 'User not found'}), 404
+
+    u = data['user']
+    orders = data['orders']
+    inquiries = data['inquiries']
+    ratings = data['ratings']
+    cart = data['cart']
+    notif = data['notif_prefs']
+    gen = data['generated_at']
+
+    def v(val):
+        return str(val) if val not in (None, '', 'None') else '—'
+
+    buf = _io.StringIO()
+    buf.write('=' * 60 + '\n')
+    buf.write('  ARMS DEALER — ACCOUNT DATA EXPORT\n')
+    buf.write('  Generated: ' + gen + '\n')
+    buf.write('=' * 60 + '\n\n')
+
+    buf.write('[PROFILE]\n')
+    for field in ['username', 'email', 'role', 'country', 'contact_number',
+                  'bio', 'delivery_address', 'payment_method', 'wallet_balance',
+                  'is_active', 'created_at', 'updated_at']:
+        buf.write(f'  {field:<20}: {v(u.get(field))}\n')
+
+    buf.write('\n[ORDERS] — ' + str(len(orders)) + ' total\n')
+    buf.write('-' * 60 + '\n')
+    for entry in orders:
+        o = entry['order']
+        buf.write(
+            f'  Order #{o["id"]}  status:{v(o["status"])}  total:PHP {o["total"]}  placed:{v(o["created_at"])}\n')
+        for i in entry['items']:
+            buf.write(
+                f'    - {v(i["item_name"])} ({i["item_type"]})  qty:{i["quantity"]}  unit:PHP {i["unit_price"]}\n')
+        if o.get('notes'):
+            buf.write(f'    Notes: {v(o["notes"])}\n')
+        buf.write('\n')
+
+    buf.write('[INQUIRIES] — ' + str(len(inquiries)) + ' total\n')
+    buf.write('-' * 60 + '\n')
+    for inq in inquiries:
+        buf.write(
+            f'  INQ-{str(inq["id"]).zfill(4)}  subject:{v(inq["subject"])}  status:{v(inq["status"])}  date:{v(inq["created_at"])}\n')
+        buf.write(f'    Message: {v(inq["message"])}\n\n')
+
+    buf.write('[RATINGS] — ' + str(len(ratings)) + ' submitted\n')
+    buf.write('-' * 60 + '\n')
+    for r in ratings:
+        buf.write(
+            f'  {v(r["item_name"])} ({r["item_type"]})  rating:{r["rating"]}/5\n')
+
+    buf.write('\n[CART] — ' + str(len(cart)) + ' item(s)\n')
+    buf.write('-' * 60 + '\n')
+    for c in cart:
+        buf.write(
+            f'  {v(c["item_name"])} ({c["item_type"]})  qty:{c["quantity"]}  added:{v(c["added_at"])}\n')
+
+    if notif:
+        buf.write('\n[NOTIFICATION PREFERENCES]\n')
+        buf.write('-' * 60 + '\n')
+        for k, nv in notif.items():
+            buf.write(f'  {k:<30}: {nv}\n')
+
+    buf.write('\n' + '=' * 60 + '\n')
+    buf.write('End of export.\n')
+
+    content = buf.getvalue()
+    response = make_response(content)
+    response.headers['Content-Type'] = 'text/plain; charset=utf-8'
+    response.headers['Content-Disposition'] = 'attachment; filename="armsdealer_account_export.txt"'
+    return response
+
+
+# ─────────────────────────────────────────
+# EMAIL ACCOUNT DATA EXPORT
+# ─────────────────────────────────────────
+
+@api_bp.route('/settings/export-email', methods=['POST'])
+def settings_export_email():
+    """Send a full HTML account data export to the user's registered email."""
+    if not session.get('user_id'):
+        return jsonify({'ok': False, 'error': 'Not authenticated'}), 401
+
+    if not os.environ.get('SMTP_PASS', ''):
+        return jsonify({'ok': False, 'error': 'Email service not configured on this server (SMTP_PASS missing)'}), 500
+
+    db = get_db()
+    data = _collect_export_data(db, session['user_id'])
+    if not data:
+        return jsonify({'ok': False, 'error': 'User not found'}), 404
+
+    user_email = data['user']['email']
+    username = data['user'].get('username', 'Operator')
+
+    html_body = _build_export_html(data)
+
+    from email_service import _send as _email_send
+    sent = _email_send(
+        user_email,
+        '[ArmsDealer] Your Account Data Export',
+        html_body
+    )
+
+    if not sent:
+        return jsonify({'ok': False, 'error': 'Failed to send email — check server logs'}), 500
+
+    return jsonify({'ok': True, 'sent_to': user_email})
+
+
+# ─────────────────────────────────────────
+# DEACTIVATE ACCOUNT
+# ─────────────────────────────────────────
+
+@api_bp.route('/settings/deactivate', methods=['POST'])
+def settings_deactivate():
+    """Set is_active=0 on the user's row, then clear the session."""
+    if not session.get('user_id'):
+        return jsonify({'ok': False, 'error': 'Not authenticated'}), 401
+
+    db = get_db()
+    db.execute('UPDATE users SET is_active = 0 WHERE id = ?',
+               (session['user_id'],))
+    db.commit()
+    session.clear()
+    return jsonify({'ok': True})
+
+
+# ─────────────────────────────────────────
+# DELETE ACCOUNT (PERMANENT)
+# ─────────────────────────────────────────
+
+@api_bp.route('/settings/delete-account', methods=['POST'])
+def settings_delete_account():
+    """Permanently delete the user and all associated data, then clear session."""
+    if not session.get('user_id'):
+        return jsonify({'ok': False, 'error': 'Not authenticated'}), 401
+
+    user_id = session['user_id']
+    db = get_db()
+
+    # Delete cascade: cart, order_items, orders, then user
+    db.execute('DELETE FROM cart_items WHERE user_id = ?', (user_id,))
+    order_ids = [r[0] for r in db.execute(
+        'SELECT id FROM orders WHERE user_id = ?', (user_id,)).fetchall()]
+    for oid in order_ids:
+        db.execute('DELETE FROM order_items WHERE order_id = ?', (oid,))
+    db.execute('DELETE FROM orders WHERE user_id = ?', (user_id,))
+    db.execute('DELETE FROM users WHERE id = ?', (user_id,))
+    db.commit()
+
+    session.clear()
     return jsonify({'ok': True})
