@@ -132,9 +132,7 @@
                 const restricted = (!isGuest && p.is_authorized === 0)
                     ? `<span class="search-restricted-tag">RESTRICTED</span>` : '';
                 const price = `${esc(p.currency_symbol)}${(p.new_price || 0).toLocaleString()}`;
-                const href = p.category_slug
-                    ? `/products/${esc(p.category_slug)}#${esc(p.slug)}`
-                    : '/products';
+                const href = `/product/${esc(p.slug)}`;
 
                 html += `
                 <a class="search-result-row" href="${href}">
