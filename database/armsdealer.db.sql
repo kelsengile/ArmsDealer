@@ -211,6 +211,27 @@ CREATE TABLE ui_strings (
     value       TEXT    NOT NULL,
     UNIQUE (lang_code, key)
 );
+DROP TABLE IF EXISTS "user_2fa";
+CREATE TABLE user_2fa (
+            user_id    INTEGER PRIMARY KEY REFERENCES users(id),
+            secret     TEXT,
+            enabled    INTEGER NOT NULL DEFAULT 0,
+            backup_codes TEXT,
+            created_at TEXT DEFAULT (datetime('now')),
+            updated_at TEXT DEFAULT (datetime('now'))
+        );
+DROP TABLE IF EXISTS "user_sessions";
+CREATE TABLE user_sessions (
+            id          TEXT PRIMARY KEY,
+            user_id     INTEGER NOT NULL REFERENCES users(id),
+            ip_address  TEXT,
+            user_agent  TEXT,
+            device_label TEXT,
+            device_type  TEXT DEFAULT 'desktop',
+            created_at  TEXT DEFAULT (datetime('now')),
+            last_seen   TEXT DEFAULT (datetime('now')),
+            revoked     INTEGER NOT NULL DEFAULT 0
+        );
 DROP TABLE IF EXISTS "users";
 CREATE TABLE users (
     id               INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -231,7 +252,7 @@ CREATE TABLE users (
     delivery_address TEXT    DEFAULT NULL,
     wallet_balance   REAL    NOT NULL DEFAULT 0.00,
     payment_method   TEXT    NOT NULL DEFAULT 'cash_on_delivery'
-);
+, notification_prefs TEXT);
 INSERT INTO "brands" ("id","name","slug","logo_file","description","is_authorized","created_at","updated_at") VALUES (1,'Glock','glock','glock.png','Austrian manufacturer of polymer-framed pistols.',1,'2026-04-24 09:14:11','2026-04-24 09:14:11'),
  (2,'Colt','colt','colt.png','Historic American firearms manufacturer.',1,'2026-04-24 09:14:11','2026-04-24 09:14:11'),
  (3,'Heckler & Koch','heckler-koch','heckler&koch.png','German defense manufacturer of firearms.',1,'2026-04-24 09:14:11','2026-04-24 09:14:11'),
@@ -819,12 +840,46 @@ INSERT INTO "languages" ("code","label","locale","is_active","sort_order") VALUE
  ('mandarin','Mandarin','zh',1,5);
 INSERT INTO "login_history" ("id","user_id","ip_address","user_agent","success","login_at") VALUES (1,3,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',0,'2026-05-14 00:51:06'),
  (2,3,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-14 00:51:20'),
- (3,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-14 02:38:03');
+ (3,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-14 02:38:03'),
+ (4,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-14 06:20:43'),
+ (5,3,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 03:04:49'),
+ (6,3,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 03:16:22'),
+ (7,3,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 04:02:18'),
+ (8,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 04:04:22'),
+ (9,3,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 04:32:47'),
+ (10,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',0,'2026-05-15 04:34:21'),
+ (11,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 04:34:29'),
+ (12,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 04:34:31'),
+ (13,3,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 04:36:28'),
+ (14,3,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 04:36:29'),
+ (15,3,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 04:36:31'),
+ (16,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 05:07:16'),
+ (17,3,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 05:18:25'),
+ (18,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 05:19:16'),
+ (19,3,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 05:38:25'),
+ (20,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 05:39:02'),
+ (21,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 05:51:05'),
+ (22,3,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 06:05:15'),
+ (23,3,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 06:05:17'),
+ (24,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-15 06:06:39'),
+ (25,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-16 10:12:10'),
+ (26,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-16 10:34:05'),
+ (27,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-16 10:34:07');
+INSERT INTO "order_items" ("id","order_id","item_type","item_id","quantity","unit_price") VALUES (1,1,'product',345,1,20000.0),
+ (2,2,'product',51,1,24990.0),
+ (3,3,'product',302,1,79990.0),
+ (4,4,'product',51,1,24990.0);
+INSERT INTO "orders" ("id","user_id","status","total","notes","created_at","updated_at") VALUES (1,2,'delivered',20000.0,'Payment: cash_on_delivery','2026-05-16 10:21:57','2026-05-16 10:22:12'),
+ (2,2,'delivered',24990.0,'Payment: cash_on_delivery','2026-05-16 10:34:22','2026-05-16 10:34:35'),
+ (3,2,'delivered',79990.0,'Payment: cash_on_delivery','2026-05-16 12:09:47','2026-05-16 12:15:30'),
+ (4,2,'delivered',24990.0,'Payment: cash_on_delivery','2026-05-16 12:15:56','2026-05-16 12:16:33');
 INSERT INTO "product_images" ("id","product_id","image_file","sort_order","created_at") VALUES (1,1,'glock 19 gen5.png',1,'2026-05-03 12:48:09'),
  (2,1,'glock 43x.png',2,'2026-05-03 12:48:09'),
  (3,1,'glock 21 gen4.png',3,'2026-05-03 12:48:09'),
  (4,1,'glock 34 gen5 mos.png',4,'2026-05-03 12:48:09');
-INSERT INTO "products" ("id","name","slug","category_id","subcategory_id","brand_id","description","price","discount","stock","rating","sales_count","image_file","tags","is_authorized","created_at","updated_at") VALUES (1,'Glock 17 Gen5','glock-17-gen5',1,1,1,'Full-size 9mm service pistol. 17-round magazine, nDLC finish, Marksman barrel.',29990.0,0.0,40,4.8,312,'glock 17 gen5.png','["9mm","pistol","full-size","police"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
+INSERT INTO "product_ratings" ("id","user_id","item_type","item_id","rating","created_at") VALUES (1,2,'product',51,4,'2026-05-16 11:28:27'),
+ (2,2,'product',345,5,'2026-05-16 11:28:34');
+INSERT INTO "products" ("id","name","slug","category_id","subcategory_id","brand_id","description","price","discount","stock","rating","sales_count","image_file","tags","is_authorized","created_at","updated_at") VALUES (1,'Glock 17 Gen5','glock-17-gen5',1,1,1,'Full-size 9mm service pistol. 17-round magazine, nDLC finish, Marksman barrel.',29990.0,0.0,45,4.8,312,'glock 17 gen5.png','["9mm","pistol","full-size","police"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (2,'Glock 19 Gen5','glock-19-gen5',1,1,1,'Compact 9mm pistol. 15-round magazine, front serrations, ambidextrous slide stop.',27990.0,5.0,60,4.9,487,'glock 19 gen5.png','["9mm","compact","concealed-carry"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (3,'Glock 43X','glock-43x',1,1,1,'Slimline 9mm subcompact. 10-round magazine, extended grip frame.',24990.0,0.0,38,4.7,203,'glock 43x.png','["9mm","subcompact","slim","concealed-carry"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (4,'Glock 21 Gen4','glock-21-gen4',1,1,1,'.45 ACP full-size pistol. 13-round magazine, dual recoil spring assembly.',31990.0,0.0,22,4.6,98,'glock 21 gen4.png','[".45acp","full-size","pistol"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
@@ -874,7 +929,7 @@ INSERT INTO "products" ("id","name","slug","category_id","subcategory_id","brand
  (48,'FN EVOLYS','fn-evolys',1,5,5,'5.56mm ultra-light machine gun/PDW hybrid. 200-round belt or box mag, titanium components.',279990.0,0.0,5,4.8,20,'fn evolys.png','["5.56","ultra-light","pdw","hybrid"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (49,'Benchmade Griptilian 551','benchmade-griptilian-551',2,9,6,'Everyday carry folding knife. 3.45-inch 154CM drop-point blade, AXIS lock.',8990.0,0.0,50,4.8,267,'benchmade griptilian 551.png','["folding","edc","axis-lock","154cm"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (50,'Benchmade Nimravus 141','benchmade-nimravus-141',2,9,6,'Fixed-blade tactical knife. 4.5-inch 154CM clip-point, kydex sheath.',12990.0,0.0,35,4.7,178,'benchmade nimravus 141.png','["fixed-blade","tactical","kydex","military"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
- (51,'Benchmade Infidel OTF','benchmade-infidel-otf',2,9,6,'Double-action OTF automatic knife. 3.95-inch D2 dagger blade, aluminum handle.',24990.0,0.0,25,4.9,134,'benchmade infidel otf.png','["otf","automatic","dagger","d2"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
+ (51,'Benchmade Infidel OTF','benchmade-infidel-otf',2,9,6,'Double-action OTF automatic knife. 3.95-inch D2 dagger blade, aluminum handle.',24990.0,0.0,23,4.0,135,'benchmade infidel otf.png','["otf","automatic","dagger","d2"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (52,'KA-BAR USMC Fighting Knife','kabar-usmc',2,9,7,'Classic 7-inch 1095 Cro-Van fixed blade. Leather stacked handle, USMC spec.',5990.0,0.0,80,4.9,432,'ka-bar usmc fighting knife.png','["usmc","fixed-blade","military","classic"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (53,'KA-BAR Becker BK2','kabar-becker-bk2',2,9,7,'Heavy-duty 5.25-inch 1095 Cro-Van fixed blade. Zytel handle, field knife.',7990.0,0.0,45,4.8,213,'ka-bar becker bk2.png','["fixed-blade","survival","1095","heavy-duty"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (54,'Cold Steel Recon 1','cold-steel-recon-1',2,9,8,'Folding 4-inch S35VN tanto blade. Tri-Ad lock, G10 handle.',9990.0,0.0,40,4.7,189,'cold steel recon 1.png','["folding","tanto","s35vn","trilock"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
@@ -1125,7 +1180,7 @@ INSERT INTO "products" ("id","name","slug","category_id","subcategory_id","brand
  (299,'Springfield M1 Garand .30-06','springfield-m1-garand-3006',1,2,77,'.30-06 Springfield semi-auto rifle. 8-round en-bloc clip, 24-inch barrel, gas-operated self-loading. Patton called it "the greatest battle implement ever devised." Standard US WWII rifle. Iconic in Medal of Honor and Saving Private Ryan.',89990.0,0.0,12,5.0,543,'springfield_m1_garand_3006.png','[".30-06","wwii","semi-auto","en-bloc","garand","iconic","medal-of-honor","saving-private-ryan"]',1,'2026-04-25 12:10:27','2026-04-25 12:10:27'),
  (300,'Lee-Enfield No.4 Mk I .303 British','lee-enfield-no4-mk1-303',1,2,69,'.303 British bolt-action rifle. 10-round detachable magazine, fastest battle bolt of WWII at 20–30 rpm. Standard British and Commonwealth infantry rifle through both World Wars. Iconic in every WWII British-theater game.',49990.0,0.0,16,4.8,334,'lee_enfield_no4_mk1_303.png','[".303","wwi","wwii","bolt-action","british","commonwealth","iconic","smle","gaming"]',0,'2026-04-25 12:10:27','2026-04-25 12:10:27'),
  (301,'Mosin-Nagant M91/30 7.62x54R','mosin-nagant-m9130-762x54r',1,2,69,'7.62x54mmR bolt-action rifle. 5-round internal magazine, 28.7-inch barrel, hex or round receiver. Over 37 million produced; the Soviet WWII standard rifle. Featured in Enemy at the Gates and Sniper Elite as the definitive Eastern Front weapon.',29990.0,0.0,30,4.7,678,'mosin_nagant_m9130_762x54r.png','["7.62x54r","wwii","soviet","bolt-action","sniper","iconic","enemy-at-the-gates","sniper-elite"]',0,'2026-04-25 12:10:27','2026-04-25 12:10:27'),
- (302,'AKM 7.62x39mm','akm-762x39mm',1,2,73,'Modernized AK-47 with stamped receiver and slant muzzle brake. 7.62x39mm, 30-round magazine, laminated stock. The most widely distributed assault rifle on Earth. Every military game and film from the Cold War onward features it.',79990.0,0.0,22,4.9,1102,'akm_762x39mm.png','["7.62x39","assault-rifle","kalashnikov","akm","iconic","stamped","cold-war","gaming"]',1,'2026-04-25 12:10:27','2026-04-25 12:10:27'),
+ (302,'AKM 7.62x39mm','akm-762x39mm',1,2,73,'Modernized AK-47 with stamped receiver and slant muzzle brake. 7.62x39mm, 30-round magazine, laminated stock. The most widely distributed assault rifle on Earth. Every military game and film from the Cold War onward features it.',79990.0,0.0,22,4.9,1104,'akm_762x39mm.png','["7.62x39","assault-rifle","kalashnikov","akm","iconic","stamped","cold-war","gaming"]',1,'2026-04-25 12:10:27','2026-04-25 12:10:27'),
  (303,'M16A2 5.56mm Rifle','m16a2-556mm-rifle',1,2,2,'5.56x45mm semi/burst-fire rifle. 30-round STANAG magazine, 20-inch barrel, A2 flash hider, M16A2 adjustable sights. US military standard 1983–2000. The definitive American service rifle in Vietnam-to-Gulf War gaming.',129990.0,0.0,18,4.8,765,'m16a2_556mm_rifle.png','["5.56","m16","military","20-inch","iconic","vietnam","gulf-war","call-of-duty","gaming"]',1,'2026-04-25 12:10:27','2026-04-25 12:10:27'),
  (304,'Springfield M14 Battle Rifle 7.62mm','springfield-m14-battle-rifle-762',1,2,77,'7.62x51mm NATO semi/full-auto battle rifle. 20-round magazine, 22-inch barrel, walnut stock, muzzle brake. Replaced the M1 Garand; saw action Vietnam through modern day as a DMR. Iconic in every Vietnam and modern warfare game.',139990.0,0.0,10,4.8,312,'springfield_m14_battle_rifle_762.png','["7.62","m14","battle-rifle","nato","vietnam","iconic","dmr","gaming","modern"]',1,'2026-04-25 12:10:27','2026-04-25 12:10:27'),
  (305,'Steyr AUG A3 5.56mm Bullpup','steyr-aug-a3-556-bullpup',1,2,78,'5.56x45mm bullpup assault rifle. 30-round magazine, integrated optic rail, folding vertical grip, 508mm barrel. Adopted by Austria, Australia, and 20+ nations. Iconic in Die Hard, GoldenEye, and numerous FPS games.',149990.0,0.0,15,4.8,234,'steyr_aug_a3_556_bullpup.png','["5.56","bullpup","aug","austria","iconic","die-hard","goldeneye","gaming","australia"]',1,'2026-04-25 12:10:27','2026-04-25 12:10:27'),
@@ -1166,7 +1221,10 @@ INSERT INTO "products" ("id","name","slug","category_id","subcategory_id","brand
  (341,'ALICE Pack Large LC-2 External Frame','alice-pack-large-lc2-external-frame',14,96,30,'All-purpose Lightweight Individual Carrying Equipment large rucksack. 2,650 cubic inches, external frame, OD green nylon. US military standard Vietnam through Gulf War. Iconic in every Vietnam and Cold War era game.',9990.0,0.0,45,4.6,234,'alice_pack_large_lc2_external_frame.png','["alice","lc2","rucksack","military","vietnam","gulf-war","iconic","external-frame","oda"]',1,'2026-04-25 12:10:27','2026-04-25 12:10:27'),
  (342,'M1943 Folding Entrenching Tool','m1943-folding-entrenching-tool',19,136,69,'Folding tri-fold entrenching tool. Alloy steel blade, hardwood handle, OD nylon carrier. US standard WWII through Gulf War. The iconic "e-tool" — dig, pry, improvised weapon. Every military survival game includes one.',2990.0,0.0,80,4.5,312,'m1943_folding_entrenching_tool.png','["e-tool","entrenching","wwii","vietnam","military","iconic","folding","survival","gaming"]',0,'2026-04-25 12:10:27','2026-04-25 12:10:27'),
  (343,'USGI 1qt Canteen with M1910 Cover','usgi-1qt-canteen-m1910-cover',19,133,69,'1-quart USGI aluminum canteen with M1910 OD cotton canvas cover and M1910 steel cup. Standard US military canteen from WWI through Vietnam. Iconic in every war game and essential militaria collectible.',1990.0,0.0,100,4.6,456,'usgi_1qt_canteen_m1910_cover.png','["canteen","usgi","m1910","wwii","vietnam","military","iconic","1qt","survival","collectible"]',0,'2026-04-25 12:10:27','2026-04-25 12:10:27'),
- (344,'Nuke','explosives-nuke',5,36,69,'High-yield strategic nuclear device.',999999999.99,0.0,1,5.0,0,'nuke.png','["nuclear","bomb","strategic","mass-destruction"]',0,'2026-05-01 16:13:54','2026-05-01 16:13:54');
+ (344,'Nuke','explosives-nuke',5,36,69,'High-yield strategic nuclear device.',999999999.99,0.0,1,5.0,0,'nuke.png','["nuclear","bomb","strategic","mass-destruction"]',0,'2026-05-01 16:13:54','2026-05-01 16:13:54'),
+ (345,'Balisong','balisong',2,9,NULL,'Filipino Balisong',20000.0,10.0,249,5.0,0,'prod_balisong_balisong.png',NULL,1,'2026-05-16 10:15:22','2026-05-16 10:15:22'),
+ (346,'Itallian Stelleto','itallian-stelleto',2,9,69,'Quick Kills',15000.0,10.0,250,0.0,0,'prod_itallian-stelleto_0_itallianstelleto.png',NULL,0,'2026-05-16 13:10:25','2026-05-16 13:10:25'),
+ (347,'Omnitrix','omnitrix',6,48,69,'Watch like apparel used for transforming the wearer to any of the aliens inside of the watch',20000000.0,15.0,1,0.0,0,'prod_omnitrix_0_omnitrix.png',NULL,0,'2026-05-16 13:21:54','2026-05-16 13:21:54');
 INSERT INTO "services" ("id","name","slug","category_id","subcategory_id","brand_id","description","price","discount","rating","sales_count","image_file","tags","is_authorized","created_at","updated_at") VALUES (1,'Military Small Arms Mass Production','mfg-small-arms-mass',21,145,52,'High-volume standardized production of military small arms. Includes QC, mil-spec compliance, 10,000+ unit runs.',4999990.0,0.0,4.7,8,'military small arms mass production.png','["mass-production","small-arms","military","qc","high-volume"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (2,'Ammunition Mass Production Line','mfg-ammo-mass',21,145,52,'Automated ammunition manufacturing. 5.56/7.62/9mm calibers, 500K+ rounds/month, STANAG compliant.',9999990.0,0.0,4.8,5,'ammunition mass production line.png','["ammunition","mass-production","automated","stanag"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (3,'Custom Titanium Component Fabrication','mfg-titanium-custom',21,146,52,'CNC-machined titanium components for weapons systems. Any tolerance, CAD-to-part, small batch.',299990.0,0.0,4.9,14,'custom titanium component fabrication.png','["custom","titanium","cnc","components","small-batch"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
@@ -2422,9 +2480,13 @@ INSERT INTO "subcategory_translations" ("id","subcategory_id","lang_code","name"
  (886,220,'mandarin','分包合同','外包任务'),
  (887,221,'mandarin','合资协议','合作经营'),
  (888,222,'mandarin','资助获取','资金支持');
-INSERT INTO "users" ("id","username","email","password_hash","role","created_at","updated_at","bio","country","contact_number","profile_image","social_link_1","social_link_2","social_link_3","social_link_4","delivery_address","wallet_balance","payment_method") VALUES (1,'spongebob','spongebob@bikini.bottom','scrypt:32768:8:1$SbTwSrAmCehypPz8$1fd49b243228a73c60f77f4fd51cf7f46d77f044b2576a24fe7de1800ca3dabe891e693f64f2276ef392437527659822711cb089f651944ef50073f5188a0c42','customer','2026-04-15 05:03:32','2026-04-15 05:03:32',NULL,NULL,NULL,'spongebob.png',NULL,NULL,NULL,NULL,NULL,0.0,'cash_on_delivery'),
- (2,'mrcrabs','eugene.crabs@thekrustykrab.com','scrypt:32768:8:1$83oDsOSmvXx89UZx$c0e15772d19273f1df094dffa5fb9846afa2be3bfa47bb50a89d3ec80c57032db06799f09fb4b4d51be28dfb33de4148c29c7b97396f1dbbaba90920d6b78dc3','admin','2026-04-15 05:03:32','2026-05-14 00:22:31','Money Money Money HeHeHehaha','US','+629026374889','mrkrabs.png','','','','','Bikini Bottom, Crusty Crab',1000000.0,'ewallet'),
- (3,'KelsenGile','kelsengilesarmientoconel@gmail.com','scrypt:32768:8:1$71j0V7GmzlX9ac9y$8ae885d15fe260337cdbc6f9c7a45cfd4bbb6da5c6d8adef5624b6c924549ffc3f6bf0cd1cc7c9b28b552a00e29393fe86c35e541c3a8031f90db1ffdcb6f842','customer','2026-04-15 07:00:44','2026-05-14 02:36:46','hii','','','','','','','','',1000000.0,'cash_on_delivery');
+INSERT INTO "user_2fa" ("user_id","secret","enabled","backup_codes","created_at","updated_at") VALUES (2,NULL,0,NULL,'2026-05-14 02:38:08','2026-05-14 02:38:08'),
+ (3,'HKD65SJ6DDJLQXRYD5PDLU4QF5JNNPPA',0,NULL,'2026-05-14 01:07:53','2026-05-14 01:20:27');
+INSERT INTO "user_sessions" ("id","user_id","ip_address","user_agent","device_label","device_type","created_at","last_seen","revoked") VALUES ('4e07408562bedb8b60ce05c1decfe3ad',3,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36','Chrome 148 · Windows','desktop','2026-05-14 01:07:57','2026-05-15 04:40:04',0),
+ ('d4735e3a265e16eee03f59718b9b5d03',2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36','Chrome 148 · Windows','desktop','2026-05-14 02:42:49','2026-05-16 10:25:04',0);
+INSERT INTO "users" ("id","username","email","password_hash","role","created_at","updated_at","bio","country","contact_number","profile_image","social_link_1","social_link_2","social_link_3","social_link_4","delivery_address","wallet_balance","payment_method","notification_prefs") VALUES (1,'spongebob','spongebob@bikini.bottom','scrypt:32768:8:1$SbTwSrAmCehypPz8$1fd49b243228a73c60f77f4fd51cf7f46d77f044b2576a24fe7de1800ca3dabe891e693f64f2276ef392437527659822711cb089f651944ef50073f5188a0c42','customer','2026-04-15 05:03:32','2026-04-15 05:03:32',NULL,NULL,NULL,'spongebob.png',NULL,NULL,NULL,NULL,NULL,0.0,'cash_on_delivery',NULL),
+ (2,'mrcrabs','eugene.crabs@thekrustykrab.com','scrypt:32768:8:1$83oDsOSmvXx89UZx$c0e15772d19273f1df094dffa5fb9846afa2be3bfa47bb50a89d3ec80c57032db06799f09fb4b4d51be28dfb33de4148c29c7b97396f1dbbaba90920d6b78dc3','admin','2026-04-15 05:03:32','2026-05-16 10:24:57','Money Money Money HeHeHehaha','US','+629026374889','mrkrabs.png','','','','','Bikini Bottom, Crusty Crab',2000000.0,'cash_on_delivery','{"email_enabled": true, "in_app_enabled": true, "order_updates": true, "security_alerts": true, "promotional_offers": false, "quiet_hours_enabled": false, "quiet_from": "22:00", "quiet_until": "07:00"}'),
+ (3,'KelsenGile','kelsengilesarmientoconel@gmail.com','scrypt:32768:8:1$71j0V7GmzlX9ac9y$8ae885d15fe260337cdbc6f9c7a45cfd4bbb6da5c6d8adef5624b6c924549ffc3f6bf0cd1cc7c9b28b552a00e29393fe86c35e541c3a8031f90db1ffdcb6f842','customer','2026-04-15 07:00:44','2026-05-14 02:36:46','hii','','','','','','','','',1000000.0,'cash_on_delivery','{"email_enabled": true, "in_app_enabled": true, "order_updates": true, "security_alerts": true, "promotional_offers": false, "quiet_hours_enabled": false, "quiet_from": "22:00", "quiet_until": "07:00"}');
 DROP INDEX IF EXISTS "idx_login_history_user";
 CREATE INDEX idx_login_history_user
     ON login_history (user_id, login_at DESC);
