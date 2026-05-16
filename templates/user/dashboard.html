@@ -1332,9 +1332,10 @@
                     <!-- Stat cards -->
                     <div class="adm-stats-grid">
                         <div class="adm-stat-card gold">
-                            <div class="adm-stat-icon">{{ currency.symbol if currency else '₱' }}</div>
+                            <div class="adm-stat-icon" id="adm-revenue-stat-icon">{{ currency.symbol if currency else '₱' }}</div>
                             <div class="adm-stat-label">Total Revenue</div>
-                            <div class="adm-stat-value">{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(stats.total_revenue_converted if stats.total_revenue_converted is defined else stats.total_revenue) }}</div>
+                            <div class="adm-stat-value" id="adm-revenue-stat-value"
+                                 data-php-price="{{ stats.total_revenue }}">{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(stats.total_revenue_converted if stats.total_revenue_converted is defined else stats.total_revenue) }}</div>
                             <div class="adm-stat-delta pos">▲ All time</div>
                         </div>
                         <div class="adm-stat-card highlight">
@@ -1573,7 +1574,7 @@
                                     </thead>
                                     <tbody>
                                         {% for p in top_revenue_products %}
-                                        <tr>
+                                        <tr data-php-revenue="{{ p.revenue }}">
                                             <td style="font-size:10px;">{{ p.name[:30] }}{% if p.name|length > 30 %}…{% endif %}</td>
                                             <td style="text-align:right;font-family:var(--font-stencil);font-size:11px;font-weight:700;color:var(--mil-gold);">{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(p.revenue * (currency.rate_to_php if currency else 1)) }}</td>
                                         </tr>
@@ -1634,7 +1635,8 @@
                                 {% for order in orders %}
                                 <tr class="adm-order-row" id="order-row-{{ order.id }}"
                                     data-user="{{ order.username | lower if order.username else '' }}"
-                                    data-status="{{ order.status | lower }}">
+                                    data-status="{{ order.status | lower }}"
+                                    data-order-total-php="{{ order.total }}">
                                     <td><span class="adm-table-id">ORD-{{ '%06d' % order.id }}</span></td>
                                     <td>
                                         <div class="adm-user-cell">
@@ -2945,6 +2947,281 @@
                 })
                 .catch(() => showToast('Network error', 'err'));
             return;
+        }
+    });
+
+})();
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   DASHBOARD CURRENCY SYNC
+   ───────────────────────────────────────────────────────────────────────
+   Reads the active currency from localStorage (same keys the navbar uses:
+   armsdealer_region.currency and the standalone 'currency' key) and
+   re-renders every price-bearing cell on the dashboard to match.
+
+   Reacts to:
+     • Page load         — applies saved currency immediately
+     • Navbar select     — currencySelect change event on this page
+     • Cross-tab changes — storage event (settings panel, other tabs)
+
+   All prices are anchored to their raw PHP value stored in
+   data-php-price on each cell (tagged once at init from Jinja2
+   data-* attributes on the parent <tr>).
+═══════════════════════════════════════════════════════════════════════ */
+(function () {
+    'use strict';
+
+    /* ── Currency table (mirrors navbarfunctions.js CURRENCY_NAVBAR_MAP) */
+    var CURRENCIES = {
+        PHP: { symbol: '₱',   rate: 1       },
+        USD: { symbol: '$',   rate: 0.0175  },
+        EUR: { symbol: '€',   rate: 0.0161  },
+        JPY: { symbol: 'JP¥', rate: 2.65    },
+        CNY: { symbol: 'CN¥', rate: 0.127   }
+    };
+
+    /* ── Read active currency from localStorage ──────────────────── */
+    function getActiveCurrency() {
+        var code;
+        try {
+            var region = JSON.parse(localStorage.getItem('armsdealer_region') || 'null');
+            if (region && region.currency) code = region.currency;
+        } catch (e) {}
+        if (!code) {
+            try { code = localStorage.getItem('currency'); } catch (e) {}
+        }
+        return CURRENCIES[code] ? code : 'PHP';
+    }
+
+    /* ── Format a PHP value in the target currency ───────────────── */
+    function fmt(phpValue, curCode) {
+        var info = CURRENCIES[curCode];
+        var converted = phpValue * info.rate;
+        return info.symbol + converted.toLocaleString('en-US', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+    }
+
+    /* ── Tag every price cell with its canonical PHP value ──────────
+       Reads raw PHP values from the <tr> data-* attributes that Jinja2
+       already renders (data-product-price, data-service-price, etc.)
+       and marks the corresponding <td> for future conversions.
+    ─────────────────────────────────────────────────────────────── */
+    function tagPriceCells() {
+
+        /* Inventory table — Price column (index 4) */
+        document.querySelectorAll('#inventoryTableBody tr[data-product-price]').forEach(function (row) {
+            var td = row.querySelectorAll('td')[4];
+            var php = parseFloat(row.dataset.productPrice);
+            if (td && !isNaN(php)) {
+                td.dataset.phpPrice = php;
+                td.classList.add('adm-price-cell');
+            }
+        });
+
+        /* Services table — Price column (index 3) */
+        document.querySelectorAll('#servicesTableBody tr[data-service-price]').forEach(function (row) {
+            var td = row.querySelectorAll('td')[3];
+            var php = parseFloat(row.dataset.servicePrice);
+            if (td && !isNaN(php)) {
+                td.dataset.phpPrice = php;
+                td.classList.add('adm-price-cell');
+            }
+        });
+
+        /* Orders table — Total column (index 4).
+           Uses data-order-total-php if the template supplies it,
+           otherwise falls back to parsing the rendered ₱ text. */
+        document.querySelectorAll('#ordersTableBody tr.adm-order-row').forEach(function (row) {
+            var td = row.querySelectorAll('td')[4];
+            if (!td) return;
+            var php = parseFloat(row.dataset.orderTotalPhp);
+            if (!isNaN(php)) {
+                td.dataset.phpPrice = php;
+                td.classList.add('adm-price-cell');
+            } else {
+                /* Fallback: server rendered in PHP → parse ₱ text */
+                var raw = td.textContent.trim();
+                if (raw.charAt(0) === '₱') {
+                    var parsed = parseFloat(raw.replace(/[₱,\s]/g, ''));
+                    if (!isNaN(parsed)) {
+                        td.dataset.phpPrice = parsed;
+                        td.classList.add('adm-price-cell');
+                    }
+                }
+            }
+        });
+
+        /* Top Revenue Products table — last <td> of each body row.
+           Jinja2 renders these with the server-side currency symbol.
+           We tag them only when a ₱ prefix is present (PHP base). */
+        var topRevBody = document.querySelector('.adm-chart-card .adm-table tbody');
+        if (topRevBody) {
+            topRevBody.querySelectorAll('tr').forEach(function (row) {
+                var tds = row.querySelectorAll('td');
+                if (tds.length < 2) return;
+                var td = tds[tds.length - 1];
+                var phpVal = parseFloat(row.dataset.phpRevenue);
+                if (!isNaN(phpVal)) {
+                    td.dataset.phpPrice = phpVal;
+                    td.classList.add('adm-price-cell');
+                } else {
+                    var raw = td.textContent.trim();
+                    if (raw.charAt(0) === '₱') {
+                        var parsed = parseFloat(raw.replace(/[₱,\s]/g, ''));
+                        if (!isNaN(parsed)) {
+                            td.dataset.phpPrice = parsed;
+                            td.classList.add('adm-price-cell');
+                        }
+                    }
+                }
+            });
+        }
+
+        /* Total Revenue stat card — uses id adm-revenue-stat-value */
+        var revVal = document.getElementById('adm-revenue-stat-value');
+        if (revVal && isNaN(parseFloat(revVal.dataset.phpPrice))) {
+            var raw = revVal.textContent.trim();
+            if (raw.charAt(0) === '₱') {
+                var parsed = parseFloat(raw.replace(/[₱,\s]/g, ''));
+                if (!isNaN(parsed)) revVal.dataset.phpPrice = parsed;
+            }
+        }
+
+        /* Mini rev chart bars — store PHP values for tooltip rebuild */
+        if (window.revenueData) {
+            document.querySelectorAll('#miniRevChart .adm-rev-bar').forEach(function (bar, i) {
+                if (window.revenueData[i] !== undefined) {
+                    bar.dataset.phpVal = window.revenueData[i];
+                }
+            });
+        }
+    }
+
+    /* ── Apply the chosen currency to every tagged element ────────── */
+    function applyDashboardCurrency(curCode) {
+        var info = CURRENCIES[curCode];
+        if (!info) return;
+
+        /* 1. All generic price cells */
+        document.querySelectorAll('.adm-price-cell[data-php-price]').forEach(function (el) {
+            var php = parseFloat(el.dataset.phpPrice);
+            if (!isNaN(php)) el.textContent = fmt(php, curCode);
+        });
+
+        /* 2. Total Revenue stat card value + icon */
+        var revVal  = document.getElementById('adm-revenue-stat-value');
+        var revIcon = document.getElementById('adm-revenue-stat-icon');
+        if (revVal) {
+            var php = parseFloat(revVal.dataset.phpPrice);
+            if (!isNaN(php)) revVal.textContent = fmt(php, curCode);
+        }
+        if (revIcon) revIcon.textContent = info.symbol;
+
+        /* 3. Revenue bar chart — rebuild with correct symbol + rate */
+        rebuildRevenueChart(curCode);
+
+        /* 4. Mini rev chart tooltips */
+        document.querySelectorAll('#miniRevChart .adm-rev-bar[data-php-val]').forEach(function (bar) {
+            var php = parseFloat(bar.dataset.phpVal);
+            if (!isNaN(php)) bar.title = fmt(php, curCode);
+        });
+    }
+
+    /* ── Rebuild revenue bar chart with given currency ─────────────── */
+    function rebuildRevenueChart(curCode) {
+        var svg = document.getElementById('revenueChart');
+        if (!svg || !window.revenueData || !window.revenueLabels) return;
+
+        var info   = CURRENCIES[curCode];
+        var raw    = window.revenueData;    // raw PHP values from server
+        var labels = window.revenueLabels;
+        var max    = Math.max.apply(null, raw.concat([1]));
+        var W = 520, H = 140, pad = { t: 10, b: 28, l: 10, r: 10 };
+        var cw = W - pad.l - pad.r;
+        var ch = H - pad.t - pad.b;
+        var bw = Math.floor((cw / raw.length) * 0.6);
+        var gap = (cw - bw * raw.length) / (raw.length + 1);
+
+        var html = '';
+        [0.25, 0.5, 0.75, 1].forEach(function (pct) {
+            var y = pad.t + ch * (1 - pct);
+            html += '<line x1="' + pad.l + '" y1="' + y + '" x2="' + (W - pad.r) +
+                    '" y2="' + y + '" stroke="#252e25" stroke-width="1"/>';
+        });
+
+        raw.forEach(function (val, i) {
+            var barH     = Math.max((val / max) * ch, 2);
+            var x        = pad.l + gap * (i + 1) + bw * i;
+            var y        = pad.t + ch - barH;
+            var isToday  = (i === raw.length - 1);
+            var converted = val * info.rate;
+            var kLabel   = '';
+            if (val > 0) {
+                kLabel = converted >= 1000
+                    ? info.symbol + (converted / 1000).toFixed(0) + 'k'
+                    : info.symbol + Math.round(converted);
+            }
+
+            html += '<rect x="' + x + '" y="' + y + '" width="' + bw + '" height="' + barH + '"' +
+                    ' fill="' + (isToday ? '#96b562' : 'rgba(150,181,98,0.25)') + '"' +
+                    ' class="adm-rev-bar"/>';
+
+            var lx = x + bw / 2;
+            html += '<text x="' + lx + '" y="' + (H - 6) + '" text-anchor="middle"' +
+                    ' font-family="\'Share Tech Mono\',monospace" font-size="9" fill="#3d523d">' +
+                    labels[i] + '</text>';
+
+            if (val > 0) {
+                html += '<text x="' + lx + '" y="' + (y - 4) + '" text-anchor="middle"' +
+                        ' font-family="\'Oswald\',sans-serif" font-size="9"' +
+                        ' fill="' + (isToday ? '#96b562' : '#4a5e4a') + '">' + kLabel + '</text>';
+            }
+        });
+
+        var points = raw.map(function (val, i) {
+            var x = pad.l + gap * (i + 1) + bw * i + bw / 2;
+            var y = pad.t + ch - (val / max) * ch;
+            return x + ',' + y;
+        }).join(' ');
+
+        if (raw.some(function (v) { return v > 0; })) {
+            html += '<polyline points="' + points + '" fill="none"' +
+                    ' stroke="rgba(150,181,98,0.4)" stroke-width="1.5" stroke-linejoin="round"/>';
+        }
+
+        svg.innerHTML = html;
+    }
+
+    /* ── Init ──────────────────────────────────────────────────────── */
+    function init() {
+        tagPriceCells();
+        applyDashboardCurrency(getActiveCurrency());
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+    /* ── Live: navbar currencySelect on this page ─────────────────── */
+    document.addEventListener('DOMContentLoaded', function () {
+        var navCurSel = document.getElementById('currencySelect');
+        if (navCurSel) {
+            navCurSel.addEventListener('change', function () {
+                applyDashboardCurrency(this.value);
+            });
+        }
+    });
+
+    /* ── Live: cross-tab / settings panel changes ─────────────────── */
+    window.addEventListener('storage', function (e) {
+        if (e.key === 'armsdealer_region' || e.key === 'currency') {
+            applyDashboardCurrency(getActiveCurrency());
         }
     });
 
