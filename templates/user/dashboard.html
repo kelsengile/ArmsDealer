@@ -2331,6 +2331,41 @@
                 }
                 const row = document.getElementById('order-row-' + orderId);
                 if (row) row.dataset.status = newStatus.toLowerCase();
+
+                /* ── Live-update stock on shipping ── */
+                if (newStatus === 'shipping' && data.stock_updates && data.stock_updates.length) {
+                    data.stock_updates.forEach(function(upd) {
+                        const invRow = document.querySelector(
+                            '#inventoryTableBody tr[data-product-id="' + upd.product_id + '"]'
+                        );
+                        if (!invRow) return;
+                        const newStock = upd.new_stock;
+                        invRow.dataset.productStock = newStock;
+                        invRow.dataset.stock = newStock <= 0 ? 'out' : (newStock <= 5 ? 'low' : 'ok');
+                        const stockNumEl = invRow.querySelector('.adm-stock-num');
+                        if (stockNumEl) stockNumEl.textContent = newStock;
+                        const fillEl = invRow.querySelector('.adm-stock-fill');
+                        if (fillEl) {
+                            fillEl.style.width = Math.min(newStock * 2, 100) + '%';
+                            fillEl.classList.remove('low', 'med');
+                            if (newStock <= 5)       fillEl.classList.add('low');
+                            else if (newStock <= 20) fillEl.classList.add('med');
+                        }
+                    });
+                }
+
+                /* ── Live-update sales count on delivered ── */
+                if (newStatus === 'delivered' && data.sales_updates && data.sales_updates.length) {
+                    data.sales_updates.forEach(function(upd) {
+                        const invRow = document.querySelector(
+                            '#inventoryTableBody tr[data-product-id="' + upd.product_id + '"]'
+                        );
+                        if (!invRow) return;
+                        const cells = invRow.querySelectorAll('td');
+                        if (cells[7]) cells[7].textContent = upd.new_sales;
+                    });
+                }
+
                 showToast('ORD-' + String(orderId).padStart(6,'0') + ' → ' + newStatus.toUpperCase());
             } else {
                 showToast(data.error || 'Update failed', 'err');

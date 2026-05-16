@@ -720,14 +720,12 @@ def admin_update_order_status(order_id):
     )
 
     stock_updates = []
+    sales_updates = []
 
-    # If status changed to stock-deducting status and wasn't before, deduct stock
-    stock_deduct_statuses = {'shipping', 'delivered'}
-    if (new_status in stock_deduct_statuses and
-        old_status not in stock_deduct_statuses and
-            new_status != 'cancelled'):
+    # Deduct stock when transitioning TO 'shipping' for the first time.
+    # This locks in inventory the moment the order leaves for delivery.
+    if new_status == 'shipping' and old_status not in ('shipping', 'delivered'):
 
-        # Get order items (only products have stock)
         order_items = db.execute("""
             SELECT oi.item_id, oi.quantity, p.stock
             FROM order_items oi
@@ -738,9 +736,7 @@ def admin_update_order_status(order_id):
         for item in order_items:
             product_id = item['item_id']
             quantity = item['quantity']
-            current_stock = item['stock'] or 0
-
-            new_stock = max(0, current_stock - quantity)  # Don't go below 0
+            new_stock = max(0, (item['stock'] or 0) - quantity)
 
             db.execute(
                 "UPDATE products SET stock = ? WHERE id = ?",
@@ -749,7 +745,33 @@ def admin_update_order_status(order_id):
 
             stock_updates.append({
                 'product_id': product_id,
-                'new_stock': new_stock
+                'new_stock':  new_stock,
+            })
+
+    # Increment sales_count when transitioning TO 'delivered' for the first time.
+    if new_status == 'delivered' and old_status != 'delivered':
+
+        order_items = db.execute("""
+            SELECT oi.item_id, oi.quantity, p.sales_count
+            FROM order_items oi
+            JOIN products p ON oi.item_type = 'product' AND oi.item_id = p.id
+            WHERE oi.order_id = ?
+        """, (order_id,)).fetchall()
+
+        for item in order_items:
+            product_id = item['item_id']
+            quantity = item['quantity']
+            new_sales = (item['sales_count'] or 0) + quantity
+
+            db.execute(
+                "UPDATE products SET sales_count = ? WHERE id = ?",
+                (new_sales, product_id)
+            )
+
+            sales_updates.append({
+                'product_id': product_id,
+                'new_sales':  new_sales,
+                'qty_sold':   quantity,
             })
 
     db.commit()
@@ -757,6 +779,8 @@ def admin_update_order_status(order_id):
     response = {'ok': True, 'status': new_status}
     if stock_updates:
         response['stock_updates'] = stock_updates
+    if sales_updates:
+        response['sales_updates'] = sales_updates
 
     return jsonify(response)
 
