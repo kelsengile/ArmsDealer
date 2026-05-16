@@ -2092,3 +2092,109 @@ def admin_get_brands():
     db = get_db()
     rows = db.execute('SELECT id, name FROM brands ORDER BY name').fetchall()
     return jsonify(ok=True, brands=[dict(r) for r in rows])
+
+
+# ─────────────────────────────────────────
+# RATE ITEM  (POST /api/rate)
+# Accepts JSON: { item_type, item_id, rating }
+# One rating per user per item. After inserting, recomputes the item's
+# average rating from all rows in product_ratings and writes it back to
+# products.rating / services.rating so the catalogue always reflects live data.
+# ─────────────────────────────────────────
+
+@api_bp.route('/rate', methods=['POST'])
+def rate_item():
+    """Submit a 1-5 star rating for a delivered product or service."""
+    if not session.get('user_id'):
+        return jsonify(ok=False, error='Not logged in'), 401
+
+    data = request.get_json(silent=True) or {}
+    item_type = (data.get('item_type') or '').strip().lower()
+    item_id = data.get('item_id')
+    rating = data.get('rating')
+
+    # ── Validate inputs ───────────────────────────────────────────────
+    if item_type not in ('product', 'service'):
+        return jsonify(ok=False, error='Invalid item_type'), 400
+
+    try:
+        item_id = int(item_id)
+        rating = int(rating)
+    except (TypeError, ValueError):
+        return jsonify(ok=False, error='item_id and rating must be integers'), 400
+
+    if not (1 <= rating <= 5):
+        return jsonify(ok=False, error='Rating must be between 1 and 5'), 400
+
+    user_id = session['user_id']
+    db = get_db()
+
+    # ── Ensure the ratings table exists (auto-migration) ─────────────
+    db.execute('''
+        CREATE TABLE IF NOT EXISTS product_ratings (
+            id        INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id   INTEGER NOT NULL,
+            item_type TEXT    NOT NULL,
+            item_id   INTEGER NOT NULL,
+            rating    INTEGER NOT NULL,
+            created_at TEXT DEFAULT (datetime('now')),
+            UNIQUE(user_id, item_type, item_id)
+        )
+    ''')
+
+    # ── Guard: verify the user actually bought and received this item ─
+    # (They must have a delivered order containing this item.)
+    purchased = db.execute('''
+        SELECT 1
+        FROM order_items oi
+        JOIN orders o ON o.id = oi.order_id
+        WHERE o.user_id    = ?
+          AND o.status     = 'delivered'
+          AND oi.item_type = ?
+          AND oi.item_id   = ?
+        LIMIT 1
+    ''', (user_id, item_type, item_id)).fetchone()
+
+    if not purchased:
+        return jsonify(ok=False, error='You can only rate items from delivered orders'), 403
+
+    # ── Insert or detect duplicate ────────────────────────────────────
+    try:
+        db.execute(
+            '''INSERT INTO product_ratings (user_id, item_type, item_id, rating)
+               VALUES (?, ?, ?, ?)''',
+            (user_id, item_type, item_id, rating)
+        )
+        db.commit()
+    except Exception:
+        # UNIQUE constraint hit — already rated
+        return jsonify(ok=False, error='already_rated'), 409
+
+    # ── Recompute the item's average rating from all submitted ratings ─
+    # Uses ROUND(..., 1) so we keep one decimal place (e.g. 4.3 stars).
+    avg_row = db.execute(
+        '''SELECT ROUND(AVG(CAST(rating AS REAL)), 1) AS avg_rating,
+                  COUNT(*) AS total_ratings
+           FROM product_ratings
+           WHERE item_type = ? AND item_id = ?''',
+        (item_type, item_id)
+    ).fetchone()
+
+    new_avg = float(
+        avg_row['avg_rating']) if avg_row and avg_row['avg_rating'] else float(rating)
+    total = int(avg_row['total_ratings']) if avg_row else 1
+
+    # ── Write updated average back to the catalogue table ────────────
+    if item_type == 'product':
+        db.execute(
+            'UPDATE products SET rating = ? WHERE id = ?',
+            (new_avg, item_id)
+        )
+    else:  # 'service'
+        db.execute(
+            'UPDATE services SET rating = ? WHERE id = ?',
+            (new_avg, item_id)
+        )
+    db.commit()
+
+    return jsonify(ok=True, new_rating=new_avg, total_ratings=total)
