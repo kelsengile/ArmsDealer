@@ -118,4 +118,81 @@
         }
     })();
 
+    /* ══════════════════════════════════════════════════════════════
+       WALLET CURRENCY CONVERSION
+       — mirrors the same currency codes & localStorage keys used by
+         navbarfunctions.js / the top-bar #currencySelect.
+
+       How it works:
+         - PHP balance is embedded in the DOM as data-wallet-php so we
+           always convert FROM the source-of-truth PHP value.
+         - On load, and any time the currency changes (select event or
+           cross-tab storage event), we read localStorage['currency']
+           (the same key navbarfunctions.js writes) and update the
+           symbol + figure spans.
+         - Rates are approximate display rates — same approach used
+           everywhere else on the site for client-side conversion.
+    ══════════════════════════════════════════════════════════════ */
+    const WALLET_RATES = {
+        PHP: { symbol: '₱', rate: 1 },
+        USD: { symbol: '$', rate: 0.0175 },
+        EUR: { symbol: '€', rate: 0.0161 },
+        JPY: { symbol: 'JP¥', rate: 2.71 },
+        CNY: { symbol: 'CN¥', rate: 0.127 },
+    };
+
+    const walletAmount = document.getElementById('panelWalletAmount');
+    const walletSymbol = document.getElementById('panelWalletSymbol');
+    const walletFigure = document.getElementById('panelWalletFigure');
+
+    function applyWalletCurrency(code) {
+        if (!walletAmount || !walletSymbol || !walletFigure) return;
+        const phpBalance = parseFloat(walletAmount.dataset.walletPhp) || 0;
+        const cur = WALLET_RATES[code] || WALLET_RATES['PHP'];
+        const converted = phpBalance * cur.rate;
+        // JPY gets 0 decimals, all others 2
+        const formatted = converted.toLocaleString('en-US', {
+            minimumFractionDigits: code === 'JPY' ? 0 : 2,
+            maximumFractionDigits: code === 'JPY' ? 0 : 2,
+        });
+        walletSymbol.textContent = cur.symbol;
+        walletFigure.textContent = formatted;
+    }
+
+    // Maps any code to the nearest supported one — mirrors CURRENCY_NAVBAR_MAP
+    const CURRENCY_MAP = { PHP: 'PHP', USD: 'USD', EUR: 'EUR', GBP: 'USD', SGD: 'USD', JPY: 'JPY', CNY: 'CNY' };
+
+    function readAndApplyCurrency() {
+        let code = 'PHP';
+        try {
+            // Primary: standalone key written by navbar & settings selects
+            const standalone = localStorage.getItem('currency');
+            if (standalone) {
+                code = standalone;
+            } else {
+                // Fallback: armsdealer_region bundle
+                const region = JSON.parse(localStorage.getItem('armsdealer_region') || 'null');
+                if (region && region.currency) code = region.currency;
+            }
+        } catch (e) { /* storage unavailable */ }
+        code = CURRENCY_MAP[code] || 'PHP';
+        applyWalletCurrency(code);
+    }
+
+    // ── Initial render on page load ────────────────────────────────
+    readAndApplyCurrency();
+
+    // ── React to navbar #currencySelect changes on THIS page ───────
+    const curSelect = document.getElementById('currencySelect');
+    if (curSelect) {
+        curSelect.addEventListener('change', readAndApplyCurrency);
+    }
+
+    // ── React to currency changes made in other tabs ───────────────
+    window.addEventListener('storage', function (e) {
+        if (e.key === 'currency' || e.key === 'armsdealer_region') {
+            readAndApplyCurrency();
+        }
+    });
+
 })();

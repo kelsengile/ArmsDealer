@@ -702,3 +702,203 @@
     transform: translateX(4px);
     opacity: 1;
 }
+
+/* ── E-Wallet Balance Block ─────────────────────────────────────── */
+.acct-wallet-strip {
+    margin: 10px 16px;
+    background: var(--mil-dark);
+    border: 1px solid var(--mil-border);
+    position: relative;
+    overflow: hidden;
+}
+
+/* bottom-right corner bracket — mirrors acctpage */
+.acct-wallet-strip::after {
+    content: "";
+    position: absolute;
+    bottom: -1px; right: -1px;
+    width: 16px; height: 16px;
+    border-bottom: 2px solid var(--mil-olive);
+    border-right: 2px solid var(--mil-olive);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* scanline texture */
+.acct-wallet-scanline {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0, 0, 0, 0.03) 3px,
+        rgba(0, 0, 0, 0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 0;
+}
+
+.acct-wallet-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 14px 16px;
+}
+
+/* ── Icon column ──────────────────────────────────────────────── */
+.acct-wallet-icon-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding-right: 14px;
+    border-right: 1px solid var(--mil-border);
+    flex-shrink: 0;
+}
+
+.acct-wallet-icon-wrap {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(168, 196, 122, 0.07);
+    border: 1px solid var(--mil-olive);
+    color: var(--mil-bright);
+    position: relative;
+}
+
+.acct-wallet-icon-wrap::before {
+    content: "";
+    position: absolute;
+    top: 3px; left: 3px;
+    right: 3px; bottom: 3px;
+    border: 1px solid rgba(168, 196, 122, 0.15);
+    pointer-events: none;
+}
+
+.acct-wallet-tag {
+    font-family: var(--font-mono);
+    font-size: 7px;
+    letter-spacing: 0.18em;
+    color: var(--mil-muted);
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+/* ── Center balance display ───────────────────────────────────── */
+.acct-wallet-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 0 14px;
+}
+
+.acct-wallet-center-label {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.24em;
+    color: var(--mil-olive);
+    text-transform: uppercase;
+}
+
+.acct-wallet-amount {
+    font-family: var(--font-stencil);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--mil-bright);
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+}
+
+.acct-wallet-currency {
+    font-size: 8px;
+    opacity: 0.65;
+    font-weight: 400;
+    letter-spacing: 0;
+}
+
+.acct-wallet-bar {
+    height: 2px;
+    background: rgba(107, 124, 78, 0.18);
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.acct-wallet-bar-fill {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    background: linear-gradient(90deg, var(--mil-olive), var(--mil-bright));
+    animation: walletBarPulse 3s ease-in-out infinite;
+}
+
+@keyframes walletBarPulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.5; }
+}
+
+/* ── Right column ─────────────────────────────────────────────── */
+.acct-wallet-right-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    padding-left: 14px;
+    border-left: 1px solid var(--mil-border);
+    flex-shrink: 0;
+}
+
+.acct-wallet-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.acct-wallet-status-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--mil-bright);
+    display: block;
+    animation: acctPulse 2.4s ease-in-out infinite;
+}
+
+.acct-wallet-status-text {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.22em;
+    color: var(--mil-bright);
+    text-transform: uppercase;
+}
+
+.acct-wallet-topup-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(168, 196, 122, 0.08);
+    border: 1px solid var(--mil-olive);
+    color: var(--mil-text);
+    font-family: var(--font-stencil);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+
+.acct-wallet-topup-btn:hover {
+    background: rgba(168, 196, 122, 0.15);
+    border-color: var(--mil-bright);
+    color: var(--mil-bright);
+}
