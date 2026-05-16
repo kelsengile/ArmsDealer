@@ -185,10 +185,30 @@
 .adm-nav-icon {
     font-size: 12px;
     width: 16px;
+    height: 16px;
     text-align: center;
     flex-shrink: 0;
     opacity: 0.7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
+/* ── SVG icon helper ── */
+.adm-ico {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    stroke: currentColor;
+    fill: none;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+.adm-ico.fill { fill: currentColor; stroke: none; }
+.adm-icon-btn .adm-ico { width: 13px; height: 13px; }
+.adm-stat-icon .adm-ico { width: 18px; height: 18px; }
+.adm-nav-icon .adm-ico { width: 15px; height: 15px; }
+.adm-empty-icon .adm-ico { width: 40px; height: 40px; opacity: .2; }
 
 .adm-nav-item.active .adm-nav-icon { opacity: 1; }
 .adm-nav-label { flex: 1; }
@@ -1201,6 +1221,55 @@
 {% endblock %}
 
 {% block main %}
+<!-- ══ SVG ICON SPRITE ══════════════════════════════════════════════════ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" id="admIconSprite">
+  <!-- analytics / dashboard -->
+  <symbol id="ico-analytics" viewBox="0 0 16 16"><rect x="1" y="8" width="3" height="7" rx=".5"/><rect x="6" y="5" width="3" height="10" rx=".5"/><rect x="11" y="2" width="3" height="13" rx=".5"/><polyline points="2.5,7 7.5,4 12.5,1" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></symbol>
+  <!-- orders / package -->
+  <symbol id="ico-orders" viewBox="0 0 16 16"><path d="M2 4.5 8 2l6 2.5v7L8 14l-6-2.5z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><polyline points="2,4.5 8,7 14,4.5" fill="none" stroke="currentColor" stroke-width="1.2"/><line x1="8" y1="7" x2="8" y2="14" stroke="currentColor" stroke-width="1.2"/><polyline points="5,3.3 8,4.5 11,3.3" fill="none" stroke="currentColor" stroke-width="1.2"/></symbol>
+  <!-- inquiries / mail -->
+  <symbol id="ico-inquiries" viewBox="0 0 16 16"><rect x="1" y="3" width="14" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.2"/><polyline points="1,4 8,9 15,4" fill="none" stroke="currentColor" stroke-width="1.2"/></symbol>
+  <!-- inventory / crosshair box -->
+  <symbol id="ico-inventory" viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="13" height="13" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="8" r="2.5" fill="none" stroke="currentColor" stroke-width="1.2"/><line x1="8" y1="1.5" x2="8" y2="5.5" stroke="currentColor" stroke-width="1.2"/><line x1="8" y1="10.5" x2="8" y2="14.5" stroke="currentColor" stroke-width="1.2"/><line x1="1.5" y1="8" x2="5.5" y2="8" stroke="currentColor" stroke-width="1.2"/><line x1="10.5" y1="8" x2="14.5" y2="8" stroke="currentColor" stroke-width="1.2"/></symbol>
+  <!-- services / wrench-gear -->
+  <symbol id="ico-services" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.42 1.42M11.53 11.53l1.42 1.42M3.05 12.95l1.42-1.42M11.53 4.47l1.42-1.42" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></symbol>
+  <!-- brands / shield -->
+  <symbol id="ico-brands" viewBox="0 0 16 16"><path d="M8 1.5 14 4v4c0 3.5-2.8 5.8-6 6.5C5.8 13.8 2 11.5 2 8V4z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><polyline points="5,8 7,10.5 11,6" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <!-- users / person -->
+  <symbol id="ico-users" viewBox="0 0 16 16"><circle cx="8" cy="5" r="2.8" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></symbol>
+  <!-- edit / pencil -->
+  <symbol id="ico-edit" viewBox="0 0 16 16"><path d="M11 2.5 13.5 5 5.5 13H3v-2.5z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><line x1="9.5" y1="4" x2="12" y2="6.5" stroke="currentColor" stroke-width="1.2"/></symbol>
+  <!-- delete / trash -->
+  <symbol id="ico-delete" viewBox="0 0 16 16"><polyline points="2,4 14,4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M5 4V2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5V4" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M3.5 4l.7 9.5a.5.5 0 0 0 .5.5h6.6a.5.5 0 0 0 .5-.5L12.5 4" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><line x1="6" y1="7" x2="6" y2="11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="10" y1="7" x2="10" y2="11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></symbol>
+  <!-- view / eye -->
+  <symbol id="ico-view" viewBox="0 0 16 16"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="8" r="2" fill="none" stroke="currentColor" stroke-width="1.2"/></symbol>
+  <!-- search -->
+  <symbol id="ico-search" viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="4" fill="none" stroke="currentColor" stroke-width="1.3"/><line x1="9.5" y1="9.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></symbol>
+  <!-- close / X -->
+  <symbol id="ico-close" viewBox="0 0 16 16"><line x1="3" y1="3" x2="13" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="13" y1="3" x2="3" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <!-- back arrow -->
+  <symbol id="ico-back" viewBox="0 0 16 16"><polyline points="10,3 4,8 10,13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <!-- chevron right -->
+  <symbol id="ico-chevron-r" viewBox="0 0 16 16"><polyline points="6,3 11,8 6,13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <!-- star -->
+  <symbol id="ico-star" viewBox="0 0 16 16"><polygon points="8,1 10,6 15.5,6 11,9.5 13,15 8,11.5 3,15 5,9.5 0.5,6 6,6" fill="currentColor"/></symbol>
+  <!-- promote / crown -->
+  <symbol id="ico-promote" viewBox="0 0 16 16"><path d="M1 12h14l-2-7-4 4-1-6-1 6-4-4z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><line x1="1" y1="14" x2="15" y2="14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></symbol>
+  <!-- demote / arrow down -->
+  <symbol id="ico-demote" viewBox="0 0 16 16"><line x1="8" y1="2" x2="8" y2="12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><polyline points="4,9 8,13 12,9" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <!-- alert / warning -->
+  <symbol id="ico-alert" viewBox="0 0 16 16"><path d="M8 1.5 15 13.5H1z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><line x1="8" y1="6.5" x2="8" y2="10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="12" r=".7" fill="currentColor"/></symbol>
+  <!-- check / tick -->
+  <symbol id="ico-check" viewBox="0 0 16 16"><polyline points="2.5,8.5 6,12.5 13.5,4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <!-- reply / send -->
+  <symbol id="ico-reply" viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><polyline points="10,4 14,8 10,12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><polyline points="5,11.5 1,8 5,4.5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <!-- command / terminal (brand icon) -->
+  <symbol id="ico-command" viewBox="0 0 16 16"><path d="M4 6V4a2 2 0 1 1 2 2H4m0 0H2a2 2 0 1 0 2 2V6m0 0h8m0 0V4a2 2 0 1 1 2 2h-2m0 0h2a2 2 0 1 0-2 2v-2" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <!-- filter / funnel -->
+  <symbol id="ico-filter" viewBox="0 0 16 16"><path d="M1 2h14l-5 6v5.5l-4-2V8z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></symbol>
+  <!-- add / plus -->
+  <symbol id="ico-add" viewBox="0 0 16 16"><line x1="8" y1="2" x2="8" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+</svg>
 <main class="adm-main">
     <div class="adm-wrapper">
 
@@ -1211,7 +1280,7 @@
 
             <div class="adm-sidenav-header">
                 <div class="adm-sidenav-brand">
-                    <div class="adm-sidenav-brand-icon">⚔</div>
+                    <div class="adm-sidenav-brand-icon"><svg class="adm-ico fill" style="width:16px;height:16px;" viewBox="0 0 16 16"><path d="M8 1L2 4v4c0 3.8 2.8 6.3 6 7 3.2-.7 6-3.2 6-7V4z" fill="currentColor"/></svg></div>
                     <div>
                         <div class="adm-sidenav-title">Command</div>
                         <div class="adm-sidenav-sub">Admin Terminal</div>
@@ -1241,29 +1310,29 @@
             <ul class="adm-nav-list">
                 <li>
                     <button class="adm-nav-item active" data-section="analytics">
-                        <span class="adm-nav-icon">◉</span>
+                        <span class="adm-nav-icon"><svg class="adm-ico"><use href="#ico-analytics"/></svg></span>
                         <span class="adm-nav-label">Analytics</span>
-                        <span class="adm-nav-arrow">▶</span>
+                        <span class="adm-nav-arrow"><svg class="adm-ico" style="width:9px;height:9px;"><use href="#ico-chevron-r"/></svg></span>
                     </button>
                 </li>
                 <li>
                     <button class="adm-nav-item" data-section="orders">
-                        <span class="adm-nav-icon">⊡</span>
+                        <span class="adm-nav-icon"><svg class="adm-ico"><use href="#ico-orders"/></svg></span>
                         <span class="adm-nav-label">Orders</span>
                         {% if stats.pending_orders > 0 %}
                         <span class="adm-nav-badge">{{ stats.pending_orders }}</span>
                         {% endif %}
-                        <span class="adm-nav-arrow">▶</span>
+                        <span class="adm-nav-arrow"><svg class="adm-ico" style="width:9px;height:9px;"><use href="#ico-chevron-r"/></svg></span>
                     </button>
                 </li>
                 <li>
                     <button class="adm-nav-item" data-section="inquiries">
-                        <span class="adm-nav-icon">✉</span>
+                        <span class="adm-nav-icon"><svg class="adm-ico"><use href="#ico-inquiries"/></svg></span>
                         <span class="adm-nav-label">Inquiries</span>
                         {% if stats.new_inquiries is defined and stats.new_inquiries > 0 %}
                         <span class="adm-nav-badge red-badge">{{ stats.new_inquiries }}</span>
                         {% endif %}
-                        <span class="adm-nav-arrow">▶</span>
+                        <span class="adm-nav-arrow"><svg class="adm-ico" style="width:9px;height:9px;"><use href="#ico-chevron-r"/></svg></span>
                     </button>
                 </li>
             </ul>
@@ -1273,23 +1342,23 @@
             <ul class="adm-nav-list">
                 <li>
                     <button class="adm-nav-item" data-section="inventory">
-                        <span class="adm-nav-icon">◎</span>
+                        <span class="adm-nav-icon"><svg class="adm-ico"><use href="#ico-inventory"/></svg></span>
                         <span class="adm-nav-label">Inventory</span>
-                        <span class="adm-nav-arrow">▶</span>
+                        <span class="adm-nav-arrow"><svg class="adm-ico" style="width:9px;height:9px;"><use href="#ico-chevron-r"/></svg></span>
                     </button>
                 </li>
                 <li>
                     <button class="adm-nav-item" data-section="services">
-                        <span class="adm-nav-icon">◈</span>
+                        <span class="adm-nav-icon"><svg class="adm-ico"><use href="#ico-services"/></svg></span>
                         <span class="adm-nav-label">Services</span>
-                        <span class="adm-nav-arrow">▶</span>
+                        <span class="adm-nav-arrow"><svg class="adm-ico" style="width:9px;height:9px;"><use href="#ico-chevron-r"/></svg></span>
                     </button>
                 </li>
                 <li>
                     <button class="adm-nav-item" data-section="brands">
-                        <span class="adm-nav-icon">▣</span>
+                        <span class="adm-nav-icon"><svg class="adm-ico"><use href="#ico-brands"/></svg></span>
                         <span class="adm-nav-label">Brands</span>
-                        <span class="adm-nav-arrow">▶</span>
+                        <span class="adm-nav-arrow"><svg class="adm-ico" style="width:9px;height:9px;"><use href="#ico-chevron-r"/></svg></span>
                     </button>
                 </li>
             </ul>
@@ -1299,15 +1368,15 @@
             <ul class="adm-nav-list">
                 <li>
                     <button class="adm-nav-item" data-section="users">
-                        <span class="adm-nav-icon">☰</span>
+                        <span class="adm-nav-icon"><svg class="adm-ico"><use href="#ico-users"/></svg></span>
                         <span class="adm-nav-label">Users</span>
-                        <span class="adm-nav-arrow">▶</span>
+                        <span class="adm-nav-arrow"><svg class="adm-ico" style="width:9px;height:9px;"><use href="#ico-chevron-r"/></svg></span>
                     </button>
                 </li>
             </ul>
 
             <div class="adm-sidenav-footer">
-                <a href="{{ url_for('main.homepage') }}" class="adm-back-site-btn">← Back to Site</a>
+                <a href="{{ url_for('main.homepage') }}" class="adm-back-site-btn" style="display:flex;align-items:center;gap:6px;"><svg class="adm-ico" style="width:12px;height:12px;"><use href="#ico-back"/></svg> Back to Site</a>
             </div>
         </nav>
 
@@ -1339,43 +1408,43 @@
                             <div class="adm-stat-delta pos">▲ All time</div>
                         </div>
                         <div class="adm-stat-card highlight">
-                            <div class="adm-stat-icon">⊡</div>
+                            <div class="adm-stat-icon"><svg class="adm-ico" style="width:18px;height:18px;"><use href="#ico-orders"/></svg></div>
                             <div class="adm-stat-label">Total Orders</div>
                             <div class="adm-stat-value">{{ stats.total_orders }}</div>
                             <div class="adm-stat-delta">Lifetime</div>
                         </div>
                         <div class="adm-stat-card red">
-                            <div class="adm-stat-icon">▶</div>
+                            <div class="adm-stat-icon"><svg class="adm-ico" style="width:18px;height:18px;"><use href="#ico-alert"/></svg></div>
                             <div class="adm-stat-label">Pending</div>
                             <div class="adm-stat-value">{{ stats.pending_orders }}</div>
                             <div class="adm-stat-delta neg">Needs attention</div>
                         </div>
                         <div class="adm-stat-card">
-                            <div class="adm-stat-icon">✓</div>
+                            <div class="adm-stat-icon"><svg class="adm-ico" style="width:18px;height:18px;"><use href="#ico-check"/></svg></div>
                             <div class="adm-stat-label">Delivered</div>
                             <div class="adm-stat-value">{{ stats.delivered_orders }}</div>
                             <div class="adm-stat-delta pos">Completed</div>
                         </div>
                         <div class="adm-stat-card">
-                            <div class="adm-stat-icon">◉</div>
+                            <div class="adm-stat-icon"><svg class="adm-ico" style="width:18px;height:18px;"><use href="#ico-users"/></svg></div>
                             <div class="adm-stat-label">Total Users</div>
                             <div class="adm-stat-value">{{ stats.total_users }}</div>
                             <div class="adm-stat-delta">Registered</div>
                         </div>
                         <div class="adm-stat-card">
-                            <div class="adm-stat-icon">◈</div>
+                            <div class="adm-stat-icon"><svg class="adm-ico" style="width:18px;height:18px;"><use href="#ico-inventory"/></svg></div>
                             <div class="adm-stat-label">Products</div>
                             <div class="adm-stat-value">{{ stats.total_products }}</div>
                             <div class="adm-stat-delta">In catalog</div>
                         </div>
                         <div class="adm-stat-card">
-                            <div class="adm-stat-icon">◎</div>
+                            <div class="adm-stat-icon"><svg class="adm-ico" style="width:18px;height:18px;"><use href="#ico-services"/></svg></div>
                             <div class="adm-stat-label">Services</div>
                             <div class="adm-stat-value">{{ stats.total_services }}</div>
                             <div class="adm-stat-delta">Available</div>
                         </div>
                         <div class="adm-stat-card blue">
-                            <div class="adm-stat-icon">✉</div>
+                            <div class="adm-stat-icon"><svg class="adm-ico" style="width:18px;height:18px;"><use href="#ico-inquiries"/></svg></div>
                             <div class="adm-stat-label">Inquiries</div>
                             <div class="adm-stat-value">{{ stats.new_inquiries if stats.new_inquiries is defined else '—' }}</div>
                             <div class="adm-stat-delta">Unread</div>
@@ -1458,7 +1527,7 @@
                         <!-- Low Stock Alert Table -->
                         <div class="adm-chart-card">
                             <div class="adm-chart-header">
-                                <span class="adm-chart-title" style="color:#c0392b;">⚠ Low Stock Alert</span>
+                                <span class="adm-chart-title" style="color:#c0392b;display:flex;align-items:center;gap:6px;"><svg class="adm-ico" style="width:13px;height:13px;color:#c0392b;"><use href="#ico-alert"/></svg> Low Stock Alert</span>
                                 <span class="adm-chart-meta">Stock ≤ 5</span>
                             </div>
                             <div class="adm-chart-body" style="padding:0;">
@@ -1483,7 +1552,7 @@
                                 </table>
                                 {% else %}
                                 <div class="adm-empty" style="min-height:100px;">
-                                    <div class="adm-empty-text" style="color:var(--mil-bright);">✓ All stocked</div>
+                                    <div class="adm-empty-text" style="color:var(--mil-bright);display:flex;align-items:center;gap:6px;"><svg class="adm-ico" style="width:14px;height:14px;"><use href="#ico-check"/></svg> All stocked</div>
                                 </div>
                                 {% endif %}
                             </div>
@@ -1605,7 +1674,7 @@
                 <div class="adm-section-body">
                     <div class="adm-filter-bar">
                         <div class="adm-search-wrap">
-                            <span class="adm-search-icon">⌕</span>
+                            <span class="adm-search-icon"><svg class="adm-ico" style="width:12px;height:12px;"><use href="#ico-search"/></svg></span>
                             <input type="text" class="adm-search-input" id="ordersSearch" placeholder="Search order ID or user...">
                         </div>
                         <select class="adm-filter-select" id="ordersStatusFilter">
@@ -1676,7 +1745,7 @@
                     </div>
                     {% else %}
                     <div class="adm-empty">
-                        <div class="adm-empty-icon">⊡</div>
+                        <div class="adm-empty-icon"><svg class="adm-ico" style="width:40px;height:40px;opacity:.2;"><use href="#ico-orders"/></svg></div>
                         <div class="adm-empty-text">No orders yet</div>
                         <div class="adm-empty-sub">Orders appear here once placed</div>
                     </div>
@@ -1695,7 +1764,7 @@
                 <div class="adm-section-body">
                     <div class="adm-filter-bar">
                         <div class="adm-search-wrap">
-                            <span class="adm-search-icon">⌕</span>
+                            <span class="adm-search-icon"><svg class="adm-ico" style="width:12px;height:12px;"><use href="#ico-search"/></svg></span>
                             <input type="text" class="adm-search-input" id="inquiriesSearch" placeholder="Search name, email, subject...">
                         </div>
                         <select class="adm-filter-select" id="inquiriesStatusFilter">
@@ -1740,7 +1809,7 @@
                                     </td>
                                     <td style="white-space:nowrap;">{{ inq.created_at[:10] if inq.created_at else '—' }}</td>
                                     <td>
-                                        <button class="adm-btn adm-view-inquiry-btn" style="font-size:9px;padding:4px 10px;"
+                                        <button class="adm-btn adm-view-inquiry-btn" style="font-size:9px;padding:4px 10px;gap:5px;"
                                                 data-inq-id="{{ inq.id }}"
                                                 data-inq-name="{{ inq.name }}"
                                                 data-inq-email="{{ inq.email }}"
@@ -1748,7 +1817,7 @@
                                                 data-inq-message="{{ inq.message }}"
                                                 data-inq-status="{{ inq.status }}"
                                                 data-inq-date="{{ inq.created_at[:10] if inq.created_at else '' }}">
-                                            View ›
+                                            <svg class="adm-ico" style="width:11px;height:11px;"><use href="#ico-view"/></svg> View
                                         </button>
                                     </td>
                                 </tr>
@@ -1758,7 +1827,7 @@
                     </div>
                     {% else %}
                     <div class="adm-empty">
-                        <div class="adm-empty-icon">✉</div>
+                        <div class="adm-empty-icon"><svg class="adm-ico" style="width:40px;height:40px;opacity:.2;"><use href="#ico-inquiries"/></svg></div>
                         <div class="adm-empty-text">No inquiries</div>
                         <div class="adm-empty-sub">Customer messages will appear here</div>
                     </div>
@@ -1774,20 +1843,45 @@
                         <span class="adm-section-sub">Products stock levels &amp; catalog</span>
                     </div>
                     <div class="adm-section-actions">
-                        <button class="adm-btn primary" onclick="openAddProductModal()">+ Add Product</button>
+                        <button class="adm-btn primary" onclick="openAddProductModal()" style="gap:6px;"><svg class="adm-ico" style="width:11px;height:11px;"><use href="#ico-add"/></svg> Add Product</button>
                     </div>
                 </div>
                 <div class="adm-section-body">
                     <div class="adm-filter-bar">
                         <div class="adm-search-wrap">
-                            <span class="adm-search-icon">⌕</span>
-                            <input type="text" class="adm-search-input" id="inventorySearch" placeholder="Search product name...">
+                            <span class="adm-search-icon"><svg class="adm-ico" style="width:12px;height:12px;"><use href="#ico-search"/></svg></span>
+                            <input type="text" class="adm-search-input" id="inventorySearch" placeholder="Search product name or brand...">
                         </div>
                         <select class="adm-filter-select" id="inventoryStockFilter">
                             <option value="">All Stock</option>
                             <option value="out">Out of Stock (0)</option>
                             <option value="low">Low Stock (≤5)</option>
                             <option value="ok">In Stock</option>
+                        </select>
+                        <select class="adm-filter-select" id="inventoryAuthFilter">
+                            <option value="">Auth: All</option>
+                            <option value="1">Authorized</option>
+                            <option value="0">Restricted</option>
+                        </select>
+                        <select class="adm-filter-select" id="inventoryCategoryFilter">
+                            <option value="">All Categories</option>
+                        </select>
+                        <select class="adm-filter-select" id="inventoryBrandFilter">
+                            <option value="">All Brands</option>
+                        </select>
+                        <select class="adm-filter-select" id="inventoryPriceFilter">
+                            <option value="">Price: Any</option>
+                            <option value="price-asc">Price: Low → High</option>
+                            <option value="price-desc">Price: High → Low</option>
+                        </select>
+                        <select class="adm-filter-select" id="inventorySortFilter">
+                            <option value="">Sort: Default</option>
+                            <option value="price-asc">Price ↑</option>
+                            <option value="price-desc">Price ↓</option>
+                            <option value="stock-asc">Stock ↑</option>
+                            <option value="stock-desc">Stock ↓</option>
+                            <option value="sales-desc">Best Sellers</option>
+                            <option value="rating-desc">Top Rated</option>
                         </select>
                     </div>
                     {% if products is defined and products and products | length > 0 %}
@@ -1839,15 +1933,15 @@
                                     <td>{{ p.sales_count }}</td>
                                     <td>
                                         {% if p.is_authorized %}
-                                        <span style="color:var(--mil-bright);font-size:10px;">✓</span>
+                                        <svg class="adm-ico" style="width:13px;height:13px;color:var(--mil-bright);"><use href="#ico-check"/></svg>
                                         {% else %}
                                         <span style="color:var(--mil-muted);font-size:10px;">—</span>
                                         {% endif %}
                                     </td>
                                     <td>
                                         <div style="display:flex;gap:4px;">
-                                            <button class="adm-icon-btn adm-edit-product-btn" data-id="{{ p.id }}" title="Edit">✎</button>
-                                            <button class="adm-icon-btn danger adm-delete-product-btn" data-id="{{ p.id }}" data-name="{{ p.name | e }}" title="Delete">✕</button>
+                                            <button class="adm-icon-btn adm-edit-product-btn" data-id="{{ p.id }}" title="Edit"><svg class="adm-ico"><use href="#ico-edit"/></svg></button>
+                                            <button class="adm-icon-btn danger adm-delete-product-btn" data-id="{{ p.id }}" data-name="{{ p.name | e }}" title="Delete"><svg class="adm-ico"><use href="#ico-delete"/></svg></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -1857,7 +1951,7 @@
                     </div>
                     {% else %}
                     <div class="adm-empty">
-                        <div class="adm-empty-icon">◈</div>
+                        <div class="adm-empty-icon"><svg class="adm-ico" style="width:40px;height:40px;opacity:.2;"><use href="#ico-inventory"/></svg></div>
                         <div class="adm-empty-text">No products</div>
                         <div class="adm-empty-sub">Add your first product to get started</div>
                     </div>
@@ -1873,15 +1967,35 @@
                         <span class="adm-section-sub">Manage offered services</span>
                     </div>
                     <div class="adm-section-actions">
-                        <button class="adm-btn primary" onclick="openAddServiceModal()">+ Add Service</button>
+                        <button class="adm-btn primary" onclick="openAddServiceModal()" style="gap:6px;"><svg class="adm-ico" style="width:11px;height:11px;"><use href="#ico-add"/></svg> Add Service</button>
                     </div>
                 </div>
                 <div class="adm-section-body">
                     <div class="adm-filter-bar">
                         <div class="adm-search-wrap">
-                            <span class="adm-search-icon">⌕</span>
+                            <span class="adm-search-icon"><svg class="adm-ico" style="width:12px;height:12px;"><use href="#ico-search"/></svg></span>
                             <input type="text" class="adm-search-input" id="servicesSearch" placeholder="Search service name...">
                         </div>
+                        <select class="adm-filter-select" id="servicesAuthFilter">
+                            <option value="">Auth: All</option>
+                            <option value="1">Authorized</option>
+                            <option value="0">Restricted</option>
+                        </select>
+                        <select class="adm-filter-select" id="servicesCategoryFilter">
+                            <option value="">All Categories</option>
+                        </select>
+                        <select class="adm-filter-select" id="servicesPriceFilter">
+                            <option value="">Price: Any</option>
+                            <option value="price-asc">Price: Low → High</option>
+                            <option value="price-desc">Price: High → Low</option>
+                        </select>
+                        <select class="adm-filter-select" id="servicesSortFilter">
+                            <option value="">Sort: Default</option>
+                            <option value="price-asc">Price ↑</option>
+                            <option value="price-desc">Price ↓</option>
+                            <option value="sales-desc">Best Sellers</option>
+                            <option value="rating-desc">Top Rated</option>
+                        </select>
                     </div>
                     {% if services is defined and services and services | length > 0 %}
                     <div class="adm-table-wrap">
@@ -1917,15 +2031,15 @@
                                     <td>{{ s.sales_count }}</td>
                                     <td>
                                         {% if s.is_authorized %}
-                                        <span style="color:var(--mil-bright);font-size:10px;">✓</span>
+                                        <svg class="adm-ico" style="width:13px;height:13px;color:var(--mil-bright);"><use href="#ico-check"/></svg>
                                         {% else %}
                                         <span style="color:var(--mil-muted);font-size:10px;">—</span>
                                         {% endif %}
                                     </td>
                                     <td>
                                         <div style="display:flex;gap:4px;">
-                                            <button class="adm-icon-btn adm-edit-service-btn" data-id="{{ s.id }}" title="Edit">✎</button>
-                                            <button class="adm-icon-btn danger adm-delete-service-btn" data-id="{{ s.id }}" data-name="{{ s.name | e }}" title="Delete">✕</button>
+                                            <button class="adm-icon-btn adm-edit-service-btn" data-id="{{ s.id }}" title="Edit"><svg class="adm-ico"><use href="#ico-edit"/></svg></button>
+                                            <button class="adm-icon-btn danger adm-delete-service-btn" data-id="{{ s.id }}" data-name="{{ s.name | e }}" title="Delete"><svg class="adm-ico"><use href="#ico-delete"/></svg></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -1935,7 +2049,7 @@
                     </div>
                     {% else %}
                     <div class="adm-empty">
-                        <div class="adm-empty-icon">◎</div>
+                        <div class="adm-empty-icon"><svg class="adm-ico" style="width:40px;height:40px;opacity:.2;"><use href="#ico-services"/></svg></div>
                         <div class="adm-empty-text">No services</div>
                         <div class="adm-empty-sub">Add your first service</div>
                     </div>
@@ -1951,14 +2065,31 @@
                         <span class="adm-section-sub">Authorized &amp; partner brands</span>
                     </div>
                     <div class="adm-section-actions">
-                        <a href="{{ url_for('admin.add_brand') if admin is defined else '#' }}" class="adm-btn primary">+ Add Brand</a>
+                        <button class="adm-btn primary" onclick="openAddBrandModal()" style="gap:6px;"><svg class="adm-ico" style="width:11px;height:11px;"><use href="#ico-add"/></svg> Add Brand</button>
                     </div>
                 </div>
                 <div class="adm-section-body">
+                    <div class="adm-filter-bar">
+                        <div class="adm-search-wrap">
+                            <span class="adm-search-icon"><svg class="adm-ico" style="width:12px;height:12px;"><use href="#ico-search"/></svg></span>
+                            <input type="text" class="adm-search-input" id="brandsSearch" placeholder="Search brand name...">
+                        </div>
+                        <select class="adm-filter-select" id="brandsAuthFilter">
+                            <option value="">Auth: All</option>
+                            <option value="authorized">Authorized</option>
+                            <option value="unauthorized">Restricted</option>
+                        </select>
+                        <select class="adm-filter-select" id="brandsSortFilter">
+                            <option value="">Sort: Default</option>
+                            <option value="name-asc">Name A→Z</option>
+                            <option value="name-desc">Name Z→A</option>
+                            <option value="auth-first">Authorized First</option>
+                        </select>
+                    </div>
                     {% if brands is defined and brands and brands | length > 0 %}
                     <div class="adm-brand-grid" id="brandGrid">
                         {% for b in brands %}
-                        <div class="adm-brand-card">
+                        <div class="adm-brand-card" data-brand-name="{{ b.name | lower }}" data-brand-auth="{{ 'authorized' if b.is_authorized else 'unauthorized' }}">
                             <div class="adm-brand-logo">
                                 {% if b.logo_file %}
                                 <img src="{{ url_for('static', filename='assets/icons/brandslogo/' + b.logo_file) }}" alt="{{ b.name }}"
@@ -1971,18 +2102,31 @@
                                 <div class="adm-brand-name">{{ b.name }}</div>
                                 <div class="adm-brand-meta">
                                     <span class="adm-auth-dot {% if not b.is_authorized %}unauth{% endif %}"></span>
-                                    {{ 'Authorized' if b.is_authorized else 'Unauthorized' }}
+                                    {{ 'Authorized' if b.is_authorized else 'Restricted' }}
                                 </div>
+                                {% if b.country is defined and b.country %}<div class="adm-brand-meta" style="margin-top:2px;">{{ b.country }}</div>{% endif %}
+                                {% if b.product_count is defined %}<div class="adm-brand-meta" style="margin-top:2px;color:var(--mil-text);">{{ b.product_count }} product{{ 's' if b.product_count != 1 else '' }}</div>{% endif %}
                             </div>
                             <div style="display:flex;flex-direction:column;gap:4px;">
-                                <button class="adm-icon-btn adm-edit-brand-btn" data-id="{{ b.id }}" data-name="{{ b.name | e }}" title="Edit">✎</button>
+                                <button class="adm-icon-btn adm-edit-brand-btn"
+                                    data-id="{{ b.id }}"
+                                    data-name="{{ b.name | e }}"
+                                    data-authorized="{{ b.is_authorized }}"
+                                    data-country="{{ b.country | e if b.country is defined and b.country else '' }}"
+                                    data-description="{{ b.description | e if b.description is defined and b.description else '' }}"
+                                    data-logo="{{ b.logo_file if b.logo_file else '' }}"
+                                    title="Edit Brand"><svg class="adm-ico"><use href="#ico-edit"/></svg></button>
+                                <button class="adm-icon-btn danger adm-delete-brand-btn"
+                                    data-id="{{ b.id }}"
+                                    data-name="{{ b.name | e }}"
+                                    title="Delete Brand"><svg class="adm-ico"><use href="#ico-delete"/></svg></button>
                             </div>
                         </div>
                         {% endfor %}
                     </div>
                     {% else %}
                     <div class="adm-empty">
-                        <div class="adm-empty-icon">▣</div>
+                        <div class="adm-empty-icon"><svg class="adm-ico" style="width:40px;height:40px;opacity:.2;"><use href="#ico-brands"/></svg></div>
                         <div class="adm-empty-text">No brands</div>
                         <div class="adm-empty-sub">Add partner brands</div>
                     </div>
@@ -2001,7 +2145,7 @@
                 <div class="adm-section-body">
                     <div class="adm-filter-bar">
                         <div class="adm-search-wrap">
-                            <span class="adm-search-icon">⌕</span>
+                            <span class="adm-search-icon"><svg class="adm-ico" style="width:12px;height:12px;"><use href="#ico-search"/></svg></span>
                             <input type="text" class="adm-search-input" id="usersSearch" placeholder="Search username or email...">
                         </div>
                         <select class="adm-filter-select" id="usersRoleFilter">
@@ -2053,12 +2197,12 @@
                                     <td>
                                         <div style="display:flex;gap:4px;">
                                             {% if u.role != 'admin' %}
-                                            <button class="adm-icon-btn adm-promote-btn" data-id="{{ u.id }}" data-username="{{ u.username | e }}" title="Promote to Admin" style="color:var(--mil-gold);border-color:#5a4010;">★</button>
+                                            <button class="adm-icon-btn adm-promote-btn" data-id="{{ u.id }}" data-username="{{ u.username | e }}" title="Promote to Admin" style="color:var(--mil-gold);border-color:#5a4010;"><svg class="adm-ico"><use href="#ico-promote"/></svg></button>
                                             {% else %}
-                                            <button class="adm-icon-btn adm-demote-btn" data-id="{{ u.id }}" data-username="{{ u.username | e }}" title="Demote to Customer" style="font-size:9px;">▼</button>
+                                            <button class="adm-icon-btn adm-demote-btn" data-id="{{ u.id }}" data-username="{{ u.username | e }}" title="Demote to Customer"><svg class="adm-ico"><use href="#ico-demote"/></svg></button>
                                             {% endif %}
                                             {% if u.role != 'admin' %}
-                                            <button class="adm-icon-btn danger adm-delete-user-btn" data-id="{{ u.id }}" data-username="{{ u.username | e }}" title="Delete User">✕</button>
+                                            <button class="adm-icon-btn danger adm-delete-user-btn" data-id="{{ u.id }}" data-username="{{ u.username | e }}" title="Delete User"><svg class="adm-ico"><use href="#ico-delete"/></svg></button>
                                             {% endif %}
                                         </div>
                                     </td>
@@ -2069,7 +2213,7 @@
                     </div>
                     {% else %}
                     <div class="adm-empty">
-                        <div class="adm-empty-icon">☰</div>
+                        <div class="adm-empty-icon"><svg class="adm-ico" style="width:40px;height:40px;opacity:.2;"><use href="#ico-users"/></svg></div>
                         <div class="adm-empty-text">No users found</div>
                         <div class="adm-empty-sub">User accounts appear here once registered</div>
                     </div>
@@ -2086,7 +2230,7 @@
     <div class="adm-modal">
         <div class="adm-modal-header">
             <span class="adm-modal-title" id="modalInqTitle">Inquiry</span>
-            <button class="adm-modal-close" id="modalClose">✕</button>
+            <button class="adm-modal-close" id="modalClose"><svg class="adm-ico" style="width:14px;height:14px;"><use href="#ico-close"/></svg></button>
         </div>
         <div class="adm-modal-body">
             <div class="adm-modal-field">
@@ -2115,8 +2259,8 @@
                 <textarea id="adminReplyMessage" rows="4"
                     style="width:100%;padding:8px 10px;background:rgba(0,0,0,0.3);border:1px solid var(--adm-border);color:var(--adm-text);font-family:var(--adm-mono);font-size:11px;resize:vertical;box-sizing:border-box;"
                     placeholder="Type your reply to the user here. It will be sent to their registered email address."></textarea>
-                <button class="adm-btn primary" id="adminSendReplyBtn" onclick="adminSendReply()" style="align-self:flex-start;margin-top:4px;">
-                    ✉ SEND REPLY EMAIL
+                <button class="adm-btn primary" id="adminSendReplyBtn" onclick="adminSendReply()" style="align-self:flex-start;margin-top:4px;gap:6px;">
+                    <svg class="adm-ico" style="width:12px;height:12px;"><use href="#ico-inquiries"/></svg> SEND REPLY EMAIL
                 </button>
             </div>
         </div>
@@ -2136,7 +2280,7 @@
     <div class="adm-modal" style="width:580px;">
         <div class="adm-modal-header">
             <span class="adm-modal-title" id="productModalTitle">Add Product</span>
-            <button class="adm-modal-close" onclick="document.getElementById('productModal').classList.remove('open')">✕</button>
+            <button class="adm-modal-close" onclick="document.getElementById('productModal').classList.remove('open')"><svg class="adm-ico" style="width:14px;height:14px;"><use href="#ico-close"/></svg></button>
         </div>
         <div class="adm-modal-body">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
@@ -2197,7 +2341,7 @@
     <div class="adm-modal" style="width:520px;">
         <div class="adm-modal-header">
             <span class="adm-modal-title" id="serviceModalTitle">Add Service</span>
-            <button class="adm-modal-close" onclick="document.getElementById('serviceModal').classList.remove('open')">✕</button>
+            <button class="adm-modal-close" onclick="document.getElementById('serviceModal').classList.remove('open')"><svg class="adm-ico" style="width:14px;height:14px;"><use href="#ico-close"/></svg></button>
         </div>
         <div class="adm-modal-body">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
@@ -2239,6 +2383,53 @@
         <div class="adm-modal-footer">
             <button class="adm-btn" onclick="document.getElementById('serviceModal').classList.remove('open')">Cancel</button>
             <button class="adm-btn primary" id="serviceSaveBtn" onclick="saveService()">Save Service</button>
+        </div>
+    </div>
+</div>
+
+<!-- ─── BRAND ADD/EDIT MODAL ──────────────────────────────── -->
+<div class="adm-modal-overlay" id="brandModal">
+    <div class="adm-modal" style="width:480px;">
+        <div class="adm-modal-header">
+            <span class="adm-modal-title" id="brandModalTitle">Add Brand</span>
+            <button class="adm-modal-close" onclick="document.getElementById('brandModal').classList.remove('open')"><svg class="adm-ico" style="width:14px;height:14px;"><use href="#ico-close"/></svg></button>
+        </div>
+        <div class="adm-modal-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="adm-modal-field" style="grid-column:1/-1;">
+                    <span class="adm-modal-field-label">Brand Name *</span>
+                    <input type="text" id="bName" class="adm-search-input" style="width:100%;padding:8px 10px;" placeholder="e.g. Glock, Smith &amp; Wesson">
+                </div>
+                <div class="adm-modal-field">
+                    <span class="adm-modal-field-label">Authorization Status</span>
+                    <select id="bAuthorized" class="adm-filter-select" style="width:100%;padding:8px 10px;">
+                        <option value="1">Authorized</option>
+                        <option value="0">Restricted</option>
+                    </select>
+                </div>
+                <div class="adm-modal-field">
+                    <span class="adm-modal-field-label">Country of Origin</span>
+                    <input type="text" id="bCountry" class="adm-search-input" style="width:100%;padding:8px 10px;" placeholder="e.g. USA, Germany">
+                </div>
+                <div class="adm-modal-field" style="grid-column:1/-1;">
+                    <span class="adm-modal-field-label">Description</span>
+                    <textarea id="bDescription" rows="3" style="width:100%;padding:8px 10px;background:var(--mil-panel);border:1px solid var(--mil-border);color:var(--mil-text);font-family:var(--font-mono);font-size:11px;resize:vertical;" placeholder="Short brand description or notes..."></textarea>
+                </div>
+                <div class="adm-modal-field" style="grid-column:1/-1;">
+                    <span class="adm-modal-field-label">Logo Image</span>
+                    <div id="bLogoPreviewWrap" style="display:none;margin-bottom:8px;">
+                        <img id="bLogoPreview" src="" alt="Current logo"
+                             style="height:40px;object-fit:contain;border:1px solid var(--mil-border);padding:4px;background:var(--mil-dim);">
+                        <span style="font-family:var(--font-mono);font-size:9px;color:var(--mil-muted);margin-left:8px;" id="bLogoCurrentName"></span>
+                    </div>
+                    <input type="file" id="bLogo" accept="image/*" style="color:var(--mil-text);font-family:var(--font-mono);font-size:11px;">
+                    <span style="font-family:var(--font-mono);font-size:9px;color:var(--mil-muted);display:block;margin-top:4px;">Leave empty to keep current logo</span>
+                </div>
+            </div>
+        </div>
+        <div class="adm-modal-footer">
+            <button class="adm-btn" onclick="document.getElementById('brandModal').classList.remove('open')">Cancel</button>
+            <button class="adm-btn primary" id="brandSaveBtn" onclick="saveBrand()">Save Brand</button>
         </div>
     </div>
 </div>
@@ -2398,10 +2589,133 @@
     }
 
     setupSearch('ordersSearch', 'ordersStatusFilter', 'ordersTableBody', ['user'], 'status');
-    setupSearch('inventorySearch', 'inventoryStockFilter', 'inventoryTableBody', ['name'], 'stock');
     setupSearch('usersSearch', 'usersRoleFilter', 'usersTableBody', ['username','email'], 'role');
     setupSearch('inquiriesSearch', 'inquiriesStatusFilter', 'inquiriesTableBody', ['name','email','subject'], 'status');
-    setupSearch('servicesSearch', null, 'servicesTableBody', ['name']);
+
+    /* ── Inventory: advanced multi-filter ──────────────── */
+    (function () {
+        const search   = document.getElementById('inventorySearch');
+        const stockSel = document.getElementById('inventoryStockFilter');
+        const authSel  = document.getElementById('inventoryAuthFilter');
+        const catSel   = document.getElementById('inventoryCategoryFilter');
+        const brandSel = document.getElementById('inventoryBrandFilter');
+        const priceSel = document.getElementById('inventoryPriceFilter');
+        const sortSel  = document.getElementById('inventorySortFilter');
+        const body     = document.getElementById('inventoryTableBody');
+        if (!body) return;
+
+        /* Populate category & brand dropdowns from table data */
+        const cats = new Set(), brands = new Set();
+        Array.from(body.rows).forEach(row => {
+            const c = row.dataset.productCategory; if (c) cats.add(c);
+            const b = row.dataset.productBrand;    if (b) brands.add(b);
+        });
+        cats.forEach(c => { const o = document.createElement('option'); o.value = c.toLowerCase(); o.textContent = c; catSel && catSel.appendChild(o); });
+        brands.forEach(b => { const o = document.createElement('option'); o.value = b.toLowerCase(); o.textContent = b; brandSel && brandSel.appendChild(o); });
+
+        function run() {
+            const q      = (search ? search.value.toLowerCase().trim() : '');
+            const stock  = stockSel  ? stockSel.value  : '';
+            const auth   = authSel   ? authSel.value   : '';
+            const cat    = catSel    ? catSel.value    : '';
+            const brand  = brandSel  ? brandSel.value  : '';
+            const price  = priceSel  ? priceSel.value  : '';
+            const sort   = sortSel   ? sortSel.value   : '';
+
+            let rows = Array.from(body.rows);
+
+            rows.forEach(row => {
+                const name      = (row.dataset.name || '').toLowerCase();
+                const brandName = (row.dataset.productBrand || '').toLowerCase();
+                const catName   = (row.dataset.productCategory || '').toLowerCase();
+                const stockVal  = parseInt(row.dataset.stock, 10) || 0;
+                const authVal   = row.dataset.productAuthorized;
+
+                const mQ     = !q     || name.includes(q) || brandName.includes(q) || catName.includes(q);
+                const mStock = !stock || (stock === 'out' ? stockVal === 0 : stock === 'low' ? stockVal > 0 && stockVal <= 5 : stockVal > 5);
+                const mAuth  = !auth  || (auth === '1' ? (authVal === '1' || authVal === 'True' || authVal === 'true' || authVal === '1') : (authVal === '0' || authVal === 'False' || authVal === 'false'));
+                const mCat   = !cat   || catName.includes(cat);
+                const mBrand = !brand || brandName.includes(brand);
+
+                row.style.display = mQ && mStock && mAuth && mCat && mBrand ? '' : 'none';
+            });
+
+            /* Sorting — price select feeds into same sort logic as sortSel */
+            const effectiveSort = price || sort;
+            if (effectiveSort) {
+                const visible = rows.filter(r => r.style.display !== 'none');
+                visible.sort((a, b) => {
+                    if (effectiveSort === 'price-asc')    return (parseFloat(a.dataset.productPrice)||0) - (parseFloat(b.dataset.productPrice)||0);
+                    if (effectiveSort === 'price-desc')   return (parseFloat(b.dataset.productPrice)||0) - (parseFloat(a.dataset.productPrice)||0);
+                    if (effectiveSort === 'stock-asc')    return (parseInt(a.dataset.stock)||0) - (parseInt(b.dataset.stock)||0);
+                    if (effectiveSort === 'stock-desc')   return (parseInt(b.dataset.stock)||0) - (parseInt(a.dataset.stock)||0);
+                    if (effectiveSort === 'sales-desc')   return (parseInt(b.querySelectorAll('td')[7]?.textContent)||0) - (parseInt(a.querySelectorAll('td')[7]?.textContent)||0);
+                    if (effectiveSort === 'rating-desc')  return parseFloat(b.querySelectorAll('td')[6]?.textContent||0) - parseFloat(a.querySelectorAll('td')[6]?.textContent||0);
+                    return 0;
+                });
+                visible.forEach(r => body.appendChild(r));
+            }
+        }
+
+        [search, stockSel, authSel, catSel, brandSel, priceSel, sortSel].forEach(el => {
+            if (el) el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', run);
+        });
+    })();
+
+    /* ── Services: advanced multi-filter ──────────────── */
+    (function () {
+        const search   = document.getElementById('servicesSearch');
+        const authSel  = document.getElementById('servicesAuthFilter');
+        const catSel   = document.getElementById('servicesCategoryFilter');
+        const priceSel = document.getElementById('servicesPriceFilter');
+        const sortSel  = document.getElementById('servicesSortFilter');
+        const body     = document.getElementById('servicesTableBody');
+        if (!body) return;
+
+        /* Populate category dropdown from table data */
+        const cats = new Set();
+        Array.from(body.rows).forEach(row => { const c = row.dataset.serviceCategory; if (c) cats.add(c); });
+        cats.forEach(c => { const o = document.createElement('option'); o.value = c.toLowerCase(); o.textContent = c; catSel && catSel.appendChild(o); });
+
+        function run() {
+            const q     = (search ? search.value.toLowerCase().trim() : '');
+            const auth  = authSel  ? authSel.value  : '';
+            const cat   = catSel   ? catSel.value   : '';
+            const price = priceSel ? priceSel.value : '';
+            const sort  = sortSel  ? sortSel.value  : '';
+
+            let rows = Array.from(body.rows);
+
+            rows.forEach(row => {
+                const name    = (row.dataset.name || '').toLowerCase();
+                const catName = (row.dataset.serviceCategory || '').toLowerCase();
+                const authVal = row.dataset.serviceAuthorized;
+
+                const mQ    = !q    || name.includes(q) || catName.includes(q);
+                const mAuth = !auth || (auth === '1' ? (authVal === '1' || authVal === 'True' || authVal === 'true') : (authVal === '0' || authVal === 'False' || authVal === 'false'));
+                const mCat  = !cat  || catName.includes(cat);
+
+                row.style.display = mQ && mAuth && mCat ? '' : 'none';
+            });
+
+            const effectiveSort = price || sort;
+            if (effectiveSort) {
+                const visible = rows.filter(r => r.style.display !== 'none');
+                visible.sort((a, b) => {
+                    if (effectiveSort === 'price-asc')  return (parseFloat(a.dataset.servicePrice)||0) - (parseFloat(b.dataset.servicePrice)||0);
+                    if (effectiveSort === 'price-desc') return (parseFloat(b.dataset.servicePrice)||0) - (parseFloat(a.dataset.servicePrice)||0);
+                    if (effectiveSort === 'sales-desc') return (parseInt(b.querySelectorAll('td')[6]?.textContent)||0) - (parseInt(a.querySelectorAll('td')[6]?.textContent)||0);
+                    if (effectiveSort === 'rating-desc')return parseFloat(b.querySelectorAll('td')[5]?.textContent||0) - parseFloat(a.querySelectorAll('td')[5]?.textContent||0);
+                    return 0;
+                });
+                visible.forEach(r => body.appendChild(r));
+            }
+        }
+
+        [search, authSel, catSel, priceSel, sortSel].forEach(el => {
+            if (el) el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', run);
+        });
+    })();
 
     /* Custom stock filter */
     const stockFilter = document.getElementById('inventoryStockFilter');
@@ -2983,7 +3297,153 @@
                 .catch(() => showToast('Network error', 'err'));
             return;
         }
+
+        // Edit brand
+        const editBBtn = e.target.closest('.adm-edit-brand-btn');
+        if (editBBtn) {
+            openEditBrandModal(editBBtn);
+            return;
+        }
+
+        // Delete brand
+        const delBBtn = e.target.closest('.adm-delete-brand-btn');
+        if (delBBtn) {
+            const id   = delBBtn.dataset.id;
+            const name = delBBtn.dataset.name || 'this brand';
+            if (!id || !confirm('Delete brand "' + name + '"? This cannot be undone.')) return;
+            fetch('/api/admin/brand/' + id + '/delete', { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.ok) {
+                        showToast(name + ' deleted');
+                        const card = delBBtn.closest('.adm-brand-card');
+                        if (card) card.remove();
+                    } else showToast(data.error || 'Delete failed', 'err');
+                })
+                .catch(() => showToast('Network error', 'err'));
+            return;
+        }
     });
+
+    /* ─── Brand Modal ────────────────────────────── */
+    let _editBrandId = null;
+
+    window.openAddBrandModal = function () {
+        _editBrandId = null;
+        document.getElementById('brandModalTitle').textContent = 'Add Brand';
+        document.getElementById('brandSaveBtn').textContent = 'Save Brand';
+        ['bName','bCountry','bDescription'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        document.getElementById('bAuthorized').value = '1';
+        document.getElementById('bLogo').value = '';
+        const prevWrap = document.getElementById('bLogoPreviewWrap');
+        if (prevWrap) prevWrap.style.display = 'none';
+        document.getElementById('brandModal').classList.add('open');
+    };
+
+    window.openEditBrandModal = function (btn) {
+        _editBrandId = btn.dataset.id;
+        document.getElementById('brandModalTitle').textContent = 'Edit Brand — ' + (btn.dataset.name || '');
+        document.getElementById('brandSaveBtn').textContent = 'Update Brand';
+        document.getElementById('bName').value        = btn.dataset.name || '';
+        document.getElementById('bCountry').value     = btn.dataset.country || '';
+        document.getElementById('bDescription').value = btn.dataset.description || '';
+        document.getElementById('bAuthorized').value  = btn.dataset.authorized === '1' || btn.dataset.authorized === 'True' || btn.dataset.authorized === 'true' ? '1' : '0';
+        document.getElementById('bLogo').value = '';
+        const logo = btn.dataset.logo;
+        const prevWrap = document.getElementById('bLogoPreviewWrap');
+        const prevImg  = document.getElementById('bLogoPreview');
+        const prevName = document.getElementById('bLogoCurrentName');
+        if (logo && prevWrap && prevImg) {
+            prevImg.src = '/static/assets/icons/brandslogo/' + logo;
+            if (prevName) prevName.textContent = logo;
+            prevWrap.style.display = '';
+        } else if (prevWrap) {
+            prevWrap.style.display = 'none';
+        }
+        document.getElementById('brandModal').classList.add('open');
+    };
+
+    window.saveBrand = function () {
+        const name = document.getElementById('bName').value.trim();
+        if (!name) { showToast('Brand name is required', 'err'); return; }
+
+        const fd = new FormData();
+        fd.append('name',          name);
+        fd.append('is_authorized', document.getElementById('bAuthorized').value);
+        fd.append('country',       document.getElementById('bCountry').value.trim());
+        fd.append('description',   document.getElementById('bDescription').value.trim());
+        const logoFile = document.getElementById('bLogo').files[0];
+        if (logoFile) fd.append('logo_file', logoFile);
+
+        const url = _editBrandId
+            ? '/api/admin/brand/' + _editBrandId + '/edit'
+            : '/api/admin/brand/add';
+        const btn = document.getElementById('brandSaveBtn');
+        btn.disabled = true; btn.textContent = 'Saving…';
+
+        fetch(url, { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(data => {
+                btn.disabled = false;
+                btn.textContent = _editBrandId ? 'Update Brand' : 'Save Brand';
+                if (data.ok) {
+                    showToast(_editBrandId ? 'Brand updated ✓' : 'Brand added ✓');
+                    document.getElementById('brandModal').classList.remove('open');
+                    setTimeout(() => location.reload(), 800);
+                } else {
+                    showToast(data.error || 'Save failed', 'err');
+                }
+            })
+            .catch(() => { btn.disabled = false; showToast('Network error', 'err'); });
+    };
+
+    /* Close brand modal on backdrop click */
+    document.getElementById('brandModal').addEventListener('click', function (e) {
+        if (e.target === this) this.classList.remove('open');
+    });
+
+    /* ─── Brands search / filter / sort ─────────── */
+    (function () {
+        const searchEl = document.getElementById('brandsSearch');
+        const authSel  = document.getElementById('brandsAuthFilter');
+        const sortSel  = document.getElementById('brandsSortFilter');
+        const grid     = document.getElementById('brandGrid');
+        if (!grid) return;
+
+        function run() {
+            const q    = searchEl ? searchEl.value.toLowerCase().trim() : '';
+            const auth = authSel  ? authSel.value  : '';
+            const sort = sortSel  ? sortSel.value  : '';
+
+            let cards = Array.from(grid.querySelectorAll('.adm-brand-card'));
+
+            cards.forEach(card => {
+                const name    = (card.dataset.brandName || '').toLowerCase();
+                const cardAuth = card.dataset.brandAuth || '';
+                const mQ    = !q    || name.includes(q);
+                const mAuth = !auth || cardAuth === auth;
+                card.style.display = mQ && mAuth ? '' : 'none';
+            });
+
+            if (sort) {
+                const visible = cards.filter(c => c.style.display !== 'none');
+                visible.sort((a, b) => {
+                    if (sort === 'name-asc')    return (a.dataset.brandName || '').localeCompare(b.dataset.brandName || '');
+                    if (sort === 'name-desc')   return (b.dataset.brandName || '').localeCompare(a.dataset.brandName || '');
+                    if (sort === 'auth-first')  return (b.dataset.brandAuth === 'authorized' ? 1 : 0) - (a.dataset.brandAuth === 'authorized' ? 1 : 0);
+                    return 0;
+                });
+                visible.forEach(c => grid.appendChild(c));
+            }
+        }
+
+        if (searchEl) searchEl.addEventListener('input', run);
+        if (authSel)  authSel.addEventListener('change', run);
+        if (sortSel)  sortSel.addEventListener('change', run);
+    })();
 
 })();
 </script>

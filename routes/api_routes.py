@@ -2119,6 +2119,104 @@ def admin_get_brands():
 
 
 # ─────────────────────────────────────────
+# ADMIN BRAND CRUD
+# ─────────────────────────────────────────
+
+_BRAND_LOGO_FOLDER = os.path.join(
+    _PROJECT_ROOT, 'static', 'assets', 'icons', 'brandslogo'
+)
+
+
+@api_bp.route('/admin/brand/add', methods=['POST'])
+def admin_add_brand():
+    err = _admin_required()
+    if err:
+        return err
+    db = get_db()
+    name = (request.form.get('name') or '').strip()
+    if not name:
+        return jsonify(ok=False, error='Brand name is required'), 400
+    try:
+        is_authorized = int(request.form.get('is_authorized') or 1)
+        country = (request.form.get('country') or '').strip() or None
+        description = (request.form.get('description') or '').strip() or None
+        slug = name.lower().replace(' ', '-').replace('/', '-')
+        existing = db.execute(
+            'SELECT id FROM brands WHERE slug = ?', (slug,)).fetchone()
+        if existing:
+            import time as _time
+            slug = slug + '-' + str(int(_time.time()))[-4:]
+        logo_file = None
+        file = request.files.get('logo_file')
+        if file and file.filename and _allowed_image(file.filename):
+            fname = secure_filename(f"brand_{slug}_{file.filename}")
+            os.makedirs(_BRAND_LOGO_FOLDER, exist_ok=True)
+            file.save(os.path.join(_BRAND_LOGO_FOLDER, fname))
+            logo_file = fname
+        cur = db.execute(
+            '''INSERT INTO brands (name, slug, is_authorized, country, description, logo_file)
+               VALUES (?,?,?,?,?,?)''',
+            (name, slug, is_authorized, country, description, logo_file)
+        )
+        db.commit()
+        return jsonify(ok=True, id=cur.lastrowid, slug=slug)
+    except Exception as e:
+        return jsonify(ok=False, error=str(e)), 500
+
+
+@api_bp.route('/admin/brand/<int:bid>/edit', methods=['POST'])
+def admin_edit_brand(bid):
+    err = _admin_required()
+    if err:
+        return err
+    db = get_db()
+    row = db.execute('SELECT * FROM brands WHERE id = ?', (bid,)).fetchone()
+    if not row:
+        return jsonify(ok=False, error='Brand not found'), 404
+    try:
+        name = (request.form.get('name') or row['name']).strip()
+        is_authorized = int(request.form.get('is_authorized') if request.form.get(
+            'is_authorized') is not None else row['is_authorized'])
+        country = (request.form.get('country') or '').strip(
+        ) or row['country'] if 'country' in row.keys() else None
+        description = (request.form.get('description') or '').strip() or (
+            row['description'] if 'description' in row.keys() else None)
+        logo_file = row['logo_file']
+        file = request.files.get('logo_file')
+        if file and file.filename and _allowed_image(file.filename):
+            fname = secure_filename(f"brand_{row['slug']}_{file.filename}")
+            os.makedirs(_BRAND_LOGO_FOLDER, exist_ok=True)
+            file.save(os.path.join(_BRAND_LOGO_FOLDER, fname))
+            logo_file = fname
+        db.execute(
+            '''UPDATE brands SET name=?, is_authorized=?, country=?, description=?, logo_file=?
+               WHERE id=?''',
+            (name, is_authorized, country, description, logo_file, bid)
+        )
+        db.commit()
+        return jsonify(ok=True)
+    except Exception as e:
+        return jsonify(ok=False, error=str(e)), 500
+
+
+@api_bp.route('/admin/brand/<int:bid>/delete', methods=['POST'])
+def admin_delete_brand(bid):
+    err = _admin_required()
+    if err:
+        return err
+    db = get_db()
+    row = db.execute('SELECT id FROM brands WHERE id = ?', (bid,)).fetchone()
+    if not row:
+        return jsonify(ok=False, error='Brand not found'), 404
+    try:
+        db.execute('DELETE FROM brands WHERE id = ?', (bid,))
+        db.commit()
+        return jsonify(ok=True)
+    except Exception as e:
+        return jsonify(ok=False, error=str(e)), 500
+
+
+# ─────────────────────────────────────────
 # RATE ITEM  (POST /api/rate)
 # Accepts JSON: { item_type, item_id, rating }
 # One rating per user per item. After inserting, recomputes the item's
