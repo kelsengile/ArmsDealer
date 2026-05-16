@@ -1847,7 +1847,7 @@ def settings_delete_account():
 # ─────────────────────────────────────────
 
 _PRODUCT_IMAGE_FOLDER = os.path.join(
-    _PROJECT_ROOT, 'static', 'assets', 'images', 'productimages'
+    _PROJECT_ROOT, 'static', 'assets', 'images', 'productsimages'
 )
 _SERVICE_IMAGE_FOLDER = os.path.join(
     _PROJECT_ROOT, 'static', 'assets', 'images', 'serviceimages'
@@ -1889,22 +1889,36 @@ def admin_add_product():
         if existing:
             import time
             slug = slug + '-' + str(int(time.time()))[-4:]
-        image_file = None
-        file = request.files.get('image_file')
-        if file and file.filename and _allowed_image(file.filename):
-            fname = secure_filename(f"prod_{slug}_{file.filename}")
-            os.makedirs(_PRODUCT_IMAGE_FOLDER, exist_ok=True)
-            file.save(os.path.join(_PRODUCT_IMAGE_FOLDER, fname))
-            image_file = fname
+        subcategory_id = request.form.get('subcategory_id') or None
+        image_count = int(request.form.get('image_count') or 0)
+        os.makedirs(_PRODUCT_IMAGE_FOLDER, exist_ok=True)
+        saved_images = []
+        for i in range(min(image_count, 5)):
+            f = request.files.get(f'image_file_{i}')
+            if f and f.filename and _allowed_image(f.filename):
+                fname = secure_filename(f"prod_{slug}_{i}_{f.filename}")
+                f.save(os.path.join(_PRODUCT_IMAGE_FOLDER, fname))
+                saved_images.append(fname)
+        # Primary image (first upload, or None)
+        image_file = saved_images[0] if saved_images else None
         cur = db.execute(
             '''INSERT INTO products (name, slug, price, stock, discount, description,
-               category_id, brand_id, is_authorized, image_file, rating, sales_count)
-               VALUES (?,?,?,?,?,?,?,?,?,?,0,0)''',
+               category_id, subcategory_id, brand_id, is_authorized, image_file, rating, sales_count)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,0,0)''',
             (name, slug, price, stock, discount, description,
-             category_id, brand_id, is_authorized, image_file)
+             category_id, subcategory_id, brand_id, is_authorized, image_file)
         )
+        product_id = cur.lastrowid
+        # Insert only additional images (index 1+) into product_images.
+        # The first image is already stored in products.image_file, so skipping
+        # it here prevents a duplicate row.
+        for order, fname in enumerate(saved_images[1:], start=2):
+            db.execute(
+                'INSERT INTO product_images (product_id, image_file, sort_order) VALUES (?,?,?)',
+                (product_id, fname, order)
+            )
         db.commit()
-        return jsonify(ok=True, id=cur.lastrowid, slug=slug)
+        return jsonify(ok=True, id=product_id, slug=slug)
     except Exception as e:
         return jsonify(ok=False, error=str(e)), 500
 
@@ -1924,25 +1938,45 @@ def admin_edit_product(pid):
         stock = int(request.form.get('stock') or row['stock'])
         discount = float(request.form.get('discount') or row['discount'] or 0)
         category_id = request.form.get('category_id') or row['category_id']
+        subcategory_id = request.form.get(
+            'subcategory_id') or row['subcategory_id'] if 'subcategory_id' in row.keys() else None
         brand_id = request.form.get('brand_id') or row['brand_id']
         description = (request.form.get('description')
                        or row['description'] or '').strip()
         is_authorized = int(request.form.get('is_authorized') if request.form.get(
             'is_authorized') is not None else row['is_authorized'])
+        slug = row['slug']
         image_file = row['image_file']
-        file = request.files.get('image_file')
-        if file and file.filename and _allowed_image(file.filename):
-            slug = row['slug']
-            fname = secure_filename(f"prod_{slug}_{file.filename}")
+        import json as _json
+        existing_images = _json.loads(
+            request.form.get('existing_images') or '[]')
+        image_count = int(request.form.get('image_count') or 0)
+        new_saved = []
+        if image_count > 0:
             os.makedirs(_PRODUCT_IMAGE_FOLDER, exist_ok=True)
-            file.save(os.path.join(_PRODUCT_IMAGE_FOLDER, fname))
-            image_file = fname
+            for i in range(min(image_count, 5)):
+                f = request.files.get(f'image_file_{i}')
+                if f and f.filename and _allowed_image(f.filename):
+                    fname = secure_filename(f"prod_{slug}_{i}_{f.filename}")
+                    f.save(os.path.join(_PRODUCT_IMAGE_FOLDER, fname))
+                    new_saved.append(fname)
+        # Final ordered list: kept existing + newly uploaded (capped at 5)
+        all_images = (existing_images + new_saved)[:5]
+        if all_images:
+            image_file = all_images[0]
+            db.execute(
+                'DELETE FROM product_images WHERE product_id = ?', (pid,))
+            for order, fname in enumerate(all_images, start=1):
+                db.execute(
+                    'INSERT INTO product_images (product_id, image_file, sort_order) VALUES (?,?,?)',
+                    (pid, fname, order)
+                )
         db.execute(
             '''UPDATE products SET name=?, price=?, stock=?, discount=?, description=?,
-               category_id=?, brand_id=?, is_authorized=?, image_file=?
+               category_id=?, subcategory_id=?, brand_id=?, is_authorized=?, image_file=?
                WHERE id=?''',
             (name, price, stock, discount, description,
-             category_id, brand_id, is_authorized, image_file, pid)
+             category_id, subcategory_id, brand_id, is_authorized, image_file, pid)
         )
         db.commit()
         return jsonify(ok=True)
@@ -1986,19 +2020,23 @@ def admin_add_service():
         if existing:
             import time
             slug = slug + '-' + str(int(time.time()))[-4:]
-        image_file = None
-        file = request.files.get('image_file')
-        if file and file.filename and _allowed_image(file.filename):
-            fname = secure_filename(f"svc_{slug}_{file.filename}")
-            os.makedirs(_SERVICE_IMAGE_FOLDER, exist_ok=True)
-            file.save(os.path.join(_SERVICE_IMAGE_FOLDER, fname))
-            image_file = fname
+        subcategory_id = request.form.get('subcategory_id') or None
+        image_count = int(request.form.get('image_count') or 0)
+        os.makedirs(_SERVICE_IMAGE_FOLDER, exist_ok=True)
+        saved_images = []
+        for i in range(min(image_count, 5)):
+            f = request.files.get(f'image_file_{i}')
+            if f and f.filename and _allowed_image(f.filename):
+                fname = secure_filename(f"svc_{slug}_{i}_{f.filename}")
+                f.save(os.path.join(_SERVICE_IMAGE_FOLDER, fname))
+                saved_images.append(fname)
+        image_file = saved_images[0] if saved_images else None
         cur = db.execute(
             '''INSERT INTO services (name, slug, price, discount, description,
-               category_id, is_authorized, image_file, rating, sales_count)
-               VALUES (?,?,?,?,?,?,?,?,0,0)''',
+               category_id, subcategory_id, is_authorized, image_file, rating, sales_count)
+               VALUES (?,?,?,?,?,?,?,?,?,0,0)''',
             (name, slug, price, discount, description,
-             category_id, is_authorized, image_file)
+             category_id, subcategory_id, is_authorized, image_file)
         )
         db.commit()
         return jsonify(ok=True, id=cur.lastrowid, slug=slug)
@@ -2020,23 +2058,35 @@ def admin_edit_service(sid):
         price = float(request.form.get('price') or row['price'])
         discount = float(request.form.get('discount') or row['discount'] or 0)
         category_id = request.form.get('category_id') or row['category_id']
+        subcategory_id = request.form.get('subcategory_id') or (
+            row['subcategory_id'] if 'subcategory_id' in row.keys() else None)
         description = (request.form.get('description')
                        or row['description'] or '').strip()
         is_authorized = int(request.form.get('is_authorized') if request.form.get(
             'is_authorized') is not None else row['is_authorized'])
+        slug = row['slug']
         image_file = row['image_file']
-        file = request.files.get('image_file')
-        if file and file.filename and _allowed_image(file.filename):
-            slug = row['slug']
-            fname = secure_filename(f"svc_{slug}_{file.filename}")
+        import json as _json
+        existing_images = _json.loads(
+            request.form.get('existing_images') or '[]')
+        image_count = int(request.form.get('image_count') or 0)
+        new_saved = []
+        if image_count > 0:
             os.makedirs(_SERVICE_IMAGE_FOLDER, exist_ok=True)
-            file.save(os.path.join(_SERVICE_IMAGE_FOLDER, fname))
-            image_file = fname
+            for i in range(min(image_count, 5)):
+                f = request.files.get(f'image_file_{i}')
+                if f and f.filename and _allowed_image(f.filename):
+                    fname = secure_filename(f"svc_{slug}_{i}_{f.filename}")
+                    f.save(os.path.join(_SERVICE_IMAGE_FOLDER, fname))
+                    new_saved.append(fname)
+        all_images = (existing_images + new_saved)[:5]
+        if all_images:
+            image_file = all_images[0]
         db.execute(
             '''UPDATE services SET name=?, price=?, discount=?, description=?,
-               category_id=?, is_authorized=?, image_file=? WHERE id=?''',
+               category_id=?, subcategory_id=?, is_authorized=?, image_file=? WHERE id=?''',
             (name, price, discount, description,
-             category_id, is_authorized, image_file, sid)
+             category_id, subcategory_id, is_authorized, image_file, sid)
         )
         db.commit()
         return jsonify(ok=True)
@@ -2106,6 +2156,25 @@ def admin_get_categories():
     rows = db.execute(
         'SELECT id, name, type FROM categories ORDER BY name').fetchall()
     return jsonify(ok=True, categories=[dict(r) for r in rows])
+
+
+@api_bp.route('/admin/subcategories')
+def admin_get_subcategories():
+    err = _admin_required()
+    if err:
+        return err
+    category_id = request.args.get('category_id')
+    db = get_db()
+    if category_id:
+        rows = db.execute(
+            'SELECT id, name, category_id FROM subcategories WHERE category_id = ? ORDER BY name',
+            (category_id,)
+        ).fetchall()
+    else:
+        rows = db.execute(
+            'SELECT id, name, category_id FROM subcategories ORDER BY name'
+        ).fetchall()
+    return jsonify(ok=True, subcategories=[dict(r) for r in rows])
 
 
 @api_bp.route('/admin/brands-list')

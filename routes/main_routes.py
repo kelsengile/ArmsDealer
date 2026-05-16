@@ -499,6 +499,8 @@ def dashboard():
     product_rows = db.execute("""
         SELECT p.id, p.name, p.slug, p.price, p.discount, p.stock,
                p.rating, p.sales_count, p.is_authorized,
+               p.category_id, p.subcategory_id, p.brand_id,
+               p.description, p.image_file,
                c.name  AS category_name,
                b.name  AS brand_name
         FROM products p
@@ -506,18 +508,43 @@ def dashboard():
         LEFT JOIN brands      b ON b.id = p.brand_id
         ORDER BY p.id
     """).fetchall()
-    products = [dict(row) for row in product_rows]
+    # Fetch product_images for each product (up to 5)
+    product_images_map = {}
+    img_rows = db.execute(
+        'SELECT product_id, image_file FROM product_images ORDER BY product_id, sort_order ASC'
+    ).fetchall()
+    for img in img_rows:
+        pid = img['product_id']
+        product_images_map.setdefault(pid, [])
+        if len(product_images_map[pid]) < 5:
+            product_images_map[pid].append(img['image_file'])
+    products = []
+    for row in product_rows:
+        d = dict(row)
+        imgs = product_images_map.get(d['id'], [])
+        # Fall back to legacy image_file if product_images table is empty
+        if not imgs and d.get('image_file'):
+            imgs = [d['image_file']]
+        d['images_json'] = __import__('json').dumps(imgs)
+        products.append(d)
 
     # ── Services: all services with category name ───────────────────
     service_rows = db.execute("""
         SELECT s.id, s.name, s.slug, s.price, s.discount,
                s.rating, s.sales_count, s.is_authorized,
+               s.category_id, s.subcategory_id, s.brand_id,
+               s.description, s.image_file,
                c.name AS category_name
         FROM services s
         LEFT JOIN categories c ON c.id = s.category_id
         ORDER BY s.id
     """).fetchall()
-    services = [dict(row) for row in service_rows]
+    services = []
+    for row in service_rows:
+        d = dict(row)
+        imgs = [d['image_file']] if d.get('image_file') else []
+        d['images_json'] = __import__('json').dumps(imgs)
+        services.append(d)
 
     # ── Brands ──────────────────────────────────────────────────────
     brand_rows = db.execute(

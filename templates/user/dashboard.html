@@ -1911,9 +1911,14 @@
                                     data-product-price="{{ p.price }}"
                                     data-product-stock="{{ p.stock }}"
                                     data-product-discount="{{ p.discount or 0 }}"
+                                    data-product-category-id="{{ p.category_id or '' }}"
+                                    data-product-subcategory-id="{{ p.subcategory_id or '' }}"
+                                    data-product-brand-id="{{ p.brand_id or '' }}"
                                     data-product-category="{{ p.category_name or '' }}"
                                     data-product-brand="{{ p.brand_name or '' }}"
-                                    data-product-authorized="{{ p.is_authorized }}">
+                                    data-product-authorized="{{ p.is_authorized }}"
+                                    data-product-description="{{ p.description | e if p.description else '' }}"
+                                    data-product-images="{{ p.images_json | e }}">
                                     <td><span class="adm-table-id" style="font-size:11px;">{{ p.id }}</span></td>
                                     <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ p.name }}</td>
                                     <td style="font-size:10px;color:var(--mil-muted);">{{ p.category_name if p.category_name is defined else '—' }}</td>
@@ -2020,8 +2025,12 @@
                                     data-service-name="{{ s.name | e }}"
                                     data-service-price="{{ s.price }}"
                                     data-service-discount="{{ s.discount or 0 }}"
+                                    data-service-category-id="{{ s.category_id or '' }}"
+                                    data-service-subcategory-id="{{ s.subcategory_id or '' }}"
                                     data-service-category="{{ s.category_name or '' }}"
-                                    data-service-authorized="{{ s.is_authorized }}">
+                                    data-service-authorized="{{ s.is_authorized }}"
+                                    data-service-description="{{ s.description | e if s.description else '' }}"
+                                    data-service-images="{{ s.images_json | e }}">
                                     <td><span class="adm-table-id" style="font-size:11px;">{{ s.id }}</span></td>
                                     <td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ s.name }}</td>
                                     <td style="font-size:10px;color:var(--mil-muted);">{{ s.category_name if s.category_name is defined else '—' }}</td>
@@ -2276,8 +2285,98 @@
 <div class="adm-toast" id="admToast"></div>
 
 <!-- ─── PRODUCT ADD/EDIT MODAL ──────────────────────────────── -->
+<style>
+/* ── Multi-image uploader ── */
+.adm-img-upload-zone {
+    border: 2px dashed var(--mil-border);
+    background: var(--mil-panel);
+    padding: 16px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    text-align: center;
+    position: relative;
+}
+.adm-img-upload-zone:hover, .adm-img-upload-zone.drag-over {
+    border-color: var(--mil-olive);
+    background: rgba(150,181,98,0.04);
+}
+.adm-img-upload-zone input[type="file"] {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    opacity: 0; cursor: pointer;
+}
+.adm-img-upload-hint {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--mil-muted);
+    letter-spacing: 0.08em;
+    pointer-events: none;
+}
+.adm-img-upload-hint strong {
+    display: block;
+    font-family: var(--font-stencil);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--mil-text);
+    margin-bottom: 4px;
+}
+.adm-img-preview-strip {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+.adm-img-thumb {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    border: 1px solid var(--mil-border);
+    background: var(--mil-dim);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.adm-img-thumb img {
+    width: 100%; height: 100%; object-fit: cover;
+}
+.adm-img-thumb-order {
+    position: absolute;
+    top: 2px; left: 3px;
+    font-family: var(--font-stencil);
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--mil-black);
+    background: var(--mil-bright);
+    padding: 1px 4px;
+    line-height: 1.2;
+}
+.adm-img-thumb-remove {
+    position: absolute;
+    bottom: 2px; right: 2px;
+    background: rgba(192,57,43,0.85);
+    border: none;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    width: 16px; height: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+    padding: 0;
+}
+.adm-img-thumb-remove:hover { background: #c0392b; }
+.adm-img-slot-empty {
+    width: 72px; height: 72px;
+    border: 1px dashed var(--mil-border);
+    background: transparent;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--mil-muted);
+    flex-shrink: 0;
+}
+</style>
+
 <div class="adm-modal-overlay" id="productModal">
-    <div class="adm-modal" style="width:580px;">
+    <div class="adm-modal" style="width:620px;">
         <div class="adm-modal-header">
             <span class="adm-modal-title" id="productModalTitle">Add Product</span>
             <button class="adm-modal-close" onclick="document.getElementById('productModal').classList.remove('open')"><svg class="adm-ico" style="width:14px;height:14px;"><use href="#ico-close"/></svg></button>
@@ -2308,8 +2407,14 @@
                     </select>
                 </div>
                 <div class="adm-modal-field">
-                    <span class="adm-modal-field-label">Category</span>
+                    <span class="adm-modal-field-label">Category *</span>
                     <select id="pCategory" class="adm-filter-select" style="width:100%;padding:8px 10px;">
+                        <option value="">— Select —</option>
+                    </select>
+                </div>
+                <div class="adm-modal-field" id="pSubcategoryWrap" style="display:none;">
+                    <span class="adm-modal-field-label">Subcategory</span>
+                    <select id="pSubcategory" class="adm-filter-select" style="width:100%;padding:8px 10px;">
                         <option value="">— Select —</option>
                     </select>
                 </div>
@@ -2323,13 +2428,25 @@
                     <span class="adm-modal-field-label">Description</span>
                     <textarea id="pDescription" rows="3" style="width:100%;padding:8px 10px;background:var(--mil-panel);border:1px solid var(--mil-border);color:var(--mil-text);font-family:var(--font-mono);font-size:11px;resize:vertical;" placeholder="Product description..."></textarea>
                 </div>
+                <!-- ── Multi-image upload ── -->
                 <div class="adm-modal-field" style="grid-column:1/-1;">
-                    <span class="adm-modal-field-label">Image</span>
-                    <input type="file" id="pImage" accept="image/*" style="color:var(--mil-text);font-family:var(--font-mono);font-size:11px;">
+                    <span class="adm-modal-field-label" style="margin-bottom:8px;">
+                        Product Images
+                        <span style="font-weight:normal;color:var(--mil-muted);font-family:var(--font-mono);font-size:9px;letter-spacing:0.06em;margin-left:6px;">Up to 5 · First image is primary</span>
+                    </span>
+                    <div class="adm-img-upload-zone" id="pImgZone">
+                        <input type="file" id="pImages" accept="image/*" multiple>
+                        <div class="adm-img-upload-hint">
+                            <strong>&#x1F5BC; Click or drag images here</strong>
+                            PNG, JPG, WEBP, GIF — max 5 files
+                        </div>
+                    </div>
+                    <div class="adm-img-preview-strip" id="pImgPreview"></div>
                 </div>
             </div>
         </div>
         <div class="adm-modal-footer">
+            <span id="pImgCount" style="font-family:var(--font-mono);font-size:10px;color:var(--mil-muted);align-self:center;margin-right:auto;letter-spacing:0.06em;">0 / 5 images</span>
             <button class="adm-btn" onclick="document.getElementById('productModal').classList.remove('open')">Cancel</button>
             <button class="adm-btn primary" id="productSaveBtn" onclick="saveProduct()">Save Product</button>
         </div>
@@ -2338,7 +2455,7 @@
 
 <!-- ─── SERVICE ADD/EDIT MODAL ──────────────────────────────── -->
 <div class="adm-modal-overlay" id="serviceModal">
-    <div class="adm-modal" style="width:520px;">
+    <div class="adm-modal" style="width:620px;">
         <div class="adm-modal-header">
             <span class="adm-modal-title" id="serviceModalTitle">Add Service</span>
             <button class="adm-modal-close" onclick="document.getElementById('serviceModal').classList.remove('open')"><svg class="adm-ico" style="width:14px;height:14px;"><use href="#ico-close"/></svg></button>
@@ -2358,8 +2475,14 @@
                     <input type="number" id="sDiscount" class="adm-search-input" style="width:100%;padding:8px 10px;" placeholder="0" min="0" max="100">
                 </div>
                 <div class="adm-modal-field">
-                    <span class="adm-modal-field-label">Category</span>
+                    <span class="adm-modal-field-label">Category *</span>
                     <select id="sCategory" class="adm-filter-select" style="width:100%;padding:8px 10px;">
+                        <option value="">— Select —</option>
+                    </select>
+                </div>
+                <div class="adm-modal-field" id="sSubcategoryWrap" style="display:none;">
+                    <span class="adm-modal-field-label">Subcategory</span>
+                    <select id="sSubcategory" class="adm-filter-select" style="width:100%;padding:8px 10px;">
                         <option value="">— Select —</option>
                     </select>
                 </div>
@@ -2374,13 +2497,25 @@
                     <span class="adm-modal-field-label">Description</span>
                     <textarea id="sDescription" rows="3" style="width:100%;padding:8px 10px;background:var(--mil-panel);border:1px solid var(--mil-border);color:var(--mil-text);font-family:var(--font-mono);font-size:11px;resize:vertical;" placeholder="Service description..."></textarea>
                 </div>
+                <!-- ── Multi-image upload ── -->
                 <div class="adm-modal-field" style="grid-column:1/-1;">
-                    <span class="adm-modal-field-label">Image</span>
-                    <input type="file" id="sImage" accept="image/*" style="color:var(--mil-text);font-family:var(--font-mono);font-size:11px;">
+                    <span class="adm-modal-field-label" style="margin-bottom:8px;">
+                        Service Images
+                        <span style="font-weight:normal;color:var(--mil-muted);font-family:var(--font-mono);font-size:9px;letter-spacing:0.06em;margin-left:6px;">Up to 5 · First image is primary</span>
+                    </span>
+                    <div class="adm-img-upload-zone" id="sImgZone">
+                        <input type="file" id="sImages" accept="image/*" multiple>
+                        <div class="adm-img-upload-hint">
+                            <strong>&#x1F5BC; Click or drag images here</strong>
+                            PNG, JPG, WEBP, GIF — max 5 files
+                        </div>
+                    </div>
+                    <div class="adm-img-preview-strip" id="sImgPreview"></div>
                 </div>
             </div>
         </div>
         <div class="adm-modal-footer">
+            <span id="sImgCount" style="font-family:var(--font-mono);font-size:10px;color:var(--mil-muted);align-self:center;margin-right:auto;letter-spacing:0.06em;">0 / 5 images</span>
             <button class="adm-btn" onclick="document.getElementById('serviceModal').classList.remove('open')">Cancel</button>
             <button class="adm-btn primary" id="serviceSaveBtn" onclick="saveService()">Save Service</button>
         </div>
@@ -3020,11 +3155,16 @@
     window._showToast = showToast;
 
     /* ─── Load categories & brands into selects ──── */
+    // Store all categories for subcategory filtering
+    window._allCategories = [];
+    window._allSubcategories = [];
+
     function loadCategoriesAndBrands() {
         fetch('/api/admin/categories')
             .then(r => r.json())
             .then(data => {
                 if (!data.ok) return;
+                window._allCategories = data.categories;
                 ['pCategory', 'sCategory'].forEach(id => {
                     const sel = document.getElementById(id);
                     if (!sel) return;
@@ -3035,6 +3175,15 @@
                         sel.appendChild(opt);
                     });
                 });
+            })
+            .catch(() => {});
+
+        // Preload all subcategories
+        fetch('/api/admin/subcategories')
+            .then(r => r.json())
+            .then(data => {
+                if (!data.ok) return;
+                window._allSubcategories = data.subcategories;
             })
             .catch(() => {});
 
@@ -3055,6 +3204,127 @@
     }
     loadCategoriesAndBrands();
 
+    /* ─── Subcategory helper ─────────────────────── */
+    function populateSubcategory(categoryId, subSelId, wrapId, currentSubId) {
+        const subSel  = document.getElementById(subSelId);
+        const subWrap = document.getElementById(wrapId);
+        if (!subSel || !subWrap) return;
+
+        // Clear old options
+        subSel.innerHTML = '<option value="">— None —</option>';
+
+        const subs = (window._allSubcategories || []).filter(
+            s => String(s.category_id) === String(categoryId)
+        );
+        if (!categoryId || subs.length === 0) {
+            subWrap.style.display = 'none';
+            return;
+        }
+        subs.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s.id;
+            opt.textContent = s.name;
+            if (currentSubId && String(s.id) === String(currentSubId)) opt.selected = true;
+            subSel.appendChild(opt);
+        });
+        subWrap.style.display = '';
+    }
+
+    // Wire category → subcategory
+    const _pCatSel = document.getElementById('pCategory');
+    if (_pCatSel) _pCatSel.addEventListener('change', function () {
+        populateSubcategory(this.value, 'pSubcategory', 'pSubcategoryWrap', null);
+    });
+    const _sCatSel = document.getElementById('sCategory');
+    if (_sCatSel) _sCatSel.addEventListener('change', function () {
+        populateSubcategory(this.value, 'sSubcategory', 'sSubcategoryWrap', null);
+    });
+
+    /* ─── Multi-image upload helpers ─────────────── */
+    // Each modal gets its own file list (DataTransfer trick)
+    let _pFileList = [];  // { file, url }
+    let _sFileList = [];
+
+    function renderImagePreview(fileList, previewId, countId) {
+        const strip = document.getElementById(previewId);
+        const countEl = document.getElementById(countId);
+        if (!strip) return;
+        strip.innerHTML = '';
+        fileList.forEach(function (item, idx) {
+            const thumb = document.createElement('div');
+            thumb.className = 'adm-img-thumb';
+            thumb.innerHTML =
+                '<img src="' + item.url + '" alt="img' + (idx+1) + '">' +
+                '<span class="adm-img-thumb-order">' + (idx+1) + '</span>' +
+                '<button class="adm-img-thumb-remove" data-idx="' + idx + '" title="Remove">✕</button>';
+            strip.appendChild(thumb);
+        });
+        // Remaining empty slots
+        const remaining = 5 - fileList.length;
+        for (let i = 0; i < remaining; i++) {
+            const slot = document.createElement('div');
+            slot.className = 'adm-img-slot-empty';
+            slot.textContent = i === 0 && fileList.length === 0 ? 'No img' : '';
+            strip.appendChild(slot);
+        }
+        if (countEl) countEl.textContent = fileList.length + ' / 5 images';
+    }
+
+    function setupImageUploader(inputId, zoneId, previewId, countId, fileListRef) {
+        const input = document.getElementById(inputId);
+        const zone  = document.getElementById(zoneId);
+        const strip = document.getElementById(previewId);
+        if (!input || !zone) return;
+
+        function addFiles(newFiles) {
+            Array.from(newFiles).forEach(function (f) {
+                if (fileListRef.length >= 5) return;
+                if (!f.type.startsWith('image/')) return;
+                const url = URL.createObjectURL(f);
+                fileListRef.push({ file: f, url: url, existingName: null });
+            });
+            renderImagePreview(fileListRef, previewId, countId);
+        }
+
+        input.addEventListener('change', function () {
+            addFiles(this.files);
+            this.value = ''; // allow re-selecting same file
+        });
+
+        zone.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            zone.classList.add('drag-over');
+        });
+        zone.addEventListener('dragleave', function () {
+            zone.classList.remove('drag-over');
+        });
+        zone.addEventListener('drop', function (e) {
+            e.preventDefault();
+            zone.classList.remove('drag-over');
+            addFiles(e.dataTransfer.files);
+        });
+
+        // Remove buttons (delegated)
+        strip && strip.addEventListener('click', function (e) {
+            const btn = e.target.closest('.adm-img-thumb-remove');
+            if (!btn) return;
+            const idx = parseInt(btn.dataset.idx, 10);
+            const item = fileListRef[idx];
+            if (item && !item.existingName) URL.revokeObjectURL(item.url);
+            fileListRef.splice(idx, 1);
+            renderImagePreview(fileListRef, previewId, countId);
+        });
+    }
+
+    setupImageUploader('pImages', 'pImgZone', 'pImgPreview', 'pImgCount', _pFileList);
+    setupImageUploader('sImages', 'sImgZone', 'sImgPreview', 'sImgCount', _sFileList);
+
+    function clearImageList(fileListRef, previewId, countId) {
+        fileListRef.forEach(function (item) { URL.revokeObjectURL(item.url); });
+        fileListRef.length = 0;
+        renderImagePreview(fileListRef, previewId, countId);
+    }
+
     /* ─── Product Modal ──────────────────────────── */
     let _editProductId = null;
 
@@ -3069,7 +3339,9 @@
         document.getElementById('pAuthorized').value = '1';
         document.getElementById('pCategory').value = '';
         document.getElementById('pBrand').value = '';
-        document.getElementById('pImage').value = '';
+        document.getElementById('pSubcategoryWrap').style.display = 'none';
+        document.getElementById('pSubcategory').innerHTML = '<option value="">— None —</option>';
+        clearImageList(_pFileList, 'pImgPreview', 'pImgCount');
         document.getElementById('productModal').classList.add('open');
     };
 
@@ -3077,13 +3349,28 @@
         _editProductId = row.dataset.productId;
         document.getElementById('productModalTitle').textContent = 'Edit Product — #' + _editProductId;
         document.getElementById('productSaveBtn').textContent = 'Update Product';
-        document.getElementById('pName').value       = row.dataset.productName || '';
-        document.getElementById('pPrice').value      = row.dataset.productPrice || '';
-        document.getElementById('pStock').value      = row.dataset.productStock || '';
-        document.getElementById('pDiscount').value   = row.dataset.productDiscount || '';
-        document.getElementById('pAuthorized').value = row.dataset.productAuthorized || '1';
-        document.getElementById('pDescription').value = '';
-        document.getElementById('pImage').value = '';
+        document.getElementById('pName').value        = row.dataset.productName || '';
+        document.getElementById('pPrice').value       = row.dataset.productPrice || '';
+        document.getElementById('pStock').value       = row.dataset.productStock || '';
+        document.getElementById('pDiscount').value    = row.dataset.productDiscount || '';
+        document.getElementById('pAuthorized').value  = row.dataset.productAuthorized || '1';
+        document.getElementById('pDescription').value = row.dataset.productDescription || '';
+        // Category → then subcategory (async-safe since we preloaded)
+        const catId = row.dataset.productCategoryId || '';
+        document.getElementById('pCategory').value = catId;
+        document.getElementById('pBrand').value = row.dataset.productBrandId || '';
+        populateSubcategory(catId, 'pSubcategory', 'pSubcategoryWrap',
+            row.dataset.productSubcategoryId || null);
+        // Pre-load existing images into the preview strip
+        clearImageList(_pFileList, 'pImgPreview', 'pImgCount');
+        try {
+            const imgs = JSON.parse(row.dataset.productImages || '[]');
+            imgs.forEach(function (fname) {
+                const url = '/static/assets/images/productsimages/' + encodeURIComponent(fname);
+                _pFileList.push({ file: null, url: url, existingName: fname });
+            });
+            renderImagePreview(_pFileList, 'pImgPreview', 'pImgCount');
+        } catch (e) {}
         document.getElementById('productModal').classList.add('open');
     };
 
@@ -3092,16 +3379,25 @@
         if (!name) { showToast('Product name is required', 'err'); return; }
 
         const fd = new FormData();
-        fd.append('name',         name);
-        fd.append('price',        document.getElementById('pPrice').value || '0');
-        fd.append('stock',        document.getElementById('pStock').value || '0');
-        fd.append('discount',     document.getElementById('pDiscount').value || '0');
-        fd.append('is_authorized',document.getElementById('pAuthorized').value);
-        fd.append('category_id',  document.getElementById('pCategory').value);
-        fd.append('brand_id',     document.getElementById('pBrand').value);
-        fd.append('description',  document.getElementById('pDescription').value);
-        const img = document.getElementById('pImage').files[0];
-        if (img) fd.append('image_file', img);
+        fd.append('name',           name);
+        fd.append('price',          document.getElementById('pPrice').value || '0');
+        fd.append('stock',          document.getElementById('pStock').value || '0');
+        fd.append('discount',       document.getElementById('pDiscount').value || '0');
+        fd.append('is_authorized',  document.getElementById('pAuthorized').value);
+        fd.append('category_id',    document.getElementById('pCategory').value);
+        fd.append('subcategory_id', document.getElementById('pSubcategory').value || '');
+        fd.append('brand_id',       document.getElementById('pBrand').value);
+        fd.append('description',    document.getElementById('pDescription').value);
+        // Split into existing (server-side filenames) and new files
+        const pExisting = [];
+        const pNewFiles = [];
+        _pFileList.forEach(function (item) {
+            if (item.existingName) pExisting.push(item.existingName);
+            else if (item.file)    pNewFiles.push(item.file);
+        });
+        fd.append('existing_images', JSON.stringify(pExisting));
+        pNewFiles.forEach(function (f, idx) { fd.append('image_file_' + idx, f); });
+        fd.append('image_count', pNewFiles.length);
 
         const url = _editProductId
             ? '/api/admin/product/' + _editProductId + '/edit'
@@ -3137,7 +3433,9 @@
         });
         document.getElementById('sAuthorized').value = '1';
         document.getElementById('sCategory').value = '';
-        document.getElementById('sImage').value = '';
+        document.getElementById('sSubcategoryWrap').style.display = 'none';
+        document.getElementById('sSubcategory').innerHTML = '<option value="">— None —</option>';
+        clearImageList(_sFileList, 'sImgPreview', 'sImgCount');
         document.getElementById('serviceModal').classList.add('open');
     };
 
@@ -3145,12 +3443,25 @@
         _editServiceId = row.dataset.serviceId;
         document.getElementById('serviceModalTitle').textContent = 'Edit Service — #' + _editServiceId;
         document.getElementById('serviceSaveBtn').textContent = 'Update Service';
-        document.getElementById('sName').value       = row.dataset.serviceName || '';
-        document.getElementById('sPrice').value      = row.dataset.servicePrice || '';
-        document.getElementById('sDiscount').value   = row.dataset.serviceDiscount || '';
-        document.getElementById('sAuthorized').value = row.dataset.serviceAuthorized || '1';
-        document.getElementById('sDescription').value = '';
-        document.getElementById('sImage').value = '';
+        document.getElementById('sName').value        = row.dataset.serviceName || '';
+        document.getElementById('sPrice').value       = row.dataset.servicePrice || '';
+        document.getElementById('sDiscount').value    = row.dataset.serviceDiscount || '';
+        document.getElementById('sAuthorized').value  = row.dataset.serviceAuthorized || '1';
+        document.getElementById('sDescription').value = row.dataset.serviceDescription || '';
+        const catId = row.dataset.serviceCategoryId || '';
+        document.getElementById('sCategory').value = catId;
+        populateSubcategory(catId, 'sSubcategory', 'sSubcategoryWrap',
+            row.dataset.serviceSubcategoryId || null);
+        // Pre-load existing images
+        clearImageList(_sFileList, 'sImgPreview', 'sImgCount');
+        try {
+            const imgs = JSON.parse(row.dataset.serviceImages || '[]');
+            imgs.forEach(function (fname) {
+                const url = '/static/assets/images/serviceimages/' + encodeURIComponent(fname);
+                _sFileList.push({ file: null, url: url, existingName: fname });
+            });
+            renderImagePreview(_sFileList, 'sImgPreview', 'sImgCount');
+        } catch (e) {}
         document.getElementById('serviceModal').classList.add('open');
     };
 
@@ -3159,14 +3470,22 @@
         if (!name) { showToast('Service name is required', 'err'); return; }
 
         const fd = new FormData();
-        fd.append('name',         name);
-        fd.append('price',        document.getElementById('sPrice').value || '0');
-        fd.append('discount',     document.getElementById('sDiscount').value || '0');
-        fd.append('is_authorized',document.getElementById('sAuthorized').value);
-        fd.append('category_id',  document.getElementById('sCategory').value);
-        fd.append('description',  document.getElementById('sDescription').value);
-        const img = document.getElementById('sImage').files[0];
-        if (img) fd.append('image_file', img);
+        fd.append('name',           name);
+        fd.append('price',          document.getElementById('sPrice').value || '0');
+        fd.append('discount',       document.getElementById('sDiscount').value || '0');
+        fd.append('is_authorized',  document.getElementById('sAuthorized').value);
+        fd.append('category_id',    document.getElementById('sCategory').value);
+        fd.append('subcategory_id', document.getElementById('sSubcategory').value || '');
+        fd.append('description',    document.getElementById('sDescription').value);
+        const sExisting = [];
+        const sNewFiles = [];
+        _sFileList.forEach(function (item) {
+            if (item.existingName) sExisting.push(item.existingName);
+            else if (item.file)    sNewFiles.push(item.file);
+        });
+        fd.append('existing_images', JSON.stringify(sExisting));
+        sNewFiles.forEach(function (f, idx) { fd.append('image_file_' + idx, f); });
+        fd.append('image_count', sNewFiles.length);
 
         const url = _editServiceId
             ? '/api/admin/service/' + _editServiceId + '/edit'
