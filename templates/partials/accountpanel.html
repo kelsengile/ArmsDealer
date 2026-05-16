@@ -57,6 +57,8 @@
             <span class="acct-info-value">{{ session.get('created_at', '—')[:10] }}</span>
         </div>
 
+        
+
         <div class="acct-divider"></div>
         <div class="acct-section-label" data-translate="accountpanelorderscart">Orders & Cart</div>
 
@@ -118,6 +120,36 @@
                 </svg>
             </span>
         </a>
+
+        {# ── E-Wallet Balance ──────────────────────────────────────── #}
+        <div class="acct-wallet-strip">
+            <div class="acct-wallet-scanline"></div>
+            <div class="acct-wallet-inner">
+
+                {# Left — icon + tag #}
+                <div class="acct-wallet-icon-col">
+                    <div class="acct-wallet-icon-wrap">
+                        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                            <rect x="1" y="4" width="14" height="9" rx="1" stroke="currentColor" stroke-width="1.4"/>
+                            <path d="M1 7h14" stroke="currentColor" stroke-width="1.4"/>
+                            <circle cx="11.5" cy="10.5" r="1" fill="currentColor"/>
+                        </svg>
+                    </div>
+                </div>
+
+                {# Center — label + amount + bar #}
+                <div class="acct-wallet-center">
+                    <div class="acct-wallet-amount"
+                         id="panelWalletAmount"
+                         data-wallet-php="{{ session.get('wallet_balance', 0) | float }}">
+                        <span class="acct-wallet-currency" id="panelWalletSymbol">₱</span><span id="panelWalletFigure">{{ '{:,.2f}'.format(session.get('wallet_balance', 0) | float) }}</span>
+                    </div>
+                    <div class="acct-wallet-bar">
+                        <div class="acct-wallet-bar-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="acct-divider"></div>
         <div class="acct-section-label" data-translate="accountpanelaccount">Account</div>
