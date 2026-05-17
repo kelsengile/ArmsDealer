@@ -259,17 +259,71 @@ CATEGORIES
   ACCOUNTS
 ================================================================================
 
+    Admin:
+    username : mrcrabs
+    email    : eugene.crabs@thekrustykrab.com
+    password : MoneyM0ney!
+    role     : admin
+
   Customer:
     username : spongebob
     email    : spongebob@bikini.bottom
     password : Krabby1234!
     role     : customer
 
-  Admin:
-    username : mrcrabs
-    email    : eugene.crabs@thekrustykrab.com
-    password : MoneyM0ney!
-    role     : admin
+  Customer:
+    username : patrickstar
+    email    : patrick.star@bikini.bottom
+    password : Password123!
+    role     : customer
+
+  Customer:
+    username : squidward
+    email    : squidward.tentacles@bikini.bottom
+    password : Password123!
+    role     : customer
+
+  Customer:
+    username : sandycheeks
+    email    : sandy.cheeks@texas.com
+    password : Password123!
+    role     : customer
+
+  Customer:
+    username : plankton
+    email    : sheldon.plankton@chumbucket.com
+    password : Password123!
+    role     : customer
+
+  Customer:
+    username : ricksanchez
+    email    : rick.sanchez@c137.dim
+    password : Password123!
+    role     : customer
+
+  Customer:
+    username : mortysmith
+    email    : morty.smith@c137.dim
+    password : Password123!
+    role     : customer
+
+  Customer:
+    username : ben10
+    email    : ben.tennyson@plumber.net
+    password : Password123!
+    role     : customer
+
+  Customer:
+    username : gwentennyson
+    email    : gwen.tennyson@plumber.net
+    password : Password123!
+    role     : customer
+
+  Customer:
+    username : grandpamax
+    email    : max.tennyson@plumber.net
+    password : Password123!
+    role     : customer
 
 ================================================================================
   DATABASE CART ORDERS RESET
