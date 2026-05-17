@@ -437,6 +437,7 @@ def dashboard():
         return redirect(url_for('main.homepage'))
 
     db = get_db()
+    currency = get_currency(db)
 
     # ── Stats ───────────────────────────────────────────────────────
     total_users = db.execute('SELECT COUNT(*) FROM users').fetchone()[0]
@@ -566,6 +567,50 @@ def dashboard():
     """).fetchall()
     top_products = [dict(row) for row in top_product_rows]
 
+    # ── Category breakdown ───────────────────────────────────────────
+    category_rows = db.execute("""
+        SELECT c.name, COUNT(p.id) AS product_count
+        FROM categories c
+        LEFT JOIN products p ON p.category_id = c.id
+        GROUP BY c.id
+        ORDER BY product_count DESC
+        LIMIT 8
+    """).fetchall()
+    category_stats = [dict(row) for row in category_rows]
+
+    # ── Low stock products ───────────────────────────────────────────
+    low_stock_rows = db.execute("""
+        SELECT id, name, stock
+        FROM products
+        WHERE stock IS NOT NULL AND stock <= 5
+        ORDER BY stock ASC, name ASC
+        LIMIT 6
+    """).fetchall()
+    low_stock_products = [dict(row) for row in low_stock_rows]
+
+    # ── Recent users ────────────────────────────────────────────────
+    recent_user_rows = db.execute("""
+        SELECT username, role, created_at
+        FROM users
+        ORDER BY created_at DESC
+        LIMIT 5
+    """).fetchall()
+    recent_users = [dict(row) for row in recent_user_rows]
+
+    # ── Top products by revenue ──────────────────────────────────────
+    top_revenue_rows = db.execute("""
+        SELECT p.name,
+               COALESCE(SUM(oi.quantity * oi.unit_price), 0) AS revenue
+        FROM order_items oi
+        JOIN orders o ON o.id = oi.order_id
+        JOIN products p ON oi.item_type = 'product' AND oi.item_id = p.id
+        WHERE o.status = 'delivered'
+        GROUP BY p.id
+        ORDER BY revenue DESC
+        LIMIT 6
+    """).fetchall()
+    top_revenue_products = [dict(row) for row in top_revenue_rows]
+
     # ── Revenue by day (last 7 days) ────────────────────────────────
     import datetime as _dt
     revenue_by_day = []
@@ -591,8 +636,13 @@ def dashboard():
         brands=brands,
         users=users,
         top_products=top_products,
+        top_revenue_products=top_revenue_products,
+        category_stats=category_stats,
+        low_stock_products=low_stock_products,
+        recent_users=recent_users,
         revenue_by_day=revenue_by_day,
         revenue_labels=revenue_labels,
+        currency=currency,
     )
 
 
