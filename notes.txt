@@ -274,55 +274,55 @@ CATEGORIES
   Customer:
     username : patrickstar
     email    : patrick.star@bikini.bottom
-    password : Password123!
+    password : IAmStupid!23
     role     : customer
-
+ 
   Customer:
     username : squidward
     email    : squidward.tentacles@bikini.bottom
-    password : Password123!
+    password : IHateEveryone!23
     role     : customer
-
+ 
   Customer:
     username : sandycheeks
     email    : sandy.cheeks@texas.com
-    password : Password123!
+    password : YeeHawTexas!23
     role     : customer
-
+ 
   Customer:
     username : plankton
     email    : sheldon.plankton@chumbucket.com
-    password : Password123!
+    password : SecretFormula!23
     role     : customer
-
+ 
   Customer:
     username : ricksanchez
     email    : rick.sanchez@c137.dim
-    password : Password123!
+    password : Wubbalubbadubdub!2
     role     : customer
-
+ 
   Customer:
     username : mortysmith
     email    : morty.smith@c137.dim
-    password : Password123!
+    password : Oh_Geez_Rick!23
     role     : customer
-
+ 
   Customer:
     username : ben10
     email    : ben.tennyson@plumber.net
-    password : Password123!
+    password : Omnitrix!2310
     role     : customer
-
+ 
   Customer:
     username : gwentennyson
     email    : gwen.tennyson@plumber.net
-    password : Password123!
+    password : Anodite!Magic23
     role     : customer
-
+ 
   Customer:
     username : grandpamax
     email    : max.tennyson@plumber.net
-    password : Password123!
+    password : PlumberMax!2326
     role     : customer
 
 ================================================================================
