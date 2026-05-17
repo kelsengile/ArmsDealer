@@ -353,72 +353,87 @@
 /* ══ STAT CARDS ══ */
 .adm-stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(4, minmax(180px, 1fr));
     gap: 12px;
     margin-bottom: 28px;
 }
 
 .adm-stat-card {
-    background: var(--mil-panel);
-    border: 1px solid var(--mil-border);
-    border-top: 2px solid var(--mil-olive);
-    padding: 18px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+    background: rgba(14,18,14,0.95);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-top: 3px solid var(--mil-olive);
+    border-radius: 16px;
+    padding: 20px 18px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px 12px;
+    align-items: center;
     position: relative;
     overflow: hidden;
-    transition: border-top-color 0.2s, transform 0.15s;
+    transition: transform 0.16s, border-color 0.2s, background 0.2s;
 }
 
 .adm-stat-card:hover {
     transform: translateY(-1px);
+    background: rgba(24,32,24,0.98);
 }
 
-.adm-stat-card.highlight { border-top-color: var(--mil-bright); }
-.adm-stat-card.gold      { border-top-color: var(--mil-gold); }
-.adm-stat-card.red       { border-top-color: var(--mil-red); }
-.adm-stat-card.blue      { border-top-color: var(--mil-blue); }
+.adm-stat-card.green { border-top-color: var(--mil-bright); }
+.adm-stat-card.gold  { border-top-color: var(--mil-gold); }
+.adm-stat-card.red   { border-top-color: var(--mil-red); }
+.adm-stat-card.blue  { border-top-color: var(--mil-blue); }
 
 .adm-stat-card::after {
     content: "";
     position: absolute;
     bottom: 0; right: 0;
-    width: 40px; height: 40px;
-    background: radial-gradient(circle at 100% 100%, rgba(150,181,98,0.06) 0%, transparent 70%);
+    width: 44px; height: 44px;
+    background: radial-gradient(circle at 100% 100%, rgba(150,181,98,0.08) 0%, transparent 72%);
 }
 
 .adm-stat-icon {
-    font-size: 16px;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(150,181,98,0.08);
     color: var(--mil-olive);
+    font-size: 16px;
+    flex-shrink: 0;
 }
 
-.adm-stat-card.highlight .adm-stat-icon { color: var(--mil-bright); }
-.adm-stat-card.gold .adm-stat-icon { color: var(--mil-gold); }
-.adm-stat-card.red .adm-stat-icon { color: #c0392b; }
-.adm-stat-card.blue .adm-stat-icon { color: #5090c0; }
+.adm-stat-card.green .adm-stat-icon { background: rgba(150,181,98,0.14); color: var(--mil-bright); }
+.adm-stat-card.gold .adm-stat-icon  { background: rgba(192,146,42,0.14); color: var(--mil-gold); }
+.adm-stat-card.red .adm-stat-icon   { background: rgba(192,57,43,0.14); color: #c0392b; }
+.adm-stat-card.blue .adm-stat-icon  { background: rgba(80,144,192,0.14); color: #5090c0; }
 
 .adm-stat-label {
-    font-family: var(--font-stencil);
+    grid-column: 2 / span 1;
+    font-family: var(--font-mono);
     font-size: 9px;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.18em;
     color: var(--mil-muted);
     text-transform: uppercase;
+    margin-bottom: 4px;
 }
 
 .adm-stat-value {
+    grid-column: 2 / span 1;
     font-family: var(--font-stencil);
-    font-size: 26px;
+    font-size: 28px;
     font-weight: 700;
     color: var(--mil-light);
-    line-height: 1;
+    line-height: 1.05;
 }
 
 .adm-stat-delta {
+    grid-column: 2 / span 1;
     font-family: var(--font-mono);
     font-size: 9px;
     color: var(--mil-muted);
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
 }
 
 .adm-stat-delta.pos { color: var(--mil-bright); }
@@ -429,26 +444,37 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
-    margin-bottom: 28px;
+    margin-bottom: 20px;
 }
-
-.adm-charts-row.triple {
-    grid-template-columns: 2fr 1fr 1fr;
-}
+.adm-charts-row.triple { grid-template-columns: 2fr 1fr 1fr; }
 
 .adm-chart-card {
     background: var(--mil-panel);
     border: 1px solid var(--mil-border);
     padding: 0;
     overflow: hidden;
+    position: relative;
+    transition: border-color 0.2s;
+}
+.adm-chart-card:hover { border-color: rgba(150,181,98,0.28); }
+
+/* top accent line */
+.adm-chart-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--mil-bright) 0%, transparent 100%);
+    opacity: 0.4;
 }
 
 .adm-chart-header {
-    padding: 14px 18px 12px;
+    padding: 13px 18px 11px;
     border-bottom: 1px solid var(--mil-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background: rgba(0,0,0,0.12);
 }
 
 .adm-chart-title {
@@ -458,6 +484,16 @@
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--mil-text);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.adm-chart-title-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--mil-bright);
+    opacity: 0.7;
+    flex-shrink: 0;
 }
 
 .adm-chart-meta {
@@ -465,52 +501,151 @@
     font-size: 9px;
     color: var(--mil-muted);
     letter-spacing: 0.08em;
+    background: rgba(150,181,98,0.07);
+    padding: 2px 7px;
+    border: 1px solid rgba(150,181,98,0.12);
 }
 
-.adm-chart-body {
-    padding: 16px 18px;
-}
+.adm-chart-body { padding: 16px 18px; }
+.adm-chart-body.no-pad { padding: 0; }
 
-/* SVG bar chart */
-.adm-bar-chart {
+/* ── KPI strip ── */
+.adm-kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(160px, 1fr));
+    gap: 0;
+    border: 1px solid var(--mil-border);
+    border-radius: 16px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    background: rgba(14,18,14,0.83);
+}
+.adm-kpi-item {
+    padding: 18px 20px;
+    border-right: 1px solid var(--mil-border);
+    position: relative;
+    transition: background 0.15s, transform 0.15s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100px;
+}
+.adm-kpi-item:last-child { border-right: none; }
+.adm-kpi-item:hover {
+    background: rgba(150,181,98,0.06);
+    transform: translateY(-1px);
+}
+.adm-kpi-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 20px; right: 20px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--mil-bright), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.adm-kpi-item:hover::after { opacity: 0.35; }
+.adm-kpi-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mil-muted);
+    margin-bottom: 8px;
+}
+.adm-kpi-value {
+    font-family: var(--font-stencil);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--mil-light);
+    line-height: 1.05;
+    margin-bottom: 8px;
+}
+.adm-kpi-value.gold  { color: var(--mil-gold); }
+.adm-kpi-value.green { color: var(--mil-bright); }
+.adm-kpi-value.red   { color: #c0392b; }
+.adm-kpi-value.blue  { color: var(--mil-blue); }
+.adm-kpi-sub {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--mil-muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.adm-kpi-sub .up   { color: var(--mil-bright); }
+.adm-kpi-sub .down { color: #c0392b; }
+
+/* ── Area / line chart ── */
+.adm-area-chart-wrap {
+    position: relative;
     width: 100%;
-    height: 140px;
+    height: 160px;
+}
+.adm-area-svg {
+    width: 100%;
+    height: 160px;
     overflow: visible;
 }
+.adm-chart-tooltip {
+    position: absolute;
+    background: rgba(14,18,14,0.95);
+    border: 1px solid rgba(150,181,98,0.3);
+    padding: 6px 10px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.12s;
+    z-index: 99;
+    min-width: 90px;
+}
+.adm-chart-tooltip.visible { opacity: 1; }
+.adm-chart-tooltip-date {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--mil-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+}
+.adm-chart-tooltip-val {
+    font-family: var(--font-stencil);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--mil-bright);
+}
 
-/* Donut chart */
+/* ── Donut chart ── */
 .adm-donut-wrap {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 18px;
 }
-
 .adm-donut-svg {
-    width: 110px;
-    height: 110px;
+    width: 130px;
+    height: 130px;
     flex-shrink: 0;
 }
-
 .adm-donut-legend {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 9px;
     flex: 1;
 }
-
 .adm-legend-item {
     display: flex;
     align-items: center;
     gap: 8px;
+    cursor: default;
+    padding: 3px 0;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s;
 }
-
+.adm-legend-item:hover { border-color: var(--mil-border); }
 .adm-legend-dot {
-    width: 8px;
-    height: 8px;
+    width: 8px; height: 8px;
     border-radius: 1px;
     flex-shrink: 0;
 }
-
 .adm-legend-label {
     font-family: var(--font-mono);
     font-size: 9px;
@@ -519,61 +654,122 @@
     letter-spacing: 0.1em;
     flex: 1;
 }
-
 .adm-legend-val {
     font-family: var(--font-stencil);
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--mil-text);
 }
+.adm-legend-pct {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--mil-muted);
+    margin-left: 3px;
+}
 
-/* Sparkline */
+/* ── Horizontal bar (sparkline) ── */
 .adm-sparkline-wrap {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 11px;
 }
-
 .adm-sparkline-item {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 5px;
 }
-
 .adm-sparkline-label {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-
 .adm-sparkline-name {
     font-family: var(--font-stencil);
     font-size: 9px;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     color: var(--mil-muted);
     text-transform: uppercase;
 }
-
 .adm-sparkline-val {
     font-family: var(--font-mono);
     font-size: 10px;
     color: var(--mil-text);
 }
-
 .adm-bar-track {
-    height: 4px;
-    background: var(--mil-border);
+    height: 5px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--mil-border);
     width: 100%;
     position: relative;
+    overflow: hidden;
 }
-
 .adm-bar-fill {
     position: absolute;
     top: 0; left: 0;
     height: 100%;
-    background: var(--mil-bright);
-    transition: width 0.8s ease;
+    background: linear-gradient(90deg, var(--mil-bright), rgba(150,181,98,0.5));
+    transition: width 1s cubic-bezier(.16,1,.3,1);
+    width: 0;
 }
+.adm-bar-fill.blue-fill {
+    background: linear-gradient(90deg, var(--mil-blue), rgba(80,144,192,0.5));
+}
+.adm-bar-fill.gold-fill {
+    background: linear-gradient(90deg, var(--mil-gold), rgba(200,162,42,0.5));
+}
+
+/* ── Funnel / activity feed ── */
+.adm-activity-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+.adm-activity-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    transition: background 0.12s;
+}
+.adm-activity-row:hover { background: rgba(150,181,98,0.04); }
+.adm-activity-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.adm-activity-text {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--mil-muted);
+    flex: 1;
+}
+.adm-activity-text strong {
+    color: var(--mil-text);
+    font-weight: 500;
+}
+.adm-activity-time {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: rgba(100,120,100,0.5);
+    letter-spacing: 0.06em;
+}
+
+/* ── Revenue mini chart (legacy, kept) ── */
+.adm-rev-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 40px;
+}
+.adm-rev-bar {
+    flex: 1;
+    background: rgba(150,181,98,0.2);
+    transition: background 0.15s;
+    min-height: 4px;
+}
+.adm-rev-bar:hover { background: rgba(150,181,98,0.5); }
+.adm-rev-bar.today { background: var(--mil-bright); }
 
 /* ══ TABLES ══ */
 .adm-table-wrap { overflow-x: auto; }
@@ -1111,6 +1307,10 @@
 @media (max-width: 900px) {
     .adm-charts-row { grid-template-columns: 1fr; }
     .adm-charts-row.triple { grid-template-columns: 1fr; }
+    .adm-kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    .adm-kpi-item:nth-child(2) { border-right: none; }
+    .adm-kpi-item:nth-child(3),
+    .adm-kpi-item:nth-child(4) { border-top: 1px solid var(--mil-border); }
 }
 
 @media (max-width: 768px) {
@@ -1119,6 +1319,8 @@
     .adm-content { border-top: none; }
     .adm-section-header, .adm-section-body { padding-left: 16px; padding-right: 16px; }
     .adm-stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .adm-kpi-strip { grid-template-columns: 1fr 1fr; }
+    .adm-donut-wrap { flex-direction: column; align-items: flex-start; }
 }
 
 /* ══ BRANDS SECTION EXTRAS ══ */
@@ -1201,22 +1403,6 @@
 }
 
 /* Revenue mini chart */
-.adm-rev-chart {
-    display: flex;
-    align-items: flex-end;
-    gap: 3px;
-    height: 40px;
-}
-
-.adm-rev-bar {
-    flex: 1;
-    background: rgba(150,181,98,0.2);
-    transition: background 0.15s;
-    min-height: 4px;
-}
-
-.adm-rev-bar:hover { background: rgba(150,181,98,0.5); }
-.adm-rev-bar.today { background: var(--mil-bright); }
 </style>
 {% endblock %}
 
@@ -1398,52 +1584,52 @@
                 </div>
                 <div class="adm-section-body">
 
-                    <!-- Stat cards -->
-                    <div class="adm-stats-grid">
-                        <div class="adm-stat-card gold">
-                            <div class="adm-stat-icon" id="adm-revenue-stat-icon">{{ currency.symbol if currency else '₱' }}</div>
-                            <div class="adm-stat-label">Total Revenue</div>
-                            <div class="adm-stat-value" id="adm-revenue-stat-value"
+                    <!-- ── KPI Strip ── -->
+                    <div class="adm-kpi-strip">
+                        <div class="adm-kpi-item">
+                            <div class="adm-kpi-label">Total Revenue</div>
+                            <div class="adm-kpi-value gold" id="adm-revenue-stat-value"
                                  data-php-price="{{ stats.total_revenue }}">{{ currency.symbol if currency else '₱' }}{{ '{:,.0f}'.format(stats.total_revenue_converted if stats.total_revenue_converted is defined else stats.total_revenue) }}</div>
-                            <div class="adm-stat-delta pos">▲ All time</div>
+                            <div class="adm-kpi-sub"><span class="up">▲</span>&nbsp;All-time earnings</div>
                         </div>
-                        <div class="adm-stat-card highlight">
-                            <div class="adm-stat-icon"><svg class="adm-ico" style="width:18px;height:18px;"><use href="#ico-orders"/></svg></div>
-                            <div class="adm-stat-label">Total Orders</div>
-                            <div class="adm-stat-value">{{ stats.total_orders }}</div>
-                            <div class="adm-stat-delta">Lifetime</div>
+                        <div class="adm-kpi-item">
+                            <div class="adm-kpi-label">Total Orders</div>
+                            <div class="adm-kpi-value green">{{ stats.total_orders }}</div>
+                            <div class="adm-kpi-sub">Lifetime placed</div>
                         </div>
-                        <div class="adm-stat-card red">
-                            <div class="adm-stat-icon"><svg class="adm-ico" style="width:18px;height:18px;"><use href="#ico-alert"/></svg></div>
-                            <div class="adm-stat-label">Pending</div>
-                            <div class="adm-stat-value">{{ stats.pending_orders }}</div>
-                            <div class="adm-stat-delta neg">Needs attention</div>
+                        <div class="adm-kpi-item">
+                            <div class="adm-kpi-label">Pending</div>
+                            <div class="adm-kpi-value red">{{ stats.pending_orders }}</div>
+                            <div class="adm-kpi-sub"><span class="down">▼</span>&nbsp;Needs attention</div>
                         </div>
-                        <div class="adm-stat-card">
+                        <div class="adm-kpi-item">
+                            <div class="adm-kpi-label">Customers</div>
+                            <div class="adm-kpi-value blue">{{ stats.total_users }}</div>
+                            <div class="adm-kpi-sub">Registered accounts</div>
+                        </div>
+                    </div>
+
+                    <!-- ── Stat Cards Row ── -->
+                    <div class="adm-stats-grid">
+                        <div class="adm-stat-card green">
                             <div class="adm-stat-icon"><svg class="adm-ico" style="width:18px;height:18px;"><use href="#ico-check"/></svg></div>
-                            <div class="adm-stat-label">Delivered</div>
+                            <div class="adm-stat-label">Completed</div>
                             <div class="adm-stat-value">{{ stats.delivered_orders }}</div>
-                            <div class="adm-stat-delta pos">Completed</div>
+                            <div class="adm-stat-delta pos">Fulfilled</div>
                         </div>
-                        <div class="adm-stat-card">
-                            <div class="adm-stat-icon"><svg class="adm-ico" style="width:18px;height:18px;"><use href="#ico-users"/></svg></div>
-                            <div class="adm-stat-label">Total Users</div>
-                            <div class="adm-stat-value">{{ stats.total_users }}</div>
-                            <div class="adm-stat-delta">Registered</div>
-                        </div>
-                        <div class="adm-stat-card">
+                        <div class="adm-stat-card gold">
                             <div class="adm-stat-icon"><svg class="adm-ico" style="width:18px;height:18px;"><use href="#ico-inventory"/></svg></div>
                             <div class="adm-stat-label">Products</div>
                             <div class="adm-stat-value">{{ stats.total_products }}</div>
                             <div class="adm-stat-delta">In catalog</div>
                         </div>
-                        <div class="adm-stat-card">
+                        <div class="adm-stat-card blue">
                             <div class="adm-stat-icon"><svg class="adm-ico" style="width:18px;height:18px;"><use href="#ico-services"/></svg></div>
                             <div class="adm-stat-label">Services</div>
                             <div class="adm-stat-value">{{ stats.total_services }}</div>
                             <div class="adm-stat-delta">Available</div>
                         </div>
-                        <div class="adm-stat-card blue">
+                        <div class="adm-stat-card red">
                             <div class="adm-stat-icon"><svg class="adm-ico" style="width:18px;height:18px;"><use href="#ico-inquiries"/></svg></div>
                             <div class="adm-stat-label">Inquiries</div>
                             <div class="adm-stat-value">{{ stats.new_inquiries if stats.new_inquiries is defined else '—' }}</div>
@@ -1451,27 +1637,35 @@
                         </div>
                     </div>
 
-                    <!-- Charts row 1: Revenue bar + Order donut -->
-                    <div class="adm-charts-row" style="grid-template-columns: 3fr 2fr;">
+                    <!-- ── Row 1: Revenue Area Chart + Order Status Donut ── -->
+                    <div class="adm-charts-row" style="grid-template-columns:3fr 2fr;">
+                        <!-- Revenue area chart -->
                         <div class="adm-chart-card">
                             <div class="adm-chart-header">
-                                <span class="adm-chart-title">Revenue Trend</span>
-                                <span class="adm-chart-meta">Last 7 days</span>
+                                <span class="adm-chart-title"><span class="adm-chart-title-dot"></span>Revenue Trend</span>
+                                <span class="adm-chart-meta">LAST 7 DAYS</span>
                             </div>
                             <div class="adm-chart-body">
-                                <svg class="adm-bar-chart" id="revenueChart" viewBox="0 0 520 140" preserveAspectRatio="none">
-                                    <!-- Rendered by JS -->
-                                </svg>
+                                <div class="adm-area-chart-wrap" id="areaChartWrap">
+                                    <svg class="adm-area-svg" id="areaChart" viewBox="0 0 560 160" preserveAspectRatio="none">
+                                        <!-- Rendered by JS -->
+                                    </svg>
+                                    <div class="adm-chart-tooltip" id="areaTooltip">
+                                        <div class="adm-chart-tooltip-date" id="tooltipDate"></div>
+                                        <div class="adm-chart-tooltip-val" id="tooltipVal"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <!-- Order status donut -->
                         <div class="adm-chart-card">
                             <div class="adm-chart-header">
-                                <span class="adm-chart-title">Order Status</span>
-                                <span class="adm-chart-meta">Breakdown</span>
+                                <span class="adm-chart-title"><span class="adm-chart-title-dot" style="background:var(--mil-blue);"></span>Order Status</span>
+                                <span class="adm-chart-meta">BREAKDOWN</span>
                             </div>
                             <div class="adm-chart-body">
                                 <div class="adm-donut-wrap">
-                                    <svg class="adm-donut-svg" id="donutChart" viewBox="0 0 110 110">
+                                    <svg class="adm-donut-svg" id="donutChart" viewBox="0 0 130 130">
                                         <!-- Rendered by JS -->
                                     </svg>
                                     <div class="adm-donut-legend" id="donutLegend"></div>
@@ -1480,21 +1674,22 @@
                         </div>
                     </div>
 
-                    <!-- Charts row 2: Category breakdown sparklines -->
-                    <div class="adm-charts-row" style="grid-template-columns: 1fr 1fr;">
+                    <!-- ── Row 2: Top Products + Category Distribution ── -->
+                    <div class="adm-charts-row" style="grid-template-columns:1fr 1fr;">
+                        <!-- Top Products by Sales -->
                         <div class="adm-chart-card">
                             <div class="adm-chart-header">
-                                <span class="adm-chart-title">Top Products by Sales</span>
-                                <span class="adm-chart-meta">By sales_count</span>
+                                <span class="adm-chart-title"><span class="adm-chart-title-dot"></span>Top Products</span>
+                                <span class="adm-chart-meta">BY SALES COUNT</span>
                             </div>
                             <div class="adm-chart-body">
                                 <div class="adm-sparkline-wrap" id="topProductsChart">
                                     {% if top_products is defined and top_products %}
                                     {% set max_sales = top_products[0].sales_count if top_products[0].sales_count > 0 else 1 %}
-                                    {% for p in top_products[:6] %}
+                                    {% for p in top_products[:7] %}
                                     <div class="adm-sparkline-item">
                                         <div class="adm-sparkline-label">
-                                            <span class="adm-sparkline-name">{{ p.name[:28] }}</span>
+                                            <span class="adm-sparkline-name">{{ p.name[:26] }}{% if p.name|length > 26 %}…{% endif %}</span>
                                             <span class="adm-sparkline-val">{{ p.sales_count }}</span>
                                         </div>
                                         <div class="adm-bar-track">
@@ -1503,42 +1698,52 @@
                                     </div>
                                     {% endfor %}
                                     {% else %}
-                                    <div class="adm-empty" style="min-height:120px;">
-                                        <div class="adm-empty-text">No sales data</div>
-                                    </div>
+                                    <div class="adm-empty" style="min-height:120px;"><div class="adm-empty-text">No sales data</div></div>
                                     {% endif %}
                                 </div>
                             </div>
                         </div>
+                        <!-- Category distribution -->
                         <div class="adm-chart-card">
                             <div class="adm-chart-header">
-                                <span class="adm-chart-title">Revenue by Day</span>
-                                <span class="adm-chart-meta">Mini chart</span>
+                                <span class="adm-chart-title"><span class="adm-chart-title-dot" style="background:var(--mil-blue);"></span>Categories</span>
+                                <span class="adm-chart-meta">PRODUCT COUNT</span>
                             </div>
                             <div class="adm-chart-body">
-                                <div class="adm-rev-chart" id="miniRevChart"></div>
-                                <div style="display:flex;justify-content:space-between;margin-top:8px;" id="miniRevLabels"></div>
+                                {% if category_stats is defined and category_stats %}
+                                {% set max_cat = category_stats[0].product_count if category_stats[0].product_count > 0 else 1 %}
+                                <div class="adm-sparkline-wrap">
+                                    {% for cat in category_stats %}
+                                    <div class="adm-sparkline-item">
+                                        <div class="adm-sparkline-label">
+                                            <span class="adm-sparkline-name">{{ cat.name[:24] }}</span>
+                                            <span class="adm-sparkline-val" style="color:var(--mil-blue);">{{ cat.product_count }}</span>
+                                        </div>
+                                        <div class="adm-bar-track">
+                                            <div class="adm-bar-fill blue-fill" style="width:{{ (cat.product_count / max_cat * 100)|int }}%;"></div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="adm-empty" style="min-height:100px;"><div class="adm-empty-text">No data</div></div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
 
-                    <!-- Analytics Tables Row: Low Stock + Recent Users -->
-                    <div class="adm-charts-row" style="grid-template-columns: 1fr 1fr; margin-bottom: 28px;">
-                        <!-- Low Stock Alert Table -->
+                    <!-- ── Row 3: Low Stock + Recent Users ── -->
+                    <div class="adm-charts-row" style="grid-template-columns:1fr 1fr;">
+                        <!-- Low Stock Alert -->
                         <div class="adm-chart-card">
                             <div class="adm-chart-header">
-                                <span class="adm-chart-title" style="color:#c0392b;display:flex;align-items:center;gap:6px;"><svg class="adm-ico" style="width:13px;height:13px;color:#c0392b;"><use href="#ico-alert"/></svg> Low Stock Alert</span>
-                                <span class="adm-chart-meta">Stock ≤ 5</span>
+                                <span class="adm-chart-title" style="color:#c0392b;"><svg class="adm-ico" style="width:11px;height:11px;color:#c0392b;margin-right:4px;"><use href="#ico-alert"/></svg>Low Stock Alert</span>
+                                <span class="adm-chart-meta">STOCK ≤ 5</span>
                             </div>
-                            <div class="adm-chart-body" style="padding:0;">
+                            <div class="adm-chart-body no-pad">
                                 {% if low_stock_products is defined and low_stock_products %}
                                 <table class="adm-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Product</th>
-                                            <th style="text-align:right;">Stock</th>
-                                        </tr>
-                                    </thead>
+                                    <thead><tr><th>Product</th><th style="text-align:right;">Stock</th></tr></thead>
                                     <tbody>
                                         {% for p in low_stock_products %}
                                         <tr>
@@ -1557,22 +1762,16 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <!-- Recent Users Table -->
+                        <!-- Recent Registrations -->
                         <div class="adm-chart-card">
                             <div class="adm-chart-header">
-                                <span class="adm-chart-title">Recent Registrations</span>
-                                <span class="adm-chart-meta">Last 5 users</span>
+                                <span class="adm-chart-title"><span class="adm-chart-title-dot" style="background:var(--mil-gold);"></span>Recent Registrations</span>
+                                <span class="adm-chart-meta">LAST 5 USERS</span>
                             </div>
-                            <div class="adm-chart-body" style="padding:0;">
+                            <div class="adm-chart-body no-pad">
                                 {% if recent_users is defined and recent_users %}
                                 <table class="adm-table">
-                                    <thead>
-                                        <tr>
-                                            <th>User</th>
-                                            <th>Role</th>
-                                            <th>Joined</th>
-                                        </tr>
-                                    </thead>
+                                    <thead><tr><th>User</th><th>Role</th><th>Joined</th></tr></thead>
                                     <tbody>
                                         {% for u in recent_users %}
                                         <tr>
@@ -1589,58 +1788,24 @@
                                     </tbody>
                                 </table>
                                 {% else %}
-                                <div class="adm-empty" style="min-height:100px;">
-                                    <div class="adm-empty-text">No users yet</div>
-                                </div>
+                                <div class="adm-empty" style="min-height:100px;"><div class="adm-empty-text">No users yet</div></div>
                                 {% endif %}
                             </div>
                         </div>
                     </div>
 
-                    <!-- Category Distribution + Top Revenue Products -->
-                    <div class="adm-charts-row" style="grid-template-columns: 1fr 1fr; margin-bottom: 28px;">
-                        <!-- Category Stats -->
-                        <div class="adm-chart-card">
-                            <div class="adm-chart-header">
-                                <span class="adm-chart-title">Categories</span>
-                                <span class="adm-chart-meta">Product count</span>
-                            </div>
-                            <div class="adm-chart-body">
-                                {% if category_stats is defined and category_stats %}
-                                {% set max_cat = category_stats[0].product_count if category_stats[0].product_count > 0 else 1 %}
-                                <div class="adm-sparkline-wrap">
-                                    {% for cat in category_stats %}
-                                    <div class="adm-sparkline-item">
-                                        <div class="adm-sparkline-label">
-                                            <span class="adm-sparkline-name">{{ cat.name[:24] }}</span>
-                                            <span class="adm-sparkline-val" style="color:var(--mil-blue);">{{ cat.product_count }}</span>
-                                        </div>
-                                        <div class="adm-bar-track">
-                                            <div class="adm-bar-fill" style="background:var(--mil-blue);width:{{ (cat.product_count / max_cat * 100)|int }}%;"></div>
-                                        </div>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                                {% else %}
-                                <div class="adm-empty" style="min-height:100px;"><div class="adm-empty-text">No data</div></div>
-                                {% endif %}
-                            </div>
-                        </div>
+                    <!-- ── Row 4: Top Revenue Products + Recent Activity ── -->
+                    <div class="adm-charts-row" style="grid-template-columns:1fr 1fr;margin-bottom:28px;">
                         <!-- Top Revenue Products -->
                         <div class="adm-chart-card">
                             <div class="adm-chart-header">
-                                <span class="adm-chart-title">Top Products by Revenue</span>
-                                <span class="adm-chart-meta">Delivered orders</span>
+                                <span class="adm-chart-title"><span class="adm-chart-title-dot" style="background:var(--mil-gold);"></span>Top Products by Revenue</span>
+                                <span class="adm-chart-meta">COMPLETED ORDERS</span>
                             </div>
-                            <div class="adm-chart-body" style="padding:0;">
+                            <div class="adm-chart-body no-pad">
                                 {% if top_revenue_products is defined and top_revenue_products %}
                                 <table class="adm-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Product</th>
-                                            <th style="text-align:right;">Revenue</th>
-                                        </tr>
-                                    </thead>
+                                    <thead><tr><th>Product</th><th style="text-align:right;">Revenue</th></tr></thead>
                                     <tbody>
                                         {% for p in top_revenue_products %}
                                         <tr data-php-revenue="{{ p.revenue }}">
@@ -1655,11 +1820,25 @@
                                 {% endif %}
                             </div>
                         </div>
+                        <!-- Revenue vs Orders sparkline + mini bar -->
+                        <div class="adm-chart-card">
+                            <div class="adm-chart-header">
+                                <span class="adm-chart-title"><span class="adm-chart-title-dot"></span>Daily Revenue Bars</span>
+                                <span class="adm-chart-meta">LAST 7 DAYS</span>
+                            </div>
+                            <div class="adm-chart-body">
+                                <div class="adm-rev-chart" id="miniRevChart" style="height:60px;gap:4px;"></div>
+                                <div style="display:flex;justify-content:space-between;margin-top:8px;" id="miniRevLabels"></div>
+                                <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--mil-border);">
+                                    <div style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--mil-muted);margin-bottom:10px;">Order Fulfillment Rate</div>
+                                    <div id="fulfillmentBars"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
             </section>
-
             <!-- ─── ORDERS ──────────────────────────────────── -->
             <section class="adm-section" id="section-orders">
                 <div class="adm-section-header">
@@ -2575,7 +2754,14 @@
     "revenueLabels":   {{ revenue_labels | tojson }},
     "pendingOrders":   {{ stats.pending_orders or 0 }},
     "deliveredOrders": {{ stats.delivered_orders or 0 }},
-    "totalOrders":     {{ stats.total_orders or 0 }}
+    "totalOrders":     {{ stats.total_orders or 0 }},
+    "statusCounts": {
+        "order placed": {{ orders | selectattr('status','equalto','order placed') | list | length if orders else 0 }},
+        "packing":      {{ orders | selectattr('status','equalto','packing')      | list | length if orders else 0 }},
+        "shipping":     {{ orders | selectattr('status','equalto','shipping')     | list | length if orders else 0 }},
+        "delivered":    {{ orders | selectattr('status','equalto','delivered')    | list | length if orders else 0 }},
+        "cancelled":    {{ orders | selectattr('status','equalto','cancelled')    | list | length if orders else 0 }}
+    }
 }
 </script>
 <script>
@@ -2583,11 +2769,13 @@
         var _d = JSON.parse(document.getElementById('dashboardData').textContent);
         window.revenueData     = _d.revenueData;
         window.revenueLabels   = _d.revenueLabels;
-        window.orderStatusData = {
-            'Order Placed': _d.pendingOrders,
-            'Delivered':    _d.deliveredOrders,
-            'Other':        Math.max(0, _d.totalOrders - _d.pendingOrders - _d.deliveredOrders)
-        };
+        window.orderStatusData = _d.statusCounts && Object.values(_d.statusCounts).some(v=>v>0)
+            ? _d.statusCounts
+            : {
+                'pending':   _d.pendingOrders,
+                'delivered': _d.deliveredOrders,
+                'other':     Math.max(0, _d.totalOrders - _d.pendingOrders - _d.deliveredOrders)
+            };
     })();
 </script>
 
@@ -2967,82 +3155,145 @@
         });
     };
 
-    /* ── Revenue bar chart (SVG) ────────────────────── */
-    function buildRevenueChart() {
-        const svg = document.getElementById('revenueChart');
+    /* ── Area / Line chart (Revenue Trend) ─────────── */
+    function buildAreaChart() {
+        const svg = document.getElementById('areaChart');
+        const wrap = document.getElementById('areaChartWrap');
+        const tooltip = document.getElementById('areaTooltip');
+        const ttDate = document.getElementById('tooltipDate');
+        const ttVal  = document.getElementById('tooltipVal');
         if (!svg) return;
 
         const raw    = revenueData;
         const labels = revenueLabels;
-        const max = Math.max(...raw, 1);
-        const W = 520, H = 140, pad = { t:10, b:28, l:10, r:10 };
+        const max    = Math.max(...raw, 1);
+        const W = 560, H = 160;
+        const pad = { t: 18, b: 30, l: 48, r: 16 };
         const cw = W - pad.l - pad.r;
         const ch = H - pad.t - pad.b;
-        const bw = Math.floor((cw / raw.length) * 0.6);
-        const gap = (cw - bw * raw.length) / (raw.length + 1);
+
+        const xOf = i => pad.l + (i / (raw.length - 1)) * cw;
+        const yOf = v => pad.t + ch - (v / max) * ch;
 
         let html = '';
-        // Grid lines
-        [0.25,0.5,0.75,1].forEach(pct => {
+
+        // Defs: gradient
+        html += `<defs>
+            <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#96b562" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#96b562" stop-opacity="0.02"/>
+            </linearGradient>
+        </defs>`;
+
+        // Grid lines + Y axis labels
+        [0, 0.25, 0.5, 0.75, 1].forEach(pct => {
             const y = pad.t + ch * (1 - pct);
-            html += `<line x1="${pad.l}" y1="${y}" x2="${W - pad.r}" y2="${y}" stroke="#252e25" stroke-width="1"/>`;
-        });
-
-        raw.forEach((val, i) => {
-            const barH = Math.max((val / max) * ch, 2);
-            const x = pad.l + gap * (i + 1) + bw * i;
-            const y = pad.t + ch - barH;
-            const isToday = i === raw.length - 1;
-
-            html += `<rect x="${x}" y="${y}" width="${bw}" height="${barH}"
-                fill="${isToday ? '#96b562' : 'rgba(150,181,98,0.25)'}"
-                class="adm-rev-bar"/>`;
-
-            // Label
-            const lx = x + bw / 2;
-            html += `<text x="${lx}" y="${H - 6}" text-anchor="middle"
-                font-family="'Share Tech Mono',monospace" font-size="9" fill="#3d523d">${labels[i]}</text>`;
-
-            // Value label on hover via title
-            if (val > 0) {
-                html += `<text x="${lx}" y="${y - 4}" text-anchor="middle"
-                    font-family="'Oswald',sans-serif" font-size="9" fill="${isToday ? '#96b562' : '#4a5e4a'}">
-                    ₱${(val/1000).toFixed(0)}k</text>`;
+            html += `<line x1="${pad.l}" y1="${y}" x2="${W - pad.r}" y2="${y}" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>`;
+            if (pct > 0) {
+                const val = max * pct;
+                const lbl = val >= 1000000 ? (val/1000000).toFixed(1)+'M' :
+                            val >= 1000    ? (val/1000).toFixed(0)+'K' : val.toFixed(0);
+                html += `<text x="${pad.l - 6}" y="${y + 3}" text-anchor="end"
+                    font-family="'Share Tech Mono',monospace" font-size="8" fill="rgba(100,120,100,0.5)">${lbl}</text>`;
             }
         });
 
-        // Line overlay
-        const points = raw.map((val, i) => {
-            const x = pad.l + gap * (i + 1) + bw * i + bw/2;
-            const y = pad.t + ch - (val/max)*ch;
-            return `${x},${y}`;
-        }).join(' ');
+        // Area fill
+        const areaPoints = raw.map((v, i) => `${xOf(i)},${yOf(v)}`).join(' ');
+        const areaPath = `M${xOf(0)},${yOf(raw[0])} ` +
+            raw.slice(1).map((v, i) => `L${xOf(i+1)},${yOf(v)}`).join(' ') +
+            ` L${xOf(raw.length-1)},${pad.t+ch} L${xOf(0)},${pad.t+ch} Z`;
+        html += `<path d="${areaPath}" fill="url(#areaGrad)"/>`;
 
-        if (raw.some(v => v > 0)) {
-            html += `<polyline points="${points}" fill="none" stroke="rgba(150,181,98,0.4)" stroke-width="1.5" stroke-linejoin="round"/>`;
-        }
+        // Line
+        const linePath = `M${xOf(0)},${yOf(raw[0])} ` +
+            raw.slice(1).map((v, i) => `L${xOf(i+1)},${yOf(v)}`).join(' ');
+        html += `<path d="${linePath}" fill="none" stroke="#96b562" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+
+        // Hover hit areas + dots
+        raw.forEach((val, i) => {
+            const x = xOf(i), y = yOf(val);
+            const isToday = i === raw.length - 1;
+
+            // X-axis label
+            html += `<text x="${x}" y="${H - 6}" text-anchor="middle"
+                font-family="'Share Tech Mono',monospace" font-size="9" fill="${isToday ? '#96b562' : 'rgba(80,100,80,0.6)'}">${labels[i]}</text>`;
+
+            // Dot
+            html += `<circle cx="${x}" cy="${y}" r="${isToday ? 4 : 3}"
+                fill="${isToday ? '#96b562' : '#1e2b1e'}" stroke="#96b562" stroke-width="${isToday ? 2 : 1.5}"
+                class="area-dot" data-idx="${i}" style="cursor:crosshair;"/>`;
+
+            // Invisible hit area
+            html += `<rect x="${x - 22}" y="${pad.t}" width="44" height="${ch + 4}"
+                fill="transparent" class="area-hit" data-idx="${i}" data-val="${val}" data-lbl="${labels[i]}"
+                style="cursor:crosshair;"/>`;
+        });
+
+        // Vertical hover line placeholder
+        html += `<line id="areaVLine" x1="0" y1="${pad.t}" x2="0" y2="${pad.t+ch}" stroke="rgba(150,181,98,0.25)" stroke-width="1" stroke-dasharray="3,3" opacity="0"/>`;
 
         svg.innerHTML = html;
+
+        // Hover interactivity
+        svg.querySelectorAll('.area-hit').forEach(el => {
+            el.addEventListener('mouseenter', function() {
+                const idx  = +this.dataset.idx;
+                const val  = +this.dataset.val;
+                const lbl  = this.dataset.lbl;
+                const x    = xOf(idx);
+                const rectW = wrap.offsetWidth;
+                const svgW  = W;
+                const scaledX = (x / svgW) * rectW;
+
+                // Tooltip
+                if (tooltip) {
+                    ttDate.textContent = lbl;
+                    ttVal.textContent  = '₱' + val.toLocaleString();
+                    tooltip.style.left  = Math.min(scaledX + 10, rectW - 110) + 'px';
+                    tooltip.style.top   = '10px';
+                    tooltip.classList.add('visible');
+                }
+                // Vertical line
+                const vl = svg.getElementById ? null : null;
+                const vLine = document.getElementById('areaVLine');
+                if (vLine) { vLine.setAttribute('x1', x); vLine.setAttribute('x2', x); vLine.setAttribute('opacity', '1'); }
+            });
+            el.addEventListener('mouseleave', function() {
+                if (tooltip) tooltip.classList.remove('visible');
+                const vLine = document.getElementById('areaVLine');
+                if (vLine) vLine.setAttribute('opacity', '0');
+            });
+        });
     }
 
-    /* ── Donut chart ────────────────────────────────── */
+    /* ── Donut chart (animated) ──────────────────────── */
     function buildDonutChart() {
         const svg    = document.getElementById('donutChart');
         const legend = document.getElementById('donutLegend');
         if (!svg || !legend) return;
 
-        const data = orderStatusData;
+        const data   = orderStatusData;
+        const colors = {
+            'order placed': '#4f7fc2',
+            'packing':      '#e8b84b',
+            'shipping':     '#9b59b6',
+            'delivered':    '#1abc9c',
+            'cancelled':    '#c0392b',
+        };
+        const fallbacks = ['#96b562','#5090c0','#c0922a','#c0392b','#9b59b6','#1abc9c','#e8b84b'];
 
-        const colors  = ['#96b562','#5090c0','#c0922a','#c0392b','#3d523d'];
-        const cx = 55, cy = 55, r = 40, ir = 26;
+        const cx = 65, cy = 65, r = 50, ir = 32;
         const total = Object.values(data).reduce((a,b) => a+b, 0) || 1;
 
         let html = '';
         let legendHtml = '';
         let angle = -Math.PI / 2;
+        let fi = 0;
 
-        Object.entries(data).forEach(([label, val], i) => {
+        Object.entries(data).forEach(([label, val]) => {
             if (val === 0) return;
+            const color = colors[label] || fallbacks[fi++ % fallbacks.length];
             const slice = (val / total) * 2 * Math.PI;
             const x1 = cx + r * Math.cos(angle);
             const y1 = cy + r * Math.sin(angle);
@@ -3053,32 +3304,33 @@
             const xi2 = cx + ir * Math.cos(angle + slice);
             const yi2 = cy + ir * Math.sin(angle + slice);
             const lg = slice > Math.PI ? 1 : 0;
-            const color = colors[i % colors.length];
+            const pct = Math.round(val / total * 100);
 
-            html += `<path d="M${xi1},${yi1} L${x1},${y1} A${r},${r} 0 ${lg},1 ${x2},${y2} L${xi2},${yi2} A${ir},${ir} 0 ${lg},0 ${xi1},${yi1} Z"
-                fill="${color}" opacity="0.85"/>`;
+            html += `<path d="M${xi1.toFixed(2)},${yi1.toFixed(2)} L${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${lg},1 ${x2.toFixed(2)},${y2.toFixed(2)} L${xi2.toFixed(2)},${yi2.toFixed(2)} A${ir},${ir} 0 ${lg},0 ${xi1.toFixed(2)},${yi1.toFixed(2)} Z"
+                fill="${color}" opacity="0.9" style="transition:opacity 0.15s;" onmouseenter="this.setAttribute('opacity','1')" onmouseleave="this.setAttribute('opacity','0.9')"/>`;
 
             legendHtml += `
                 <div class="adm-legend-item">
                     <div class="adm-legend-dot" style="background:${color}"></div>
                     <span class="adm-legend-label">${label}</span>
-                    <span class="adm-legend-val">${val}</span>
+                    <span class="adm-legend-val">${val}<span class="adm-legend-pct">${pct}%</span></span>
                 </div>`;
 
             angle += slice;
         });
 
-        // Center text
-        html += `<text x="${cx}" y="${cy - 5}" text-anchor="middle"
-            font-family="'Oswald',sans-serif" font-size="16" font-weight="700" fill="#d8e4c4">${total}</text>
-            <text x="${cx}" y="${cy + 9}" text-anchor="middle"
-            font-family="'Share Tech Mono',monospace" font-size="7" fill="#3d523d">TOTAL</text>`;
+        // Inner circle + center label
+        html += `<circle cx="${cx}" cy="${cy}" r="${ir - 1}" fill="rgba(14,18,14,0.7)"/>`;
+        html += `<text x="${cx}" y="${cy - 6}" text-anchor="middle"
+            font-family="'Oswald',sans-serif" font-size="18" font-weight="700" fill="#d8e4c4">${total}</text>
+            <text x="${cx}" y="${cy + 7}" text-anchor="middle"
+            font-family="'Share Tech Mono',monospace" font-size="7" fill="rgba(100,120,100,0.7)" letter-spacing="2">ORDERS</text>`;
 
         svg.innerHTML = html;
         legend.innerHTML = legendHtml;
     }
 
-    /* ── Mini rev chart ─────────────────────────────── */
+    /* ── Mini rev bars ───────────────────────────────── */
     function buildMiniRevChart() {
         const wrap   = document.getElementById('miniRevChart');
         const labels = document.getElementById('miniRevLabels');
@@ -3086,12 +3338,14 @@
 
         const raw  = revenueData;
         const lbls = revenueLabels;
-        const max    = Math.max(...raw, 1);
+        const max  = Math.max(...raw, 1);
 
         wrap.innerHTML = raw.map((v, i) => {
             const pct = Math.max((v/max)*100, 4);
             const isToday = i === raw.length - 1;
-            return `<div class="adm-rev-bar ${isToday ? 'today' : ''}" style="height:${pct}%" title="₱${v.toLocaleString()}"></div>`;
+            return `<div class="adm-rev-bar ${isToday ? 'today' : ''}"
+                style="height:${pct}%;border-radius:2px 2px 0 0;" title="₱${v.toLocaleString()}"
+                data-php-val="${v}"></div>`;
         }).join('');
 
         if (labels) {
@@ -3099,9 +3353,35 @@
                 `<span style="font-family:var(--font-mono);font-size:8px;color:var(--mil-muted)">${l}</span>`
             ).join('');
         }
+
+        // Fulfillment rate bars
+        const fb = document.getElementById('fulfillmentBars');
+        if (fb && typeof orderStatusData !== 'undefined') {
+            const statuses = [
+                { key: 'order placed', label: 'Placed',   color: '#4f7fc2' },
+                { key: 'packing',      label: 'Packing',  color: '#e8b84b' },
+                { key: 'shipping',     label: 'Shipping', color: '#9b59b6' },
+                { key: 'delivered',    label: 'Delivered',color: '#1abc9c' },
+                { key: 'cancelled',    label: 'Cancelled',color: '#c0392b' },
+            ];
+            const total = Object.values(orderStatusData).reduce((a,b)=>a+b,0) || 1;
+            fb.innerHTML = statuses.map(s => {
+                const val = orderStatusData[s.key] || 0;
+                const pct = Math.round(val/total*100);
+                return `<div class="adm-sparkline-item" style="margin-bottom:8px;">
+                    <div class="adm-sparkline-label">
+                        <span class="adm-sparkline-name" style="color:${s.color};">${s.label}</span>
+                        <span class="adm-sparkline-val">${val} <span style="color:var(--mil-muted);font-size:8px;">(${pct}%)</span></span>
+                    </div>
+                    <div class="adm-bar-track">
+                        <div style="position:absolute;top:0;left:0;height:100%;width:${pct}%;background:${s.color};opacity:0.7;transition:width 1s ease;"></div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
     }
 
-    buildRevenueChart();
+    buildAreaChart();
     buildDonutChart();
     buildMiniRevChart();
 
@@ -3947,67 +4227,18 @@
 
     /* ── Rebuild revenue bar chart with given currency ─────────────── */
     function rebuildRevenueChart(curCode) {
-        var svg = document.getElementById('revenueChart');
-        if (!svg || !window.revenueData || !window.revenueLabels) return;
-
-        var info   = CURRENCIES[curCode];
-        var raw    = window.revenueData;    // raw PHP values from server
-        var labels = window.revenueLabels;
-        var max    = Math.max.apply(null, raw.concat([1]));
-        var W = 520, H = 140, pad = { t: 10, b: 28, l: 10, r: 10 };
-        var cw = W - pad.l - pad.r;
-        var ch = H - pad.t - pad.b;
-        var bw = Math.floor((cw / raw.length) * 0.6);
-        var gap = (cw - bw * raw.length) / (raw.length + 1);
-
-        var html = '';
-        [0.25, 0.5, 0.75, 1].forEach(function (pct) {
-            var y = pad.t + ch * (1 - pct);
-            html += '<line x1="' + pad.l + '" y1="' + y + '" x2="' + (W - pad.r) +
-                    '" y2="' + y + '" stroke="#252e25" stroke-width="1"/>';
-        });
-
-        raw.forEach(function (val, i) {
-            var barH     = Math.max((val / max) * ch, 2);
-            var x        = pad.l + gap * (i + 1) + bw * i;
-            var y        = pad.t + ch - barH;
-            var isToday  = (i === raw.length - 1);
-            var converted = val * info.rate;
-            var kLabel   = '';
-            if (val > 0) {
-                kLabel = converted >= 1000
-                    ? info.symbol + (converted / 1000).toFixed(0) + 'k'
-                    : info.symbol + Math.round(converted);
-            }
-
-            html += '<rect x="' + x + '" y="' + y + '" width="' + bw + '" height="' + barH + '"' +
-                    ' fill="' + (isToday ? '#96b562' : 'rgba(150,181,98,0.25)') + '"' +
-                    ' class="adm-rev-bar"/>';
-
-            var lx = x + bw / 2;
-            html += '<text x="' + lx + '" y="' + (H - 6) + '" text-anchor="middle"' +
-                    ' font-family="\'Share Tech Mono\',monospace" font-size="9" fill="#3d523d">' +
-                    labels[i] + '</text>';
-
-            if (val > 0) {
-                html += '<text x="' + lx + '" y="' + (y - 4) + '" text-anchor="middle"' +
-                        ' font-family="\'Oswald\',sans-serif" font-size="9"' +
-                        ' fill="' + (isToday ? '#96b562' : '#4a5e4a') + '">' + kLabel + '</text>';
+        // Area chart stays in PHP; just update mini bar tooltips on currency switch
+        var info = CURRENCIES[curCode];
+        if (!info || !window.revenueData) return;
+        document.querySelectorAll('#miniRevChart .adm-rev-bar[data-php-val]').forEach(function(bar) {
+            var phpVal = parseFloat(bar.dataset.phpVal);
+            if (!isNaN(phpVal)) {
+                var cv = phpVal * info.rate;
+                bar.title = cv >= 1000000 ? info.symbol + (cv/1000000).toFixed(1) + 'M'
+                          : cv >= 1000    ? info.symbol + (cv/1000).toFixed(0) + 'K'
+                          : info.symbol + Math.round(cv);
             }
         });
-
-        var points = raw.map(function (val, i) {
-            var x = pad.l + gap * (i + 1) + bw * i + bw / 2;
-            var y = pad.t + ch - (val / max) * ch;
-            return x + ',' + y;
-        }).join(' ');
-
-        if (raw.some(function (v) { return v > 0; })) {
-            html += '<polyline points="' + points + '" fill="none"' +
-                    ' stroke="rgba(150,181,98,0.4)" stroke-width="1.5" stroke-linejoin="round"/>';
-        }
-
-        svg.innerHTML = html;
     }
 
     /* ── Init ──────────────────────────────────────────────────────── */
