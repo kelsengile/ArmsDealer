@@ -162,7 +162,34 @@ def about():
 
 @main_bp.route('/contacts')
 def contacts():
-    return render_template('contacts.html')
+    db = get_db()
+    past_inquiries = []
+    if session.get('user_id'):
+        try:
+            # Auto-migrate new columns if needed (no-op if already present)
+            existing_cols = {row[1] for row in db.execute(
+                "PRAGMA table_info(inquiries)").fetchall()}
+            for col, defn in [('admin_reply', 'TEXT'), ('replied_at', 'TEXT'), ('order_number', 'TEXT')]:
+                if col not in existing_cols:
+                    db.execute(
+                        f"ALTER TABLE inquiries ADD COLUMN {col} {defn}")
+            db.commit()
+
+            user_row = db.execute(
+                'SELECT email FROM users WHERE id = ?', (session['user_id'],)
+            ).fetchone()
+            if user_row:
+                rows = db.execute(
+                    '''SELECT id, name, subject, message, order_number,
+                              status, admin_reply, replied_at, created_at
+                       FROM inquiries WHERE email = ?
+                       ORDER BY created_at DESC LIMIT 20''',
+                    (user_row['email'],)
+                ).fetchall()
+                past_inquiries = [dict(r) for r in rows]
+        except Exception:
+            pass  # Never crash the page due to inquiry fetch
+    return render_template('contacts.html', past_inquiries=past_inquiries)
 
 
 @main_bp.route('/settings')

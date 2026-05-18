@@ -919,9 +919,16 @@ def admin_reply_inquiry(inquiry_id):
     except Exception as exc:
         return jsonify(ok=False, error=f'Email send failed: {exc}'), 500
 
-    # ── Mark inquiry as resolved ──────────────────────────────────────────
+    # ── Persist reply + mark resolved ─────────────────────────────────────
+    _ensure_inquiry_columns(db)
     db.execute(
-        "UPDATE inquiries SET status = 'resolved' WHERE id = ?", (inquiry_id,))
+        """UPDATE inquiries
+           SET status = 'resolved',
+               admin_reply = ?,
+               replied_at  = datetime('now')
+           WHERE id = ?""",
+        (reply_message, inquiry_id)
+    )
     db.commit()
     return jsonify(ok=True, sent_to=inq['email'])
 
@@ -1403,6 +1410,112 @@ def settings_support():
     )
     db.commit()
     return jsonify({'ok': True})
+
+
+# ─────────────────────────────────────────
+# CONTACTS PAGE — PUBLIC INQUIRY SUBMISSION
+# POST /api/contacts/inquiry
+# Works for guests (name+email required) and logged-in users (pre-filled).
+# Also auto-migrates the admin_reply / replied_at / order_number columns if
+# they don't exist yet, so no manual DB migration step is needed.
+# ─────────────────────────────────────────
+
+@api_bp.route('/contacts/inquiry', methods=['POST'])
+def contacts_submit_inquiry():
+    """Submit an inquiry from the contacts page (guest or logged-in)."""
+    db = get_db()
+
+    # ── Auto-migrate: add new columns if this is the first run ───────────
+    _ensure_inquiry_columns(db)
+
+    data = request.get_json(silent=True) or {}
+
+    # ── Resolve name / email from session or request body ────────────────
+    if session.get('user_id'):
+        user_row = db.execute(
+            'SELECT username, email FROM users WHERE id = ?',
+            (session['user_id'],)
+        ).fetchone()
+        name = (user_row['username'] if user_row else None) or (
+            data.get('name') or '').strip()
+        email = (user_row['email'] if user_row else None) or (
+            data.get('email') or '').strip()
+    else:
+        name = (data.get('name') or '').strip()
+        email = (data.get('email') or '').strip()
+
+    subject = (data.get('subject') or '').strip()
+    message = (data.get('message') or '').strip()
+    order_number = (data.get('order_number') or '').strip() or None
+
+    # ── Validate ──────────────────────────────────────────────────────────
+    if not name:
+        return jsonify(ok=False, error='Full name is required'), 400
+    if not email or '@' not in email:
+        return jsonify(ok=False, error='A valid email address is required'), 400
+    if not subject:
+        return jsonify(ok=False, error='Please select a subject / department'), 400
+    if not message or len(message) < 10:
+        return jsonify(ok=False, error='Message must be at least 10 characters'), 400
+
+    # ── Rate-limit: max 3 open (non-resolved) inquiries per email ────────
+    open_count = db.execute(
+        "SELECT COUNT(*) FROM inquiries WHERE email = ? AND status != 'resolved'",
+        (email,)
+    ).fetchone()[0]
+    if open_count >= 5:
+        return jsonify(ok=False,
+                       error='You already have 5 open inquiries. '
+                             'Please wait for them to be resolved before submitting more.'), 429
+
+    db.execute(
+        '''INSERT INTO inquiries (name, email, subject, message, order_number, status)
+           VALUES (?, ?, ?, ?, ?, 'new')''',
+        (name, email, subject, message, order_number)
+    )
+    db.commit()
+    return jsonify(ok=True, message='Your inquiry has been received. We will respond within 24 hours.')
+
+
+@api_bp.route('/contacts/inquiries', methods=['GET'])
+def contacts_list_inquiries():
+    """Return the current user's own inquiries (newest first) as JSON."""
+    if not session.get('user_id'):
+        return jsonify(ok=False, error='Not logged in'), 401
+
+    db = get_db()
+    _ensure_inquiry_columns(db)
+
+    user_row = db.execute(
+        'SELECT email FROM users WHERE id = ?', (session['user_id'],)
+    ).fetchone()
+    if not user_row:
+        return jsonify(ok=False, error='User not found'), 404
+
+    rows = db.execute(
+        '''SELECT id, name, subject, message, order_number,
+                  status, admin_reply, replied_at, created_at
+           FROM inquiries WHERE email = ?
+           ORDER BY created_at DESC''',
+        (user_row['email'],)
+    ).fetchall()
+    return jsonify(ok=True, inquiries=[dict(r) for r in rows])
+
+
+def _ensure_inquiry_columns(db):
+    """Add admin_reply, replied_at, order_number to inquiries if missing (idempotent)."""
+    try:
+        existing = {row[1] for row in db.execute(
+            "PRAGMA table_info(inquiries)").fetchall()}
+        if 'admin_reply' not in existing:
+            db.execute("ALTER TABLE inquiries ADD COLUMN admin_reply TEXT")
+        if 'replied_at' not in existing:
+            db.execute("ALTER TABLE inquiries ADD COLUMN replied_at TEXT")
+        if 'order_number' not in existing:
+            db.execute("ALTER TABLE inquiries ADD COLUMN order_number TEXT")
+        db.commit()
+    except Exception:
+        pass  # Already migrated or read-only — silently continue
 
 
 # ─────────────────────────────────────────
