@@ -1,8 +1,315 @@
 {% extends 'partials/base.html' %}
 {% block title %}<title data-translate="legal"></title>{% endblock %}
 {% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/pagestyles/legalstyles.css') }}">{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pagestyles/legalstyles.css') }}">
+{% endblock %}
 {% block main %}
-<main>
+<main class="legal-container">
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- PAGE HERO                                                    -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="legal-hero">
+        <div class="legal-hero-grid-overlay" aria-hidden="true"></div>
+        <div class="legal-hero-content">
+            <div class="legal-hero-tag">// LEGAL & COMPLIANCE DOCUMENTATION</div>
+            <h1 class="legal-hero-title">LEGAL<br><span>& COMPLIANCE</span></h1>
+            <p class="legal-hero-sub">Last updated: May 2026 · FFL License #12-AB-12345 · All rights reserved.</p>
+            <div class="legal-hero-nav">
+                <a href="#terms" class="legal-pill active">Terms of Service</a>
+                <a href="#privacy" class="legal-pill">Privacy Policy</a>
+                <a href="#compliance" class="legal-pill">Compliance</a>
+                <a href="#disclaimer" class="legal-pill">Disclaimer</a>
+                <a href="#cookies" class="legal-pill">Cookie Policy</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- TERMS OF SERVICE                                             -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="legal-section" id="terms">
+        <div class="legal-section-inner">
+            <div class="legal-section-tag">[ DOCUMENT 01 ]</div>
+            <h2 class="legal-section-title">Terms of Service</h2>
+            <p class="legal-effective">Effective Date: January 1, 2025 · Last Revised: May 1, 2026</p>
+
+            <div class="legal-doc">
+                <div class="legal-clause">
+                    <h3>1. Acceptance of Terms</h3>
+                    <p>By accessing or using the ArmsDealer platform ("Platform"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree, you may not use the Platform. Use of the Platform constitutes your unconditional acceptance of these Terms and all applicable laws and regulations governing firearms commerce.</p>
+                </div>
+                <div class="legal-clause">
+                    <h3>2. Eligibility</h3>
+                    <p>You must be at least 21 years of age to purchase handguns, and at least 18 years of age to purchase long guns and non-firearm items. You must be legally eligible to possess firearms under federal, state, and local law. ArmsDealer reserves the right to verify eligibility at any point in the transaction process and to refuse or cancel orders that do not meet legal requirements.</p>
+                </div>
+                <div class="legal-clause">
+                    <h3>3. Prohibited Uses</h3>
+                    <p>You agree not to: (a) use the Platform for any unlawful purpose or in violation of any federal, state, or local firearms laws; (b) attempt to purchase firearms on behalf of a prohibited person (straw purchase); (c) provide false information during the ordering or background check process; (d) use the Platform to circumvent any applicable regulatory requirement; (e) scrape, reverse-engineer, or otherwise exploit the Platform's technical infrastructure without written consent.</p>
+                </div>
+                <div class="legal-clause">
+                    <h3>4. Orders, Pricing & Payment</h3>
+                    <p>All prices are listed in the selected currency and are subject to change without notice. ArmsDealer reserves the right to cancel any order due to pricing errors, stock discrepancies, or compliance issues. Payment is processed at time of order placement. Orders requiring FFL transfer are not complete until the transfer is executed at a licensed dealer in the buyer's jurisdiction.</p>
+                </div>
+                <div class="legal-clause">
+                    <h3>5. Intellectual Property</h3>
+                    <p>All content on the Platform — including product images, descriptions, logos, interface design, and source code — is the property of ArmsDealer or its licensors and is protected by applicable intellectual property law. Unauthorized reproduction or commercial use is prohibited. The ArmsDealer source code is available at <a href="https://github.com/kelsengile/ArmsDealer" target="_blank">github.com/kelsengile/ArmsDealer</a> under its respective license terms.</p>
+                </div>
+                <div class="legal-clause">
+                    <h3>6. Limitation of Liability</h3>
+                    <p>ArmsDealer shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the Platform or any product purchased through it. Our total liability to you shall not exceed the amount paid for the specific transaction giving rise to the claim. ArmsDealer is not responsible for the misuse of any legally purchased firearm after the point of transfer.</p>
+                </div>
+                <div class="legal-clause">
+                    <h3>7. Governing Law</h3>
+                    <p>These Terms are governed by the federal laws of the United States of America and, where applicable, the laws of the State of incorporation. Any disputes shall be resolved through binding arbitration in accordance with the rules of the American Arbitration Association, except where prohibited by law.</p>
+                </div>
+                <div class="legal-clause">
+                    <h3>8. Changes to Terms</h3>
+                    <p>ArmsDealer reserves the right to update these Terms at any time. Continued use of the Platform following any update constitutes acceptance of the revised Terms. We will provide notice of material changes via email or a prominent banner on the Platform.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- PRIVACY POLICY                                               -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="legal-section legal-section-alt" id="privacy">
+        <div class="legal-section-inner">
+            <div class="legal-section-tag">[ DOCUMENT 02 ]</div>
+            <h2 class="legal-section-title">Privacy Policy</h2>
+            <p class="legal-effective">Effective Date: January 1, 2025 · Last Revised: May 1, 2026</p>
+
+            <div class="legal-doc">
+                <div class="legal-clause">
+                    <h3>1. Information We Collect</h3>
+                    <p>We collect: (a) <strong>Account Information</strong> — name, email address, date of birth, government-issued ID data; (b) <strong>Transaction Data</strong> — order history, payment method tokens (never raw card numbers), FFL transfer records; (c) <strong>Technical Data</strong> — IP address, browser type, device identifiers, session data; (d) <strong>Regulatory Data</strong> — as required by ATF Form 4473 and applicable export control regulations.</p>
+                </div>
+                <div class="legal-clause">
+                    <h3>2. How We Use Your Information</h3>
+                    <p>Your data is used to: fulfill and manage your orders; verify legal eligibility for purchase; comply with federal and state reporting requirements; improve platform performance and security; and communicate order status and policy updates. We do not use your data for advertising targeting or sell it to data brokers.</p>
+                </div>
+                <div class="legal-clause">
+                    <h3>3. Data Sharing</h3>
+                    <p>We share data only with: (a) licensed FFL dealers completing your transfer; (b) payment processors under PCI-DSS compliance; (c) shipping carriers for delivery; (d) federal and state law enforcement or regulatory bodies where legally required. No data is shared with advertisers, social media platforms, or other commercial third parties.</p>
+                </div>
+                <div class="legal-clause">
+                    <h3>4. Data Security</h3>
+                    <p>All personal and financial data is encrypted at rest using AES-256 and in transit via TLS 1.3. Access is restricted to authorized personnel on a need-to-know basis. We conduct annual third-party security audits and penetration testing. In the event of a breach, affected users will be notified within 72 hours as required by applicable law.</p>
+                </div>
+                <div class="legal-clause">
+                    <h3>5. Your Rights</h3>
+                    <p>Depending on your jurisdiction, you may have the right to access, correct, or delete your personal data; to data portability; and to opt out of non-essential data processing. To exercise these rights, contact <a href="mailto:privacy@armsdealer.com">privacy@armsdealer.com</a>. Note: certain data retained for regulatory compliance cannot be deleted until the legally mandated retention period expires.</p>
+                </div>
+                <div class="legal-clause">
+                    <h3>6. Data Retention</h3>
+                    <p>Account data is retained for the duration of your account and for 7 years thereafter, as required by ATF record-keeping regulations. Transaction records are retained for a minimum of 20 years per 27 CFR Part 478. You may request deletion of non-regulatory data at any time.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- COMPLIANCE                                                   -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="legal-section" id="compliance">
+        <div class="legal-section-inner">
+            <div class="legal-section-tag">[ DOCUMENT 03 ]</div>
+            <h2 class="legal-section-title">Regulatory Compliance</h2>
+            <p class="legal-section-intro">ArmsDealer operates in full compliance with all applicable federal and state firearms regulations. Below is a summary of our compliance framework.</p>
+            <div class="legal-compliance-grid">
+                <div class="legal-compliance-card">
+                    <div class="legal-compliance-badge">ATF</div>
+                    <h4>Federal Firearms License</h4>
+                    <p>ArmsDealer holds a valid Type 01 FFL (Dealer in Firearms) issued by the Bureau of Alcohol, Tobacco, Firearms and Explosives. License Number: 12-AB-12345. All transactions comply with 18 U.S.C. Chapter 44 and 27 CFR Part 478.</p>
+                </div>
+                <div class="legal-compliance-card">
+                    <div class="legal-compliance-badge">NICS</div>
+                    <h4>Background Checks</h4>
+                    <p>All qualifying purchases are subject to a National Instant Criminal Background Check System (NICS) check initiated at the point of transfer. ArmsDealer does not complete any transfer to a buyer whose NICS check returns a denial.</p>
+                </div>
+                <div class="legal-compliance-card">
+                    <div class="legal-compliance-badge">EAR / ITAR</div>
+                    <h4>Export Controls</h4>
+                    <p>International orders are processed in compliance with the Export Administration Regulations (EAR) and, where applicable, the International Traffic in Arms Regulations (ITAR). All exports are subject to Department of Commerce and/or State licensing where required.</p>
+                </div>
+                <div class="legal-compliance-card">
+                    <div class="legal-compliance-badge">STATE</div>
+                    <h4>State-Level Restrictions</h4>
+                    <p>We actively maintain a database of state-specific restrictions including assault weapons bans, magazine capacity limits, suppressor prohibitions, and waiting period requirements. Products unavailable in your state are hidden at checkout. Buyers are still responsible for verifying local compliance.</p>
+                </div>
+                <div class="legal-compliance-card">
+                    <div class="legal-compliance-badge">NFA</div>
+                    <h4>National Firearms Act Items</h4>
+                    <p>NFA-regulated items (suppressors, short-barreled rifles, machine guns, destructive devices, AOWs) are sold in compliance with 26 U.S.C. § 5801 et seq. Buyers must submit ATF Form 4 and the applicable tax stamp fee. ArmsDealer holds the item until ATF approval is received.</p>
+                </div>
+                <div class="legal-compliance-card">
+                    <div class="legal-compliance-badge">AML</div>
+                    <h4>Anti-Money Laundering</h4>
+                    <p>ArmsDealer maintains an AML compliance program consistent with FinCEN guidance for firearms dealers. Transactions above reporting thresholds trigger CTR filings. Suspicious activity is reported via SAR as required.</p>
+                </div>
+            </div>
+            <div class="legal-compliance-contact">
+                <p>Compliance inquiries: <a href="mailto:compliance@armsdealer.com">compliance@armsdealer.com</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- DISCLAIMER                                                   -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="legal-section legal-section-alt" id="disclaimer">
+        <div class="legal-section-inner">
+            <div class="legal-section-tag">[ DOCUMENT 04 ]</div>
+            <h2 class="legal-section-title">Disclaimer</h2>
+            <p class="legal-effective">Last Revised: May 1, 2026</p>
+            <div class="legal-doc">
+                <div class="legal-clause">
+                    <h3>Platform Disclaimer</h3>
+                    <p>The information provided on the ArmsDealer platform is for general informational and commercial purposes only. While we make every effort to ensure accuracy, product specifications, pricing, and availability are subject to change without notice. ArmsDealer makes no warranties, express or implied, regarding the completeness or accuracy of any product description.</p>
+                </div>
+                <div class="legal-clause">
+                    <h3>Legal Advice Disclaimer</h3>
+                    <p>Nothing on this platform constitutes legal advice. Information about firearms laws, regulations, and compliance requirements is provided as a general reference only. Laws vary by jurisdiction and are subject to change. You are solely responsible for understanding and complying with all laws applicable to your purchase and use of firearms in your jurisdiction. Consult a licensed attorney for legal advice specific to your situation.</p>
+                </div>
+                <div class="legal-clause">
+                    <h3>Product Use Disclaimer</h3>
+                    <p>ArmsDealer sells firearms and related products exclusively for lawful purposes including sport shooting, hunting, collecting, and self-defense where permitted by law. We condemn and do not condone any illegal or harmful use of products sold through our platform. ArmsDealer assumes no liability for the misuse of any legally purchased product after the point of lawful transfer.</p>
+                </div>
+                <div class="legal-clause">
+                    <h3>Third-Party Content</h3>
+                    <p>The Platform may contain links to third-party websites or reference third-party products and brands. ArmsDealer does not endorse and is not responsible for the content, accuracy, or practices of any third-party resource. Manufacturer warranties are the responsibility of the respective manufacturers.</p>
+                </div>
+                <div class="legal-clause">
+                    <h3>Fictional Platform Notice</h3>
+                    <p>ArmsDealer is a portfolio/educational project developed by <a href="https://github.com/kelsengile" target="_blank">@kelsengile</a>. The source code is available at <a href="https://github.com/kelsengile/ArmsDealer" target="_blank">github.com/kelsengile/ArmsDealer</a>. While designed to simulate a realistic e-commerce firearms platform, no actual firearms transactions occur through this project. All data, orders, products, and user accounts are simulated.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- COOKIE POLICY                                                -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="legal-section" id="cookies">
+        <div class="legal-section-inner">
+            <div class="legal-section-tag">[ DOCUMENT 05 ]</div>
+            <h2 class="legal-section-title">Cookie Policy</h2>
+            <p class="legal-effective">Last Revised: May 1, 2026</p>
+            <div class="legal-cookie-grid">
+                <div class="legal-cookie-card legal-cookie-essential">
+                    <div class="legal-cookie-badge">ESSENTIAL</div>
+                    <h4>Essential Cookies</h4>
+                    <p>Required for the Platform to function. These include session management, CSRF protection, authentication tokens, and cart persistence. Cannot be disabled.</p>
+                    <div class="legal-cookie-examples">
+                        <span>session_id</span>
+                        <span>csrf_token</span>
+                        <span>auth_token</span>
+                    </div>
+                </div>
+                <div class="legal-cookie-card">
+                    <div class="legal-cookie-badge">PREFERENCES</div>
+                    <h4>Preference Cookies</h4>
+                    <p>Store your display preferences: language selection, currency, appearance settings, and UI customizations. Stored in <code>localStorage</code> under the key <code>armsdealer_appearance</code>.</p>
+                    <div class="legal-cookie-examples">
+                        <span>armsdealer_appearance</span>
+                        <span>language</span>
+                        <span>currency</span>
+                    </div>
+                </div>
+                <div class="legal-cookie-card">
+                    <div class="legal-cookie-badge">ANALYTICS</div>
+                    <h4>Analytics Cookies</h4>
+                    <p>Used to understand how users interact with the Platform — which pages are visited, error rates, and performance metrics. Data is aggregated and anonymized. No personally identifiable information is collected via analytics.</p>
+                    <div class="legal-cookie-examples">
+                        <span>_ga</span>
+                        <span>_gid</span>
+                        <span>perf_session</span>
+                    </div>
+                </div>
+                <div class="legal-cookie-card">
+                    <div class="legal-cookie-badge">NO ADVERTISING</div>
+                    <h4>No Advertising Cookies</h4>
+                    <p>ArmsDealer does not use advertising cookies, tracking pixels, or retargeting scripts. We do not share your browsing data with advertising networks. Our platform is fully ad-free.</p>
+                </div>
+            </div>
+            <div class="legal-cookie-manage">
+                <h4>Managing Cookies</h4>
+                <p>You can manage cookie preferences in your browser settings. Disabling essential cookies will impair Platform functionality. Preference cookies can be cleared through the ArmsDealer Settings panel at any time. To opt out of analytics, use your browser's Do Not Track setting or contact <a href="mailto:privacy@armsdealer.com">privacy@armsdealer.com</a>.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- FOOTER                                                       -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h4 class="footer-title" data-translate="homepagefootertitle1"></h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('main.homepage') }}" data-translate="homepagefooterlinkshome"></a></li>
+                        <li><a href="{{ url_for('main.products') }}" data-translate="homepagefooterlinksproducts"></a></li>
+                        <li><a href="{{ url_for('main.services') }}" data-translate="homepagefooterlinksservices"></a></li>
+                        <li><a href="{{ url_for('main.homepage') }}" data-translate="homepagefooterlinksaccount"></a></li>
+                        <li><a href="{{ url_for('main.settings') }}" data-translate="homepagefooterlinkssettings"></a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-title" data-translate="homepagefootertitle2"></h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('main.contacts') }}#contact-us" data-translate="homepagefooterlinkscontactus"></a></li>
+                        <li><a href="{{ url_for('main.contacts') }}#faq" data-translate="homepagefooterlinksfaq"></a></li>
+                        <li><a href="{{ url_for('main.contacts') }}#shipping" data-translate="homepagefooterlinksshipping"></a></li>
+                        <li><a href="{{ url_for('main.contacts') }}#returns" data-translate="homepagefooterlinksreturns"></a></li>
+                        <li><a href="{{ url_for('main.contacts') }}#warranty" data-translate="homepagefooterlinkswarranty"></a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-title" data-translate="homepagefootertitle3"></h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('main.about') }}#about-us" data-translate="homepagefooterlinksaboutus"></a></li>
+                        <li><a href="{{ url_for('main.about') }}#our-story" data-translate="homepagefooterlinksourstory"></a></li>
+                        <li><a href="{{ url_for('main.about') }}#blog" data-translate="homepagefooterlinksblog"></a></li>
+                        <li><a href="{{ url_for('main.about') }}#careers" data-translate="homepagefooterlinkscarreer"></a></li>
+                        <li><a href="{{ url_for('main.about') }}#partnership" data-translate="homepagefooterlinkspartnership"></a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-title" data-translate="homepagefootertitle4"></h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('main.legal') }}#terms" data-translate="homepagefooterlinksterms"></a></li>
+                        <li><a href="{{ url_for('main.legal') }}#privacy" data-translate="homepagefooterlinkspolicy"></a></li>
+                        <li><a href="{{ url_for('main.legal') }}#compliance" data-translate="homepagefooterlinkscompliance"></a></li>
+                        <li><a href="{{ url_for('main.legal') }}#disclaimer" data-translate="homepagefooterlinksdisclaimer"></a></li>
+                        <li><a href="{{ url_for('main.legal') }}#cookies" data-translate="homepagefooterlinkscookies"></a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-title" data-translate="homepagefootertitle5"></h4>
+                    <div class="footer-contact">
+                        <div class="footer-contact-item"><a href="tel:+676666964206" style="color:#b0bdb0;text-decoration:none;">+67 (666) 696-4206</a></div>
+                        <div class="footer-contact-item"><a href="mailto:support@armsdealer.com" style="color:#b0bdb0;text-decoration:none;">support@armsdealer.com</a></div>
+                        <div class="footer-contact-item"><span style="color:#b0bdb0;">420 Wartorn St, Blaze City, ST 6967420</span></div>
+                    </div>
+                    <div class="footer-socials">
+                        <a href="https://github.com/kelsengile" class="footer-social-link" title="GitHub" target="_blank">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+                        </a>
+                        <a href="https://github.com/kelsengile/ArmsDealer" class="footer-social-link" title="Repo" target="_blank">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M9 21V9"/></svg>
+                        </a>
+                        <a href="https://github.com/kelsengile" class="footer-social-link" title="X/Twitter" target="_blank">𝕏</a>
+                        <a href="https://github.com/kelsengile" class="footer-social-link" title="Facebook" target="_blank">f</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-divider">
+                <p class="footer-copyright">© 2025 ArmsDealer. All rights reserved. Licensed and regulated by federal authorities. | FFL Dealer License: 12-AB-12345</p>
+            </div>
+        </div>
+    </footer>
+
 </main>
 {% endblock %}

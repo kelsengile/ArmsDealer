@@ -1,8 +1,304 @@
 {% extends 'partials/base.html' %}
 {% block title %}<title data-translate="about"></title>{% endblock %}
 {% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/pagestyles/aboutstyles.css') }}">{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pagestyles/aboutstyles.css') }}">
+{% endblock %}
 {% block main %}
-<main>
+<main class="about-container">
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- PAGE HERO                                                    -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="about-hero" id="about-us">
+        <div class="about-hero-grid-overlay" aria-hidden="true"></div>
+        <div class="about-hero-content">
+            <div class="about-hero-tag">// CLASSIFIED: COMPANY DOSSIER</div>
+            <h1 class="about-hero-title">ABOUT<br><span>ARMSDEALER</span></h1>
+            <p class="about-hero-sub">Est. 2025 · Licensed & Regulated · Federal Firearms Licensee #12-AB-12345</p>
+            <div class="about-hero-nav">
+                <a href="#about-us" class="about-pill active">About Us</a>
+                <a href="#our-story" class="about-pill">Our Story</a>
+                <a href="#blog" class="about-pill">Blog</a>
+                <a href="#careers" class="about-pill">Careers</a>
+                <a href="#partnership" class="about-pill">Partnership</a>
+            </div>
+        </div>
+        <div class="about-hero-stat-bar">
+            <div class="about-stat"><span class="about-stat-num">12K+</span><span class="about-stat-label">Verified Buyers</span></div>
+            <div class="about-stat-divider"></div>
+            <div class="about-stat"><span class="about-stat-num">3,400+</span><span class="about-stat-label">SKUs In-Stock</span></div>
+            <div class="about-stat-divider"></div>
+            <div class="about-stat"><span class="about-stat-num">48</span><span class="about-stat-label">Countries Served</span></div>
+            <div class="about-stat-divider"></div>
+            <div class="about-stat"><span class="about-stat-num">99.1%</span><span class="about-stat-label">Compliance Rate</span></div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- ABOUT US                                                     -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="about-section" id="about-us-content">
+        <div class="about-section-inner about-two-col">
+            <div class="about-text-block">
+                <div class="about-section-tag">[ SECTION 01 ]</div>
+                <h2 class="about-section-title">Who We Are</h2>
+                <p>ArmsDealer is a federally licensed firearms and tactical equipment marketplace built for professionals, enthusiasts, and collectors who demand integrity and precision at every step of the transaction.</p>
+                <p>We operate as a fully regulated FFL dealer, maintaining strict compliance with all applicable federal, state, and local laws. Every product listed on our platform undergoes verification before it ever reaches a buyer's hands.</p>
+                <p>Our digital storefront bridges the gap between traditional gun-shop trust and modern e-commerce convenience — giving qualified buyers access to a verified, curated inventory without sacrificing safety or accountability.</p>
+            </div>
+            <div class="about-emblem-block">
+                <div class="about-emblem">
+                    <div class="about-emblem-ring"></div>
+                    <div class="about-emblem-inner">
+                        <div class="about-emblem-icon">⌖</div>
+                        <div class="about-emblem-text">ARMSDEALER</div>
+                        <div class="about-emblem-sub">EST. MMXXV</div>
+                    </div>
+                </div>
+                <div class="about-badge-row">
+                    <div class="about-badge">FFL LICENSED</div>
+                    <div class="about-badge">ATF COMPLIANT</div>
+                    <div class="about-badge">ENCRYPTED PLATFORM</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- OUR STORY                                                    -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="about-section about-section-alt" id="our-story">
+        <div class="about-section-inner">
+            <div class="about-section-tag">[ SECTION 02 ]</div>
+            <h2 class="about-section-title">Our Story</h2>
+            <div class="about-timeline">
+                <div class="about-tl-item">
+                    <div class="about-tl-marker">2025</div>
+                    <div class="about-tl-card">
+                        <h4>Foundation</h4>
+                        <p>ArmsDealer was founded by a group of former military servicemen and licensed gunsmiths who saw a gap in the market: reputable, digital-first firearms commerce with zero tolerance for grey-market transactions.</p>
+                    </div>
+                </div>
+                <div class="about-tl-item">
+                    <div class="about-tl-marker">Q2 2025</div>
+                    <div class="about-tl-card">
+                        <h4>Platform Launch</h4>
+                        <p>Platform beta went live with an initial catalog of 400 SKUs across rifles, handguns, optics, and tactical gear. First 500 orders fulfilled within the first 30 days.</p>
+                    </div>
+                </div>
+                <div class="about-tl-item">
+                    <div class="about-tl-marker">Q4 2025</div>
+                    <div class="about-tl-card">
+                        <h4>Expansion</h4>
+                        <p>Partnerships established with 14 verified manufacturers. Catalog grew to 3,400+ SKUs. International shipping lanes opened to 48 countries with full customs documentation support.</p>
+                    </div>
+                </div>
+                <div class="about-tl-item">
+                    <div class="about-tl-marker">2026</div>
+                    <div class="about-tl-card">
+                        <h4>Today</h4>
+                        <p>Serving over 12,000 verified buyers globally. Continuously investing in compliance infrastructure, secure logistics, and platform improvements. The mission hasn't changed: trusted arms commerce, built right.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- BLOG / INTEL REPORTS                                         -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="about-section" id="blog">
+        <div class="about-section-inner">
+            <div class="about-section-tag">[ SECTION 03 ]</div>
+            <h2 class="about-section-title">Intel Reports <span class="about-title-sub">/ Blog</span></h2>
+            <div class="about-blog-grid">
+                <article class="about-blog-card about-blog-card-featured">
+                    <div class="about-blog-tag">LATEST DISPATCH</div>
+                    <h3>Understanding the NFA: A Buyer's Complete Guide to Suppressor Ownership</h3>
+                    <p>Navigating the National Firearms Act paperwork doesn't have to be a mission in itself. Our compliance team breaks down Form 4, trust structures, and the current ATF processing window.</p>
+                    <div class="about-blog-meta">
+                        <span>MAY 2026</span>
+                        <span>·</span>
+                        <span>COMPLIANCE</span>
+                    </div>
+                    <a href="#blog" class="about-blog-read">READ REPORT →</a>
+                </article>
+                <article class="about-blog-card">
+                    <div class="about-blog-tag">GEAR REVIEW</div>
+                    <h3>Optics Comparison: Night Vision vs Thermal in Close-Quarters</h3>
+                    <p>Side-by-side field test across 5 platforms. Which technology wins at 50 meters?</p>
+                    <div class="about-blog-meta"><span>APR 2026</span><span>·</span><span>GEAR</span></div>
+                    <a href="#blog" class="about-blog-read">READ →</a>
+                </article>
+                <article class="about-blog-card">
+                    <div class="about-blog-tag">INDUSTRY</div>
+                    <h3>2026 Firearms Market Outlook: Demand Trends by Category</h3>
+                    <p>Analysis of supply chain shifts, most-searched calibers, and emerging tactical platforms this year.</p>
+                    <div class="about-blog-meta"><span>MAR 2026</span><span>·</span><span>MARKET</span></div>
+                    <a href="#blog" class="about-blog-read">READ →</a>
+                </article>
+                <article class="about-blog-card">
+                    <div class="about-blog-tag">SAFETY</div>
+                    <h3>Safe Storage Laws by State: What Every Buyer Must Know</h3>
+                    <p>A state-by-state reference guide to secure storage requirements, updated for 2026 legislative changes.</p>
+                    <div class="about-blog-meta"><span>FEB 2026</span><span>·</span><span>LEGAL</span></div>
+                    <a href="#blog" class="about-blog-read">READ →</a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- CAREERS                                                      -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="about-section about-section-alt" id="careers">
+        <div class="about-section-inner">
+            <div class="about-section-tag">[ SECTION 04 ]</div>
+            <h2 class="about-section-title">Careers</h2>
+            <p class="about-section-intro">We're building the most trusted firearms platform in the world. That takes people who care about compliance, craftsmanship, and doing things right. Current openings:</p>
+            <div class="about-careers-grid">
+                <div class="about-career-card">
+                    <div class="about-career-role">Compliance Officer</div>
+                    <div class="about-career-meta">FULL-TIME · REMOTE</div>
+                    <p>Ensure all listings meet federal and state regulatory requirements. Work closely with legal counsel and the ATF liaison team.</p>
+                    <a href="mailto:careers@armsdealer.com" class="about-career-apply">APPLY →</a>
+                </div>
+                <div class="about-career-card">
+                    <div class="about-career-role">Firearms Catalog Specialist</div>
+                    <div class="about-career-meta">FULL-TIME · HYBRID</div>
+                    <p>Research, photograph, and write technical product descriptions for incoming inventory. Background in gunsmithing or military service preferred.</p>
+                    <a href="mailto:careers@armsdealer.com" class="about-career-apply">APPLY →</a>
+                </div>
+                <div class="about-career-card">
+                    <div class="about-career-role">Full-Stack Engineer</div>
+                    <div class="about-career-meta">FULL-TIME · REMOTE</div>
+                    <p>Build and maintain the ArmsDealer platform. Python / Flask backend, modern frontend stack. Security clearance a plus.</p>
+                    <a href="https://github.com/kelsengile/ArmsDealer" target="_blank" class="about-career-apply">VIEW REPO →</a>
+                </div>
+                <div class="about-career-card">
+                    <div class="about-career-role">Logistics & Shipping Coordinator</div>
+                    <div class="about-career-meta">FULL-TIME · ON-SITE</div>
+                    <p>Oversee FFL transfer logistics, carrier compliance, and international customs documentation for outbound shipments.</p>
+                    <a href="mailto:careers@armsdealer.com" class="about-career-apply">APPLY →</a>
+                </div>
+            </div>
+            <p class="about-careers-note">Don't see your role? Send your résumé to <a href="mailto:careers@armsdealer.com">careers@armsdealer.com</a> — we're always looking for mission-aligned talent.</p>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- PARTNERSHIP                                                   -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="about-section" id="partnership">
+        <div class="about-section-inner">
+            <div class="about-section-tag">[ SECTION 05 ]</div>
+            <h2 class="about-section-title">Partnership</h2>
+            <p class="about-section-intro">We partner with licensed manufacturers, distributors, and tactical service providers who share our commitment to legal compliance and product quality.</p>
+            <div class="about-partner-grid">
+                <div class="about-partner-card">
+                    <div class="about-partner-icon">◈</div>
+                    <h4>Manufacturer Program</h4>
+                    <p>List your products on ArmsDealer's verified catalog. We handle buyer verification, payment processing, and FFL transfer logistics. You focus on production.</p>
+                </div>
+                <div class="about-partner-card">
+                    <div class="about-partner-icon">◉</div>
+                    <h4>Distributor Network</h4>
+                    <p>Access our wholesale portal for bulk ordering, inventory forecasting, and priority allocation of high-demand SKUs across your retail network.</p>
+                </div>
+                <div class="about-partner-card">
+                    <div class="about-partner-icon">◎</div>
+                    <h4>FFL Dealer Portal</h4>
+                    <p>Receive transfers from ArmsDealer buyers at your location. Join our network of 200+ licensed transfer dealers with preferential fee agreements.</p>
+                </div>
+                <div class="about-partner-card">
+                    <div class="about-partner-icon">⌖</div>
+                    <h4>Affiliate Program</h4>
+                    <p>Firearms content creators, range instructors, and tactical educators: earn commission on referred sales through your unique affiliate link. Full analytics included.</p>
+                </div>
+            </div>
+            <div class="about-partner-cta">
+                <a href="{{ url_for('main.contacts') }}" class="about-cta-btn">INQUIRE ABOUT PARTNERSHIP →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- FOOTER                                                       -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h4 class="footer-title" data-translate="homepagefootertitle1"></h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('main.homepage') }}" data-translate="homepagefooterlinkshome"></a></li>
+                        <li><a href="{{ url_for('main.products') }}" data-translate="homepagefooterlinksproducts"></a></li>
+                        <li><a href="{{ url_for('main.services') }}" data-translate="homepagefooterlinksservices"></a></li>
+                        <li><a href="{{ url_for('main.homepage') }}" data-translate="homepagefooterlinksaccount"></a></li>
+                        <li><a href="{{ url_for('main.settings') }}" data-translate="homepagefooterlinkssettings"></a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-title" data-translate="homepagefootertitle2"></h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('main.contacts') }}" data-translate="homepagefooterlinkscontactus"></a></li>
+                        <li><a href="{{ url_for('main.contacts') }}#faq" data-translate="homepagefooterlinksfaq"></a></li>
+                        <li><a href="{{ url_for('main.contacts') }}#shipping" data-translate="homepagefooterlinksshipping"></a></li>
+                        <li><a href="{{ url_for('main.contacts') }}#returns" data-translate="homepagefooterlinksreturns"></a></li>
+                        <li><a href="{{ url_for('main.contacts') }}#warranty" data-translate="homepagefooterlinkswarranty"></a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-title" data-translate="homepagefootertitle3"></h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('main.about') }}#about-us" data-translate="homepagefooterlinksaboutus"></a></li>
+                        <li><a href="{{ url_for('main.about') }}#our-story" data-translate="homepagefooterlinksourstory"></a></li>
+                        <li><a href="{{ url_for('main.about') }}#blog" data-translate="homepagefooterlinksblog"></a></li>
+                        <li><a href="{{ url_for('main.about') }}#careers" data-translate="homepagefooterlinkscarreer"></a></li>
+                        <li><a href="{{ url_for('main.about') }}#partnership" data-translate="homepagefooterlinkspartnership"></a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-title" data-translate="homepagefootertitle4"></h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('main.legal') }}#terms" data-translate="homepagefooterlinksterms"></a></li>
+                        <li><a href="{{ url_for('main.legal') }}#privacy" data-translate="homepagefooterlinkspolicy"></a></li>
+                        <li><a href="{{ url_for('main.legal') }}#compliance" data-translate="homepagefooterlinkscompliance"></a></li>
+                        <li><a href="{{ url_for('main.legal') }}#disclaimer" data-translate="homepagefooterlinksdisclaimer"></a></li>
+                        <li><a href="{{ url_for('main.legal') }}#cookies" data-translate="homepagefooterlinkscookies"></a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-title" data-translate="homepagefootertitle5"></h4>
+                    <div class="footer-contact">
+                        <div class="footer-contact-item">
+                            <a href="tel:+676666964206" style="color:#b0bdb0;text-decoration:none;">+67 (666) 696-4206</a>
+                        </div>
+                        <div class="footer-contact-item">
+                            <a href="mailto:support@armsdealer.com" style="color:#b0bdb0;text-decoration:none;">support@armsdealer.com</a>
+                        </div>
+                        <div class="footer-contact-item">
+                            <span style="color:#b0bdb0;">420 Wartorn St, Blaze City, ST 6967420</span>
+                        </div>
+                    </div>
+                    <div class="footer-socials">
+                        <a href="https://github.com/kelsengile" class="footer-social-link" title="GitHub" target="_blank">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+                        </a>
+                        <a href="https://github.com/kelsengile/ArmsDealer" class="footer-social-link" title="ArmsDealer Repo" target="_blank">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3zM3 9h18M9 21V9"/></svg>
+                        </a>
+                        <a href="https://github.com/kelsengile" class="footer-social-link" title="X/Twitter" target="_blank">𝕏</a>
+                        <a href="https://github.com/kelsengile" class="footer-social-link" title="Facebook" target="_blank">f</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-divider">
+                <p class="footer-copyright">© 2025 ArmsDealer. All rights reserved. Licensed and regulated by federal authorities. | FFL Dealer License: 12-AB-12345</p>
+            </div>
+        </div>
+    </footer>
+
 </main>
+<script src="{{ url_for('static', filename='js/pagefunctions/aboutfunctions.js') }}"></script>
 {% endblock %}
