@@ -4,5 +4,63 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pagestyles/servicesstyles.css') }}">{% endblock %}
 {% block main %}
 <main>
+  <div class="coming-soon-zone">
+
+    <!-- Top hazard tape strip -->
+    <div class="tape-strip"></div>
+
+    <!-- Main card -->
+    <div class="coming-soon-card">
+      <!-- Animated scan overlay -->
+      <div class="cs-scan"></div>
+
+      <!-- Warning badge -->
+      <div class="cs-badge">
+        <span class="cs-badge-dot"></span>
+        <span>Status Report</span>
+      </div>
+
+      <!-- Headlines -->
+      <div class="cs-headline">Services</div>
+      <div class="cs-sub">Coming Soon</div>
+      <div class="cs-divider"></div>
+
+      <!-- Body text -->
+      <p class="cs-body">
+        Our <strong>services division</strong> is currently in final preparation.<br>
+        Tactical support packages, procurement assistance, and field consultation
+        will be available upon deployment clearance.
+      </p>
+
+      <!-- Status grid -->
+      <div class="cs-status-grid">
+        <div class="cs-status-item">
+          <div class="cs-status-label">Division</div>
+          <div class="cs-status-value yellow">Services</div>
+        </div>
+        <div class="cs-status-item">
+          <div class="cs-status-label">Status</div>
+          <div class="cs-status-value yellow">Pending</div>
+        </div>
+        <div class="cs-status-item">
+          <div class="cs-status-label">Clearance</div>
+          <div class="cs-status-value muted">Restricted</div>
+        </div>
+        <div class="cs-status-item">
+          <div class="cs-status-label">ETA</div>
+          <div class="cs-status-value green">TBD</div>
+        </div>
+      </div>
+
+      <!-- Redacted reference -->
+      <div class="cs-ref">
+        REF: <span>AD-SVC-████</span> &nbsp;|&nbsp; CLASSIFICATION: <span>████████</span>
+      </div>
+    </div>
+
+    <!-- Bottom hazard tape strip -->
+    <div class="tape-strip"></div>
+
+  </div>
 </main>
 {% endblock %}
