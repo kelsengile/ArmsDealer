@@ -1,0 +1,290 @@
+/* ========================================================================================================================================================
+   SERVICES PAGE STYLES - ARMS DEALER WEBSITE
+   ======================================================================================================================================================== */
+
+/* ── Main content area ──────────────────────────────────────────── */
+main {
+  min-height: calc(100vh - var(--header-h, 98px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Hazard tape stripes — top & bottom borders of the zone ──────── */
+main::before,
+main::after {
+  content: "";
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 44px;
+  background: repeating-linear-gradient(
+    -45deg,
+    #f5c900 0px,
+    #f5c900 20px,
+    #111410 20px,
+    #111410 40px
+  );
+  z-index: 10;
+  box-shadow: 0 0 18px rgba(245, 201, 0, 0.35);
+}
+main::before {
+  top: var(--header-h, 98px);
+}
+main::after {
+  bottom: 0;
+}
+
+/* ── Coming-soon container ──────────────────────────────────────── */
+.coming-soon-zone {
+  position: relative;
+  width: 100%;
+  max-width: 780px;
+  text-align: center;
+  z-index: 5;
+  padding: 80px 40px;
+}
+
+/* ── Tape strips crossing the zone ─────────────────────────────── */
+.tape-strip {
+  position: absolute;
+  left: -60px;
+  right: -60px;
+  height: 42px;
+  background: repeating-linear-gradient(
+    -45deg,
+    #f5c900 0px,
+    #f5c900 20px,
+    #111410 20px,
+    #111410 40px
+  );
+  box-shadow:
+    0 4px 20px rgba(245, 201, 0, 0.25),
+    0 0 40px rgba(245, 201, 0, 0.08);
+  opacity: 0.92;
+}
+.tape-strip:nth-child(1) {
+  top: 60px;
+  transform: rotate(-2deg);
+}
+.tape-strip:nth-child(2) {
+  bottom: 60px;
+  transform: rotate(1.5deg);
+}
+
+/* ── Content card ───────────────────────────────────────────────── */
+.coming-soon-card {
+  position: relative;
+  background: var(--mil-panel, #1c211c);
+  border: 1px solid var(--mil-border, #2e3a2e);
+  border-top: 3px solid #f5c900;
+  padding: 56px 48px 52px;
+  z-index: 2;
+  box-shadow:
+    0 0 0 1px rgba(245, 201, 0, 0.12),
+    0 24px 60px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(245, 201, 0, 0.07);
+}
+
+/* Corner accents */
+.coming-soon-card::before,
+.coming-soon-card::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: #f5c900;
+  border-style: solid;
+  opacity: 0.55;
+}
+.coming-soon-card::before {
+  bottom: 12px;
+  left: 12px;
+  border-width: 0 0 2px 2px;
+}
+.coming-soon-card::after {
+  bottom: 12px;
+  right: 12px;
+  border-width: 0 2px 2px 0;
+}
+
+/* ── Warning badge ──────────────────────────────────────────────── */
+.cs-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(245, 201, 0, 0.1);
+  border: 1px solid rgba(245, 201, 0, 0.35);
+  color: #f5c900;
+  font-family: var(--font-mono, "Share Tech Mono", monospace);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  margin-bottom: 32px;
+}
+.cs-badge-dot {
+  width: 6px;
+  height: 6px;
+  background: #f5c900;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #f5c900;
+  animation: csBlink 1.8s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes csBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+
+/* ── Headline ───────────────────────────────────────────────────── */
+.cs-headline {
+  font-family: var(--font-stencil, "Oswald", "Impact", sans-serif);
+  font-size: clamp(42px, 8vw, 72px);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mil-light, #e2ead4);
+  line-height: 1;
+  margin-bottom: 6px;
+  text-shadow:
+    0 0 40px rgba(245, 201, 0, 0.18),
+    0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Sub-headline ───────────────────────────────────────────────── */
+.cs-sub {
+  font-family: var(--font-stencil, "Oswald", sans-serif);
+  font-size: clamp(14px, 3vw, 22px);
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #f5c900;
+  margin-bottom: 28px;
+  opacity: 0.85;
+}
+
+/* ── Divider ────────────────────────────────────────────────────── */
+.cs-divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #f5c900 30%, #f5c900 70%, transparent);
+  margin: 0 auto 28px;
+  opacity: 0.6;
+}
+
+/* ── Body copy ──────────────────────────────────────────────────── */
+.cs-body {
+  font-family: var(--font-mono, "Share Tech Mono", monospace);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--mil-muted, #4a5e4a);
+  line-height: 1.9;
+  max-width: 480px;
+  margin: 0 auto 36px;
+}
+.cs-body strong {
+  color: var(--mil-text, #c8d4b8);
+  font-weight: normal;
+}
+
+/* ── Status grid ────────────────────────────────────────────────── */
+.cs-status-grid {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  border: 1px solid var(--mil-border, #2e3a2e);
+  overflow: hidden;
+  margin-bottom: 36px;
+}
+.cs-status-item {
+  flex: 1;
+  padding: 14px 10px;
+  border-right: 1px solid var(--mil-border, #2e3a2e);
+  text-align: center;
+}
+.cs-status-item:last-child {
+  border-right: none;
+}
+.cs-status-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 8px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mil-muted, #4a5e4a);
+  margin-bottom: 5px;
+}
+.cs-status-value {
+  font-family: var(--font-stencil, "Oswald", sans-serif);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.cs-status-value.yellow  { color: #f5c900; }
+.cs-status-value.muted   { color: var(--mil-olive, #6b7c4e); }
+.cs-status-value.green   { color: var(--mil-bright, #a8c47a); }
+
+/* ── Redacted ID line ───────────────────────────────────────────── */
+.cs-ref {
+  font-family: var(--font-mono, monospace);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mil-muted, #4a5e4a);
+  opacity: 0.55;
+}
+.cs-ref span {
+  background: var(--mil-muted, #4a5e4a);
+  color: transparent;
+  user-select: none;
+  border-radius: 1px;
+}
+
+/* ── Animated scan line effect on the card ──────────────────────── */
+.coming-soon-card .cs-scan {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(245, 201, 0, 0.025) 50%,
+    transparent 100%
+  );
+  background-size: 100% 60px;
+  animation: csScan 4s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes csScan {
+  0%   { background-position: 0 -60px; }
+  100% { background-position: 0 100%; }
+}
+
+/* ── All direct children of card above scan layer ───────────────── */
+.coming-soon-card > *:not(.cs-scan) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .coming-soon-card {
+    padding: 44px 24px 40px;
+  }
+  .coming-soon-zone {
+    padding: 70px 16px;
+  }
+  .cs-status-grid {
+    flex-direction: column;
+  }
+  .cs-status-item {
+    border-right: none;
+    border-bottom: 1px solid var(--mil-border, #2e3a2e);
+  }
+  .cs-status-item:last-child {
+    border-bottom: none;
+  }
+}
