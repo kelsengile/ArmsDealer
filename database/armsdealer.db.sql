@@ -878,12 +878,13 @@ INSERT INTO "login_history" ("id","user_id","ip_address","user_agent","success",
  (38,3,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-19 00:46:49'),
  (39,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',0,'2026-05-19 00:53:16'),
  (40,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-19 00:53:24'),
- (41,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-19 00:53:25');
-INSERT INTO "product_images" ("id","product_id","image_file","sort_order","created_at") VALUES (7,1,'glock 19 gen5.png',1,'2026-05-19 00:57:05'),
- (8,1,'glock 43x.png',2,'2026-05-19 00:57:05'),
- (9,1,'glock 21 gen4.png',3,'2026-05-19 00:57:05'),
- (10,1,'glock 34 gen5 mos.png',4,'2026-05-19 00:57:05');
-INSERT INTO "products" ("id","name","slug","category_id","subcategory_id","brand_id","description","price","discount","stock","rating","sales_count","image_file","tags","is_authorized","created_at","updated_at") VALUES (1,'Glock 17 Gen5','glock-17-gen5',1,1,1,'Full-size 9mm service pistol. 17-round magazine, nDLC finish, Marksman barrel.',2000000.0,0.0,45,3.8,322,'glock 19 gen5.png','["9mm","pistol","full-size","police"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
+ (41,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-19 00:53:25'),
+ (42,2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36',1,'2026-05-19 08:44:18');
+INSERT INTO "product_images" ("id","product_id","image_file","sort_order","created_at") VALUES (19,1,'glock 19 gen5.png',1,'2026-05-19 08:44:41'),
+ (20,1,'glock 43x.png',2,'2026-05-19 08:44:41'),
+ (21,1,'glock 21 gen4.png',3,'2026-05-19 08:44:41'),
+ (22,1,'glock 34 gen5 mos.png',4,'2026-05-19 08:44:41');
+INSERT INTO "products" ("id","name","slug","category_id","subcategory_id","brand_id","description","price","discount","stock","rating","sales_count","image_file","tags","is_authorized","created_at","updated_at") VALUES (1,'Glock 17 Gen5','glock-17-gen5',1,1,1,'Full-size 9mm service pistol. 17-round magazine, nDLC finish, Marksman barrel.',25000.0,0.0,45,3.8,322,'glock 19 gen5.png','["9mm","pistol","full-size","police"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (2,'Glock 19 Gen5','glock-19-gen5',1,1,1,'Compact 9mm pistol. 15-round magazine, front serrations, ambidextrous slide stop.',27990.0,5.0,60,4.9,499,'glock 19 gen5.png','["9mm","compact","concealed-carry"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (3,'Glock 43X','glock-43x',1,1,1,'Slimline 9mm subcompact. 10-round magazine, extended grip frame.',24990.0,0.0,38,4.7,218,'glock 43x.png','["9mm","subcompact","slim","concealed-carry"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
  (4,'Glock 21 Gen4','glock-21-gen4',1,1,1,'.45 ACP full-size pistol. 13-round magazine, dual recoil spring assembly.',31990.0,0.0,22,4.6,102,'glock 21 gen4.png','[".45acp","full-size","pistol"]',1,'2026-04-24 13:58:44','2026-04-24 13:58:44'),
