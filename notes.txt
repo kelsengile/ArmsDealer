@@ -11,12 +11,74 @@
   PROJECT STRUCTURE
 ================================================================================
 
-Armsdealer.com
-├── 
+ArmsDealer.com/
+│
+├── armsdealer.py                  # App entry point, Flask app factory, route registration
+├── db_helpers.py                  # Database connection helpers (get_db, get_locale, get_currency)
+├── models.py                      # Data models and query logic
+├── email_service.py               # Email sending service
+├── init_db.py                     # Database initialization script
+├── requirements.txt               # Python dependencies
+├── .env                           # Environment variables (SECRET_KEY, etc.) — not committed
+├── .gitignore
+│
+├── database/
+│   ├── schema.sql                 # Full database schema definition
+│   └── armsdealer.db.sql          # Seed data / database export
+│
+├── routes/
+│   ├── api_routes.py              # REST API endpoints (products, cart, orders, etc.)
+│   ├── auth_routes.py             # Authentication routes (login, register, password change)
+│   ├── cart_routes.py             # Cart management routes
+│   └── main_routes.py             # Main page routes (home, products, services, settings, etc.)
+│
+├── templates/
+│   ├── homepage.html
+│   ├── products.html
+│   ├── services.html
+│   ├── about.html
+│   ├── contacts.html
+│   ├── legal.html
+│   ├── settings.html
+│   ├── auth/                      # Login, register, change password, auth base
+│   ├── partials/                  # base.html, subbase.html, panels, toast
+│   ├── specific/                  # specificproduct.html, specificservice.html
+│   └── user/                      # account.html, checkout.html, dashboard.html, orders.html
+│
+├── static/
+│   ├── css/
+│   │   ├── globalstyles.css
+│   │   ├── navbarstyles.css
+│   │   ├── auth.css
+│   │   ├── toast.css
+│   │   ├── pagestyles/            # Per-page stylesheets
+│   │   ├── partialstyles/         # Styles for panel partials
+│   │   ├── specific/              # Styles for specific product page
+│   │   └── user/                  # Styles for user account pages
+│   ├── js/
+│   │   ├── appearance.js
+│   │   ├── navbarfunctions.js
+│   │   ├── toast.js
+│   │   ├── translations.js        # Client-side translation strings
+│   │   ├── pagefunctions/         # Per-page JS logic
+│   │   ├── partialfunctions/      # JS for panel partials
+│   │   └── specific/              # JS for specific product page
+│   └── assets/
+│       ├── icons/
+│       │   ├── brandslogo/        # Brand logo images
+│       │   └── categoriesicons/   # Category icon images
+│       └── images/
+│           ├── pageimages/        # Hero and page-specific images
+│           ├── productsimages/    # Product listing images
+│           ├── serviceimages/     # Service listing images
+│           └── userimages/        # User profile images
+
 
 ================================================================================
   PAGES
 ================================================================================
+
+LEGEND: [/] = Done   [ ] = Not yet done / In progress
 
 GLOBAL
 ------
@@ -24,18 +86,18 @@ GLOBAL
   TopBar
     [/] Settings
           [/] Account
-          [/] Appearance
-          [/] Notifications
-          [/] Privacy & Security
-          [/] Language & Region
-          [/] Help & Support
-          [/] System Actions
+          [ ] Appearance
+          [ ] Notifications
+          [ ] Privacy & Security
+          [ ] Language & Region
+          [ ] Help & Support
+          [ ] System Actions
     [/] Blinker -- Secure Connection Indicator
     [/] Language Change
     [/] Currency Change
-    [ ] About
-    [ ] Contacts
-    [ ] Legal
+    [/] About        
+    [/] Contacts        
+    [/] Legal          
 
   NavBar
     [/] Logo | Title
@@ -101,19 +163,19 @@ GLOBAL
 
   STATIC PAGES
   ------------
-    [ ] About
-    [ ] Contacts
-    [ ] Legal
+    [/] About           
+    [/] Contacts        
+    [/] Legal           
 
   SETTINGS PAGES
   --------------
     [/] Account
-    [ ] Appearance
-    [ ] Notifications
-    [ ] Privacy & Security
-    [ ] Language & Region
-    [ ] Help & Support
-    [ ] System Actions
+    [/] Appearance
+    [/] Notifications
+    [/] Privacy & Security
+    [/] Language & Region
+    [/] Help & Support
+    [/] System Actions
 
 
 ================================================================================
@@ -191,25 +253,25 @@ BRANDS
   Hikvision ............. Video surveillance systems 
   SGS ................... Inspection, verification, and certification services
   KBR ................... Defense and government contracting
-  Anonymous ............. Seller identity not disclosed or verified.
-  Winchester............. American firearms manufacturer
-  Walther................ German precision firearms maker
-  Mauser................. Historic German arms manufacturer
-  Kalashnikov Concern.... Russian arms manufacturer (AK series)
-  Remington Arms......... American firearms manufacturer
-  Smith & Wesson......... American firearms and revolvers
-  Beretta................ Italian firearms manufacturer
-  Springfield Armory..... US firearms manufacturer
-  Steyr Mannlicher....... Austrian firearms manufacturer
-  IMI Systems............ Israeli weapons manufacturer
+  Anonymous ............. Seller identity not disclosed or verified
+  Winchester ............ American firearms manufacturer
+  Walther ............... German precision firearms maker
+  Mauser ................ Historic German arms manufacturer
+  Kalashnikov Concern ... Russian arms manufacturer (AK series)
+  Remington Arms ........ American firearms manufacturer
+  Smith & Wesson ........ American firearms and revolvers
+  Beretta ............... Italian firearms manufacturer
+  Springfield Armory .... US firearms manufacturer
+  Steyr Mannlicher ...... Austrian firearms manufacturer
+  IMI Systems ........... Israeli weapons manufacturer
   Accuracy International.... British precision rifle maker
-  L3 Technologies........ Defense and optics systems
+  L3 Technologies ....... Defense and optics systems
 
 CATEGORIES
 ----------
 
   PRODUCTS
-  -------
+  --------
  
       WEAPONS
       -------
@@ -256,10 +318,10 @@ CATEGORIES
 
 
 ================================================================================
-  ACCOUNTS
+  ACCOUNTS  (dev/test accounts — do not use in production)
 ================================================================================
 
-    Admin:
+  Admin:
     username : mrcrabs
     email    : eugene.crabs@thekrustykrab.com
     password : MoneyM0ney!
@@ -276,58 +338,62 @@ CATEGORIES
     email    : patrick.star@bikini.bottom
     password : IAmStupid!23
     role     : customer
- 
+
   Customer:
     username : squidward
     email    : squidward.tentacles@bikini.bottom
     password : IHateEveryone!23
     role     : customer
- 
+
   Customer:
     username : sandycheeks
     email    : sandy.cheeks@texas.com
     password : YeeHawTexas!23
     role     : customer
- 
+
   Customer:
     username : plankton
     email    : sheldon.plankton@chumbucket.com
     password : SecretFormula!23
     role     : customer
- 
+
   Customer:
     username : ricksanchez
     email    : rick.sanchez@c137.dim
     password : Wubbalubbadubdub!2
     role     : customer
- 
+
   Customer:
     username : mortysmith
     email    : morty.smith@c137.dim
     password : Oh_Geez_Rick!23
     role     : customer
- 
+
   Customer:
     username : ben10
     email    : ben.tennyson@plumber.net
     password : Omnitrix!2310
     role     : customer
- 
+
   Customer:
     username : gwentennyson
     email    : gwen.tennyson@plumber.net
     password : Anodite!Magic23
     role     : customer
- 
+
   Customer:
     username : grandpamax
     email    : max.tennyson@plumber.net
     password : PlumberMax!2326
     role     : customer
 
+
 ================================================================================
   DATABASE CART ORDERS RESET
 ================================================================================
+
+  Run this SQL in DB Browser (or equivalent) to wipe cart/order data
+  without dropping the full database:
 
 PRAGMA foreign_keys = OFF;
 
@@ -346,4 +412,3 @@ DELETE FROM sqlite_sequence WHERE name='inquiries';
 PRAGMA foreign_keys = ON;
 
 ================================================================================
-
